@@ -2,7 +2,7 @@ package util;
 
 /***
  * Classe of constants
- * @author camil
+ * @author camila
  *
  */
 public class Constants {
