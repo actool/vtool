@@ -114,7 +114,7 @@ public class IocoConformance {
 			for (String l : as.getAlphabet()) {
 				// if it is an output label and there is no transition starting from "e" with the label "l" 
 				//then a transition is created pointing to the failure state
-				if (!as.transitionExists(e.getNome(), l).getFound() && Q.getOutputs().contains(l)) {
+				if (as.transitionExists(e.getNome(), l).size()==0 && Q.getOutputs().contains(l)) {
 					as.addTransition(new Transition_(e, l, d));
 				}
 			}

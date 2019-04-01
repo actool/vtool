@@ -180,11 +180,9 @@ public class LTS {
 	 * 
 	 * @param labelIniState
 	 * @param labelTransition
-	 * @return resultado, se existe transição e quais são os estados alcançados por
-	 *         essas transições
+	 * @return list of states reached
 	 */
-	public Result transitionExists(String labelIniState, String labelTransition) {		
-		Result result = new Result();
+	public List<State_> transitionExists(String labelIniState, String labelTransition) {				
 		// list of reached states
 		List<State_> endStates = new ArrayList<State_>();
 	
@@ -192,27 +190,13 @@ public class LTS {
 			// verifies whether the transition contains the iniState of the transition and the
 			// label passed parameter
 			if (t.getEstadoIni().getNome().toString().equals(labelIniState.toString())
-					&& t.getRotulo().toString().equals(labelTransition.toString())) {
-				// defines that it has found
-				result.setFound(true);
+					&& t.getRotulo().toString().equals(labelTransition.toString())) {				
 				// adds the status reached
 				endStates.add(t.getEstadoFim());
 			}
 		}
 
-		// changes the achieved states
-		result.setReachedStates(endStates);
-
-		// if no state has been reached starting from the state and the last label of
-		// parameter
-		if (endStates.size() <= 0) {
-			// define that did not find any status
-			result.setFound(false);
-			// the endStates as null
-			result.reachedStates = null;
-		}
-
-		return result;
+		return endStates;
 	}
 
 	/***
@@ -298,58 +282,5 @@ public class LTS {
 		return s;
 	}
 
-	/***
-	 * Class Result used to verify that transitions exist starting from
-	 * of certain state and label
-	 * 
-	 * @author camila
-	 *
-	 */
-	public class Result {
-		// if found transition
-		private boolean found;
-		// the states achieved by the transition
-		private List<State_> reachedStates;
-
-		/***
-		 * Alter found
-		 * 
-		 * @param found
-		 *            
-		 */
-		public void setFound(boolean found) {
-			this.found = found;
-		}
-
-		/***
-		 * Return list of reached states 
-		 * 
-		 * @return reachedStates
-		 */
-		public List<State_> getReachedStates() {
-			return reachedStates;
-		}
-
-		/***
-		 * Alter list of reached states 
-		 * 
-		 * @param reachedStates
-		 *            
-		 */
-		public void setReachedStates(List<State_> reachedStates) {
-			this.reachedStates = reachedStates;
-		}
-
-		/***
-		 * Return whether found
-		 * 
-		 * @return found 
-		 */
-		public boolean getFound() {
-			return found;
-		}
-		
-	
-	}
 
 }

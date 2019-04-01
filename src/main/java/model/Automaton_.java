@@ -70,7 +70,7 @@ public class Automaton_ extends LTS {
 		List<State_> aux = new ArrayList<State_>();
 		//add the state received as parameter in the list to be the first to be visited
 		aux.add(state);
-		Result r;
+		List<State_> r;
 		//to explore list
 		State_ current;
 		
@@ -82,17 +82,17 @@ public class Automaton_ extends LTS {
 			r = transitionExists(current.getNome(), Constants.EPSILON);
 
 			//transition with epsilon was found
-			if (r.getFound()) {
+			if (r.size() > 0) {
 				// reachedStates are the states reached with the epsilon transition from the current state
 				// the current state is added in the list of states reached by epsilon, since epsilon can remain in the same state
-				r.getReachedStates().add(current);
+				r.add(current);
 			} else {
 				// if no state is reached by epsilon
 				// add the current state as being reached by epsilon
-				r.setReachedStates(new ArrayList<State_>(Arrays.asList(current)));
+				r = (new ArrayList<State_>(Arrays.asList(current)));
 			}
 			//in the list contains only the states that are not in "reachedStates"
-			ArrayList<State_> distinctStates = new ArrayList<State_>(r.getReachedStates());
+			ArrayList<State_> distinctStates = new ArrayList<State_>(r);
 			distinctStates.removeAll(reachedStates);
 			
 			//add in the auxiliary list the states reached by the current state with epsilon

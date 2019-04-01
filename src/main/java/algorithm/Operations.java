@@ -28,7 +28,6 @@ import model.State_;
 import model.IOLTS;
 import model.LTS;
 import model.Transition_;
-import model.LTS.Result;
 import util.Constants;
 
 /**
@@ -71,19 +70,21 @@ public class Operations {
 				acomp.addFinalStates(e);
 			}
 		}
+		
+		List<State_> result;
 
 		// completes states that are not input / output complete
 		for (State_ e : Q.getStates()) {
 			for (String l : acomp.getAlphabet()) {
 				// checks whether there is a transition from state "e" with the label "l"
-				Result result = Q.transitionExists(e.getNome(), l);
+				result = Q.transitionExists(e.getNome(), l);
 				// if there are no transitions, you must complete by creating a new transition from state "e" to state "scomp" with the label "l"
-				if (!result.getFound()) {
+				if (result.size() == 0) {
 					acomp.addTransition(new Transition_(e, l, scomp));
 				} else {
 					// when no deterministic, so starting from "e" with "l" can 
 					// reach more than one end state, so a transition for each found state must be created
-					for (State_ estadoFim : result.getReachedStates()) {
+					for (State_ estadoFim : result) {
 						acomp.addTransition(new Transition_(e, l, estadoFim));
 					}
 				}
@@ -146,7 +147,7 @@ public class Operations {
 			// used to know which states make each state:
 			// (state1@state2) a state composed of two synchronized states
 			String[] stringState;
-			Result result;
+			List<State_> result;
 			State_ state;
 			List<String> finalStates = new ArrayList<String>();
 
@@ -176,9 +177,9 @@ public class Operations {
 						// check if the transition exists from the stringState[i] with the word "alphabet"
 						result = automaton.transitionExists(stringState[i], alphabet);
 						// if there is a transition
-						if (result.getFound()) {
+						if (result.size() > 0) {
 							// for each state reached by the transitions found
-							for (State_ estadosFim : result.getReachedStates()) {
+							for (State_ estadosFim : result) {
 								// add the reachable states with EPSILON from the states
 								//found (result.getFetStates ())
 								auxState.addAll(automaton.reachableStatesWithEpsilon(estadosFim));
@@ -271,7 +272,7 @@ public class Operations {
 		String s = null, q = null;
 		State_ removed = null, synchronized_ = null;
 		String[] part;
-		Result sTransitions,qTransitions ;
+		List<State_> sTransitions,qTransitions ;
 
 		// while there are states to be synchronized
 		while (synchronizedStates.size() > 0) {
@@ -290,11 +291,11 @@ public class Operations {
 				// if there exists in Q transitions from state "q" with the label "l"
 				 qTransitions = Q.transitionExists(q, l);
 				// synchronizes in Q and S
-				if (sTransitions.getFound() && qTransitions.getFound()) {
+				if (sTransitions.size() > 0 && qTransitions.size() > 0) {
 					// synchronized states in S, there may be more than one in case of no determinism
-					for (State_ endStateS : sTransitions.getReachedStates()) {
+					for (State_ endStateS : sTransitions) {
 						// synchronized states in Q, there may be more than one in case of non-determinism
-						for (State_ endStateQ : qTransitions.getReachedStates()) {
+						for (State_ endStateQ : qTransitions) {
 							// creates a new state that matches what was synced
 							nameSyncState = endStateS.getNome() + Constants.SEPARATOR + endStateQ.getNome();
 							//the state name is without the separator
@@ -645,7 +646,7 @@ public class Operations {
 
 		State_ currentState_s = S.getInitialState();
 		State_ currentState_i = I.getInitialState();
-		Result result_s, result_i;
+		List<State_> result_s, result_i;
 		int stop_s = 0;
 		int stop_i = 0;
 
@@ -668,8 +669,8 @@ public class Operations {
 				if (currentState_s != null) {
 					result_s = S.transitionExists(currentState_s.getNome(), p);
 
-					if (result_s.getFound()) {
-						currentState_s = result_s.getReachedStates().get(0);
+					if (result_s.size() > 0) {
+						currentState_s = result_s.get(0);
 					} else {
 						currentState_s = null;
 						stop_s++;
@@ -680,8 +681,8 @@ public class Operations {
 
 				if (currentState_i != null) {
 					result_i = I.transitionExists(currentState_i.getNome(), p);
-					if (result_i.getFound()) {
-						currentState_i = result_i.getReachedStates().get(0);
+					if (result_i.size() > 0) {
+						currentState_i = result_i.get(0);
 					} else {
 						currentState_i = null;
 						stop_i++;
@@ -725,7 +726,7 @@ public class Operations {
 
 		State_ currentState_s = S.getInitialState();
 		State_ currentState_i = I.getInitialState();
-		Result result_s, result_i;
+		List<State_> result_s, result_i;
 		int stop_s = 0;
 		int stop_i = 0;
 
@@ -744,8 +745,8 @@ public class Operations {
 				if (currentState_s != null) {
 					result_s = S.transitionExists(currentState_s.getNome(), p);
 
-					if (result_s.getFound()) {
-						currentState_s = result_s.getReachedStates().get(0);
+					if (result_s.size() > 0) {
+						currentState_s = result_s.get(0);
 					} else {
 						currentState_s = null;
 						stop_s++;
@@ -756,8 +757,8 @@ public class Operations {
 
 				if (currentState_i != null) {
 					result_i = I.transitionExists(currentState_i.getNome(), p);
-					if (result_i.getFound()) {
-						currentState_i = result_i.getReachedStates().get(0);
+					if (result_i.size() > 0) {
+						currentState_i = result_i.get(0);
 					} else {
 						currentState_i = null;
 						stop_i++;
