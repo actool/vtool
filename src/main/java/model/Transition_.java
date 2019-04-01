@@ -6,122 +6,122 @@
 package model;
 
 /**
- * Classe transição
+ * Class Transition_
  * @author Camila
  */
 public class Transition_ {
-	//rótulo da transição
-	private String rotulo;
-	//tipo de transição se é entrada/saída IOLTS
-	private TipoTransicao tipo;
-	//estado que inicia a transição
-	private State_ estadoIni;
-	//estado final da transição
-	private State_ estadoFim;
-	//id da transição, utilizado para as bibliotecas
+	//transition label
+	private String label;
+	//type of transition INPUT/OUTPUT
+	private TransitionType tType;
+	//state from
+	private State_ iniState;
+	//state to
+	private State_ endState;
+	//id used for libraries
 	private String id;
 
 	/***
-	 * Contrutor vazio
+	 * empty constructor
 	 */
 	public Transition_() {
 	}
 
 	/***
-	 * Contrutor com todos os parametros
+	 * Contrast with all parameters
 	 * @param id
-	 * @param estadoIni
-	 * @param rotulo
-	 * @param estadoFim
+	 * @param iniState
+	 * @param label
+	 * @param endState
 	 */
-	public Transition_(String id, State_ estadoIni, String rotulo, State_ estadoFim) {
+	public Transition_(String id, State_ iniState, String label, State_ endState) {
 		this.id = id;
-		this.estadoIni = estadoIni;
-		this.rotulo = rotulo;
-		this.estadoFim = estadoFim;
+		this.iniState = iniState;
+		this.label = label;
+		this.endState = endState;
 	}
 
 	/***
-	 * Contrutor com estado inicial, rótulo, estadoo final
-	 * @param estadoIni
-	 * @param rotulo
-	 * @param estadoFim
+	 * Contrutor with inistate, label, endState
+	 * @param iniState
+	 * @param label
+	 * @param endState
 	 */
-	public Transition_(State_ estadoIni, String rotulo, State_ estadoFim) {
-		this.estadoIni = estadoIni;
-		this.rotulo = rotulo;
-		this.estadoFim = estadoFim;
+	public Transition_(State_ iniState, String label, State_ endState) {
+		this.iniState = iniState;
+		this.label = label;
+		this.endState = endState;
 	}
 
 	/**
-	 * Retorna o rótulo da transição
-	 * @return rotulo
+	 * Returns the transition label
+	 * @return label
 	 */
 	public String getRotulo() {
-		return rotulo;
+		return label;
 	}
 
 	/**
-	 * Altera o rótulo da transição
-	 * @param rotulo
+	 * Alter label
+	 * @param label
 	 *           
 	 */
-	public void setRotulo(String rotulo) {
-		this.rotulo = rotulo;
+	public void setRotulo(String label) {
+		this.label = label;
 	}
 
 	/**
-	 * Retorna o tipo da transição
-	 * @return tipo
+	 * Retorn type of transition
+	 * @return tType
 	 */
-	public TipoTransicao getTipo() {
-		return tipo;
+	public TransitionType getTipo() {
+		return tType;
 	}
 
 	/**
-	 * Altera o tipo de transição
-	 * @param tipo
+	 * Alter o type of transition
+	 * @param tType
 	 *            
 	 */
-	public void setTipo(TipoTransicao tipo) {
-		this.tipo = tipo;
+	public void setTipo(TransitionType tType) {
+		this.tType = tType;
 	}
 
-	/**Retorna o estado inicial da transição
-	 * @return estadoIni
+	/**Retorn the iniState
+	 * @return iniState
 	 */
 	public State_ getEstadoIni() {
-		return estadoIni;
+		return iniState;
 	}
 
 	/**
-	 * Altera o estado inicial da transição
-	 * @param estadoIni
+	 * Alter the iniState
+	 * @param iniState
 	 *            
 	 */
-	public void setEstadoIni(State_ estadoIni) {
-		this.estadoIni = estadoIni;
+	public void setEstadoIni(State_ iniState) {
+		this.iniState = iniState;
 	}
 
 	/**
-	 * Retorna o estado final da transição
-	 * @return estadoFim
+	 * Retorn the endState
+	 * @return endState
 	 */
 	public State_ getEstadoFim() {
-		return estadoFim;
+		return endState;
 	}
 
 	/**
-	 * Altera o estado final da transição
-	 * @param estadoFim
+	 * Alter the endState
+	 * @param endState
 	 * 
 	 */
-	public void setEstadoFim(State_ estadoFim) {
-		this.estadoFim = estadoFim;
+	public void setEstadoFim(State_ endState) {
+		this.endState = endState;
 	}
 
 	/***
-	 * Retorna o id da transição
+	 * Retorn id 
 	 * @return id
 	 */
 	private String getId() {
@@ -129,7 +129,7 @@ public class Transition_ {
 	}
 
 	/***
-	 * Altera o id da transição
+	 * Alter id 
 	 * @param id
 	 */
 	private void setId(String id) {
@@ -137,39 +137,39 @@ public class Transition_ {
 	}
 
 	/***
-	 * Sobreescrita do método equals
-	 * @return se as transições são iguais
+	 * Equals method overwrite
+	 * @return if the transitions are the same
 	 */
 	@Override
 	public boolean equals(Object obj) {
 
 		boolean result;
-		//se a transição é nula, ou de classe diferente
+		//if the transition is null, or of different class
 		if (obj == null || obj.getClass() != getClass()) {
-			//transição não pe igual
+			//transition not is equal
 			result = false;
 		} else {
 			Transition_ t = (Transition_) obj;
-			//retorna se o estado inicial, o rótulo e o estado final são iguais
-			result = t.estadoIni.equals(estadoIni) && t.estadoFim.equals(estadoFim) && rotulo.equals(t.rotulo);
+			//returns if the initial state, label, and final state are equal
+			result = t.iniState.equals(iniState) && t.endState.equals(endState) && label.equals(t.label);
 		}
 		return result;
 	}
 
 	/***
-	 * Enum tipo de transição se é ENTRADA ou SAIDA
-	 * @author camil
+	 * Enum type of transition if it is IN or OUT
+	 * @author camila
 	 *
 	 */
-	public enum TipoTransicao {
-		ENTRADA, SAIDA
+	public enum TransitionType {
+		INPUT, OUTPUT
 	};
 	
 	/***
-	 * Sobreescrita do método toString
+	 * ToString method overwrite
 	 */
 	@Override
 	public String toString() {
-		return "[" + estadoIni + " - " + rotulo + " - " + estadoFim + "] \n";
+		return "[" + iniState + " - " + label + " - " + endState + "] \n";
 	}
 }

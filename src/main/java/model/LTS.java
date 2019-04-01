@@ -12,37 +12,37 @@ import algorithm.Operations;
 
 
 /**
- * Classe LTS
+ * Class LTS
  * 
  * @author Camila
  */
 public class LTS {
-	// lista de estados
+	// list of states
 	protected List<State_> states;
-	// estado inicial
+	// initial state
 	protected State_ initialState;
-	// lista de transições
+	// list of transitions
 	protected List<Transition_> transitions;
-	// lista que corresponde ao alfabeto
+	// list of alphabet
 	protected List<String> alphabet;
 
 	/***
-	 * Construtor com todos os parametros
+	 * Constructor with all parameters
 	 * 
-	 * @param estados
-	 * @param estadoInicial
-	 * @param alfabeto
-	 * @param transicoes
+	 * @param states
+	 * @param initialState
+	 * @param alphabet
+	 * @param transitions
 	 */
-	public LTS(List<State_> estados, State_ estadoInicial, List<String> alfabeto, List<Transition_> transicoes) {
-		this.states = estados;
-		this.transitions = transicoes;
-		this.alphabet = alfabeto;
-		this.initialState = estadoInicial;
+	public LTS(List<State_> states, State_ initialState, List<String> alphabet, List<Transition_> transitions) {
+		this.states = states;
+		this.transitions = transitions;
+		this.alphabet = alphabet;
+		this.initialState = initialState;
 	}
 
 	/***
-	 * Contrutor sem parametros que inicializa as listas e o estado inicial
+	 * Empty contrutor
 	 */
 	public LTS() {
 		this.states = new ArrayList<State_>();
@@ -52,245 +52,242 @@ public class LTS {
 	}
 
 	/**
-	 * Retorna o conjunto de estados do LTS
+	 * returns the set of states
 	 * 
-	 * @return o conjunto de estados
+	 * @return states set of state
 	 */
 	public List<State_> getStates() {
 		return states;
 	}
 
 	/**
-	 * Altera o conjunto de estados
+	 * Alter set of states
 	 * 
-	 * @param o
-	 *            conjunto de estados
+	 * @param states 
+	 *            set of states
 	 * 
 	 */
-	public void setStates(List<State_> estados) {
-		this.states = estados;
+	public void setStates(List<State_> states) {
+		this.states = states;
 	}
 
 	/**
-	 * Retorna o estado inicial do LTS
+	 * return the initial states
 	 * 
-	 * @return o estado inicial do LTS
+	 * @return initialState the initial state
 	 */
 	public State_ getInitialState() {
 		return initialState;
 	}
 
 	/**
-	 * Altera o estado inicial do LTS
+	 * Alter the initial state
 	 * 
-	 * @param estado
-	 *            inicial do LTS
+	 * @param initialState
+	 *            
 	 * 
 	 */
-	public void setInitialState(State_ estadoInicial) {
-		this.initialState = estadoInicial;
+	public void setInitialState(State_ initialState) {
+		this.initialState = initialState;
 	}
 
 	/**
-	 * Retorna a lista de transições do LTS
+	 * Return all transitions
 	 * 
-	 * @return lista de transições
+	 * @return transitions list of transition
 	 */
 	public List<Transition_> getTransitions() {
 		return transitions;
 	}
 
 	/**
-	 * Altera a lista de transições do LTS
+	 * Alter list of transition
 	 * 
-	 * @param lista
-	 *            de transições
+	 * @param transitions list of transition
+	 *            
 	 */
-	public void setTransitions(List<Transition_> transicoes) {
-		this.transitions = transicoes;
+	public void setTransitions(List<Transition_> transitions) {
+		this.transitions = transitions;
 	}
 
 	/**
-	 * Retorna o alfabeto do LTS
+	 * Return alphabet
 	 * 
-	 * @return o alfabeto
+	 * @return alphabet
 	 */
 	public List<String> getAlphabet() {
 		return alphabet;
 	}
 
 	/**
-	 * Altera o alfabeto do LTS
+	 * Alter alphabet
 	 * 
-	 * @param o
-	 *            alfabeto
+	 * @param alphabet
+	 *            
 	 */
-	public void setAlphabet(List<String> alfabeto) {
-		this.alphabet = alfabeto;
+	public void setAlphabet(List<String> alphabet) {
+		this.alphabet = alphabet;
 	}
 
 	/***
-	 * Adiciona o estado recebido de parametro na lista de estados do LTS
-	 * verificando antes se o estado já existe
+	 * Add the received parameter state to the LTS state list
+	 * checking first whether the state already exists
 	 * 
-	 * @param estado
-	 *            a ser adicionado
+	 * @param state
+	 *            
 	 */
-	public void addState(State_ estado) {
-		// verifica se o estado já existe no conjunto de estados do LTS
-		if (!this.states.contains(estado)) {
-			this.states.add(estado);
+	public void addState(State_ state) {
+		// verifies whether the state already exists in the set of LTS states
+		if (!this.states.contains(state)) {
+			this.states.add(state);
 		}
 	}
 
 	/***
-	 * Adiciona a transição a lista de transição, adiciona tambem o rótulo da
-	 * transição na lista de alfabeto
+	 * Add the transition to the transition list, add the
+	 * transition in alphabet list
 	 * 
-	 * @param transicao
+	 * @param transition
 	 */
-	public void addTransition(Transition_ transicao) {
-		// verifica se a transição já existe na lista de transição
-		if (!this.transitions.contains(transicao)) {
-			this.transitions.add(transicao);
+	public void addTransition(Transition_ transition) {
+		// verifies that the transition already exists in the transition list
+		if (!this.transitions.contains(transition)) {
+			this.transitions.add(transition);
 		}
 
-		// adiciona o rótulo na lista de alfabeto
-		this.addToAlphabet(transicao.getRotulo());
+		// add the label in the alphabet list
+		this.addToAlphabet(transition.getRotulo());
 	}
 
 	/***
-	 * Adiciona string ao alfabeto
+	 * Add letter to alphabet
 	 * 
-	 * @param simbolo
-	 *            string a adicionar no alfabeto
+	 * @param letter
+	 *            
 	 */
-	public void addToAlphabet(String simbolo) {
-		// verifica se "a" já existe no alfabeto
-		if (!this.alphabet.contains(simbolo)) {
-			this.alphabet.add(simbolo);
+	public void addToAlphabet(String letter) {
+		// verifies whether letter already exists in the alphabet
+		if (!this.alphabet.contains(letter)) {
+			this.alphabet.add(letter);
 		}
 	}
 
 	
 
 	/***
-	 * Verifica se existe transição partindo do estado inicial e rótulo recebidos de
-	 * parametro, e retorna todos os estado alcançados por essas transições
+	 * Checks whether there is a transition from the initial state and label received from
+	 * parameter, and returns all state reached by these transitions
 	 * 
-	 * @param rotuloEstadoIni
-	 * @param rotuloTransicao
+	 * @param labelIniState
+	 * @param labelTransition
 	 * @return resultado, se existe transição e quais são os estados alcançados por
 	 *         essas transições
 	 */
-	public Result transitionExists(String rotuloEstadoIni, String rotuloTransicao) {
-		// resultado final a ser retornado
-		Result resultado = new Result();
-		// lista de estados alcançados
-		List<State_> estadosFim = new ArrayList<State_>();
-		// percorre todas as transições
+	public Result transitionExists(String labelIniState, String labelTransition) {		
+		Result result = new Result();
+		// list of reached states
+		List<State_> endStates = new ArrayList<State_>();
+	
 		for (Transition_ t : transitions) {
-			// verifica se a transição contem o mesmo o estado inicial da transição e o
-			// rótulo passados de parametro
-			if (t.getEstadoIni().getNome().toString().equals(rotuloEstadoIni.toString())
-					&& t.getRotulo().toString().equals(rotuloTransicao.toString())) {
-				// define que encontrou transição
-				resultado.setFound(true);
-				// adiciona o estado alcançado
-				estadosFim.add(t.getEstadoFim());
+			// verifies whether the transition contains the iniState of the transition and the
+			// label passed parameter
+			if (t.getEstadoIni().getNome().toString().equals(labelIniState.toString())
+					&& t.getRotulo().toString().equals(labelTransition.toString())) {
+				// defines that it has found
+				result.setFound(true);
+				// adds the status reached
+				endStates.add(t.getEstadoFim());
 			}
 		}
 
-		// altera os estados alcançados
-		resultado.setReachedStates(estadosFim);
+		// changes the achieved states
+		result.setReachedStates(endStates);
 
-		// se nenhum estado foi alcançado partindo do estado e do rótulo passado de
-		// parametro
-		if (estadosFim.size() <= 0) {
-			// define que não encontrou nenhum estado
-			resultado.setFound(false);
-			// os estados finais como nulo
-			resultado.reachedStates = null;
+		// if no state has been reached starting from the state and the last label of
+		// parameter
+		if (endStates.size() <= 0) {
+			// define that did not find any status
+			result.setFound(false);
+			// the endStates as null
+			result.reachedStates = null;
 		}
 
-		return resultado;
+		return result;
 	}
 
 	/***
-	 * Recupera as transições que partem do estado passado por parametro
+	 * Retrieves the transitions that depart from the state passed by parameter
 	 * 
-	 * @param estado
-	 * @return lista de transições que partem do estado passado de parametro
+	 * @param state
+	 * @return transitionsOfState 
 	 */
-	public List<Transition_> transitionsByIniState(State_ estado) {
-		// inicia lista
-		List<Transition_> transicoesDoEstado = new ArrayList<Transition_>();
-		// percorre transições
+	public List<Transition_> transitionsByIniState(State_ state) {
+		List<Transition_> transitionsOfState = new ArrayList<Transition_>();
 		for (Transition_ t : transitions) {
-			// verifica se a transição parte do estado passado de parametro
-			if (t.getEstadoIni().getNome().equals(estado.getNome())) {
-				// adiciona a transição a lista
-				transicoesDoEstado.add(t);
+			// verifies that the transition starts from the parameter state
+			if (t.getEstadoIni().getNome().equals(state.getNome())) {
+				// add transition to list
+				transitionsOfState.add(t);
 			}
 		}
 
-		return transicoesDoEstado;
+		return transitionsOfState;
 	}
 
 	/***
-	 * Constroi o automato deterministico subjacente ao LTS
+	 * Constructs the deterministic automaton underlying the LTS
 	 * 
-	 * @return o automato subjacente ao LTS
+	 * @return the automaton underlying the LTS
 	 */
 	public Automaton_ ltsToAutomaton() {
-		// cria automato
+		// create automaton
 		Automaton_ as = new Automaton_();
-		// altera os atributos com base no LTS
+		// changes attributes based on LTS
 		as.setStates(this.states);
 		as.setInitialState(this.initialState);
 		as.setAlphabet(this.alphabet);
 		as.setFinalStates(this.states);
 		as.setTransitions(Operations.processTauTransition(this.transitions));
 
-		// converte o automato em deterministico
+		// convert to deterministic
 		return Operations.convertToDeterministicAutomaton(as);
 	}
 
 	/***
-	 * Sobreescrita do método toString
+	 * ToString Method Overwrite
 	 * 
-	 * @return a string que descreve o LTS
+	 * @return the string describing the LTS
 	 */
 	@Override
 	public String toString() {
 		String s = "";
-		// o estado inicial
+		// initial state
 		s += ("##############################\n");
-		s += ("           Estado Inicial \n");
+		s += ("           Initial State \n");
 		s += ("##############################\n");
 		s += ("[" + initialState.getNome() +"]"+ "\n\n");
 
-		// os estados do LTS
+		// states
 		s += ("##############################\n");
-		s += ("           Estados \n");
+		s += ("           States \n");
 		s += ("##############################\n");
-		s += ("Quantidade: " + this.states.size() + "\n");
+		s += ("Length: " + this.states.size() + "\n");
 		for (State_ e : this.states) {
 			s += ("[" + e.getNome() + "]-");
 		}
 
-		// as transições do LTS
+		// transitions
 		s += ("\n\n##############################\n");
-		s += ("         Transições\n");
+		s += ("         Transitions\n");
 		s += ("##############################\n");
-		s += ("Quantidade: " + this.transitions.size() + "\n");
+		s += ("Length: " + this.transitions.size() + "\n");
 		for (Transition_ t : this.transitions) {
 			s += (t.getEstadoIni().getNome() + " - " + t.getRotulo() + " - " + t.getEstadoFim().getNome() + "\n");
 		}
 
-		// o alfabeto do LTS
+		// alphabet
 		s += ("\n##############################\n");
-		s += ("         Alfabeto\n");
+		s += ("         Alphabet\n");
 		s += ("##############################\n");
 		s+="[";
 		for (String t : this.alphabet) {
@@ -302,51 +299,51 @@ public class LTS {
 	}
 
 	/***
-	 * Classe Resultado utilizada na verificação de que transições existem partindo
-	 * de determinado estado e rótulo
+	 * Class Result used to verify that transitions exist starting from
+	 * of certain state and label
 	 * 
-	 * @author camil
+	 * @author camila
 	 *
 	 */
 	public class Result {
-		// se encontrou transição
+		// if found transition
 		private boolean found;
-		// os estados alcançados pela transição
+		// the states achieved by the transition
 		private List<State_> reachedStates;
 
 		/***
-		 * Alterar se encontrou transição
+		 * Alter found
 		 * 
-		 * @param encontrou
-		 *            transição
+		 * @param found
+		 *            
 		 */
-		public void setFound(boolean encontrou) {
-			this.found = encontrou;
+		public void setFound(boolean found) {
+			this.found = found;
 		}
 
 		/***
-		 * Retorna a lista de estados alcançados
+		 * Return list of reached states 
 		 * 
-		 * @return lista de estados alcançados
+		 * @return reachedStates
 		 */
 		public List<State_> getReachedStates() {
 			return reachedStates;
 		}
 
 		/***
-		 * Altera a lista de estados alcançados
+		 * Alter list of reached states 
 		 * 
-		 * @param lista
-		 *            de estados alcançados
+		 * @param reachedStates
+		 *            
 		 */
-		public void setReachedStates(List<State_> estadosFim) {
-			this.reachedStates = estadosFim;
+		public void setReachedStates(List<State_> reachedStates) {
+			this.reachedStates = reachedStates;
 		}
 
 		/***
-		 * Retorna se encontrou transição
+		 * Return whether found
 		 * 
-		 * @return encontrou transição
+		 * @return found 
 		 */
 		public boolean getFound() {
 			return found;

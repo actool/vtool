@@ -21,20 +21,20 @@ import model.Transition_;
 import util.Constants;
 
 /***
- * Classe que importa e converte arquivo do tipo .graphml(software Yed) em
- * objeto LTS e IOLTS, utiliza a biblioteca tinkerpop
+ * Class import and convert .graphml file (Yed software) into
+  * LTS and IOLTS object, uses the tinkerpop library
  * 
- * @author camil
+ * @author camila
  *
  */
 public class ImportGraphmlFile {
 	/***
-	 * método que usa a biblioteca tinkerpop para ler o arquivo graphml e converte
-	 * em Graph
+	 * method that uses the tinkerpop library to read the graphml file and convert
+	 * in Graph
 	 * 
 	 * @param path
-	 *            diretório do arquivo
-	 * @return graph grafo gerado apartir do arquivo .graphml
+	 *            file directory
+	 * @return graph graph generated from the .graphml file
 	 */
 	public static Graph readGraphmlFile(String path) {
 		Graph graph = new TinkerGraph();
@@ -44,72 +44,72 @@ public class ImportGraphmlFile {
 			is = new BufferedInputStream(new FileInputStream(path));
 			reader.inputGraph(is);
 		} catch (FileNotFoundException e) {
-			System.err.println("Arquivo não encontrado");
+			System.err.println("File not found");
 		} catch (IOException e) {
-			System.err.println("Erro no processamento do arquivo");
+			System.err.println("Error processing file");
 		}
 		return graph;
 	}
 
 	/***
-	 * Converte o arquivo .graphml em LTS, para definir o estado inicial:(i) é
-	 * necessário criar um estado que aponta para o estado inicial e a transição
-	 * deve ser sem rótulo; (ii) o nome do estado inicial deve ser "1". 
-	 * OBS: ao utilizar a ferramenta yed, a cada estado e transição o nome deve ser definido no campo "description" 
+	 * Converts the .graphml file to LTS to set the initial state: (i) is
+	* necessary to create a state that points to the initial state and transition
+	* must be unlabeled; (ii) the initial state name must be "1".
+	* NOTE: When using the yed tool, at each state and transition the name must be defined in the "description"
 	 * 
 	 * @param filePath
-	 * @return o LTS subjacente ao que consta no arquivo
+	 * @return LTS underlying the file
 	 */
-	public static LTS graphToLTS(String filePath) {// (Estado estadoI, String filePath)
-		// lê o arquivo .graphml e converte em Graph(objeto que esta na biblioteca
+	public static LTS graphToLTS(String filePath) {
+		// reads the .graphml file and converts it to Graph (object that is in the library
 		// tinkerpop)
 		Graph graph = ImportGraphmlFile.readGraphmlFile(filePath);
 
 		LTS lts = new LTS();
-		// estado "invisivel" que aponta para o estado inicial, pq o yed não permite
-		// criar uma aresta sem estado inicio e fim
-		State_ estadoInvisivel = null;
-
-		// percorre as transições
+		// state "invisible" that points to the initial state, because yed does not allow
+		// create a stateless edge start and end
+		State_ invisibleState = null;
+		String label;
+		State_ iniState,endState; 
 		for (Edge edge : graph.getEdges()) {
-			String rotulo = edge.getProperty("description").toString();
-			State_ estadoIni = new State_(edge.getVertex(Direction.OUT).getProperty("description").toString());
-			State_ estadoFim = new State_(edge.getVertex(Direction.IN).getProperty("description").toString());
+			 label = edge.getProperty("description").toString();
+			 iniState = new State_(edge.getVertex(Direction.OUT).getProperty("description").toString());
+			 endState = new State_(edge.getVertex(Direction.IN).getProperty("description").toString());
 
-			// cria uma nova transição com os dados obtidos com a biblioteca de leitura de
+			// creates a new transition with the data retrieved from the
 			// graphml
-			Transition_ transicao = new Transition_(edge.getId().toString(), estadoIni, rotulo, estadoFim);
-			// adiciona os estados
-			lts.addState(estadoIni);
-			lts.addState(estadoFim);
+			Transition_ transicao = new Transition_(edge.getId().toString(), iniState, label, endState);
+			// add the states
+			lts.addState(iniState);
+			lts.addState(endState);
 
-			// verifica se o rótulo tem informação (se não é o edge que aponta para o estado
-			// inicial)
-			// adiciona a transição
-			if (!rotulo.equals("")) {
+			// check if the label has information (if it is not the edge that points to the state
+			// initial)
+			// add transition
+			if (!label.equals("")) {
 				lts.addTransition(transicao);
 			}
 
-			// adiciona o alfabeto
-			if (!lts.getAlphabet().contains(rotulo) && !rotulo.equals("")) {
-				lts.addToAlphabet(rotulo);
+			// add alphabet
+			if (!lts.getAlphabet().contains(label) && !label.equals("")) {
+				lts.addToAlphabet(label);
 			}
 
-			// edge sem rotulo que aponta para o estado inicial
-			if (rotulo.equals("")) {
-				// guarda o estado a ser removido, pois é o estado invisivel que aponta para o
-				// estado inicial
-				estadoInvisivel = estadoIni;
-				// define o estado inicial, como o que é apontado pela transição sem rótulo
-				lts.setInitialState(estadoFim);
+			// edge without label that points to the initial state
+			if (label.equals("")) {
+				// save the state to be removed, since it is the invisible state that points to the
+				// initial state
+				invisibleState = iniState;
+				// defines the initial state, as what is pointed out by the unlabeled transition
+				lts.setInitialState(endState);
 			}
 
 		}
 
-		// se o grafo não usa uma seta pra indicar o estado inicial
-		// ele usa o rótulo "1" como nome do estado
+		// if the graph does not use an arrow to indicate the initial state
+		// it uses the label "1" as the state name
 		if (lts.getInitialState() == null) {
-			// verifica dentre os nós qual é o estado inicial
+			// verifies among the nodes what is the initial state
 			for (Vertex vertex : graph.getVertices()) {
 				State_ e = new State_(vertex.getProperty("description").toString());// , vertex.getId().toString()
 				if (e.getNome().equals("1")) {
@@ -117,55 +117,54 @@ public class ImportGraphmlFile {
 				}
 			}
 		} else {
-			// se o grafo foi criado com a seta apontando para o estado inicial
-			// remove-se o estado invisivel
-			lts.getStates().remove(estadoInvisivel);
+			// if the graph was created with the arrow pointing to the initial state
+			// removes invisible state
+			lts.getStates().remove(invisibleState);
 		}
 
 		return lts;
 	}
 	
 	/***
-	 * Converte o iolts do arquivo .graphml em objeto IOLTS
-	 * @param pathFile diretório do arquivo
-	 * @param parametroEntradaSaida se as entradas e saídas estão diferenciadas pelos simbolos ?/!
-	 * @param entradas o alfabeto de entrada
-	 * @param saidas o alfabeto de saída
-	 * @return IOLTS adjacente ao que consta no .aut
+	 * Converts the iolts from the .graphml file to an IOLTS object
+	 * @param pathFile file directory
+	 * @param inputOutputParam if the inputs and outputs are differentiated by the symbols? /!
+	 * @param inputs the input alphabet
+	 * @param outputs the output alphabet
+	 * @return IOLTS underlying the .aut
 	 */
-	public static IOLTS graphToIOLTS(String pathFile, boolean parametroEntradaSaida, ArrayList<String> entradas,
-			ArrayList<String> saidas) {
-		//converte o .graphml em LTS
+	public static IOLTS graphToIOLTS(String pathFile, boolean inputOutputParam, ArrayList<String> inputs,
+			ArrayList<String> outputs) {
+		//convert .graphml into LTS
 		LTS lts = graphToLTS(pathFile);
-		//cria um novo IOLTS com base no LTS
+		//creates a new LTS based IOLTS
 		IOLTS iolts = new IOLTS(lts);
 
 		ArrayList<String> e = new ArrayList<String>();
 		ArrayList<String> s = new ArrayList<String>();
 
-		//altera o conjunto de entradas e saídas
-		//se os rótulos de entrada e saída são diferenciados pelos simbolos ?/!
-		if (!parametroEntradaSaida) {
-			//percorre todo o alfabeto do LTS
+		// changes the set of inputs and outputs
+		// if the input and output labels are differentiated by the symbols? /!
+		if (!inputOutputParam) {
 			for (String a : lts.getAlphabet()) {
-				//se começa com ! então é simbolo de saida
+				//if it starts with ! so it's an exit symbol
 				if (a.charAt(0) == Constants.OUTPUT_TAG) {
 					s.add(a);
 				}
 				
-				//se começa com ? então é simbolo de entrada
+				//if it starts with ? so it's an entrance symbol
 				if (a.charAt(0) == Constants.INPUT_TAG) {
 					e.add(a);
 				}
 			}
 			
-			//adicionar entradas e saídas no IOLTS
+			//add IOLTS inputs and outputs
 			iolts.setInputs(e);
 			iolts.setOutputs(s);
-		} else {//se os simbolos !/? não diferenciam
-			//o conjunto de entrada e saída são os passados por parametro
-			iolts.setInputs(entradas);
-			iolts.setOutputs(saidas);
+		} else {//if the symbols do not differentiate
+			//the set of input and output are those passed by parameter
+			iolts.setInputs(inputs);
+			iolts.setOutputs(outputs);
 		}
 
 		return iolts;

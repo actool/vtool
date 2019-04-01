@@ -11,7 +11,7 @@ import java.util.List;
 import org.apache.commons.collections.ListUtils;
 
 /**
- * Classe IOLTS extende da classe LTS
+ * Class IOLTS 
  * @author Camila
  */
 public class IOLTS extends LTS{
@@ -19,16 +19,16 @@ public class IOLTS extends LTS{
     private List<String> outputs;
     
     /***
-     * Construtor vazio
+     * Empty constructor
      */
     public IOLTS() {}
     
     /***
-     * Construtor recebe um LTS e altera os atributos do IOLTS
+     * Constructor receives an LTS and changes the attributes of the IOLTS
      * @param lts
      */
     public IOLTS(LTS lts) {
-    	//chama os métodos da super classe para inicializar os parametros
+    	//calls super-class methods to initialize the parameters
     	this.setInitialState(lts.getInitialState());
     	this.setStates(lts.getStates());
     	this.setTransitions(lts.getTransitions());
@@ -36,30 +36,30 @@ public class IOLTS extends LTS{
     }
     
     /**
-     * Retorna os rótulos de entradas
-     * @return os rotulos de Entrada
+     * Returns the inputs label
+     * @return input label
      */
     public List<String> getInputs() {
         return inputs;
     }
 
-    /** Altera os rótulos de entrada
-     * @param rotulosEntrada o conjunto de rótulos de entrada
+    /** set input labels
+     * @param input set of input labels
      */
-    public void setInputs(List<String> rotulosEntrada) {
-        this.inputs = rotulosEntrada;
+    public void setInputs(List<String> input) {
+        this.inputs = input;
     }
 
     /**
-     * Retorna o conjunto de rótulos de saída
-     * @return rotulosSaida o conjunto de rótulos de saída
+     * return the set of output label
+     * @return outputs the set of output labels
      */
     public List<String> getOutputs() {
         return outputs;
     }
 
-    /** Altera o conjunto de rótulos de saída
-     * @param rotulosSaida  o conjunto de rótulos de saída
+    /** Alter the set of output labels
+     * @param outputs  the set of output labels
      */
     public void setOutputs(List<String> rotulosSaida) {
         this.outputs = rotulosSaida;
@@ -67,49 +67,48 @@ public class IOLTS extends LTS{
     
 
     /***
-     * Constroi um automato apartir do IOLTS
-     * @return o automato subjacente ao IOLTS
+     * builds the underlying LTS from IOLTS
+     * @return the underlying LTS
      */
     public LTS toLTS() {
-    	//no automato não há distinção entre rótulos de entrada e de saída, portanto une-se os rótulos de entrada e de saída para formar o alfabeto 
+    	//in automato there is no distinction between input and output labels, so the input and output labels are joined to form the alphabet
 		List<String> alfabeto = ListUtils.union(this.inputs, this.outputs);
-		// instancia um LTS com os dados do IOLTS
-		LTS lts = new LTS(this.getStates(), this.getInitialState(),alfabeto,this.getTransitions());	
-		//constroi o automato apartir do LTS
+		// Instances an LTS with IOLTS atributtes
+		LTS lts = new LTS(this.getStates(), this.getInitialState(),alfabeto,this.getTransitions());			
 		return lts;
 	}
     
     
     /***
-     * Constroi um automato apartir do IOLTS
-     * @return o automato subjacente ao IOLTS
+     * builds the underlying automaton from IOLTS
+     * @return the underlying automaton
      */
     public Automaton_ ioltsToAutomaton() {    	
-		//constroi o automato apartir do LTS
+		//build automato from LTS
 		return toLTS().ltsToAutomaton();
 	}
     
     /***
-     * Sobreescrita do método toString, com a separação entre o rótulo de entrada e de saída
-     * @return a string que descreve o IOLTS
+     * Overwriting the toString method, with the separation between the input and output label
+     * @return the string describing the IOLTS
      */
     @Override
     public String toString() {
-    	//chama o toString do LTS
+    	//calls LTS toString
     	String s = super.toString();
-    	//adiciona a descrição dos rótulo de entrada
+    	//add description of input labels
     	s+=("##############################\n");
-		s+=("           Entradas \n");
+		s+=("           Inputs \n");
 		s+=("##############################\n");
-		s+=("Quantidade: " + this.getInputs().size() + "\n");
+		s+=("length: " + this.getInputs().size() + "\n");
 		for (String e : this.getInputs()) {
 			s+=("[" + e + "] - ");
 		}
-		//adiciona a descrição dos rótulo de saída
+		//add description of output labels
 		s+=("##############################\n");
-		s+=("           Saídas \n");
+		s+=("           Outputs \n");
 		s+=("##############################\n");
-		s+=("Quantidade: " + this.getOutputs().size() + "\n");
+		s+=("length: " + this.getOutputs().size() + "\n");
 		for (String e : this.getOutputs()) {
 			s+=("[" + e + "] - ");
 		}
@@ -117,27 +116,26 @@ public class IOLTS extends LTS{
     }
     
     /***
-     * 
-     * @param e estado
-     * @return lista de rotulos de saída do estado recebido por parâmetro
+     * return list of output labels from state received per parameter
+     * @param e state
+     * @return list of string containing  output labels 
      */
 	public List<String> statesOutputs(State_ e) {
-		List<String> rotulos = new ArrayList<String>();		
+		List<String> label = new ArrayList<String>();		
 		
 		if(e != null) {
-			// percorre todas as transições
 			for (Transition_ t : transitions) {
-				// verifica se a transição contem o mesmo o estado inicial da transição e o
-				// rótulo passados de parametro
+				// checks whether the transition contains the initial state of the transition and the
+				// output label 
 				if (t.getEstadoIni().getNome().toString().equals(e.getNome().toString())
 						&& outputs.contains(t.getRotulo())) {
-					rotulos.add(t.getRotulo());				
+					label.add(t.getRotulo());				
 				}
 			}
 		}
 		
 		
-		return rotulos;
+		return label;
 	}
     
 }

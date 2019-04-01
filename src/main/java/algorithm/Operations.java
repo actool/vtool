@@ -553,7 +553,7 @@ public class Operations {
 		List<State_> stateToVisit = new ArrayList<State_>();
 		stateToVisit.add(a.getInitialState());
 		a.getStates().forEach(p -> p.setInfo(null));
-		a.getStates().forEach(p -> p.setVisitado(false));
+		a.getStates().forEach(p -> p.setVisited(false));
 
 		State_ endState, iniState;
 		String[] aux;
@@ -563,8 +563,8 @@ public class Operations {
 		while (!stateToVisit.isEmpty()) {
 			current = stateToVisit.remove(0);
 			current = a.getStates().stream().filter(x -> x.equals(current)).findFirst().orElse(null);
-			if (!current.isVisitado()) {
-				current.setVisitado(true);
+			if (!current.isVisited()) {
+				current.setVisited(true);
 				List<Transition_> transicoes = a.transitionsByIniState(current);
 				for (Transition_ t : transicoes) {
 					news = new ArrayList<String>();
@@ -595,7 +595,7 @@ public class Operations {
 						endState.setInfo(word);
 					}
 
-					if (!endState.isVisitado()) {
+					if (!endState.isVisited()) {
 						stateToVisit.add(endState);
 					}
 

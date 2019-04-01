@@ -2,48 +2,30 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import algorithm.*;
-import dk.brics.automaton.Automaton;
 import dk.brics.automaton.RegExp;
 import model.*;
 import parser.ImportAutFile;
-
 import java.awt.GridLayout;
 import java.awt.TextArea;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-
-import java.awt.FlowLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Font;
-import javax.swing.JTextArea;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
@@ -51,36 +33,33 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Color;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
-import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
 public class ConformanceView extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField tfImplementacao;
-	private JTextField tfEspecificacao;
-	private JTextField tfLinguagemD;
-	private JTextField tfLinguagemF;
-	private JTextField tfResultado;
-	private JButton btnDetalhe;
+	private JTextField tfImplementation;
+	private JTextField tfSpecification;
+	private JTextField tfD;
+	private JTextField tfF;
+	private JTextField tfVeredict;
+	private JButton btnTestCases;
 
-	private String pathImplementação2;
-	private String pathEspecificacao2;
-	private String caminhosFalha;
+	private String pathImplementation;
+	private String pathSpecification;
+	private String failPath;
 	JFileChooser fc = new JFileChooser();
-	private JTextField tfEntrada;
-	private JTextField tfSaida;
+	private JTextField tfInput;
+	private JTextField tfOutput;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
-	private String tipoRotuloDefinido = "?in, !out";
-	private String tipoRotuloManual = "define input and output manually";
+	private String typeAutomaticLabel = "?in, !out";
+	private String typeManualLabel = "define input and output manually";
 
 	/**
 	 * Launch the application.
@@ -100,41 +79,41 @@ public class ConformanceView extends JFrame {
 	}
 
 	public void configFilterFile() {
-		FileFilter autFilter = new FileTypeFilter(".aut", "Arquivos Aut");
+		FileFilter autFilter = new FileTypeFilter(".aut", "Aut Files");
 		fc.addChoosableFileFilter(autFilter);
 		fc.setAcceptAllFileFilterUsed(false);
 	}
 
-	public void getImplementacaoLingPath() {
-		caminhosFalha = "";
-		tfResultado.setText("");
-		btnDetalhe.setVisible(false);
+	public void getImplementationPath() {
+		failPath = "";
+		tfVeredict.setText("");
+		btnTestCases.setVisible(false);
 		try {
 			configFilterFile();
 			fc.showOpenDialog(ConformanceView.this);
-			tfImplementacao.setText(fc.getSelectedFile().getName());
-			pathImplementação2 = fc.getSelectedFile().getAbsolutePath();
+			tfImplementation.setText(fc.getSelectedFile().getName());
+			pathImplementation = fc.getSelectedFile().getAbsolutePath();
 			fc.setCurrentDirectory(fc.getSelectedFile().getParentFile());
 		} catch (Exception e) {
 
 		}
 	}
 
-	public void getEspecificacaoLingPath() {
-		caminhosFalha = "";
-		tfResultado.setText("");
-		btnDetalhe.setVisible(false);
+	public void getSpecificationPath() {
+		failPath = "";
+		tfVeredict.setText("");
+		btnTestCases.setVisible(false);
 		try {
 			configFilterFile();
 			fc.showOpenDialog(ConformanceView.this);
-			tfEspecificacao.setText(fc.getSelectedFile().getName());
-			pathEspecificacao2 = fc.getSelectedFile().getAbsolutePath();
+			tfSpecification.setText(fc.getSelectedFile().getName());
+			pathSpecification = fc.getSelectedFile().getAbsolutePath();
 		} catch (Exception e) {
 		}
 
 	}
 
-	public boolean expressaoRegularValida(String exp) {
+	public boolean regexIsValid(String exp) {
 		try {
 			RegExp regExp = new RegExp(exp);
 			regExp.toAutomaton();
@@ -149,7 +128,7 @@ public class ConformanceView extends JFrame {
 	 */
 	public ConformanceView() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\camil\\Google Drive\\UEL\\svn\\mbt\\camila_mestrado\\img\\icon.PNG"));
-		setTitle("VTool");
+		setTitle("VTool\r\n");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 556, 625);
 		contentPane = new JPanel();
@@ -173,50 +152,50 @@ public class ConformanceView extends JFrame {
 		tabbedPane.addTab("Conformance Verification", null, panel_2, null);
 		panel_2.setLayout(null);
 
-		JLabel lblNewLabel_1 = new JLabel("Implementation");
-		lblNewLabel_1.setBackground(SystemColor.windowBorder);
-		lblNewLabel_1.setForeground(SystemColor.controlHighlight);
-		lblNewLabel_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblNewLabel_1.setBounds(20, 190, 157, 22);
-		panel_2.add(lblNewLabel_1);
+		JLabel lblImplementation = new JLabel("Implementation");
+		lblImplementation.setBackground(SystemColor.windowBorder);
+		lblImplementation.setForeground(SystemColor.controlHighlight);
+		lblImplementation.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblImplementation.setBounds(20, 190, 157, 22);
+		panel_2.add(lblImplementation);
 
-		JLabel lblEspecificao = new JLabel("Model");
-		lblEspecificao.setForeground(SystemColor.controlHighlight);
-		lblEspecificao.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblEspecificao.setBounds(21, 247, 99, 14);
-		panel_2.add(lblEspecificao);
+		JLabel lblSpecification = new JLabel("Model");
+		lblSpecification.setForeground(SystemColor.controlHighlight);
+		lblSpecification.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblSpecification.setBounds(21, 247, 99, 14);
+		panel_2.add(lblSpecification);
 
-		tfImplementacao = new JTextField();
-		tfImplementacao.setForeground(SystemColor.window);
-		tfImplementacao.setBackground(SystemColor.windowBorder);//SystemColor.control
-		tfImplementacao.setToolTipText("aceita somente arquivos .aut");
-		tfImplementacao.setFont(new Font("Dialog", Font.BOLD, 13));
-		tfImplementacao.addMouseListener(new MouseAdapter() {
+		tfImplementation = new JTextField();
+		tfImplementation.setForeground(SystemColor.window);
+		tfImplementation.setBackground(SystemColor.windowBorder);
+		tfImplementation.setToolTipText("aceita somente arquivos .aut");
+		tfImplementation.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfImplementation.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				getImplementacaoLingPath();
+				getImplementationPath();
 			}
 		});
-		tfImplementacao.setColumns(10);
-		tfImplementacao.setBounds(20, 211, 440, 26);			
-		tfImplementacao.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
-		panel_2.add(tfImplementacao);
+		tfImplementation.setColumns(10);
+		tfImplementation.setBounds(20, 211, 440, 26);			
+		tfImplementation.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
+		panel_2.add(tfImplementation);
 
-		tfEspecificacao = new JTextField();
-		tfEspecificacao.setForeground(SystemColor.control);
-		tfEspecificacao.setBackground(SystemColor.windowBorder);
-		tfEspecificacao.setToolTipText("aceita somente arquivos .aut");
-		tfEspecificacao.setFont(new Font("Dialog", Font.BOLD, 13));
-		tfEspecificacao.addMouseListener(new MouseAdapter() {
+		tfSpecification = new JTextField();
+		tfSpecification.setForeground(SystemColor.control);
+		tfSpecification.setBackground(SystemColor.windowBorder);
+		tfSpecification.setToolTipText("accepts only .aut files");
+		tfSpecification.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfSpecification.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				getEspecificacaoLingPath();
+				getSpecificationPath();
 			}
 		});
-		tfEspecificacao.setColumns(10);
-		tfEspecificacao.setBounds(20, 261, 443, 26);
-		tfEspecificacao.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
-		panel_2.add(tfEspecificacao);
+		tfSpecification.setColumns(10);
+		tfSpecification.setBounds(20, 261, 443, 26);
+		tfSpecification.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
+		panel_2.add(tfSpecification);
 
 		JLabel lblD = new JLabel("Language D");
 		lblD.setForeground(SystemColor.controlHighlight);
@@ -230,53 +209,53 @@ public class ConformanceView extends JFrame {
 		lblF.setBounds(21, 364, 79, 14);
 		panel_2.add(lblF);
 
-		tfLinguagemD = new JTextField();
-		tfLinguagemD.setForeground(SystemColor.control);
-		tfLinguagemD.setBackground(SystemColor.windowBorder);
-		tfLinguagemD.addKeyListener(new KeyAdapter() {
+		tfD = new JTextField();
+		tfD.setForeground(SystemColor.control);
+		tfD.setBackground(SystemColor.windowBorder);
+		tfD.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				caminhosFalha = "";
-				tfResultado.setText("");
-				btnDetalhe.setVisible(false);
+				failPath = "";
+				tfVeredict.setText("");
+				btnTestCases.setVisible(false);
 			}
 		});
-		tfLinguagemD.setFont(new Font("Dialog", Font.BOLD, 13));
-		tfLinguagemD.setBounds(21, 315, 487, 26);
-		tfLinguagemD.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
-		panel_2.add(tfLinguagemD);
-		tfLinguagemD.setColumns(10);
+		tfD.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfD.setBounds(21, 315, 487, 26);
+		tfD.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
+		panel_2.add(tfD);
+		tfD.setColumns(10);
 
-		tfLinguagemF = new JTextField();
-		tfLinguagemF.setForeground(SystemColor.control);
-		tfLinguagemF.setBackground(SystemColor.windowBorder);
-		tfLinguagemF.addKeyListener(new KeyAdapter() {
+		tfF = new JTextField();
+		tfF.setForeground(SystemColor.control);
+		tfF.setBackground(SystemColor.windowBorder);
+		tfF.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				caminhosFalha = "";
-				tfResultado.setText("");
-				btnDetalhe.setVisible(false);
+				failPath = "";
+				tfVeredict.setText("");
+				btnTestCases.setVisible(false);
 			}
 		});
-		tfLinguagemF.setFont(new Font("Dialog", Font.BOLD, 13));
-		tfLinguagemF.setBounds(21, 378, 487, 26);
-		tfLinguagemF.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
-		panel_2.add(tfLinguagemF);
-		tfLinguagemF.setColumns(10);
+		tfF.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfF.setBounds(21, 378, 487, 26);
+		tfF.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
+		panel_2.add(tfF);
+		tfF.setColumns(10);
 
-		tfResultado = new JTextField();
-		tfResultado.setFont(new Font("Dialog", Font.BOLD, 13));
-		tfResultado.setEnabled(false);
-		tfResultado.setBounds(20, 494, 285, 36);
-		panel_2.add(tfResultado);
-		tfResultado.setColumns(10);
+		tfVeredict = new JTextField();
+		tfVeredict.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfVeredict.setEnabled(false);
+		tfVeredict.setBounds(20, 494, 285, 36);
+		panel_2.add(tfVeredict);
+		tfVeredict.setColumns(10);
 
-		JButton btnVerificarConformidadeLinguagem = new JButton("Verify conformance");
-		btnVerificarConformidadeLinguagem.setBackground(new Color(192, 192, 192));
-		btnVerificarConformidadeLinguagem.setFont(new Font("Dialog", Font.BOLD, 13));
+		JButton btnVerifyConformance = new JButton("Verify conformance");
+		btnVerifyConformance.setBackground(new Color(192, 192, 192));
+		btnVerifyConformance.setFont(new Font("Dialog", Font.BOLD, 13));
 
-		btnVerificarConformidadeLinguagem.setBounds(315, 430, 193, 45);
-		panel_2.add(btnVerificarConformidadeLinguagem);
+		btnVerifyConformance.setBounds(315, 430, 193, 45);
+		panel_2.add(btnVerifyConformance);
 
 		JLabel lblResult = new JLabel("Veredict");
 		lblResult.setForeground(SystemColor.controlHighlight);
@@ -284,32 +263,31 @@ public class ConformanceView extends JFrame {
 		lblResult.setBounds(20, 468, 102, 26);
 		panel_2.add(lblResult);
 
-		JLabel lblexpressoRegular = new JLabel("(Regex: +,*,())");
-		lblexpressoRegular.setForeground(SystemColor.scrollbar);
-		lblexpressoRegular.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblexpressoRegular.setBounds(432, 333, 79, 36);
-		panel_2.add(lblexpressoRegular);
+		JLabel lblRegexD = new JLabel("(Regex: +,*,())");
+		lblRegexD.setForeground(SystemColor.scrollbar);
+		lblRegexD.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblRegexD.setBounds(432, 333, 79, 36);
+		panel_2.add(lblRegexD);
 
-		JLabel lblexpressoRegular_1 = new JLabel("(Regex: +,*,())");
-		lblexpressoRegular_1.setForeground(SystemColor.scrollbar);
-		lblexpressoRegular_1.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblexpressoRegular_1.setBounds(432, 393, 93, 36);
-		panel_2.add(lblexpressoRegular_1);
+		JLabel lblRegexF = new JLabel("(Regex: +,*,())");
+		lblRegexF.setForeground(SystemColor.scrollbar);
+		lblRegexF.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblRegexF.setBounds(432, 393, 93, 36);
+		panel_2.add(lblRegexF);
 
-		btnDetalhe = new JButton("Show test cases");
-		btnDetalhe.setBackground(SystemColor.activeCaptionBorder);
-		btnDetalhe.setVisible(false);
-		btnDetalhe.addMouseListener(new MouseAdapter() {
+		btnTestCases = new JButton("Show test cases");
+		btnTestCases.setBackground(SystemColor.activeCaptionBorder);
+		btnTestCases.setVisible(false);
+		btnTestCases.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				JFrame frame = new JFrame();
 				frame.setVisible(true);
 				frame.setSize(500, 500);
 				JPanel panel = new JPanel();
-				TextArea ta = new TextArea(25, 60);
-				//caminhosFalha = (caminhosFalha.equals("")?"Test suite is empty, no fault found!":caminhosFalha);
+				TextArea ta = new TextArea(25, 60);				
 				
-				ta.setText(caminhosFalha);
+				ta.setText(failPath);
 				JScrollPane scrolltxt = new JScrollPane(ta);
 				scrolltxt.setBounds(3, 3, 400, 400);
 
@@ -317,120 +295,120 @@ public class ConformanceView extends JFrame {
 				frame.getContentPane().add(panel);
 			}
 		});
-		btnDetalhe.setFont(new Font("Dialog", Font.BOLD, 13));
-		btnDetalhe.setBounds(315, 494, 193, 36);
-		panel_2.add(btnDetalhe);
+		btnTestCases.setFont(new Font("Dialog", Font.BOLD, 13));
+		btnTestCases.setBounds(315, 494, 193, 36);
+		panel_2.add(btnTestCases);
 
-		JButton button = new JButton("");
-		button.setBackground(SystemColor.activeCaptionBorder);
-		button.addMouseListener(new MouseAdapter() {
+		JButton btnFolderImp = new JButton("");
+		btnFolderImp.setBackground(SystemColor.activeCaptionBorder);
+		btnFolderImp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				getImplementacaoLingPath();
+				getImplementationPath();
 			}
 		});
-		button.setIcon(
+		btnFolderImp.setIcon(
 				new ImageIcon("C:\\Users\\camil\\Google Drive\\UEL\\svn\\mbt\\camila_mestrado\\img\\folder.png"));
-		button.setBounds(462, 211, 39, 28);
-		panel_2.add(button);
+		btnFolderImp.setBounds(462, 211, 39, 28);
+		panel_2.add(btnFolderImp);
 
-		JButton button_1 = new JButton("");
-		button_1.setBackground(SystemColor.activeCaptionBorder);
-		button_1.addMouseListener(new MouseAdapter() {
+		JButton btnFolderSpec = new JButton("");
+		btnFolderSpec.setBackground(SystemColor.activeCaptionBorder);
+		btnFolderSpec.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				getEspecificacaoLingPath();
+				getSpecificationPath();
 			}
 		});
-		button_1.setIcon(
+		btnFolderSpec.setIcon(
 				new ImageIcon("C:\\Users\\camil\\Google Drive\\UEL\\svn\\mbt\\camila_mestrado\\img\\folder.png"));
-		button_1.setBounds(462, 259, 39, 28);
-		panel_2.add(button_1);
+		btnFolderSpec.setBounds(462, 259, 39, 28);
+		panel_2.add(btnFolderSpec);
 
-		JLabel lblSaida = new JLabel("Output");
-		lblSaida.setForeground(SystemColor.controlHighlight);
-		lblSaida.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblSaida.setBounds(265, 121, 48, 22);
-		lblSaida.setVisible(false);
-		panel_2.add(lblSaida);
+		JLabel lblOutput = new JLabel("Output");
+		lblOutput.setForeground(SystemColor.controlHighlight);
+		lblOutput.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblOutput.setBounds(265, 121, 48, 22);
+		lblOutput.setVisible(false);
+		panel_2.add(lblOutput);
 
-		JLabel lblModelo = new JLabel("Kind of models");
-		lblModelo.setForeground(SystemColor.controlHighlight);
-		lblModelo.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblModelo.setBounds(21, 64, 104, 22);
-		panel_2.add(lblModelo);
+		JLabel lblKinfModel = new JLabel("Kind of models");
+		lblKinfModel.setForeground(SystemColor.controlHighlight);
+		lblKinfModel.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblKinfModel.setBounds(21, 64, 104, 22);
+		panel_2.add(lblKinfModel);
 
-		JLabel lblEntrada = new JLabel("Input");
-		lblEntrada.setForeground(SystemColor.controlHighlight);
-		lblEntrada.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblEntrada.setBounds(21, 121, 54, 22);
-		lblEntrada.setVisible(false);
-		panel_2.add(lblEntrada);
+		JLabel lblInput = new JLabel("Input");
+		lblInput.setForeground(SystemColor.controlHighlight);
+		lblInput.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblInput.setBounds(21, 121, 54, 22);
+		lblInput.setVisible(false);
+		panel_2.add(lblInput);
 
-		tfEntrada = new JTextField();
-		tfEntrada.setForeground(SystemColor.control);
-		tfEntrada.setBackground(SystemColor.windowBorder);
-		tfEntrada.addKeyListener(new KeyAdapter() {
+		tfInput = new JTextField();
+		tfInput.setForeground(SystemColor.control);
+		tfInput.setBackground(SystemColor.windowBorder);
+		tfInput.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				caminhosFalha = "";
-				tfResultado.setText("");
-				btnDetalhe.setVisible(false);
+				failPath = "";
+				tfVeredict.setText("");
+				btnTestCases.setVisible(false);
 			}
 		});
-		tfEntrada.setToolTipText("");
-		tfEntrada.setFont(new Font("Dialog", Font.BOLD, 13));
-		tfEntrada.setColumns(10);
-		tfEntrada.setBounds(21, 141, 234, 22);
-		tfEntrada.setVisible(false);
+		tfInput.setToolTipText("");
+		tfInput.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfInput.setColumns(10);
+		tfInput.setBounds(21, 141, 234, 22);
+		tfInput.setVisible(false);
 
-		tfEntrada.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
-		panel_2.add(tfEntrada);
+		tfInput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
+		panel_2.add(tfInput);
 
-		tfSaida = new JTextField();
-		tfSaida.setForeground(SystemColor.control);
-		tfSaida.setBackground(SystemColor.windowBorder);
-		tfSaida.addKeyListener(new KeyAdapter() {
+		tfOutput = new JTextField();
+		tfOutput.setForeground(SystemColor.control);
+		tfOutput.setBackground(SystemColor.windowBorder);
+		tfOutput.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				caminhosFalha = "";
-				tfResultado.setText("");
-				btnDetalhe.setVisible(false);
+				failPath = "";
+				tfVeredict.setText("");
+				btnTestCases.setVisible(false);
 			}
 		});
-		tfSaida.setFont(new Font("Dialog", Font.BOLD, 13));
-		tfSaida.setColumns(10);
-		tfSaida.setBounds(265, 141, 236, 22);
-		tfSaida.setVisible(false);
-		tfSaida.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
-		panel_2.add(tfSaida);
+		tfOutput.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfOutput.setColumns(10);
+		tfOutput.setBounds(265, 141, 236, 22);
+		tfOutput.setVisible(false);
+		tfOutput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
+		panel_2.add(tfOutput);
 
-		JLabel lblLegendaEnt = new JLabel("(label split by comma)");
-		lblLegendaEnt.setBackground(SystemColor.windowBorder);
-		lblLegendaEnt.setForeground(SystemColor.scrollbar);
-		lblLegendaEnt.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblLegendaEnt.setBounds(126, 165, 129, 14);
-		lblLegendaEnt.setVisible(false);
-		panel_2.add(lblLegendaEnt);
+		JLabel lblLabelInp = new JLabel("(label split by comma)");
+		lblLabelInp.setBackground(SystemColor.windowBorder);
+		lblLabelInp.setForeground(SystemColor.scrollbar);
+		lblLabelInp.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblLabelInp.setBounds(126, 165, 129, 14);
+		lblLabelInp.setVisible(false);
+		panel_2.add(lblLabelInp);
 
-		JLabel lblLegendaSaida = new JLabel("(label split by comma)");
-		lblLegendaSaida.setBackground(SystemColor.windowBorder);
-		lblLegendaSaida.setForeground(SystemColor.scrollbar);
-		lblLegendaSaida.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblLegendaSaida.setBounds(380, 165, 164, 14);
-		lblLegendaSaida.setVisible(false);
-		panel_2.add(lblLegendaSaida);
+		JLabel lblLabelOut = new JLabel("(label split by comma)");
+		lblLabelOut.setBackground(SystemColor.windowBorder);
+		lblLabelOut.setForeground(SystemColor.scrollbar);
+		lblLabelOut.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblLabelOut.setBounds(380, 165, 164, 14);
+		lblLabelOut.setVisible(false);
+		panel_2.add(lblLabelOut);
 
 		JList list = new JList();
 		list.setBounds(371, 25, 1, 1);
 		panel_2.add(list);
 
-		JLabel lblTipoConformidade = new JLabel("Conformance");
-		lblTipoConformidade.setForeground(SystemColor.controlHighlight);
-		lblTipoConformidade.setToolTipText("");
-		lblTipoConformidade.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 13));
-		lblTipoConformidade.setBounds(21, 18, 129, 22);
-		panel_2.add(lblTipoConformidade);
+		JLabel lblConformanceType = new JLabel("Conformance");
+		lblConformanceType.setForeground(SystemColor.controlHighlight);
+		lblConformanceType.setToolTipText("");
+		lblConformanceType.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 13));
+		lblConformanceType.setBounds(21, 18, 129, 22);
+		panel_2.add(lblConformanceType);
 
 		JLabel lblRotulo = new JLabel("Label");
 		lblRotulo.setForeground(SystemColor.controlHighlight);
@@ -439,77 +417,69 @@ public class ConformanceView extends JFrame {
 		lblRotulo.setVisible(false);
 		panel_2.add(lblRotulo);
 
-		JComboBox cbRotulo = new JComboBox();
-		cbRotulo.setForeground(SystemColor.control);
-		cbRotulo.setBackground(SystemColor.windowBorder);
-		cbRotulo.addItemListener(new ItemListener() {
+		JComboBox cbLabel = new JComboBox();
+		cbLabel.setForeground(SystemColor.control);
+		cbLabel.setBackground(SystemColor.windowBorder);
+		cbLabel.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				if (arg0.getItem().equals(tipoRotuloManual)) {
-					lblEntrada.setVisible(true);
-					lblSaida.setVisible(true);
-					tfEntrada.setVisible(true);
-					lblLegendaEnt.setVisible(true);
-					lblLegendaSaida.setVisible(true);
-					tfSaida.setVisible(true);
+				if (arg0.getItem().equals(typeManualLabel)) {
+					lblInput.setVisible(true);
+					lblOutput.setVisible(true);
+					tfInput.setVisible(true);
+					lblLabelInp.setVisible(true);
+					lblLabelOut.setVisible(true);
+					tfOutput.setVisible(true);
 				} else {
-					lblEntrada.setVisible(false);
-					lblSaida.setVisible(false);
-					tfEntrada.setVisible(false);
-					tfSaida.setVisible(false);
-					lblLegendaEnt.setVisible(false);
-					lblLegendaSaida.setVisible(false);
+					lblInput.setVisible(false);
+					lblOutput.setVisible(false);
+					tfInput.setVisible(false);
+					tfOutput.setVisible(false);
+					lblLabelInp.setVisible(false);
+					lblLabelOut.setVisible(false);
 				}
 
-				tfEntrada.setText("");
-				tfSaida.setText("");
+				tfInput.setText("");
+				tfOutput.setText("");
 				
-				caminhosFalha = "";
-				tfResultado.setText("");
-				btnDetalhe.setVisible(false);
+				failPath = "";
+				tfVeredict.setText("");
+				btnTestCases.setVisible(false);
 			}
 		});
-		cbRotulo.setModel(
-				new DefaultComboBoxModel(new String[] { "", this.tipoRotuloDefinido, this.tipoRotuloManual }));
-		cbRotulo.setFont(new Font("Dialog", Font.BOLD, 13));
-		cbRotulo.setBounds(265, 84, 237, 26);
-		cbRotulo.setVisible(false);
-		cbRotulo.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
-		panel_2.add(cbRotulo);
+		cbLabel.setModel(
+				new DefaultComboBoxModel(new String[] { "", this.typeAutomaticLabel, this.typeManualLabel }));
+		cbLabel.setFont(new Font("Dialog", Font.BOLD, 13));
+		cbLabel.setBounds(265, 84, 237, 26);
+		cbLabel.setVisible(false);
+		cbLabel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
+		panel_2.add(cbLabel);
 
-		JComboBox cbModelo = new JComboBox();
-		cbModelo.setForeground(SystemColor.control);
-		cbModelo.setBackground(SystemColor.windowBorder);
-		cbModelo.addItemListener(new ItemListener() {
+		JComboBox cbModel = new JComboBox();
+		cbModel.setForeground(SystemColor.control);
+		cbModel.setBackground(SystemColor.windowBorder);
+		cbModel.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (arg0.getItem().equals("IOLTS")) {
-					cbRotulo.setVisible(true);
-					lblRotulo.setVisible(true);
-					/*
-					 * lblEntrada.setVisible(true); lblSaida.setVisible(true);
-					 * tfEntrada.setVisible(true); tfSaida.setVisible(true);
-					 */
-				} else {
-					/*
-					 * lblEntrada.setVisible(false); lblSaida.setVisible(false);
-					 * tfEntrada.setVisible(false); tfSaida.setVisible(false);
-					 */
-					cbRotulo.setVisible(false);
+					cbLabel.setVisible(true);
+					lblRotulo.setVisible(true);					
+				} else {					
+					cbLabel.setVisible(false);
 					lblRotulo.setVisible(false);
-					tfEntrada.setVisible(false);
-					tfSaida.setVisible(false);
+					tfInput.setVisible(false);
+					tfOutput.setVisible(false);
 				}
 
-				caminhosFalha = "";
-				tfResultado.setText("");
-				btnDetalhe.setVisible(false);
+				failPath = "";
+				tfVeredict.setText("");
+				btnTestCases.setVisible(false);
 			}
 		});
 
-		cbModelo.setModel(new DefaultComboBoxModel(new String[] { "", "IOLTS", "LTS" }));
-		cbModelo.setFont(new Font("Dialog", Font.BOLD, 13));
-		cbModelo.setBounds(21, 85, 234, 26);
-		cbModelo.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
-		panel_2.add(cbModelo);
+		cbModel.setModel(new DefaultComboBoxModel(new String[] { "", "IOLTS", "LTS" }));
+		cbModel.setFont(new Font("Dialog", Font.BOLD, 13));
+		cbModel.setBounds(21, 85, 234, 26);
+		cbModel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) SystemColor.control));
+		panel_2.add(cbModel);
 
 		JRadioButton rbIoco = new JRadioButton("IOCO");
 		rbIoco.setForeground(SystemColor.controlHighlight);
@@ -517,19 +487,19 @@ public class ConformanceView extends JFrame {
 		rbIoco.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				cbModelo.setEnabled(false);
-				cbModelo.setSelectedIndex(1);
+				cbModel.setEnabled(false);
+				cbModel.setSelectedIndex(1);
 				lblRotulo.setVisible(true);
-				cbRotulo.setVisible(true);
-				cbRotulo.setSelectedIndex(0);
-				tfLinguagemD.enable(false);
-				tfLinguagemD.setText("");
-				tfLinguagemF.enable(false);
-				tfLinguagemF.setText("");
+				cbLabel.setVisible(true);
+				cbLabel.setSelectedIndex(0);
+				tfD.enable(false);
+				tfD.setText("");
+				tfF.enable(false);
+				tfF.setText("");
 
-				caminhosFalha = "";
-				tfResultado.setText("");
-				btnDetalhe.setVisible(false);
+				failPath = "";
+				tfVeredict.setText("");
+				btnTestCases.setVisible(false);
 			}
 		});
 
@@ -538,51 +508,51 @@ public class ConformanceView extends JFrame {
 		rbIoco.setBounds(142, 18, 85, 23);
 		panel_2.add(rbIoco);
 
-		JRadioButton rbConfLing = new JRadioButton("Based on language");
-		rbConfLing.setForeground(SystemColor.controlHighlight);
-		rbConfLing.setBackground(SystemColor.windowBorder);
-		rbConfLing.addMouseListener(new MouseAdapter() {
+		JRadioButton rbConfBasedLang = new JRadioButton("Based on language");
+		rbConfBasedLang.setForeground(SystemColor.controlHighlight);
+		rbConfBasedLang.setBackground(SystemColor.windowBorder);
+		rbConfBasedLang.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				cbModelo.setEnabled(true);
+				cbModel.setEnabled(true);
 				lblRotulo.setVisible(false);
-				cbRotulo.setVisible(false);
-				cbModelo.setSelectedIndex(0);
-				tfLinguagemD.enable(true);
-				tfLinguagemD.setText("");
-				tfLinguagemF.enable(true);
-				tfLinguagemF.setText("");
-				tfEntrada.setVisible(false);
-				tfSaida.setVisible(false);
-				lblEntrada.setVisible(false);
-				lblSaida.setVisible(false);
-				lblLegendaEnt.setVisible(false);
-				lblLegendaSaida.setVisible(false);
+				cbLabel.setVisible(false);
+				cbModel.setSelectedIndex(0);
+				tfD.enable(true);
+				tfD.setText("");
+				tfF.enable(true);
+				tfF.setText("");
+				tfInput.setVisible(false);
+				tfOutput.setVisible(false);
+				lblInput.setVisible(false);
+				lblOutput.setVisible(false);
+				lblLabelInp.setVisible(false);
+				lblLabelOut.setVisible(false);
 
-				caminhosFalha = "";
-				tfResultado.setText("");
-				btnDetalhe.setVisible(false);
+				failPath = "";
+				tfVeredict.setText("");
+				btnTestCases.setVisible(false);
 				
-				cbRotulo.setSelectedIndex(0);
-				tfEntrada.setText("");
-				tfSaida.setText("");
+				cbLabel.setSelectedIndex(0);
+				tfInput.setText("");
+				tfOutput.setText("");
 			}
 		});
-		buttonGroup.add(rbConfLing);
-		rbConfLing.setFont(new Font("Dialog", Font.BOLD, 13));
-		rbConfLing.setBounds(229, 18, 237, 23);
-		panel_2.add(rbConfLing);
+		buttonGroup.add(rbConfBasedLang);
+		rbConfBasedLang.setFont(new Font("Dialog", Font.BOLD, 13));
+		rbConfBasedLang.setBounds(229, 18, 237, 23);
+		panel_2.add(rbConfBasedLang);
 
-		btnVerificarConformidadeLinguagem.addMouseListener(new MouseAdapter() {
+		btnVerifyConformance.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-				if (!tfImplementacao.getText().isEmpty() && !tfEspecificacao.getText().isEmpty()
-						&& (rbConfLing.isSelected() || rbIoco.isSelected()) && cbModelo.getSelectedIndex() != 0
-						&& ((cbRotulo.getSelectedIndex() != 0 && cbModelo.getSelectedIndex() == 1)
-								|| (cbModelo.getSelectedIndex() == 1 && cbRotulo.getSelectedIndex() == 1
-										&& !tfEntrada.getText().isEmpty() && !tfSaida.getText().isEmpty())
-								|| (cbModelo.getSelectedIndex() == 2))) {
+				if (!tfImplementation.getText().isEmpty() && !tfSpecification.getText().isEmpty()
+						&& (rbConfBasedLang.isSelected() || rbIoco.isSelected()) && cbModel.getSelectedIndex() != 0
+						&& ((cbLabel.getSelectedIndex() != 0 && cbModel.getSelectedIndex() == 1)
+								|| (cbModel.getSelectedIndex() == 1 && cbLabel.getSelectedIndex() == 1
+										&& !tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty())
+								|| (cbModel.getSelectedIndex() == 2))) {
 					Automaton_ conformidade = null;
 					IOLTS S, I = null;
 					LTS S_, I_ = null;
@@ -591,78 +561,78 @@ public class ConformanceView extends JFrame {
 					if (rbIoco.isSelected()) {// IOCO
 
 						try {
-							if (cbRotulo.getSelectedIndex() == 2) {// entrada saída manual
-								S = ImportAutFile.autToIOLTS(pathEspecificacao2, true,
-										new ArrayList<String>(Arrays.asList(tfEntrada.getText().split(","))),
-										new ArrayList<String>(Arrays.asList(tfSaida.getText().split(","))));
+							if (cbLabel.getSelectedIndex() == 2) {// manual input/output
+								S = ImportAutFile.autToIOLTS(pathSpecification, true,
+										new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
+										new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
 
-								I = ImportAutFile.autToIOLTS(pathImplementação2, true,
-										new ArrayList<String>(Arrays.asList(tfEntrada.getText().split(","))),
-										new ArrayList<String>(Arrays.asList(tfSaida.getText().split(","))));
+								I = ImportAutFile.autToIOLTS(pathImplementation, true,
+										new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
+										new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
 							} else {
-								S = ImportAutFile.autToIOLTS(pathEspecificacao2, false, new ArrayList<String>(),
+								S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
 										new ArrayList<String>());
 
-								I = ImportAutFile.autToIOLTS(pathImplementação2, false, new ArrayList<String>(),
+								I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
 										new ArrayList<String>());
 							}
 
 							conformidade = IocoConformance.verifyIOCOConformance(S, I);
-							caminhosFalha = Operations.path(S, I, conformidade);
+							failPath = Operations.path(S, I, conformidade);
 						} catch (Exception e_) {
 							JOptionPane.showMessageDialog(panel, e_.getMessage(), "Warning",
 									JOptionPane.WARNING_MESSAGE);
 							return;
 						}
 
-					} else {// Conf Linguagem
+					} else {// conformance language based
 						try {
-							if (cbModelo.getSelectedIndex() == 1) { // IOLTS
+							if (cbModel.getSelectedIndex() == 1) { // IOLTS
 
-								if (cbRotulo.getSelectedIndex() == 2) {// entrada saída manual
-									S = ImportAutFile.autToIOLTS(pathEspecificacao2, true,
-											new ArrayList<String>(Arrays.asList(tfEntrada.getText().split(","))),
-											new ArrayList<String>(Arrays.asList(tfSaida.getText().split(","))));
+								if (cbLabel.getSelectedIndex() == 2) {// manual input/output
+									S = ImportAutFile.autToIOLTS(pathSpecification, true,
+											new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
+											new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
 
-									I = ImportAutFile.autToIOLTS(pathImplementação2, true,
-											new ArrayList<String>(Arrays.asList(tfEntrada.getText().split(","))),
-											new ArrayList<String>(Arrays.asList(tfSaida.getText().split(","))));
+									I = ImportAutFile.autToIOLTS(pathImplementation, true,
+											new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
+											new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
 								} else {
-									S = ImportAutFile.autToIOLTS(pathEspecificacao2, false, new ArrayList<String>(),
+									S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
 											new ArrayList<String>());
 
-									I = ImportAutFile.autToIOLTS(pathImplementação2, false, new ArrayList<String>(),
+									I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
 											new ArrayList<String>());
 								}
 
 								S_ = S.toLTS();
 								I_ = I.toLTS();
 							} else {
-								S_ = ImportAutFile.autToLTS(pathEspecificacao2);
-								I_ = ImportAutFile.autToLTS(pathImplementação2);
+								S_ = ImportAutFile.autToLTS(pathSpecification);
+								I_ = ImportAutFile.autToLTS(pathImplementation);
 							}
 
 							
 							String D = "";
-							D = tfLinguagemD.getText();
-							if (tfLinguagemD.getText().isEmpty() && tfLinguagemF.getText().isEmpty()) {
+							D = tfD.getText();
+							if (tfD.getText().isEmpty() && tfF.getText().isEmpty()) {
 								D = "(";
 								for (String l : S_.getAlphabet()) {
 									D += l + "+";
 								}
 								D = D.substring(0, D.length() - 1);
 								D += ")*";
-								//tfLinguagemD.setText(D);
+								
 								semLinguagem = true;
 							}
 							
 							
 
-							String F = tfLinguagemF.getText();
+							String F = tfF.getText();
 							
-							if(expressaoRegularValida(D) && expressaoRegularValida(F)) {
+							if(regexIsValid(D) && regexIsValid(F)) {
 								conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);
-								caminhosFalha = Operations.path(S_, I_, conformidade);
+								failPath = Operations.path(S_, I_, conformidade);
 							}else {
 								JOptionPane.showMessageDialog(panel, "Invalid regex!", "Warning",
 										JOptionPane.WARNING_MESSAGE);
@@ -677,10 +647,10 @@ public class ConformanceView extends JFrame {
 
 					}
 
-					tfResultado.setText(Operations.veredict(conformidade));
-					// automatoResultado2 = conformidade.toString();
-					if(!caminhosFalha.equals("")) {
-						btnDetalhe.setVisible(true);
+					tfVeredict.setText(Operations.veredict(conformidade));
+					
+					if(!failPath.equals("")) {
+						btnTestCases.setVisible(true);
 					}
 
 					if (semLinguagem) {
@@ -689,22 +659,21 @@ public class ConformanceView extends JFrame {
 								JOptionPane.WARNING_MESSAGE);
 					}
 				} else {
-					// boolean linguagemD = tfLinguagemD.getText().isEmpty();
-					// boolean linguagemF = tfLinguagemF.getText().isEmpty();
-					boolean implementacao = tfImplementacao.getText().isEmpty();
-					boolean especificacao = tfEspecificacao.getText().isEmpty();
-					boolean tipoConf = (!rbConfLing.isSelected() && !rbIoco.isSelected());
-					boolean rotuloIOLTS = cbRotulo.getSelectedIndex() == 0 && cbModelo.getSelectedIndex() == 1;
-					boolean defEntradaSaida = (cbRotulo.getSelectedIndex() == 1 && tfEntrada.getText().isEmpty()
-							&& tfSaida.getText().isEmpty());
-					boolean modelo = cbModelo.getSelectedIndex() == 0;
+					// boolean langD = tfD.getText().isEmpty();
+					// boolean langF = tfF.getText().isEmpty();
+					boolean implementacao = tfImplementation.getText().isEmpty();
+					boolean especificacao = tfSpecification.getText().isEmpty();
+					boolean tipoConf = (!rbConfBasedLang.isSelected() && !rbIoco.isSelected());
+					boolean rotuloIOLTS = cbLabel.getSelectedIndex() == 0 && cbModel.getSelectedIndex() == 1;
+					boolean defEntradaSaida = (cbLabel.getSelectedIndex() == 1 && tfInput.getText().isEmpty()
+							&& tfOutput.getText().isEmpty());
+					boolean modelo = cbModel.getSelectedIndex() == 0;
 
 					String msg = "";
 
 					msg += implementacao ? "The field Implementation is required \n" : "";
 					msg += especificacao ? "The field Model is required \n" : "";
-					// msg += linguagemD && linguagemF ? "O campo Linguagem D ou Linguagem F deve
-					// ser preenchido \n" : "";
+					// msg += langD && langF ? "The Language D field or F language is required \n" : "";
 					msg += tipoConf ? "Select the type of conformance [IOCO] or [Baseada em Linguagem] \n" : "";
 					msg += rotuloIOLTS ? "Select how the IOLTS labels will be distinguished \n" : "";
 					msg += defEntradaSaida ? "The fields Input and Output is required \n" : "";

@@ -1,6 +1,5 @@
 package parser;
 
-import java.awt.List;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -22,66 +21,66 @@ import util.Constants;
 public class ImportAutFile {
 
 	/***
-	 * Lê e valida a primeira linha do arquivo .aut, na primeira linha do aquivo
-	 * consta (<initial-state>, <number-of-transitions>, <number-of-states>)
+	 * Reads and validates the first line of the .aut file, in the first line of the file
+	 *  des(<initial-state>, <number-of-transitions>, <number-of-states>)
 	 * 
-	 * @param diretorio
-	 *            o diretório do arquivo
-	 * @return as configurações presentes na primeira linha
+	 * @param path
+	 *            the file directory
+	 * @return the settings in the first line
 	 */
-	public static String[] lerParametros(String diretorio) {
+	public static String[] headerParameters(String path) {
 		String[] configs = new String[4];
-		String linhaConfiguracao = "";
+		String lineConfig = "";
 		try {
-			File file = new File(diretorio);
+			File file = new File(path);
 			Scanner sc = new Scanner(file);
-			// primeira linha do arquivo
-			// des(<initial-state>, <number-of-transitions>, <number-of-states>)
-			// String linhaConfiguracao = "des ( 1, 2, 3) ";
-			linhaConfiguracao = sc.nextLine();
-			// remove o espaço que possa ter ao final da string de configuração
-			linhaConfiguracao = linhaConfiguracao.replaceAll("\\s+$", "");
-			// indice do fim parentese
-			int indiceFimParentese = linhaConfiguracao.length() - 1;
+			// first line of file
+			//des (<initial-state>, <number-of-transitions>, <number-of-states>)
+			//String lineConfiguration = "des (1, 2, 3)";
+			lineConfig = sc.nextLine();
+			// removes the space that you may have at the end of the configuration string
+			lineConfig = lineConfig.replaceAll("\\s+$", "");
+			// index of the end bracket
+			int idxEndBracket = lineConfig.length() - 1;
 
 			String msg = "";
-			// verifica se há o parentese final
-			if (linhaConfiguracao.charAt(indiceFimParentese) != ')') {
-				msg += ("primeira linha do arquivo inválida! ausência do ')' " + "\n");
+			// check for final bracket
+			if (lineConfig.charAt(idxEndBracket) != ')') {
+				msg += ("first line of the file invalid! absence of ')' " + "\n");
 			}
 
-			// indice do inicio do parentese
-			int indiceIniParentese = linhaConfiguracao.indexOf("(");
-			if (indiceIniParentese < 0) {
-				msg += ("primeira linha do arquivo inválida! ausência do '(' " + "\n");
+			// index of the beginning of bracket
+			int idxIniBracket = lineConfig.indexOf("(");
+			if (idxIniBracket < 0) {
+				msg += ("first line of the file invalid! absence of '(' " + "\n");
 			}
 
-			// se tiver achado o inicio e fim do parentese
+			// if you have found the beginning and end of the bracket
 			if (msg == "") {
-				// substring com os dados da configuração
-				linhaConfiguracao = linhaConfiguracao.substring(indiceIniParentese + 1, indiceFimParentese);
+				// substring with the configuration data
+				lineConfig = lineConfig.substring(idxIniBracket + 1, idxEndBracket);
 			}
-			// pega as configurações que esta na linha
-			configs = linhaConfiguracao.split(",");
-			// se há menos de 3 parametros
+			// take the settings that are on the line
+			configs = lineConfig.split(",");
+			// if there are less than 3 parameters
 			if (configs.length < 3) {
-				msg += ("deveriam ter sido passados 3 parâmetros separados por virgula na primeira linha" + "\n");
-				// se esta faltando algum parametro atribui vazio
+				msg += ("3 comma-separated parameters should have been passed in the first line" + "\n");
+				// if any parameter is missing, assign empty
 				for (int i = configs.length; i < 3; i++) {
 					configs = append(configs, "");
 				}
 			}
-			// se tiver mais de 3 parametros considera os 3 primeiros
+			// if you have more than 3 parameters consider the first 3
 			if (configs.length > 3) {
 				configs = new String[4];
-				// se esta faltando algum parametro atribui vazio
+				// if it is missing some parameter assigns empty
 				for (int i = 0; i < 3; i++) {
 					configs = append(configs, "");
 				}
 			}
 			configs = append(configs, msg);
 		} catch (FileNotFoundException e) {
-			System.err.println("Erro na leitura do arquivo:");
+			System.err.println("Error reading file:");
 			System.err.println(e);
 		}
 
@@ -89,72 +88,69 @@ public class ImportAutFile {
 	}
 
 	/***
-	 * Adiciona elemento no array[]
+	 * Add element to array[]
 	 * 
 	 * @param arr
-	 *            array que recebera novo elemento
+	 *            array which will receive new element
 	 * @param element
-	 *            elemento a ser adicionado ao array
-	 * @return array apos adicionado o elemento
+	 *            element to be added to array
+	 * @return array after adding the element
 	 */
-	static <T> T[] append(T[] arr, T element) {
-		// tamanho do array recebido
+	static <T> T[] append(T[] arr, T element) {		
 		final int N = arr.length;
-		// criar uma cópia do array com mais uma posição
+		// create a copy of the array with one more position
 		arr = Arrays.copyOf(arr, N + 1);
-		// adicionar o elemento na ultima posição do array
+		//add the element in the last position of the array
 		arr[N] = element;
 		return arr;
 	}
 
 	/***
-	 * Converte o iolts do arquivo .aut em objeto IOLTS
+	 * Converts the iolts from the .aut file to an IOLTS object
 	 * 
-	 * @param diretorio
-	 *            diretório do arquivo
-	 * @param temListaRotulos
-	 *            se as entradas e saídas estão diferenciadas pelos simbolos ?/!
-	 * @param entradas
-	 *            o alfabeto de entrada
-	 * @param saidas
-	 *            o alfabeto de saída
-	 * @return IOLTS adjacente ao que consta no .aut
+	 * @param path
+	 *            file directory
+	 * @param hasLabelList
+	 *            if the inputs and outputs are differentiated by the symbols? /!
+	 * @param inputs
+	 *            the input alphabet
+	 * @param outputs
+	 *            the output alphabet
+	 * @return IOLTS underlying the .aut
 	 */
-	public static IOLTS autToIOLTS(String diretorio, boolean temListaRotulos, ArrayList<String> entradas,
-			ArrayList<String> saidas) throws Exception {
+	public static IOLTS autToIOLTS(String path, boolean hasLabelList, ArrayList<String> inputs,
+			ArrayList<String> outputs) throws Exception {
 
 		try {
-			// converte o .aut em LTS
-			LTS lts = autToLTS(diretorio);
-			// cria um novo IOLTS com base no LTS
+			//converts .aut to LTS
+			LTS lts = autToLTS(path);
+			// creates a new LTS-based IOLTS
 			IOLTS iolts = new IOLTS(lts);
 
 			ArrayList<String> e = new ArrayList<String>();
 			ArrayList<String> s = new ArrayList<String>();
 
-			// altera o conjunto de entradas e saídas
-			// se os rótulos de entrada e saída são diferenciados pelos simbolos ?/!
-			if (!temListaRotulos) {
-				// percorre todo o alfabeto do LTS
+			// changes the set of inputs and outputs
+			// if the input and output labels are differentiated by the symbols? /!
+			if (!hasLabelList) {
+				// runs through the entire LTS alphabet
 				for (String a : lts.getAlphabet()) {
-					// se começa com ! então é simbolo de saida
+					// if it starts with ! so it's an output symbol
 					if (a.charAt(0) == Constants.OUTPUT_TAG) {
-						// s.add(a);
 						s.add(a.substring(1, a.length()));
 					}
 
-					// se começa com ? então é simbolo de entrada
+					//if it starts with ? so it's an input symbol
 					if (a.charAt(0) == Constants.INPUT_TAG) {
-						// e.add(a);
 						e.add(a.substring(1, a.length()));
 					}
 				}
 
-				// adicionar entradas e saídas no IOLTS
+				// add IOLTS inputs and outputs
 				iolts.setInputs(e);
 				iolts.setOutputs(s);
 
-				// remover das transições os rótulos ! ?
+				// remove the transitions from the labels! ?
 				ArrayList<Transition_> transicoes = new ArrayList<Transition_>();
 				for (Transition_ t : iolts.getTransitions()) {
 					transicoes.add(new Transition_(t.getEstadoIni(), t.getRotulo().substring(1, t.getRotulo().length()),
@@ -162,10 +158,10 @@ public class ImportAutFile {
 				}
 
 				iolts.setTransitions(transicoes);
-			} else {// se os simbolos !/? não diferenciam
-				// o conjunto de entrada e saída são os passados por parametro
-				iolts.setInputs(entradas);
-				iolts.setOutputs(saidas);
+			} else {//if the symbols !/? do not differentiate
+				// the set of input and output are those passed by parameter
+				iolts.setInputs(inputs);
+				iolts.setOutputs(outputs);
 			}
 
 			return iolts;
@@ -175,139 +171,132 @@ public class ImportAutFile {
 	}
 
 	/***
-	 * Converte o lts do arquivo .aut em objeto LTS
+	 * Converts the lts from the .aut file to the LTS object
 	 * 
-	 * @param diretorio
-	 * @return LTS adjacente ao que consta no .aut
+	 * @param path
+	 * @return LTS underlying the .aut
 	 */
-	public static LTS autToLTS(String diretorio) throws Exception {
-		// lê os parametros de configuração da primeira linha do arquivo
-		String[] configs = ImportAutFile.lerParametros(diretorio);
+	public static LTS autToLTS(String path) throws Exception {
+		// reads the configuration parameters from the first line of the file
+		String[] configs = ImportAutFile.headerParameters(path);
 
-		// mensagem se houve algum erro/inconsistencia na leitura da primeira linha
+		// message if there was an error / inconsistency in reading the first line
 		String msg = configs[3];
 
 		int msg_cont = 0;
 
-		// se há inconsistência na primeira linha do arquivo
+		// if there is inconsistency in the first line of the file
 		if (msg != "") {
-			msg += ("formato esperado:" + "\n");
+			msg += ("expected format:" + "\n");
 			msg += ("'des(<initial-state>, <number-of-transitions>, <number-of-states>)'" + "\n");
 			System.out.println(msg);
-			//return null;
+			
 			throw new Exception(msg);
 		} else {
-			// mensagens de erro, sobre as inconsistencias a cada linha
+			// error messages on inconsistencies with each line
 			msg = "";
-			State_ estadoIni = null;
-			State_ estadoFim = null;
-			Transition_ transicao = null;
+			State_ iniState = null;
+			State_ endState = null;
+			Transition_ transition = null;
 
-			// linha lida do arquivo
-			String linha = "";
-			boolean linhaInconsistente = false;
+			// read file line
+			String line = "";
+			boolean inconsistentLine = false;
 
-			// novo lts que sera construido com base no arquivo
+			// new lts that will be built based on the file
 			LTS lts = new LTS();
-			// parametros lidos da primeira linha do arquivo
-			// definição do estado inicial com base na 1ª linha do arquivo (configuração)
+			// Parameters read from the first line of the file
+			// definition of the initial state based on the 1st line of the file (configuration)
 			lts.setInitialState(new State_(configs[0]));
-			int nTransicoes = Integer.parseInt(configs[1].replaceAll("\\s+", ""));
-			int nEstados = Integer.parseInt(configs[2].replaceAll("\\s+", ""));
+			int nTransitions = Integer.parseInt(configs[1].replaceAll("\\s+", ""));
+			int nStates = Integer.parseInt(configs[2].replaceAll("\\s+", ""));
 
-			// contador de linha começa da linha 2 porque a linha 1 é a linha de
-			// configuração
-			int cont = 2;
+			// line counter starts from line 2 because line 1 is the line of
+			// configuration
+			int count = 2;
 			try {
-				File file = new File(diretorio);
+				File file = new File(path);
 				Scanner sc = new Scanner(file);
-				// pula a primeira linha de configuração
+				// skip the first line of configuration
 				sc.nextLine();
-				// se há linha do arquivo a ser lida
+				// if there is line of the file to be read
 				while (sc.hasNextLine()) {
-					linhaInconsistente = false;
-					// le a linha com a transição
-					// cada transição é configurada da seguinte forma: (<from-state>, <label>,
+					inconsistentLine = false;
+					// reads the line with the transition
+					// each transition is configured as follows: (<from-state>, <label>,
 					// <to-state>)
-					linha = sc.nextLine();
+					line = sc.nextLine();
 
-					// verifica se há o '(' na linha lida
-					int ini = linha.indexOf("(");
+					// checks for '(' on the read line
+					int ini = line.indexOf("(");
 					if (ini < 0) {
-						msg += ("linha [" + cont + "] inválida ausência do '(' " + "\n");
-						linhaInconsistente = true;
+						msg += ("line [" + count + "] is invalid absence of '(' " + "\n");
+						inconsistentLine = true;
 						msg_cont += 1;
 					}
 
-					// verifica se há o ')' na linha lida
-					linha = linha.replaceAll("\\s+$", "");
-					int fim = linha.length() - 1;
-					if (linha.charAt(fim) != ')') {
-						msg += ("linha inválida [" + cont + "] ausência do ')' " + "\n");
-						linhaInconsistente = true;
+					// checks for ')' on the read line
+					line = line.replaceAll("\\s+$", "");
+					int fim = line.length() - 1;
+					if (line.charAt(fim) != ')') {
+						msg += ("line [" + count + "] is invalid absence of ')' " + "\n");
+						inconsistentLine = true;
 						msg_cont += 1;
 					}
 
-					// verifica se há os 3 parametros
-					// (<from-state>, <label>, <to-state>)
-					linha = linha.substring(ini + 1, fim);
-					String[] val = linha.split(",");
+					// checks to see if there are 3 parameters (<from-state>, <label>, <to-state>)
+					line = line.substring(ini + 1, fim);
+					String[] val = line.split(",");
 					if (val.length != 3) {
-						msg += ("linha [" + cont + "] deveriam ter sido passados 3 parâmetros separados por virgula"
+						msg += ("line [" + count + "] should have been passed 3 parameters separated by commas"
 								+ "\n");
-						linhaInconsistente = true;
+						inconsistentLine = true;
 						msg_cont += 1;
 					}
 
-					// se a linha da transição esta completa, sem inconsistencia
-					if (!linhaInconsistente) {
-						// cria estados e transições
-						estadoIni = new State_(val[0].trim());
-						estadoFim = new State_(val[2].trim());
-						transicao = new Transition_(estadoIni, val[1].trim(), estadoFim);
+					//if the transition line is complete, without inconsistency
+					if (!inconsistentLine) {
+						// creates states and transitions
+						iniState = new State_(val[0].trim());
+						endState = new State_(val[2].trim());
+						transition = new Transition_(iniState, val[1].trim(), endState);
 
-						// faz a atribuição dos atributos ao LTS
-						lts.addState(estadoIni);
-						lts.addState(estadoFim);
-						lts.addTransition(transicao);
+						// assigns the attributes to the LTS
+						lts.addState(iniState);
+						lts.addState(endState);
+						lts.addTransition(transition);
 					}
-					// quantidade de transições
-					cont++;
+					// number of transitions
+					count++;
 				}
 
-				// porque se existir mensagem de inconsistencia ele não adiciona os valores no
-				// LTS
-				// logo a quantidade de estados e transições estará divergente
+				
 				if (msg.equals("")) {
-					// se não houver a quantidade de transições que consta definido na primeira
-					// linha
-					if (nTransicoes != lts.getTransitions().size()) {
-						msg += "Quantidade de transições divergente do valor passado na 1ª linha \n";
+					//if there is not the amount of transitions that is defined in the first
+					// line
+					if (nTransitions != lts.getTransitions().size()) {
+						msg += "Amount of transitions divergent from the value passed in the 1st row \n";
 					}
 
-					// se não houver a quantidade de estados que consta definido na primeira linha
-					if (nEstados != lts.getStates().size()) {
-						msg += "Quantidade de estados divergente do valor passado na 1ª linha \n";
+					// if there is not the amount of states that is defined in the first line
+					if (nStates != lts.getStates().size()) {
+						msg += "Number of states divergent from the value passed in the 1st line \n";
 					}
 				}
 
 			} catch (Exception e) {
-				throw new Exception("Erro na conversão do arquivo para LTS");
-//				System.err.println("Erro na conversão do arquivo para LTS");
-//				System.err.println(e);
+				throw new Exception("Error converting file to LTS");
 			}
 
-			// se não há nenhuma inconsistencia na leitura das transições, não precisa
-			// validar a se qt de transições e estados batem com a configuração (JTorx)
+			// if there is no inconsistency in reading the transitions, you do not need
+			// validate if qt of transitions and states beat with configuration (JTorx)
 			if (msg_cont == 0) {// if (msg.equals("")) {
 				return lts;
 			} else {
-				msg = ("Inconsistências na leitura do arquivo .aut! \n" + "Diretório: " + diretorio + "\n"
-						+ "Mensagem: \n" + msg);
+				msg = ("inconsistencies in reading the .aut file! \n" + "Path: " + path + "\n"
+						+ "Message: \n" + msg);
 
 				throw new Exception(msg);
-				// System.out.println(msg);
-				// return null;
 			}
 
 		}

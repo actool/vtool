@@ -15,31 +15,30 @@ import java.util.stream.Stream;
 import util.Constants;
 
 /**
- *Classe Automaton_
+ *Class Automaton_
  * @author Camila
  */
 public class Automaton_ extends LTS {
-	//estados de aceitação
+	
 	private List<State_> finalStates;
 
 	/***
-	 * Construtor vazio inicializa lista de estados finais
+	 * Empty constructor initializes final state list
 	 */
 	public Automaton_() {
-		//inicia lista de estados de aceitação
 		finalStates = new ArrayList<State_>();
 	}
 
 	/**
-	 * Retorna os estados finais do automato
-	 * @return estadosFinais
+	 * Returns the final states of the automaton
+	 * @return finalStates
 	 */
 	public List<State_> getFinalStates() {
 		return finalStates;
 	}
 
-	/**Altera os estados finais do automato
-	 * @param finalStates o conjunto de estados finais
+	/** Alter the final states of the automaton
+	 * @param finalStatesthe set of final states
 	 *            
 	 */
 	public void setFinalStates(List<State_> finalStates) {
@@ -47,12 +46,12 @@ public class Automaton_ extends LTS {
 	}
 
 	/***
-	 * Adiciona o estado a lista de estados de aceitação, verifica se o estado já foi adicionado anteriormente
-	 * @param state o estado a ser adicionado na lista de estados finais
+	 * Add the state to the list of final states, checks whether the state has already been added
+	 * @param state the state to be added in the list of final states
 	 * 
 	 */
 	public void addFinalStates(State_ state) {
-		//verifica se o estado já foi adicionado, com base no nome do estado
+		//checks whether the state has already been added, based on the state name
 		if (!this.finalStates.contains(state)) {
 			this.finalStates.add(state);
 		}
@@ -60,117 +59,114 @@ public class Automaton_ extends LTS {
 
 	
 	/***
-	 * Retorna os estados alcançados a partir do estado recebido de parametro com o rótulo epsilon
-	 * @param estado
-	 * @return os estados alcançados com epsilon
+	 * Returns the states reached from the received parameter state with the epsilon label
+	 * @param state
+	 * @return the states reached with epsilon transition
 	 */
-	public List<State_> reachableStatesWithEpsilon(State_ estado) {
-		//estados alcançados com epsilon
-		List<State_> estadosAlcancados = new ArrayList<State_>();
-		//lista auxiliar para verificar condição de parada
+	public List<State_> reachableStatesWithEpsilon(State_ state) {
+		//states reached with epsilon
+		List<State_> reachedStates = new ArrayList<State_>();
+		//auxiliary list to check stopping condition
 		List<State_> aux = new ArrayList<State_>();
-		//adiciona o estado recebido de parametro a lista para ser o primeiro a ser visitado
-		aux.add(estado);
-		//resultado de retorno da função "transição existe"
+		//add the state received as parameter in the list to be the first to be visited
+		aux.add(state);
 		Result r;
-		//estado atual que se esta percorrendo
-		State_ atual;
+		//to explore list
+		State_ current;
 		
-		//enquanto houver estados a serem explorados na lista
+		//while there are states to be explored in the list
 		while (aux.size() > 0) {
-			//o atual recebe o primeiro elemento da lista
-			atual = aux.remove(0);
-			//se a transição partindo do estado atual com rótulo epsilon existe
-			r = transitionExists(atual.getNome(), Constants.EPSILON);
+			//the current one receives the first element from the list
+			current = aux.remove(0);
+			//if the transition from the current state with epsilon label exists
+			r = transitionExists(current.getNome(), Constants.EPSILON);
 
-			//encontrou transição com epsilon
+			//transition with epsilon was found
 			if (r.getFound()) {
-				//estadosFim são os estados alcançados com a transição epsilon partindo do estado atual
-				//é adicionado o estado atual na lista de estados alcançados por epsilon, pois com epsilon pode se permanecer no mesmo estado
-				r.getReachedStates().add(atual);
+				// reachedStates are the states reached with the epsilon transition from the current state
+				// the current state is added in the list of states reached by epsilon, since epsilon can remain in the same state
+				r.getReachedStates().add(current);
 			} else {
-				//se nenhum estado é alcançado por epsilon
-				//adiciona o estado atual como sendo alcançado por epsilon
-				r.setReachedStates(new ArrayList<State_>(Arrays.asList(atual)));
+				// if no state is reached by epsilon
+				// add the current state as being reached by epsilon
+				r.setReachedStates(new ArrayList<State_>(Arrays.asList(current)));
 			}
-			//na lista contem apenas os estados que não consta em "estadosAlcancados"
-			ArrayList<State_> diferenca = new ArrayList<State_>(r.getReachedStates());
-			diferenca.removeAll(estadosAlcancados);
+			//in the list contains only the states that are not in "reachedStates"
+			ArrayList<State_> distinctStates = new ArrayList<State_>(r.getReachedStates());
+			distinctStates.removeAll(reachedStates);
 			
-			//adicionar na lista auxiliar os estados alcançados pelo estado atual com epsilon
-			aux = Stream.concat(diferenca.stream(), aux.stream()).distinct().collect(Collectors.toList());
+			//add in the auxiliary list the states reached by the current state with epsilon
+			aux = Stream.concat(distinctStates.stream(), aux.stream()).distinct().collect(Collectors.toList());
 
-			//adicionar na lista estadosAlcancados os estados alcançados pelo estado atual com epsilon 
-			estadosAlcancados = Stream.concat(diferenca.stream(), estadosAlcancados.stream()).distinct()
+			//add in the reachedStates list the states reached by the current state with epsilon 
+			reachedStates = Stream.concat(distinctStates.stream(), reachedStates.stream()).distinct()
 					.collect(Collectors.toList());
 		}
 
-		return estadosAlcancados;
+		return reachedStates;
 	}
 
 	/***
-	 * Retorna os estados que tem transição epsilon partindo dele
-	 * @return lista de estados com transição epsilon
+	 * Returns the states that have epsilon transition starting from it
+	 * @return list of states containing epsilon transition
 	 */
-	public List<State_> getStatesWithEpsilonTransition() {
-		//inicializa lista que irá retornar
-		List<State_> estadosComTransicaoEpsilon = new ArrayList<State_>();
-		//percorre as transições do automato
-		for (Transition_ transicao : getTransitions()) {
-			//se a transição tiver rótulo epsilon
-			if(transicao.getRotulo().equals(Constants.EPSILON)) {
-				//adiciona a transição na lista de transição
-				estadosComTransicaoEpsilon.add(transicao.getEstadoIni());
+	public List<State_> getStatesWithEpsilonTransition() {		
+		List<State_> statesWithEpsilonTransition = new ArrayList<State_>();
+		//visit all transitions of automaton
+		for (Transition_ transition : getTransitions()) {
+			//if the transition has an epsilon label
+			if(transition.getRotulo().equals(Constants.EPSILON)) {
+				//add transition to return
+				statesWithEpsilonTransition.add(transition.getEstadoIni());
 			}
 		}
 		
-		return estadosComTransicaoEpsilon;
+		return statesWithEpsilonTransition;
 	}
 
 	/***
-	 * Verifica se o automato é deterministico com base em suas transições
+	 * verify whether the automaton is deterministic based on its transitions
 	 * 
-	 * @return se o automato é deterministico ou não
+	 * @return whether the automaton is deterministic or not
 	 */
 	public boolean isDeterministic() {
-		// contador de transições repetidas
+		// counter of repeated transitions
 		int cont = 0;
-
-		// verifica se no alfabeto contem epsilon
+		
 		if (alphabet.contains(Constants.EPSILON)) {
-			// se o alfabeto contem epsilon então o automato não é deterministico
+			// if the alphabet contains epsilon then the automato is not deterministic
 			return false;
 		} else {
-			// percorre todas as transições
-			for (Transition_ transicaoAtual : transitions) {
-				// para cada transição o contador de transição começa com 0
+			// visit all transitions
+			for (Transition_ currentTransition : transitions) {
+				// for each transition the transition counter starts with 0
 				cont = 0;
-				// percorre todas as transições
+				// visit all transitions
 				for (Transition_ t : transitions) {
-					// verifica se a transição atual é igual a alguma transição do LTS, com base no
-					// estado inicial e o rótulo de ambas as transições
-					if (t.getEstadoIni().getNome().equals(transicaoAtual.getEstadoIni().getNome())
-							&& t.getRotulo().equals(transicaoAtual.getRotulo())) {
+					// verifies that the current transition is equal to some LTS transition, based on the
+					// initial state and label of both transitions
+					if (t.getEstadoIni().getNome().equals(currentTransition.getEstadoIni().getNome())
+							&& t.getRotulo().equals(currentTransition.getRotulo())) {
 						cont++;
 					}
 
-					// se há mais de uma(ela mesma e mais alguma) transição igual a transição atual
+					// if there is more than one (itself and any other) transition equal to the current transition
 					if (cont > 1) {
-						// não é deterministico
+						// it is not deterministic
 						return false;
 					}
 				}
 
 			}
-			// se nenhuma transição repetida foi encontrada então é determinista
+			// if no repeated transition was found then it is deterministic
 			return true;
 		}
 
 	}
 	
 	/***
-	 * Sobreescrita do método toString do automato para listar os atributos que consta no LTS e os estados finais do automato
-	 * @return retorna a string que descreve o automato
+	 * Overwriting the automato's toString method to list the attributes contained in the LTS and the automato's final states
+	 * @return returns the string describing the automaton
 	 */
 	@Override
 	public String toString() {
@@ -178,7 +174,7 @@ public class Automaton_ extends LTS {
 		String s = super.toString();
 		//descrição referente aos estados finais do automato
 		s += ("##############################\n");
-		s += ("           Estados Finais \n");
+		s += ("           Final States \n");
 		s += ("##############################\n");
 		s += ("Quantidade: " + this.finalStates.size() + "\n");
 		for (State_ e : this.finalStates) {

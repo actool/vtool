@@ -6,73 +6,73 @@
 package model;
 
 /**
- * Classe estado
+ * Class State_
  * @author Camila
  */
 public class State_ {
-	//nome do estado
+	//name of state
 	private String name;
-	//id utilizado para integração com as bibliotecas
+	//id used for integration with libraries
 	private int id;
-	//descrição utilizada na interseção e pra pegar as palavras
+	//description used in the intersection and to get the words
 	private String info;
 	
 	private boolean visited;
 
 	/***
-	 * Construtor vazio inicializa o nome do estado sem nome
+	 * empty constructor
 	 */
 	public State_() {
 		this.name = "";
 	}
 
 	/***
-	 * Construtor recebe um estado e gera uma copia dele
-	 * @param estado
+	 *  Constructor receives a state and generates a copy of it
+	 * @param state
 	 */
-	public State_(State_ estado) {
-		this.id = estado.id;
-		this.name = estado.name;
-		this.info = estado.info;
+	public State_(State_ state) {
+		this.id = state.id;
+		this.name = state.name;
+		this.info = state.info;
 	}
 	
 	/***
-	 * Construtor recebe o nome do estado
-	 * @param nome
+	 * Constructor receives the state name
+	 * @param name
 	 */
-	public State_(String nome) {
-		this.name = nome;
+	public State_(String name) {
+		this.name = name;
 	}
 	
 	/***
-	 * Construtor recebe o nome e o id do estado, utilizado para integração com as bibliotecas
-	 * @param nome do estado
-	 * @param id do estado
+	 * Constructor receives state name and id, used for integration with libraries
+	 * @param state name 
+	 * @param state id 
 	 */
-	public State_(String nome, int id) {
-		this.name = nome;
+	public State_(String name, int id) {
+		this.name = name;
 		this.setId(id);	
 	}
 
 	/**
-	 * Retorna o nome do estao
-	 * @return o nome
+	 * Return state name
+	 * @return name
 	 */
 	public String getNome() {
 		return name;
 	}
 
 	/**
-	 * Altera o nome do estado
-	 * @param nome o nome do estado
+	 * Alter state name
+	 * @param name
 	 *            
 	 */
-	public void setNome(String nome) {
-		this.name = nome;
+	public void setNome(String name) {
+		this.name = name;
 	}
 
 	/***
-	 * Retorna o id do estado
+	 * Return state id
 	 * @return id 
 	 */
 	public int getId() {
@@ -80,7 +80,7 @@ public class State_ {
 	}
 
 	/***
-	 * Altera o id do estado
+	 * Alter state id
 	 * @param id
 	 */
 	public void setId(int id) {
@@ -88,7 +88,7 @@ public class State_ {
 	}
 
 	/***
-	 * Sobreescreve o equals do estado, a igualdade entre estados é considerando apenas o nome
+	 * Overwrites the equals of the state, equality between states is only considering the name
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -96,31 +96,31 @@ public class State_ {
 		if (obj == null || obj.getClass() != getClass()) {
 			result = false;
 		} else {
-			State_ _estado = (State_) obj;
-			result = this.name.equals(_estado.name);
+			State_ _state = (State_) obj;
+			result = this.name.equals(_state.name);
 		}
 		return result;
 	}
 
 	/***
-	 * Retorna a descrição da interseção, utilizado na função de interseção
-	 * @return descIntersecao descrição da interseção
+	 * Retorn info
+	 * @return info 
 	 */
 	public String getInfo() {
 		return info;
 	}
 
 	/***
-	 * Altera a descrição da interseção, utilizado na função de interseção
-	 * @param descProdSinc descrição da interseção
+	 * alter info
+	 * @param info 
 	 */
 	public void setInfo(String info) {
 		this.info = info;
 	}
 
 	/***
-	 * Sobreescrita do método to string
-	 * @return nome O nome do estado
+	 * Method to string override
+	 * @return name of state
 	 */
 	@Override
 	public String toString() {		
@@ -128,22 +128,22 @@ public class State_ {
 	}
 	
 	/***
-	 * Sobreescreve o hash do estado  com base no nome e no id
+	 * Overwrites state hash based on name and id
 	 */
 	@Override
 	public int hashCode() {
-	    final int primo = 7;
+	    final int prime = 7;
 	    int result = 56;
-	    result = primo * result + ((name == null) ? 0 : name.hashCode());
-	    result = primo * result + id;
+	    result = prime * result + ((name == null) ? 0 : name.hashCode());
+	    result = prime * result + id;
 	    return result;
 	}
 
-	public boolean isVisitado() {
+	public boolean isVisited() {
 		return visited;
 	}
 
-	public void setVisitado(boolean visitado) {
+	public void setVisited(boolean visitado) {
 		this.visited = visitado;
 	}
 
