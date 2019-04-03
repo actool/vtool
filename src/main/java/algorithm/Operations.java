@@ -781,8 +781,8 @@ public class Operations {
 
 			}
 
-			path += "Implementation: \n\t path: " + path_i + "\n\t output: " + I.statesOutputs(currentState_i);
-			path += "\nModel: \n\t path:" + path_s + "\n\t output: " + S.statesOutputs(currentState_s);
+			path += "Implementation: \n\t path: " + path_i + "\n\t output: " + I.outputsOfState(currentState_i);
+			path += "\nModel: \n\t path:" + path_s + "\n\t output: " + S.outputsOfState(currentState_s);
 			path += "\n################################################################## \n";
 
 		}

@@ -120,7 +120,7 @@ public class IOLTS extends LTS{
      * @param e state
      * @return list of string containing  output labels 
      */
-	public List<String> statesOutputs(State_ e) {
+	public List<String> outputsOfState(State_ e) {
 		List<String> label = new ArrayList<String>();		
 		
 		if(e != null) {
