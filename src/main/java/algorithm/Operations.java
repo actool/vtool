@@ -547,7 +547,7 @@ public class Operations {
 
 	static volatile State_ current;
 
-	private static List<String> getWordsFromAutomaton(Automaton_ a) {
+	private static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco) {
 		String word = "";
 		String tagWord = " , ";
 		String tagLetter = " -> ";
@@ -608,7 +608,11 @@ public class Operations {
 			if (a.getFinalStates().contains(e)) {
 				aux = e.getInfo().split(tagWord);
 				for (int i = 0; i < aux.length; i++) {
-					words.add(aux[i]);
+					if(ioco) {//does not consider the output
+						words.add(aux[i].substring(0, (aux[i].length()-5)));
+					}else {
+						words.add(aux[i].substring(0,aux[i].length()));
+					}					
 				}
 			}
 		}
@@ -641,18 +645,18 @@ public class Operations {
 	 *            containing words that detect implementation failure
 	 * @return the paths covered by the test cases by implementation and specification
 	 */
-	public static String path(LTS S, LTS I, Automaton_ faultModel) {
-		List<String> testCases = getWordsFromAutomaton(faultModel);
+	public static String path(LTS S, LTS I, Automaton_ faultModel, boolean ioco) {
+		List<String> testCases = getWordsFromAutomaton(faultModel, ioco);
 
-		State_ currentState_s = S.getInitialState();
-		State_ currentState_i = I.getInitialState();
+		State_ currentState_s;
+		State_ currentState_i;
 		List<State_> result_s, result_i;
 		int stop_s = 0;
 		int stop_i = 0;
 
 		String path = "", path_i = "", path_s = "";
 
-		for (String letter : testCases) {
+		for (String letter : testCases) {			
 			currentState_s = S.getInitialState();
 			currentState_i = I.getInitialState();
 			path_i = path_s = "";
@@ -721,11 +725,11 @@ public class Operations {
 	 * @param fault model
 	 *            containing words that detect implementation failure
 	 * @return the paths covered by the test cases by implementation and specification*/
-	public static String path(IOLTS S, IOLTS I, Automaton_ fault) {
-		List<String> testCases = getWordsFromAutomaton(fault);
+	public static String path(IOLTS S, IOLTS I, Automaton_ fault, boolean ioco) {
+		List<String> testCases = getWordsFromAutomaton(fault, ioco);
 
-		State_ currentState_s = S.getInitialState();
-		State_ currentState_i = I.getInitialState();
+		State_ currentState_s;
+		State_ currentState_i;
 		List<State_> result_s, result_i;
 		int stop_s = 0;
 		int stop_i = 0;
@@ -733,6 +737,9 @@ public class Operations {
 		String path = "", path_i = "", path_s = "";
 
 		for (String letter : testCases) {
+			currentState_i = I.getInitialState();
+			currentState_s = S.getInitialState();
+			
 			path_i = path_s = "";
 			path += "Test case: \n\t\t" + letter + "\n";
 			path_s += currentState_s + " -> ";
