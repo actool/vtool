@@ -100,6 +100,7 @@ public class ConformanceView extends JFrame {
 			public void run() {
 				try {
 					ConformanceView frame = new ConformanceView();
+				
 					frame.setVisible(true);
 
 				} catch (Exception e) {
@@ -431,7 +432,7 @@ public class ConformanceView extends JFrame {
 		lblVeredict_1 = new JLabel("Veredict:");
 		lblVeredict_1.setForeground(SystemColor.windowBorder);
 		lblVeredict_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblVeredict_1.setBounds(177, 216, 61, 20);
+		lblVeredict_1.setBounds(23, 228, 61, 20);
 		panel_ioco.add(lblVeredict_1);
 
 		btnTestCases_ioco = new JButton("Show test cases");
@@ -443,13 +444,13 @@ public class ConformanceView extends JFrame {
 		});
 		btnTestCases_ioco.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnTestCases_ioco.setBackground(Color.LIGHT_GRAY);
-		btnTestCases_ioco.setBounds(366, 204, 143, 44);
+		btnTestCases_ioco.setBounds(366, 216, 143, 44);
 		panel_ioco.add(btnTestCases_ioco);
 
 		lbl_veredict_ioco = new JLabel("");
 		lbl_veredict_ioco.setForeground(SystemColor.windowBorder);
 		lbl_veredict_ioco.setFont(new Font("Dialog", Font.BOLD, 13));
-		lbl_veredict_ioco.setBounds(236, 216, 133, 20);
+		lbl_veredict_ioco.setBounds(82, 228, 274, 20);
 		panel_ioco.add(lbl_veredict_ioco);
 
 		panel_language = new JPanel();
@@ -513,7 +514,7 @@ public class ConformanceView extends JFrame {
 		lblVeredict = new JLabel("Veredict:");
 		lblVeredict.setForeground(SystemColor.windowBorder);
 		lblVeredict.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblVeredict.setBounds(189, 226, 65, 20);
+		lblVeredict.setBounds(20, 226, 65, 20);
 		panel_language.add(lblVeredict);
 
 		btnTestCases_lang = new JButton("Show test cases");
@@ -531,7 +532,7 @@ public class ConformanceView extends JFrame {
 		lbl_veredict_lang = new JLabel("");
 		lbl_veredict_lang.setForeground(SystemColor.windowBorder);
 		lbl_veredict_lang.setFont(new Font("Dialog", Font.BOLD, 13));
-		lbl_veredict_lang.setBounds(247, 226, 117, 20);
+		lbl_veredict_lang.setBounds(84, 226, 280, 20);
 		panel_language.add(lbl_veredict_lang);
 
 		btnVerifyConf_lang = new JButton("Verify conformance");
@@ -545,6 +546,8 @@ public class ConformanceView extends JFrame {
 		btnVerifyConf_lang.setBackground(Color.LIGHT_GRAY);
 		btnVerifyConf_lang.setBounds(21, 151, 174, 41);
 		panel_language.add(btnVerifyConf_lang);
+		
+		cleanVeredict();
 	}
 
 	public void setInputOutputField(boolean visibility) {
@@ -655,7 +658,7 @@ public class ConformanceView extends JFrame {
 		conformidade = null;
 		IOLTS S, I = null;
 		LTS S_, I_ = null;
-		try {
+	try {
 
 			//when the model type is not selected or IOLTS is selected but not specified how to differentiate the inputs and outputs
 			if (cbModel.getSelectedIndex() == 0 || (cbLabel.getSelectedIndex() == 0 && cbModel.getSelectedItem() == IOLTS_CONST)
@@ -712,6 +715,7 @@ public class ConformanceView extends JFrame {
 
 		} catch (Exception e_) {
 			JOptionPane.showMessageDialog(panel, e_.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
+			e_.printStackTrace();
 			return;
 		}
 	}
@@ -730,7 +734,18 @@ public class ConformanceView extends JFrame {
 	private JButton btnVerifyConf_lang;
 
 	public boolean isFormValid(boolean ioco) {
-
+		boolean a = !tfImplementation.getText().isEmpty() && !tfSpecification.getText().isEmpty();
+		boolean b = cbModel.getSelectedIndex() != 0 || (!ioco || cbModel.getSelectedIndex() == 0);
+		
+		boolean c = !ioco;
+		boolean d = ioco && cbModel.getSelectedItem() == IOLTS_CONST;
+		boolean e = (cbLabel.getSelectedItem() == typeAutomaticLabel);
+		boolean f = cbLabel.getSelectedItem() == typeManualLabel;
+		boolean g =cbLabel.getSelectedItem() == typeManualLabel && !tfInput.getText().isEmpty()
+				&& !tfOutput.getText().isEmpty();
+	
+		
+		
 		return (!tfImplementation.getText().isEmpty() && !tfSpecification.getText().isEmpty()// implementation and
 																								// specification field
 				&& (cbModel.getSelectedIndex() != 0 || (!ioco || cbModel.getSelectedIndex() == 0)))
