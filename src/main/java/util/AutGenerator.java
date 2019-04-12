@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class AutGenerator {
 	public static void main(String[] args) {		
-		int qtStates = 25000;
+		int qtStates = 500;
 		List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");
 		int qtTransition = 0;
 		String transitions = "";
@@ -35,7 +35,7 @@ public class AutGenerator {
 			String header = "des("+tag+"0,"+qtTransition+", "+qtStates+")" + newline;
 			String aut = header + transitions;
 			
-			System.out.println(aut);
+			//System.out.println(aut);
 			writer = new BufferedWriter(new FileWriter(file));
 			writer.write(aut);
 		} catch (Exception e) {
