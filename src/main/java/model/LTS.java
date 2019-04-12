@@ -156,7 +156,7 @@ public class LTS {
 		}
 
 		// add the label in the alphabet list
-		this.addToAlphabet(transition.getRotulo());
+		this.addToAlphabet(transition.getLabel());
 	}
 
 	/***
@@ -189,10 +189,10 @@ public class LTS {
 		for (Transition_ t : transitions) {
 			// verifies whether the transition contains the iniState of the transition and the
 			// label passed parameter
-			if (t.getEstadoIni().getNome().toString().equals(labelIniState.toString())
-					&& t.getRotulo().toString().equals(labelTransition.toString())) {				
+			if (t.getIniState().getNome().toString().equals(labelIniState.toString())
+					&& t.getLabel().toString().equals(labelTransition.toString())) {				
 				// adds the status reached
-				endStates.add(t.getEstadoFim());
+				endStates.add(t.getEndState());
 			}
 		}
 
@@ -209,7 +209,7 @@ public class LTS {
 		List<Transition_> transitionsOfState = new ArrayList<Transition_>();
 		for (Transition_ t : transitions) {
 			// verifies that the transition starts from the parameter state
-			if (t.getEstadoIni().getNome().equals(state.getNome())) {
+			if (t.getIniState().getNome().equals(state.getNome())) {
 				// add transition to list
 				transitionsOfState.add(t);
 			}
@@ -266,7 +266,7 @@ public class LTS {
 		s += ("##############################\n");
 		s += ("Length: " + this.transitions.size() + "\n");
 		for (Transition_ t : this.transitions) {
-			s += (t.getEstadoIni().getNome() + " - " + t.getRotulo() + " - " + t.getEstadoFim().getNome() + "\n");
+			s += (t.getIniState().getNome() + " - " + t.getLabel() + " - " + t.getEndState().getNome() + "\n");
 		}
 
 		// alphabet

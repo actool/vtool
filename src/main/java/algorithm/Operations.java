@@ -111,8 +111,8 @@ public class Operations {
 		List<Transition_> newTransitions = new ArrayList<Transition_>();
 		// treats transitions when TAU in LTS converts to EPSILON in automato
 		for (Transition_ t : transitions) {
-			if (t.getRotulo().equals(Constants.TAU)) {
-				newTransitions.add(new Transition_(t.getEstadoIni(), Constants.EPSILON, t.getEstadoFim()));
+			if (t.getLabel().equals(Constants.TAU)) {
+				newTransitions.add(new Transition_(t.getIniState(), Constants.EPSILON, t.getEndState()));
 			} else {
 				newTransitions.add(t);
 			}
@@ -598,23 +598,23 @@ public class Operations {
 				List<Transition_> transicoes = a.transitionsByIniState(current);
 				for (Transition_ t : transicoes) {
 					news = new ArrayList<String>();
-					iniState = a.getStates().stream().filter(x -> x.equals(t.getEstadoIni())).findFirst().orElse(null);
-					endState = a.getStates().stream().filter(x -> x.equals(t.getEstadoFim())).findFirst().orElse(null);
+					iniState = a.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null);
+					endState = a.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null);
 					word = "";
 					if (iniState.getInfo() != null) {
 						aux = iniState.getInfo().split(tagWord);
 						if (aux.length > 0) {
 							for (int i = 0; i < aux.length; i++) {
-								word = aux[i] + tagLetter + t.getRotulo() + tagWord;
+								word = aux[i] + tagLetter + t.getLabel() + tagWord;
 								news.add(word);
 							}
 						} else {
-							word = iniState.getInfo() + tagLetter + t.getRotulo() + tagWord;
+							word = iniState.getInfo() + tagLetter + t.getLabel() + tagWord;
 							news.add(word);
 						}
 
 					} else {
-						word = t.getRotulo() + tagWord;
+						word = t.getLabel() + tagWord;
 						news.add(word);
 					}
 

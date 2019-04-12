@@ -127,9 +127,9 @@ public class IOLTS extends LTS{
 			for (Transition_ t : transitions) {
 				// checks whether the transition contains the initial state of the transition and the
 				// output label 
-				if (t.getEstadoIni().getNome().toString().equals(e.getNome().toString())
-						&& outputs.contains(t.getRotulo())) {
-					label.add(t.getRotulo());				
+				if (t.getIniState().getNome().toString().equals(e.getNome().toString())
+						&& outputs.contains(t.getLabel())) {
+					label.add(t.getLabel());				
 				}
 			}
 		}

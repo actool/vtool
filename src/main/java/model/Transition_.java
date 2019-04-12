@@ -57,7 +57,7 @@ public class Transition_ {
 	 * Returns the transition label
 	 * @return label
 	 */
-	public String getRotulo() {
+	public String getLabel() {
 		return label;
 	}
 
@@ -66,7 +66,7 @@ public class Transition_ {
 	 * @param label
 	 *           
 	 */
-	public void setRotulo(String label) {
+	public void setLabel(String label) {
 		this.label = label;
 	}
 
@@ -74,7 +74,7 @@ public class Transition_ {
 	 * Retorn type of transition
 	 * @return tType
 	 */
-	public TransitionType getTipo() {
+	public TransitionType getType() {
 		return tType;
 	}
 
@@ -83,14 +83,14 @@ public class Transition_ {
 	 * @param tType
 	 *            
 	 */
-	public void setTipo(TransitionType tType) {
+	public void setType(TransitionType tType) {
 		this.tType = tType;
 	}
 
 	/**Retorn the iniState
 	 * @return iniState
 	 */
-	public State_ getEstadoIni() {
+	public State_ getIniState() {
 		return iniState;
 	}
 
@@ -99,7 +99,7 @@ public class Transition_ {
 	 * @param iniState
 	 *            
 	 */
-	public void setEstadoIni(State_ iniState) {
+	public void setIniState(State_ iniState) {
 		this.iniState = iniState;
 	}
 
@@ -107,7 +107,7 @@ public class Transition_ {
 	 * Retorn the endState
 	 * @return endState
 	 */
-	public State_ getEstadoFim() {
+	public State_ getEndState() {
 		return endState;
 	}
 
@@ -116,7 +116,7 @@ public class Transition_ {
 	 * @param endState
 	 * 
 	 */
-	public void setEstadoFim(State_ endState) {
+	public void serEndState(State_ endState) {
 		this.endState = endState;
 	}
 

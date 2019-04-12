@@ -30,11 +30,21 @@
 			<groupId>dk.brics</groupId>
 			<artifactId>automaton</artifactId>
 			<version>1.12-1</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
 			<version>7.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-core</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-ext</artifactId>
+			<version>1.0.1</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -115,9 +115,9 @@ public class Automaton_ extends LTS {
 		//visit all transitions of automaton
 		for (Transition_ transition : getTransitions()) {
 			//if the transition has an epsilon label
-			if(transition.getRotulo().equals(Constants.EPSILON)) {
+			if(transition.getLabel().equals(Constants.EPSILON)) {
 				//add transition to return
-				statesWithEpsilonTransition.add(transition.getEstadoIni());
+				statesWithEpsilonTransition.add(transition.getIniState());
 			}
 		}
 		
@@ -145,8 +145,8 @@ public class Automaton_ extends LTS {
 				for (Transition_ t : transitions) {
 					// verifies that the current transition is equal to some LTS transition, based on the
 					// initial state and label of both transitions
-					if (t.getEstadoIni().getNome().equals(currentTransition.getEstadoIni().getNome())
-							&& t.getRotulo().equals(currentTransition.getRotulo())) {
+					if (t.getIniState().getNome().equals(currentTransition.getIniState().getNome())
+							&& t.getLabel().equals(currentTransition.getLabel())) {
 						cont++;
 					}
 

@@ -153,8 +153,8 @@ public class ImportAutFile {
 				// remove the transitions from the labels! ?
 				ArrayList<Transition_> transicoes = new ArrayList<Transition_>();
 				for (Transition_ t : iolts.getTransitions()) {
-					transicoes.add(new Transition_(t.getEstadoIni(), t.getRotulo().substring(1, t.getRotulo().length()),
-							t.getEstadoFim()));
+					transicoes.add(new Transition_(t.getIniState(), t.getLabel().substring(1, t.getLabel().length()),
+							t.getEndState()));
 				}
 
 				iolts.setTransitions(transicoes);

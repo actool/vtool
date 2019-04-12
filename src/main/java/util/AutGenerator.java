@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class AutGenerator {
 	public static void main(String[] args) {		
-		int qtStates = 500;
+		int qtStates = 10;
 		List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");
 		int qtTransition = 0;
 		String transitions = "";
