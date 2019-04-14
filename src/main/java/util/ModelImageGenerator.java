@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import org.jgraph.graph.ConnectionSet.Connection;
 import org.jgraph.graph.DefaultEdge;
+import org.jgraph.graph.GraphConstants;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.UndirectedGraph;
@@ -29,7 +30,9 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.shape.mxEllipseShape;
 import com.mxgraph.util.mxCellRenderer;
+import com.mxgraph.util.mxConstants;
 
 import model.IOLTS;
 import model.State_;
@@ -37,56 +40,58 @@ import model.Transition_;
 
 public class ModelImageGenerator {
 
-	/*public static void main(String[] args) throws IOException {
-		IOLTS a = new IOLTS();
-		State_ s0 = new State_("s0");
-		State_ s1 = new State_("s1");
-		a.addState(s0);
-		a.addState(s1);
-		
-		a.addTransition(new Transition_(s0,"a", s1));
-		a.addTransition(new Transition_(s1,"a", s0));
-		a.addTransition(new Transition_(s1,"b", s0));
-		
-		generateImage(a);
-	}*/
+	/*
+	 * public static void main(String[] args) throws IOException { IOLTS a = new
+	 * IOLTS(); State_ s0 = new State_("s0"); State_ s1 = new State_("s1");
+	 * a.addState(s0); a.addState(s1);
+	 * 
+	 * a.addTransition(new Transition_(s0,"a", s1)); a.addTransition(new
+	 * Transition_(s1,"a", s0)); a.addTransition(new Transition_(s1,"b", s0));
+	 * 
+	 * generateImage(a); }
+	 */
 
 	// DefaultDirectedGraph
 	public static String generateImage(IOLTS model) throws IOException {
-		
+
 		File imgFile = File.createTempFile("model", ".png");
 		imgFile.createNewFile();
-		
+
 		DirectedPseudograph<String, DefaultEdge> g = ioltsToGraph(model);
-	
+		
+		
 		JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
-		mxIGraphLayout  layout = new mxHierarchicalLayout(graphAdapter);
+		
+		
+		
+		mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
 		layout.execute(graphAdapter.getDefaultParent());
-	
+						
 		BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
 
 		ImageIO.write(image, "PNG", imgFile);
 
-		System.out.println(imgFile.getAbsolutePath());
-		
+		//System.out.println(imgFile.getAbsolutePath());
+
 		return imgFile.getAbsolutePath();
 	}
 
 	private static DirectedPseudograph<String, DefaultEdge> ioltsToGraph(IOLTS model) {
-		
+
 		DirectedPseudograph<String, DefaultEdge> g = new DirectedPseudograph<String, DefaultEdge>(DefaultEdge.class);
-		
+
 		for (State_ state : model.getStates()) {
 			g.addVertex(state.toString());
+
 		}
-		
+
 		for (Transition_ t : model.getTransitions()) {// getTransions(model)
 			g.addEdge(t.getIniState().toString(), t.getEndState().toString(), new RelationshipEdge(t.getLabel()));
 		}
 
-		
 		return g;
 	}
+
 
 	/*
 	 * private static List<Transition_> getTransions(IOLTS model) { String label =
