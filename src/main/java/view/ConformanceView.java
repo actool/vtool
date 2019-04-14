@@ -26,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -267,24 +268,26 @@ public class ConformanceView extends JFrame {
 				lblInputLang.setText(StringUtils.join(S.getInputs(), ","));
 				lblOutputLang.setText(StringUtils.join(S.getOutputs(), ","));
 
-				
-
 				int imgHeight = 200;
-				int imgWidth = 200;
-
+				int imgWidth = 150;
+				
 				if (implementation) {
 					pathImageImplementation = ModelImageGenerator.generateImage(I).replaceAll("/", "\\");
+					
+					
+					
 					imgImplementationLang.setIcon(new ImageIcon(new ImageIcon(pathImageImplementation).getImage()
 							.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
 					imgImplementationIoco.setIcon(new ImageIcon(new ImageIcon(pathImageImplementation).getImage()
 							.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
-				} else {
+				} else {					 					 				
 					pathImageModel = ModelImageGenerator.generateImage(S).replaceAll("/", "\\");
+					
 					imgModelLang.setIcon(new ImageIcon(new ImageIcon(pathImageModel).getImage()
 							.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
-					
+
 					imgModelIoco.setIcon(new ImageIcon(new ImageIcon(pathImageModel).getImage()
-							.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));					
+							.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
 				}
 
 				imageShowHide(true, true);
@@ -636,7 +639,6 @@ public class ConformanceView extends JFrame {
 		imageShowHide(false, true);
 		panel_ioco.add(imgModelIoco);
 
-		
 		imgImplementationIoco.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -644,7 +646,7 @@ public class ConformanceView extends JFrame {
 			}
 		});
 		imgImplementationIoco.setBounds(321, 125, 206, 206);
-		
+
 		panel_ioco.add(imgImplementationIoco);
 
 		panel_language = new JPanel();
@@ -790,7 +792,7 @@ public class ConformanceView extends JFrame {
 		taTestCasesLang.enable(false);
 		JScrollPane scrolltxt2 = new JScrollPane(taTestCasesLang);
 		scrolltxt2.setBounds(10, 526, 586, 160);
-		
+
 		panel_language.add(scrolltxt2);
 
 		imgModelLang = new JLabel("");
@@ -802,11 +804,10 @@ public class ConformanceView extends JFrame {
 			}
 		});
 		imgModelLang.setBounds(10, 135, 206, 206);
-		imgImplementationLang = new JLabel("");	
+		imgImplementationLang = new JLabel("");
 		imageShowHide(false, false);
 		panel_language.add(imgModelLang);
 
-			
 		imgImplementationLang.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -816,37 +817,57 @@ public class ConformanceView extends JFrame {
 		imgImplementationLang.setBounds(318, 135, 206, 206);
 		panel_language.add(imgImplementationLang);
 
-		
-		
 		cleanVeredict();
 	}
 
-	
 	public void showModelImage(boolean implementation) {
-		int size = 550;				
-		JFrame frame = new JFrame();
-		frame.setVisible(true);
-		frame.setSize(size+50, size+50);
-		JPanel panel = new JPanel();
-		
-		JLabel jl = new JLabel();		
-		
-		if(implementation) {
-			jl.setIcon(new ImageIcon(new ImageIcon(pathImageImplementation).getImage()
-					.getScaledInstance(size, size, Image.SCALE_DEFAULT)));
-		}else {
-			jl.setIcon(new ImageIcon(new ImageIcon(pathImageModel).getImage()
-					.getScaledInstance(size, size, Image.SCALE_DEFAULT)));
+		int size = 550;
+
+		BufferedImage bimg;
+		int width;
+		int height;
+
+		String model = (implementation) ? "Implementation - " + tfImplementation.getText()
+				: "Model - " + tfSpecification.getText();
+
+		try {
+			JFrame frame = new JFrame(model);
+			frame.setVisible(true);
+
+			JPanel panel = new JPanel();
+
+			JLabel jl = new JLabel();
+
+			if (implementation) {
+				bimg = ImageIO.read(new File(pathImageImplementation));
+				width = bimg.getWidth();
+				height = bimg.getHeight();
+				frame.setSize(width + 50, height + 50);
+
+				jl.setIcon(new ImageIcon(new ImageIcon(pathImageImplementation).getImage().getScaledInstance(width, height,
+						Image.SCALE_DEFAULT)));
+			} else {
+				bimg = ImageIO.read(new File(pathImageImplementation));
+				width = bimg.getWidth();
+				height = bimg.getHeight();
+
+				frame.setSize(width + 50, height + 50);
+				jl.setIcon(new ImageIcon(
+						new ImageIcon(pathImageModel).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT)));
+			}
+
+			JScrollPane scrolltxt = new JScrollPane(jl);
+			scrolltxt.setBounds(3, 3, width/(width%size), height/(height%size));
+			panel.add(scrolltxt);
+			frame.getContentPane().add(panel);
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		
 		
 		
-		JScrollPane scrolltxt = new JScrollPane(jl);
-		scrolltxt.setBounds(3, 3, size, size);
-		panel.add(scrolltxt);
-		frame.getContentPane().add(panel);
 	}
-	
+
 	public void setInputOutputField(boolean visibility) {
 		lblInput.setVisible(visibility);
 		lblOutput.setVisible(visibility);
@@ -1026,21 +1047,21 @@ public class ConformanceView extends JFrame {
 		}
 	}
 
-	public void imageShowHide(boolean show, boolean ioco) {		
-		if(!ioco) {
+	public void imageShowHide(boolean show, boolean ioco) {
+		if (!ioco) {
 			imgModelLang.setVisible(show);
 			imgModelLang.enable(show);
 			imgImplementationLang.setVisible(show);
 			imgImplementationLang.enable(show);
-		}else {
+		} else {
 			imgModelIoco.setVisible(show);
 			imgModelIoco.enable(show);
 			imgImplementationIoco.setVisible(show);
 			imgImplementationIoco.enable(show);
 		}
-		
+
 	}
-	
+
 	private JPanel panel_language;
 	private JPanel panel_ioco;
 	private JTextField tfD;
