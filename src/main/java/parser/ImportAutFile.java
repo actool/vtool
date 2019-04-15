@@ -21,8 +21,8 @@ import util.Constants;
 public class ImportAutFile {
 
 	/***
-	 * Reads and validates the first line of the .aut file, in the first line of the file
-	 *  des(<initial-state>, <number-of-transitions>, <number-of-states>)
+	 * Reads and validates the first line of the .aut file, in the first line of the
+	 * file des(<initial-state>, <number-of-transitions>, <number-of-states>)
 	 * 
 	 * @param path
 	 *            the file directory
@@ -35,8 +35,8 @@ public class ImportAutFile {
 			File file = new File(path);
 			Scanner sc = new Scanner(file);
 			// first line of file
-			//des (<initial-state>, <number-of-transitions>, <number-of-states>)
-			//String lineConfiguration = "des (1, 2, 3)";
+			// des (<initial-state>, <number-of-transitions>, <number-of-states>)
+			// String lineConfiguration = "des (1, 2, 3)";
 			lineConfig = sc.nextLine();
 			// removes the space that you may have at the end of the configuration string
 			lineConfig = lineConfig.replaceAll("\\s+$", "");
@@ -96,11 +96,11 @@ public class ImportAutFile {
 	 *            element to be added to array
 	 * @return array after adding the element
 	 */
-	static <T> T[] append(T[] arr, T element) {		
+	static <T> T[] append(T[] arr, T element) {
 		final int N = arr.length;
 		// create a copy of the array with one more position
 		arr = Arrays.copyOf(arr, N + 1);
-		//add the element in the last position of the array
+		// add the element in the last position of the array
 		arr[N] = element;
 		return arr;
 	}
@@ -122,7 +122,7 @@ public class ImportAutFile {
 			ArrayList<String> outputs) throws Exception {
 
 		try {
-			//converts .aut to LTS
+			// converts .aut to LTS
 			LTS lts = autToLTS(path);
 			// creates a new LTS-based IOLTS
 			IOLTS iolts = new IOLTS(lts);
@@ -140,7 +140,7 @@ public class ImportAutFile {
 						s.add(a.substring(1, a.length()));
 					}
 
-					//if it starts with ? so it's an input symbol
+					// if it starts with ? so it's an input symbol
 					if (a.charAt(0) == Constants.INPUT_TAG) {
 						e.add(a.substring(1, a.length()));
 					}
@@ -150,15 +150,21 @@ public class ImportAutFile {
 				iolts.setInputs(e);
 				iolts.setOutputs(s);
 
-				// remove the transitions from the labels! ?
 				ArrayList<Transition_> transicoes = new ArrayList<Transition_>();
+				String label = "";
+
+				
 				for (Transition_ t : iolts.getTransitions()) {
-					transicoes.add(new Transition_(t.getIniState(), t.getLabel().substring(1, t.getLabel().length()),
-							t.getEndState()));
+					// remove the transitions from the labels ! ?
+					label = t.getLabel().substring(1, t.getLabel().length());
+					//check whether the labels with !/? were defined in the file
+					if (e.contains(label) || s.contains(label)) {
+						transicoes.add(new Transition_(t.getIniState(), label, t.getEndState()));
+					}
 				}
 
 				iolts.setTransitions(transicoes);
-			} else {//if the symbols !/? do not differentiate
+			} else {// if the symbols !/? do not differentiate
 				// the set of input and output are those passed by parameter
 				iolts.setInputs(inputs);
 				iolts.setOutputs(outputs);
@@ -190,7 +196,7 @@ public class ImportAutFile {
 			msg += ("expected format:" + "\n");
 			msg += ("'des(<initial-state>, <number-of-transitions>, <number-of-states>)'" + "\n");
 			System.out.println(msg);
-			
+
 			throw new Exception(msg);
 		} else {
 			// error messages on inconsistencies with each line
@@ -206,7 +212,8 @@ public class ImportAutFile {
 			// new lts that will be built based on the file
 			LTS lts = new LTS();
 			// Parameters read from the first line of the file
-			// definition of the initial state based on the 1st line of the file (configuration)
+			// definition of the initial state based on the 1st line of the file
+			// (configuration)
 			lts.setInitialState(new State_(configs[0]));
 			int nTransitions = Integer.parseInt(configs[1].replaceAll("\\s+", ""));
 			int nStates = Integer.parseInt(configs[2].replaceAll("\\s+", ""));
@@ -248,13 +255,12 @@ public class ImportAutFile {
 					line = line.substring(ini + 1, fim);
 					String[] val = line.split(",");
 					if (val.length != 3) {
-						msg += ("line [" + count + "] should have been passed 3 parameters separated by commas"
-								+ "\n");
+						msg += ("line [" + count + "] should have been passed 3 parameters separated by commas" + "\n");
 						inconsistentLine = true;
 						msg_cont += 1;
 					}
 
-					//if the transition line is complete, without inconsistency
+					// if the transition line is complete, without inconsistency
 					if (!inconsistentLine) {
 						// creates states and transitions
 						iniState = new State_(val[0].trim());
@@ -270,9 +276,8 @@ public class ImportAutFile {
 					count++;
 				}
 
-				
 				if (msg.equals("")) {
-					//if there is not the amount of transitions that is defined in the first
+					// if there is not the amount of transitions that is defined in the first
 					// line
 					if (nTransitions != lts.getTransitions().size()) {
 						msg += "Amount of transitions divergent from the value passed in the 1st row \n";
@@ -293,8 +298,7 @@ public class ImportAutFile {
 			if (msg_cont == 0) {// if (msg.equals("")) {
 				return lts;
 			} else {
-				msg = ("inconsistencies in reading the .aut file! \n" + "Path: " + path + "\n"
-						+ "Message: \n" + msg);
+				msg = ("inconsistencies in reading the .aut file! \n" + "Path: " + path + "\n" + "Message: \n" + msg);
 
 				throw new Exception(msg);
 			}

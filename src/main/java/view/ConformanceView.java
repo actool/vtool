@@ -88,6 +88,10 @@ public class ConformanceView extends JFrame {
 	private JButton btnViewImplementationIoco;
 	private JButton btnViewModelLang;
 	private JButton btnViewImplementationLang;
+	private JLabel lblLabelIoco;
+	private JLabel lblLabel;
+	JLabel lblOutput_1;
+	JLabel lblnput;
 
 	private String pathImplementation;
 	private String pathSpecification;
@@ -150,7 +154,7 @@ public class ConformanceView extends JFrame {
 		btnTestCases_ioco.setVisible(false);
 		lbl_veredict_lang.setText("");
 		btnTestCases_lang.setVisible(false);
-		
+
 		taTestCasesIoco.setText("");
 		taTestCasesLang.setText("");
 	}
@@ -242,41 +246,59 @@ public class ConformanceView extends JFrame {
 	String pathImageImplementation = "";
 
 	public void processModels(boolean implementation, boolean ioco) {
+		boolean lts = false;
+		LTS S_ = new LTS(), I_ = new LTS();
+
+		if (cbModel.getSelectedIndex() == 0
+				|| (cbLabel.getSelectedIndex() == 0 && cbModel.getSelectedItem() == IOLTS_CONST)
+				|| cbModel.getSelectedItem() == LTS_CONST || (cbLabel.getSelectedItem() == typeManualLabel
+						&& tfInput.getText().isEmpty() && tfOutput.getText().isEmpty())) {
+			lts = true;
+		}
+
+		if (!implementation) {
+			isModelProcess = true;
+		} else {
+			isImplementationProcess = true;
+		}
 
 		try {
-			if ((ioco && isFormValid(ioco)) || (!ioco && isFormValid(!ioco))) {
+			if ((ioco && isFormValid(ioco)) || (!ioco && isFormValid(ioco))) {
 
-				if (cbLabel.getSelectedIndex() == 2) {// manual input/output
+				if (lts) {
+					if (!implementation) {
+						S_ = ImportAutFile.autToLTS(pathSpecification);
+
+					} else {
+						I_ = ImportAutFile.autToLTS(pathImplementation);
+					}
+					tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
+				}
+				if (cbLabel.getSelectedIndex() == 2 || lts) {// manual input/output
 					if (!implementation) {
 						S = ImportAutFile.autToIOLTS(pathSpecification, true,
 								new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
 								new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-						isModelProcess = true;
+
 					} else {
 						I = ImportAutFile.autToIOLTS(pathImplementation, true,
 								new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
 								new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-						isImplementationProcess = true;
+
 					}
 
 				} else {
 					if (!implementation) {
 						S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
 								new ArrayList<String>());
-						isModelProcess = true;
+
 					} else {
 						I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
 								new ArrayList<String>());
-						isImplementationProcess = true;
+
 					}
 
 				}
-
-				lblInputIoco.setText(StringUtils.join(S.getInputs(), ","));
-				lblOutputIoco.setText(StringUtils.join(S.getOutputs(), ","));
-
-				lblInputLang.setText(StringUtils.join(S.getInputs(), ","));
-				lblOutputLang.setText(StringUtils.join(S.getOutputs(), ","));
 
 				int imgHeight = 200;
 				int imgWidth = 150;
@@ -298,33 +320,82 @@ public class ConformanceView extends JFrame {
 							.getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
 				}
 
-				if(implementation) {
+				if (implementation) {
 					btnViewImplementationIoco.setVisible(true);
 					btnViewImplementationLang.setVisible(true);
-				}else {
+				} else {
 					btnViewModelIoco.setVisible(true);
 					btnViewModelLang.setVisible(true);
 				}
 				// imageShowHide(true, true);
 				// imageShowHide(true, false);
 				
+				IOLTS model = (implementation)?I:S;
+								
+				if (lts) {
+					showModelLabel(true, model);
+				} else {
+					showModelLabel(false, model);
+				}
+
 			} else {
 
-				isModelProcess = false;
-				isImplementationProcess = false;
 				// imageShowHide(false, true);
 				// imageShowHide(false, false);
-				if(implementation) {
+				if (implementation) {
 					btnViewImplementationIoco.setVisible(false);
 					btnViewImplementationLang.setVisible(false);
-				}else {
+					isImplementationProcess = false;
+				} else {
 					btnViewModelIoco.setVisible(false);
 					btnViewModelLang.setVisible(false);
+					isModelProcess = false;
+				}
+				
+				if (lts) {
+					showModelLabel(true);
+				} else {
+					showModelLabel(false);
 				}
 			}
 
 		} catch (Exception e) {
 
+		}
+
+		
+	}
+
+	public void showModelLabel(boolean label) {
+		lblLabel.setVisible(label);
+		lblLabelIoco.setVisible(label);
+		lblLabel_.setVisible(label);
+		lblLabelLang.setVisible(label);
+
+		lblnput.setVisible(!label);
+		lblOutput_.setVisible(!label);
+		lblInput_.setVisible(!label);
+		lblOutput_1.setVisible(!label);
+
+		lblInputIoco.setVisible(!label);
+		lblOutputIoco.setVisible(!label);
+		lblInputLang.setVisible(!label);
+		lblOutputLang.setVisible(!label);
+	}
+	
+	public void showModelLabel(boolean lts, IOLTS model) {
+		if (lts) {
+			showModelLabel(true);
+			
+			lblLabelIoco.setText(StringUtils.join(model.getAlphabet(), ","));
+			lblLabelLang.setText(StringUtils.join(model.getAlphabet(), ","));
+		} else {
+			showModelLabel(false);
+			lblInputIoco.setText(StringUtils.join(model.getInputs(), ","));
+			lblOutputIoco.setText(StringUtils.join(model.getOutputs(), ","));
+
+			lblInputLang.setText(StringUtils.join(model.getInputs(), ","));
+			lblOutputLang.setText(StringUtils.join(model.getOutputs(), ","));
 		}
 	}
 
@@ -336,7 +407,7 @@ public class ConformanceView extends JFrame {
 	 */
 	public ConformanceView() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/icon.PNG")));
-		setTitle("VTool\r\n");
+		setTitle("Everest");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 637, 540);
 		contentPane = new JPanel();
@@ -361,12 +432,13 @@ public class ConformanceView extends JFrame {
 						ioco = false;
 					}
 				}
-
-				if (!isModelProcess) {
-					processModels(false, ioco);
-				}
-				if (!isImplementationProcess) {
-					processModels(true, ioco);
+				if (tab.equals(tabIOCO) || tab.equals(tabLang)) {
+					if (!isModelProcess) {
+						processModels(false, ioco);
+					}
+					if (!isImplementationProcess) {
+						processModels(true, ioco);
+					}
 				}
 
 			}
@@ -508,6 +580,8 @@ public class ConformanceView extends JFrame {
 			public void keyTyped(KeyEvent arg0) {
 				failPath = "";
 				cleanVeredict();
+				isModelProcess = false;
+				isImplementationProcess = false;
 			}
 		});
 		tfInput.setToolTipText("");
@@ -527,6 +601,8 @@ public class ConformanceView extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				failPath = "";
 				cleanVeredict();
+				isModelProcess = false;
+				isImplementationProcess = false;
 			}
 		});
 		tfOutput.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -560,10 +636,11 @@ public class ConformanceView extends JFrame {
 		lblRotulo.setForeground(labelColor);
 		lblRotulo.setFont(new Font("Dialog", Font.BOLD, 13));
 		lblRotulo.setBounds(321, 143, 274, 22);
-		// lblRotulo.setVisible(false);
+		lblRotulo.setVisible(false);
 		panel_conf.add(lblRotulo);
 
 		cbLabel = new JComboBox();
+		cbLabel.setVisible(false);
 		cbLabel.setForeground(textColor);
 		cbLabel.setBackground(backgroundColor);
 		cbLabel.addItemListener(new ItemListener() {
@@ -630,13 +707,13 @@ public class ConformanceView extends JFrame {
 		lblImplementation_1.setBounds(321, 11, 105, 22);
 		panel_ioco.add(lblImplementation_1);
 
-		JLabel lblInput_1 = new JLabel("Input");
-		lblInput_1.setForeground(SystemColor.windowBorder);
-		lblInput_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblInput_1.setBounds(11, 71, 44, 14);
-		panel_ioco.add(lblInput_1);
+		lblnput = new JLabel("Input");
+		lblnput.setForeground(SystemColor.windowBorder);
+		lblnput.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblnput.setBounds(10, 71, 44, 14);
+		panel_ioco.add(lblnput);
 
-		JLabel lblOutput_1 = new JLabel("Output");
+		lblOutput_1 = new JLabel("Output");
 		lblOutput_1.setForeground(SystemColor.windowBorder);
 		lblOutput_1.setFont(new Font("Dialog", Font.BOLD, 13));
 		lblOutput_1.setBounds(321, 71, 67, 14);
@@ -654,7 +731,7 @@ public class ConformanceView extends JFrame {
 
 		lblInputIoco = new JLabel("");
 		lblInputIoco.setForeground(SystemColor.controlShadow);
-		lblInputIoco.setBounds(11, 88, 291, 26);
+		lblInputIoco.setBounds(10, 88, 291, 26);
 		panel_ioco.add(lblInputIoco);
 
 		lblOutputIoco = new JLabel("");
@@ -718,6 +795,18 @@ public class ConformanceView extends JFrame {
 		btnViewImplementationIoco.setBackground(Color.LIGHT_GRAY);
 		btnViewImplementationIoco.setBounds(448, 9, 154, 26);
 		panel_ioco.add(btnViewImplementationIoco);
+
+		lblLabel = new JLabel("Label");
+		lblLabel.setVisible(false);
+		lblLabel.setForeground(SystemColor.windowBorder);
+		lblLabel.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblLabel.setBounds(10, 71, 44, 14);
+		panel_ioco.add(lblLabel);
+
+		lblLabelIoco = new JLabel("");
+		lblLabelIoco.setForeground(SystemColor.controlShadow);
+		lblLabelIoco.setBounds(10, 88, 586, 26);
+		panel_ioco.add(lblLabelIoco);
 
 		panel_language = new JPanel();
 		tabbedPane.addTab(tabLang, null, panel_language, null);
@@ -814,15 +903,15 @@ public class ConformanceView extends JFrame {
 		label_1.setBounds(11, 15, 52, 14);
 		panel_language.add(label_1);
 
-		label_2 = new JLabel("Input");
-		label_2.setForeground(SystemColor.windowBorder);
-		label_2.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_2.setBounds(11, 71, 44, 14);
-		panel_language.add(label_2);
+		lblInput_ = new JLabel("Input");
+		lblInput_.setForeground(SystemColor.windowBorder);
+		lblInput_.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblInput_.setBounds(11, 71, 44, 14);
+		panel_language.add(lblInput_);
 
 		lblInputLang = new JLabel("");
 		lblInputLang.setForeground(SystemColor.controlShadow);
-		lblInputLang.setBounds(9, 88, 294, 26);
+		lblInputLang.setBounds(11, 88, 294, 26);
 		panel_language.add(lblInputLang);
 
 		lblmodelLang = new JLabel("");
@@ -841,11 +930,11 @@ public class ConformanceView extends JFrame {
 		lblimplementationLang.setBounds(321, 29, 275, 26);
 		panel_language.add(lblimplementationLang);
 
-		label_7 = new JLabel("Output");
-		label_7.setForeground(SystemColor.windowBorder);
-		label_7.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_7.setBounds(321, 71, 67, 14);
-		panel_language.add(label_7);
+		lblOutput_ = new JLabel("Output");
+		lblOutput_.setForeground(SystemColor.windowBorder);
+		lblOutput_.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblOutput_.setBounds(321, 71, 67, 14);
+		panel_language.add(lblOutput_);
 
 		lblOutputLang = new JLabel("");
 		lblOutputLang.setForeground(SystemColor.controlShadow);
@@ -859,7 +948,7 @@ public class ConformanceView extends JFrame {
 
 		taTestCasesLang = new JTextArea();
 		taTestCasesLang.setBounds(10, 282, 584, 197);
-		//taTestCasesLang.enable(false);
+		// taTestCasesLang.enable(false);
 		JScrollPane scrolltxt2 = new JScrollPane(taTestCasesLang);
 		scrolltxt2.setBounds(11, 293, 586, 160);
 
@@ -913,6 +1002,18 @@ public class ConformanceView extends JFrame {
 		btnViewImplementationLang.setBackground(Color.LIGHT_GRAY);
 		btnViewImplementationLang.setBounds(448, 9, 154, 26);
 		panel_language.add(btnViewImplementationLang);
+
+		lblLabelLang = new JLabel("");
+		lblLabelLang.setForeground(SystemColor.controlShadow);
+		lblLabelLang.setBounds(9, 88, 588, 26);
+		panel_language.add(lblLabelLang);
+
+		lblLabel_ = new JLabel("Label");
+		lblLabel_.setVisible(false);
+		lblLabel_.setForeground(SystemColor.windowBorder);
+		lblLabel_.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblLabel_.setBounds(11, 72, 44, 14);
+		panel_language.add(lblLabel_);
 
 		cleanVeredict();
 	}
@@ -986,6 +1087,8 @@ public class ConformanceView extends JFrame {
 		} else {
 			setInputOutputField(false);
 		}
+		isModelProcess = false;
+		isImplementationProcess = false;
 	}
 
 	public void actionCbModel(String model) {
@@ -1001,7 +1104,8 @@ public class ConformanceView extends JFrame {
 
 		failPath = "";
 		cleanVeredict();
-
+		isModelProcess = false;
+		isImplementationProcess = false;
 	}
 
 	public void setFieldRegex(boolean visibility) {
@@ -1072,7 +1176,7 @@ public class ConformanceView extends JFrame {
 	public void languageBasedConformance() {
 		boolean lts = false;
 		conformidade = null;
-		IOLTS S, I = null;
+		// IOLTS S, I = null;
 		LTS S_, I_ = null;
 		try {
 
@@ -1087,21 +1191,21 @@ public class ConformanceView extends JFrame {
 
 			if (!lts) { // IOLTS
 
-				if (cbLabel.getSelectedIndex() == 2) {// manual input/output
-					S = ImportAutFile.autToIOLTS(pathSpecification, true,
-							new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
-							new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-
-					I = ImportAutFile.autToIOLTS(pathImplementation, true,
-							new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
-							new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-				} else {
-					S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
-							new ArrayList<String>());
-
-					I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
-							new ArrayList<String>());
-				}
+				/*
+				 * if (cbLabel.getSelectedIndex() == 2) {// manual input/output S =
+				 * ImportAutFile.autToIOLTS(pathSpecification, true, new
+				 * ArrayList<String>(Arrays.asList(tfInput.getText().split(","))), new
+				 * ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
+				 * 
+				 * I = ImportAutFile.autToIOLTS(pathImplementation, true, new
+				 * ArrayList<String>(Arrays.asList(tfInput.getText().split(","))), new
+				 * ArrayList<String>(Arrays.asList(tfOutput.getText().split(",")))); } else { S
+				 * = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
+				 * new ArrayList<String>());
+				 * 
+				 * I = ImportAutFile.autToIOLTS(pathImplementation, false, new
+				 * ArrayList<String>(), new ArrayList<String>()); }
+				 */
 
 				S_ = S.toLTS();
 				I_ = I.toLTS();
@@ -1167,20 +1271,22 @@ public class ConformanceView extends JFrame {
 	private JLabel lbl_veredict_ioco;
 	private JButton btnVerifyConf_lang;
 	private JLabel label_1;
-	private JLabel label_2;
+	private JLabel lblInput_;
 	private JLabel lblInputLang;
 	private JLabel lblmodelLang;
 	private JLabel label_5;
 	private JLabel lblimplementationLang;
-	private JLabel label_7;
+	private JLabel lblOutput_;
 	private JLabel lblOutputLang;
 	private JTextArea taTestCasesLang;
 	private JLabel imgModelIoco;
 	private JLabel imgImplementationIoco;
 	private JLabel imgModelLang;
 	private JLabel imgImplementationLang;
+	private JLabel lblLabelLang;
+	private JLabel lblLabel_;
 
-	public boolean isFormValid(boolean ioco) {
+	public boolean isFormValid(boolean ioco) {		
 		return (!tfImplementation.getText().isEmpty() && !tfSpecification.getText().isEmpty()// implementation and //
 																								// specification field
 				&& (cbModel.getSelectedIndex() != 0 || (!ioco || cbModel.getSelectedIndex() == 0)))
