@@ -105,7 +105,7 @@ public class IOLTS extends LTS{
 			s+=("[" + e + "] - ");
 		}
 		//add description of output labels
-		s+=("##############################\n");
+		s+=("\n##############################\n");
 		s+=("           Outputs \n");
 		s+=("##############################\n");
 		s+=("length: " + this.getOutputs().size() + "\n");

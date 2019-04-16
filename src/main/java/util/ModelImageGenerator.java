@@ -4,8 +4,17 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.imageio.ImageIO;
 
@@ -39,41 +48,64 @@ import model.State_;
 import model.Transition_;
 
 public class ModelImageGenerator {
+	static mxIGraphLayout layout;
 
-	/*
-	 * public static void main(String[] args) throws IOException { IOLTS a = new
-	 * IOLTS(); State_ s0 = new State_("s0"); State_ s1 = new State_("s1");
-	 * a.addState(s0); a.addState(s1);
-	 * 
-	 * a.addTransition(new Transition_(s0,"a", s1)); a.addTransition(new
-	 * Transition_(s1,"a", s0)); a.addTransition(new Transition_(s1,"b", s0));
-	 * 
-	 * generateImage(a); }
-	 */
+	public static class TimeOut implements Callable<String> {
+		static JGraphXAdapter<String, DefaultEdge> graphAdapter;
 
-	// DefaultDirectedGraph
+		public TimeOut(JGraphXAdapter<String, DefaultEdge> graphAdapter) {
+			this.graphAdapter = graphAdapter;
+		}
+
+		@Override
+		public String call() throws Exception {
+			layout = new mxHierarchicalLayout(graphAdapter);
+			layout.execute(graphAdapter.getDefaultParent());
+			return "";
+		}
+	}
+
+
 	public static String generateImage(IOLTS model) throws IOException {
 
-		File imgFile = File.createTempFile("model", ".png");
-		imgFile.createNewFile();
+		try {
+			File imgFile = File.createTempFile("model", ".png");
+			imgFile.createNewFile();
 
-		DirectedPseudograph<String, DefaultEdge> g = ioltsToGraph(model);
-		
-		
-		JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
-		
-		
-		
-		mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
-		layout.execute(graphAdapter.getDefaultParent());
-						
-		BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+			DirectedPseudograph<String, DefaultEdge> g = ioltsToGraph(model);
 
-		ImageIO.write(image, "PNG", imgFile);
+			JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
 
-		//System.out.println(imgFile.getAbsolutePath());
+			Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(graphAdapter));
 
-		return imgFile.getAbsolutePath();
+			boolean imageGenerated = true;
+			int limitSecondToGenerateImage = 5;
+			
+			try {
+				control.get(limitSecondToGenerateImage, TimeUnit.SECONDS);
+			} catch (Exception ex) {//TimeoutException
+				control.cancel(true);
+				imageGenerated = false;
+			} 
+
+			if(imageGenerated) {
+			layout.execute(graphAdapter.getDefaultParent());
+
+			BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+
+			ImageIO.write(image, "PNG", imgFile);
+			return imgFile.getAbsolutePath();
+			}else {
+				return "";
+			}
+
+			// System.out.println(imgFile.getAbsolutePath());
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return null;
+
 	}
 
 	private static DirectedPseudograph<String, DefaultEdge> ioltsToGraph(IOLTS model) {
@@ -92,27 +124,31 @@ public class ModelImageGenerator {
 		return g;
 	}
 
+	// private static List<Transition_> getTransions(IOLTS model) {
+	// String label = "";
+	// List<Transition_> transitions = new ArrayList<Transition_>();
+	// Transition_ newTransition;
+	//
+	// for (Transition_ actualTransition : model.getTransitions()) {
+	// label = actualTransition.getLabel() + ",";
+	// for (Transition_ t : model.getTransitions()) {
+	// if (!actualTransition.getLabel().equals(t.getLabel())
+	// && actualTransition.getIniState().equals(t.getIniState())
+	// && actualTransition.getEndState().equals(t.getEndState())) {
+	// label += t.getLabel() + ",";
+	// }
+	// }
+	// newTransition = new Transition_(actualTransition.getIniState(),
+	// label.substring(0, label.length() - 1),
+	// actualTransition.getEndState());
+	// System.out.println(newTransition);
+	// transitions.add(newTransition);
+	//
+	// }
+	//
+	// return transitions;
+	// }
 
-	/*
-	 * private static List<Transition_> getTransions(IOLTS model) { String label =
-	 * ""; List<Transition_> transitions = new ArrayList<Transition_>(); Transition_
-	 * newTransition;
-	 * 
-	 * for (Transition_ actualTransition : model.getTransitions()) { label =
-	 * actualTransition.getLabel() + ","; for (Transition_ t :
-	 * model.getTransitions()) { if
-	 * (!actualTransition.getLabel().equals(t.getLabel()) &&
-	 * actualTransition.getIniState().equals(t.getIniState()) &&
-	 * actualTransition.getEndState().equals(t.getEndState())) { label +=
-	 * t.getLabel() + ","; } } newTransition = new
-	 * Transition_(actualTransition.getIniState(), label.substring(0, label.length()
-	 * - 1), actualTransition.getEndState()); System.out.println(newTransition);
-	 * transitions.add(newTransition);
-	 * 
-	 * }
-	 * 
-	 * return transitions; }
-	 */
 }
 
 class RelationshipEdge extends DefaultEdge {
