@@ -576,7 +576,7 @@ public class Operations {
 
 	static volatile State_ current;
 
-	private static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco) {
+	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco) {
 		String word = "";
 		String tagWord = " , ";
 		String tagLetter = " -> ";

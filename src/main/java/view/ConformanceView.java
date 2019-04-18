@@ -36,7 +36,7 @@ import java.awt.image.BufferedImage;
 import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
-
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.imageio.ImageIO;
@@ -246,8 +246,8 @@ public class ConformanceView extends JFrame {
 
 	}
 
-	String pathImageModel = "";
-	String pathImageImplementation = "";
+	BufferedImage pathImageModel = null;
+	BufferedImage pathImageImplementation = null;
 
 	public void processModels(boolean implementation, boolean ioco) {
 
@@ -331,7 +331,7 @@ public class ConformanceView extends JFrame {
 
 				if (implementation) {
 					// if (I.getStates().size() <= maxNumStatesToDraw) {
-					pathImageImplementation = ModelImageGenerator.generateImage(I).replaceAll("/", "\\");
+					pathImageImplementation = ModelImageGenerator.generateImage(I);
 
 					// imgImplementationLang.setIcon(new ImageIcon(new
 					// ImageIcon(pathImageImplementation).getImage()
@@ -339,25 +339,37 @@ public class ConformanceView extends JFrame {
 					// imgImplementationIoco.setIcon(new ImageIcon(new
 					// ImageIcon(pathImageImplementation).getImage()
 					// .getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
-					if (!pathImageImplementation.equals("")) {
+					if (pathImageImplementation!=null) {
 						btnViewImplementationIoco.setVisible(true);
 						btnViewImplementationLang.setVisible(true);
+					}else {
+						btnViewImplementationIoco.setVisible(true);
+						btnViewImplementationLang.setVisible(true);
+						btnViewImplementationIoco.setEnabled(false);
+						btnViewImplementationLang.setEnabled(false);
 					}
 
 					// }
 
 				} else {
 					// if (S.getStates().size() <= maxNumStatesToDraw) {
-					pathImageModel = ModelImageGenerator.generateImage(S).replaceAll("/", "\\");
+					pathImageModel = ModelImageGenerator.generateImage(S);
 
 					// imgModelLang.setIcon(new ImageIcon(new ImageIcon(pathImageModel).getImage()
 					// .getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
 					//
 					// imgModelIoco.setIcon(new ImageIcon(new ImageIcon(pathImageModel).getImage()
 					// .getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
-					if (!pathImageModel.equals("")) {
+					if (pathImageModel!=null) {
 						btnViewModelIoco.setVisible(true);
 						btnViewModelLang.setVisible(true);
+						btnViewModelIoco.setEnabled(true);
+						btnViewModelLang.setEnabled(true);
+					}else {
+						btnViewModelIoco.setVisible(true);
+						btnViewModelLang.setVisible(true);
+						btnViewModelIoco.setEnabled(false);
+						btnViewModelLang.setEnabled(false);
 					}
 					// }
 				}
@@ -380,10 +392,16 @@ public class ConformanceView extends JFrame {
 				if (implementation) {
 					btnViewImplementationIoco.setVisible(false);
 					btnViewImplementationLang.setVisible(false);
+					btnViewImplementationIoco.setEnabled(false);
+					btnViewImplementationLang.setEnabled(false);
+					
 					isImplementationProcess = false;
 				} else {
 					btnViewModelIoco.setVisible(false);
 					btnViewModelLang.setVisible(false);
+					btnViewModelIoco.setEnabled(false);
+					btnViewModelLang.setEnabled(false);
+					
 					isModelProcess = false;
 				}
 
@@ -810,7 +828,10 @@ public class ConformanceView extends JFrame {
 		btnViewModelIoco.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				showModelImage(false);
+				if (showSpecificationImage && btnViewModelIoco.isEnabled()) {
+					showModelImage(false);
+				}
+
 			}
 		});
 		btnViewModelIoco.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -824,7 +845,9 @@ public class ConformanceView extends JFrame {
 		btnViewImplementationIoco.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				showModelImage(true);
+				if (showImplementationImage && btnViewImplementationIoco.isEnabled()) {
+					showModelImage(true);
+				}
 			}
 		});
 		btnViewImplementationIoco.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1030,7 +1053,9 @@ public class ConformanceView extends JFrame {
 		btnViewModelLang.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				showModelImage(false);
+				if (showSpecificationImage && btnViewModelLang.isEnabled()) {
+					showModelImage(false);
+				}
 			}
 		});
 		btnViewModelLang.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1043,7 +1068,9 @@ public class ConformanceView extends JFrame {
 		btnViewImplementationLang.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				showModelImage(true);
+				if (showImplementationImage && btnViewImplementationLang.isEnabled()) {
+					showModelImage(true);
+				}
 			}
 		});
 		btnViewImplementationLang.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1077,15 +1104,21 @@ public class ConformanceView extends JFrame {
 		cleanVeredict();
 	}
 
+	String titleFrameImgImplementation = "Implementation - ";
+	String titleFrameImgSpecification = "Model - ";
+	boolean showImplementationImage = true;
+	boolean showSpecificationImage = true;
+
 	public void showModelImage(boolean implementation) {
+
 		int size = 550;
 
 		BufferedImage bimg;
 		int width;
 		int height;
 
-		String model = (implementation) ? "Implementation - " + tfImplementation.getText()
-				: "Model - " + tfSpecification.getText();
+		String model = (implementation) ? titleFrameImgImplementation + tfImplementation.getText()
+				: titleFrameImgSpecification + tfSpecification.getText();
 
 		try {
 			JFrame frame = new JFrame(model);
@@ -1096,28 +1129,65 @@ public class ConformanceView extends JFrame {
 			JLabel jl = new JLabel();
 
 			if (implementation) {
-				bimg = ImageIO.read(new File(pathImageImplementation));
-				width = bimg.getWidth();
-				height = bimg.getHeight();
+				// bimg = ImageIO.read(new File(pathImageImplementation));
+				width = pathImageImplementation.getWidth();
+				height = pathImageImplementation.getHeight();
 				frame.setSize(width + 50, height + 50);
 
 				jl.setIcon(new ImageIcon(new ImageIcon(pathImageImplementation).getImage().getScaledInstance(width,
 						height, Image.SCALE_DEFAULT)));
+				showImplementationImage = false;
 			} else {
-				bimg = ImageIO.read(new File(pathImageModel));
-				width = bimg.getWidth();
-				height = bimg.getHeight();
+				// bimg = ImageIO.read(new File(pathImageModel));
+				width = pathImageModel.getWidth();
+				height = pathImageModel.getHeight();
 
 				frame.setSize(width + 50, height + 50);
 				jl.setIcon(new ImageIcon(new ImageIcon(pathImageModel).getImage().getScaledInstance(width, height,
 						Image.SCALE_DEFAULT)));
+				showSpecificationImage = false;
 			}
+
+			// if (implementation) {
+			// bimg = ImageIO.read(new File(pathImageImplementation));
+			// width = bimg.getWidth();
+			// height = bimg.getHeight();
+			// frame.setSize(width + 50, height + 50);
+			//
+			// jl.setIcon(new ImageIcon(new
+			// ImageIcon(pathImageImplementation).getImage().getScaledInstance(width,
+			// height, Image.SCALE_DEFAULT)));
+			// } else {
+			// bimg = ImageIO.read(new File(pathImageModel));
+			// width = bimg.getWidth();
+			// height = bimg.getHeight();
+			//
+			// frame.setSize(width + 50, height + 50);
+			// jl.setIcon(new ImageIcon(new
+			// ImageIcon(pathImageModel).getImage().getScaledInstance(width, height,
+			// Image.SCALE_DEFAULT)));
+			// }
 
 			panel.add(jl);
 			JScrollPane scrolltxt = new JScrollPane(panel);
 			scrolltxt.setBounds(3, 3, width / (width % size), height / (height % size));
 			// panel.add(scrolltxt);
 			frame.getContentPane().add(scrolltxt);
+
+			frame.addWindowListener(new java.awt.event.WindowAdapter() {
+				// when image closed
+				@Override
+				public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+					if (frame.getTitle().startsWith(titleFrameImgImplementation)) {
+						showImplementationImage = true;
+					}
+
+					if (frame.getTitle().startsWith(titleFrameImgSpecification)) {
+						showSpecificationImage = true;
+					}
+
+				}
+			});
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

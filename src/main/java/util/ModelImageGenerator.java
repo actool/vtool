@@ -65,8 +65,7 @@ public class ModelImageGenerator {
 		}
 	}
 
-
-	public static String generateImage(IOLTS model) throws IOException {
+	public static BufferedImage generateImage(IOLTS model) throws IOException {
 
 		try {
 			File imgFile = File.createTempFile("model", ".png");
@@ -80,26 +79,29 @@ public class ModelImageGenerator {
 
 			boolean imageGenerated = true;
 			int limitSecondToGenerateImage = 5;
-			
+
 			try {
 				control.get(limitSecondToGenerateImage, TimeUnit.SECONDS);
-			} catch (Exception ex) {//TimeoutException
+			} catch (Exception ex) {// TimeoutException
 				control.cancel(true);
 				imageGenerated = false;
-			} 
-
-			if(imageGenerated) {
-			layout.execute(graphAdapter.getDefaultParent());
-
-			BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
-
-			ImageIO.write(image, "PNG", imgFile);
-			return imgFile.getAbsolutePath();
-			}else {
-				return "";
 			}
 
-			// System.out.println(imgFile.getAbsolutePath());
+			if (imageGenerated) {
+				layout.execute(graphAdapter.getDefaultParent());
+
+				BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true,
+						null);
+
+				// System.out.println(imgFile.getAbsolutePath());
+				// ImageIO.write(image, "PNG", imgFile);
+				// return imgFile.getAbsolutePath();
+				return image;
+			} else {
+				return null;
+				// return "";
+			}
+
 		} catch (Exception e) {
 			System.out.println(e);
 		}

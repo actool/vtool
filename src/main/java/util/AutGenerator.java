@@ -3,12 +3,18 @@ package util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.rmi.server.Operation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import algorithm.Operations;
+import model.IOLTS;
+import parser.ImportAutFile;
+
 public class AutGenerator {
+
 	public static void main(String[] args) {
 		int qtStates = 5;
 		List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");
