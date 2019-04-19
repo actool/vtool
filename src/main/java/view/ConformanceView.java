@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import java.io.File;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +34,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.Font;
+import java.awt.Frame;
+
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -101,12 +103,7 @@ public class ConformanceView extends JFrame {
 	private String typeManualLabel = "define I/O manually";
 	private String LTS_CONST = "LTS";
 	private String IOLTS_CONST = "IOLTS";
-	// private SystemColor backgroundColor = SystemColor.controlHighlight;
-	// private SystemColor labelColor = SystemColor.windowBorder;
-	// private SystemColor tipColor = SystemColor.windowBorder;
-	// private SystemColor borderColor = SystemColor.windowBorder;
-	// private SystemColor textColor = SystemColor.controlShadow;
-	// private SystemColor buttonColor = SystemColor.activeCaptionBorder;
+
 
 	private SystemColor backgroundColor = SystemColor.menu;
 	private SystemColor labelColor = SystemColor.windowBorder;
@@ -170,12 +167,28 @@ public class ConformanceView extends JFrame {
 			lblimplementationLang.setText(tfImplementation.getText());
 			// processModels(true, ioco);
 			isImplementationProcess = false;
+			
+			Frame[] allFrames = Frame.getFrames();
+			for (Frame frame : allFrames) {
+				if (frame.getTitle().startsWith(titleFrameImgImplementation)) {
+					showImplementationImage = true;
+					frame.setVisible(false);
+					frame.dispose();
+				}
+
+				if (frame.getTitle().startsWith(titleFrameImgSpecification)) {
+					showSpecificationImage = true;
+					frame.setVisible(false);
+					frame.dispose();
+				}
+			}
 		} catch (Exception e) {
 
 		}
 	}
 
 	public void getSpecificationPath() {
+		
 		failPath = "";
 		cleanVeredict();
 		try {
@@ -186,7 +199,17 @@ public class ConformanceView extends JFrame {
 			lblmodelIoco.setText(tfSpecification.getText());
 			lblmodelLang.setText(tfSpecification.getText());
 			isModelProcess = false;
-			// processModels(false, ioco);
+			
+			Frame[] allFrames = Frame.getFrames();
+			for (Frame frame : allFrames) {			
+				if (frame.getTitle().startsWith(titleFrameImgSpecification)) {
+					showSpecificationImage = true;
+					frame.setVisible(false);
+					frame.dispose();
+				}
+			}
+			
+			
 		} catch (Exception e) {
 		}
 
@@ -249,10 +272,126 @@ public class ConformanceView extends JFrame {
 	BufferedImage pathImageModel = null;
 	BufferedImage pathImageImplementation = null;
 
-	public void processModels(boolean implementation, boolean ioco) {
+	public void enableShowImage(boolean lts, boolean implementation) throws Exception {
+
+		if (((!tfImplementation.getText().isEmpty() && implementation)
+				|| (!tfSpecification.getText().isEmpty() && !implementation))
+				&& ((cbModel.getSelectedItem() == IOLTS_CONST && ((cbLabel.getSelectedItem() == typeAutomaticLabel)
+						|| (cbLabel.getSelectedItem() == typeManualLabel && !tfInput.getText().isEmpty()
+								&& !tfOutput.getText().isEmpty()))))
+				|| cbModel.getSelectedItem() == LTS_CONST) {
+			setModel(lts, implementation);
+			if (implementation) {
+				pathImageImplementation = ModelImageGenerator.generateImage(I);
+				if (pathImageImplementation != null) {
+					btnViewImplementationIoco.setVisible(true);
+					btnViewImplementationLang.setVisible(true);
+					btnViewImplementationIoco.setEnabled(true);
+					btnViewImplementationLang.setEnabled(true);
+				} else {
+					btnViewImplementationIoco.setVisible(true);
+					btnViewImplementationLang.setVisible(true);
+					btnViewImplementationIoco.setEnabled(false);
+					btnViewImplementationLang.setEnabled(false);
+				}
+
+			} else {
+				pathImageModel = ModelImageGenerator.generateImage(S);
+				if (pathImageModel != null) {
+					btnViewModelIoco.setVisible(true);
+					btnViewModelLang.setVisible(true);
+					btnViewModelIoco.setEnabled(true);
+					btnViewModelLang.setEnabled(true);
+				} else {
+					btnViewModelIoco.setVisible(true);
+					btnViewModelLang.setVisible(true);
+					btnViewModelIoco.setEnabled(false);
+					btnViewModelLang.setEnabled(false);
+				}
+			}
+		} else {
+			if (implementation) {
+				btnViewImplementationIoco.setVisible(true);
+				btnViewImplementationLang.setVisible(true);
+				btnViewImplementationIoco.setEnabled(false);
+				btnViewImplementationLang.setEnabled(false);
+
+				isImplementationProcess = false;
+			} else {
+				btnViewModelIoco.setVisible(true);
+				btnViewModelLang.setVisible(true);
+				btnViewModelIoco.setEnabled(false);
+				btnViewModelLang.setEnabled(false);
+
+				isModelProcess = false;
+			}
+		}
+
+	}
+
+	public void setModel(boolean lts, boolean implementation) throws Exception {
+		LTS S_ = new LTS(), I_ = new LTS();
+
+		if (lts) {
+			if (!implementation) {
+				S_ = ImportAutFile.autToLTS(pathSpecification);
+
+			} else {
+				I_ = ImportAutFile.autToLTS(pathImplementation);
+			}
+			tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
+		}
+
+		if (cbLabel.getSelectedIndex() == 2 || lts) {// manual input/output
+			if (!implementation) {
+				S = ImportAutFile.autToIOLTS(pathSpecification, true,
+						new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
+						new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
+
+			} else {
+				I = ImportAutFile.autToIOLTS(pathImplementation, true,
+						new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
+						new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
+
+			}
+
+			lblWarningIoco.setText("");
+			lblWarningLang.setText("");
+		} else {// ?/!
+			if (!implementation) {
+				S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
+						new ArrayList<String>());
+
+			} else {
+				I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
+						new ArrayList<String>());
+
+			}
+
+			String msgImp = "The implementation transitions are not labeled with '?' and '!'\n ";
+			String msgModel = "The model transitions are not labeled with '?' and '!'\n ";
+
+			if (implementation) {
+
+				if (I.getTransitions().size() == 0) {
+					lblWarningIoco.setText(lblWarningIoco.getText() + msgImp);
+					lblWarningLang.setText(lblWarningLang.getText() + msgImp);
+				}
+			} else {
+
+				if (S.getTransitions().size() == 0) {
+					lblWarningIoco.setText(lblWarningIoco.getText() + msgModel);
+					lblWarningLang.setText(lblWarningLang.getText() + msgModel);
+				}
+			}
+
+		}
+
+	}
+
+	public void processModels(boolean implementation, boolean ioco) throws Exception {
 
 		boolean lts = false;
-		LTS S_ = new LTS(), I_ = new LTS();
 
 		if (cbModel.getSelectedIndex() == 0
 				|| (cbLabel.getSelectedIndex() == 0 && cbModel.getSelectedItem() == IOLTS_CONST)
@@ -267,144 +406,18 @@ public class ConformanceView extends JFrame {
 			isImplementationProcess = true;
 		}
 
+		enableShowImage(lts, implementation);
+
 		try {
 			if ((ioco && isFormValid(ioco)) || (!ioco && isFormValid(ioco))) {
 
 				if (lts) {
-					if (!implementation) {
-						S_ = ImportAutFile.autToLTS(pathSpecification);
-
-					} else {
-						I_ = ImportAutFile.autToLTS(pathImplementation);
-					}
-					tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
-				}
-
-				if (cbLabel.getSelectedIndex() == 2 || lts) {// manual input/output
-					if (!implementation) {
-						S = ImportAutFile.autToIOLTS(pathSpecification, true,
-								new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
-								new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-
-					} else {
-						I = ImportAutFile.autToIOLTS(pathImplementation, true,
-								new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
-								new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-
-					}
-
-					lblWarningIoco.setText("");
-					lblWarningLang.setText("");
-				} else {// ?/!
-					if (!implementation) {
-						S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
-								new ArrayList<String>());
-
-					} else {
-						I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
-								new ArrayList<String>());
-
-					}
-
-					String msgImp = "The implementation transitions are not labeled with '?' and '!'\n ";
-					String msgModel = "The model transitions are not labeled with '?' and '!'\n ";
-
-					if (implementation) {
-
-						if (I.getTransitions().size() == 0) {
-							lblWarningIoco.setText(lblWarningIoco.getText() + msgImp);
-							lblWarningLang.setText(lblWarningLang.getText() + msgImp);
-						}
-					} else {
-
-						if (S.getTransitions().size() == 0) {
-							lblWarningIoco.setText(lblWarningIoco.getText() + msgModel);
-							lblWarningLang.setText(lblWarningLang.getText() + msgModel);
-						}
-					}
-
-				}
-
-				int imgHeight = 200;
-				int imgWidth = 150;
-				// int maxNumStatesToDraw = 20;
-
-				if (implementation) {
-					// if (I.getStates().size() <= maxNumStatesToDraw) {
-					pathImageImplementation = ModelImageGenerator.generateImage(I);
-
-					// imgImplementationLang.setIcon(new ImageIcon(new
-					// ImageIcon(pathImageImplementation).getImage()
-					// .getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
-					// imgImplementationIoco.setIcon(new ImageIcon(new
-					// ImageIcon(pathImageImplementation).getImage()
-					// .getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
-					if (pathImageImplementation!=null) {
-						btnViewImplementationIoco.setVisible(true);
-						btnViewImplementationLang.setVisible(true);
-					}else {
-						btnViewImplementationIoco.setVisible(true);
-						btnViewImplementationLang.setVisible(true);
-						btnViewImplementationIoco.setEnabled(false);
-						btnViewImplementationLang.setEnabled(false);
-					}
-
-					// }
-
+					showModelLabel(true, (implementation) ? I : S);
 				} else {
-					// if (S.getStates().size() <= maxNumStatesToDraw) {
-					pathImageModel = ModelImageGenerator.generateImage(S);
-
-					// imgModelLang.setIcon(new ImageIcon(new ImageIcon(pathImageModel).getImage()
-					// .getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
-					//
-					// imgModelIoco.setIcon(new ImageIcon(new ImageIcon(pathImageModel).getImage()
-					// .getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT)));
-					if (pathImageModel!=null) {
-						btnViewModelIoco.setVisible(true);
-						btnViewModelLang.setVisible(true);
-						btnViewModelIoco.setEnabled(true);
-						btnViewModelLang.setEnabled(true);
-					}else {
-						btnViewModelIoco.setVisible(true);
-						btnViewModelLang.setVisible(true);
-						btnViewModelIoco.setEnabled(false);
-						btnViewModelLang.setEnabled(false);
-					}
-					// }
-				}
-
-				// imageShowHide(true, true);
-				// imageShowHide(true, false);
-
-				IOLTS model = (implementation) ? I : S;
-
-				if (lts) {
-					showModelLabel(true, model);
-				} else {
-					showModelLabel(false, model);
+					showModelLabel(false, (implementation) ? I : S);
 				}
 
 			} else {
-
-				// imageShowHide(false, true);
-				// imageShowHide(false, false);
-				if (implementation) {
-					btnViewImplementationIoco.setVisible(false);
-					btnViewImplementationLang.setVisible(false);
-					btnViewImplementationIoco.setEnabled(false);
-					btnViewImplementationLang.setEnabled(false);
-					
-					isImplementationProcess = false;
-				} else {
-					btnViewModelIoco.setVisible(false);
-					btnViewModelLang.setVisible(false);
-					btnViewModelIoco.setEnabled(false);
-					btnViewModelLang.setEnabled(false);
-					
-					isModelProcess = false;
-				}
-
 				if (lts) {
 					showModelLabel(true);
 				} else {
@@ -486,12 +499,16 @@ public class ConformanceView extends JFrame {
 				}
 
 				if (tab.equals(tabIOCO) || tab.equals(tabLang)) {
+					try {
+						if (!isModelProcess) {
 
-					if (!isModelProcess) {
-						processModels(false, ioco);
-					}
-					if (!isImplementationProcess) {
-						processModels(true, ioco);
+							processModels(false, ioco);
+
+						}
+						if (!isImplementationProcess) {
+							processModels(true, ioco);
+						}
+					} catch (Exception e) {
 					}
 				}
 
