@@ -64,7 +64,7 @@ public class IocoConformance {
 		// automaton complement of specification
 		Automaton_ aCompS = Operations.complement(as);
 		// automaton D with the desired behaviors
-		Automaton_ ad = buildD(S);
+		Automaton_ ad = modelD(S);
 		
 		
 		/*System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -94,7 +94,7 @@ public class IocoConformance {
 	 *            
 	 * @return automaton D with the desirable behaviors
 	 */
-	private static Automaton_ buildD(IOLTS Q) {
+	private static Automaton_ modelD(IOLTS Q) {
 		// automaton D
 		Automaton_ as = new Automaton_();
 		// define the initial state

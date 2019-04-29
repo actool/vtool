@@ -14,6 +14,7 @@ import algorithm.*;
 import dk.brics.automaton.RegExp;
 import model.*;
 import parser.ImportAutFile;
+import util.Constants;
 import util.ModelImageGenerator;
 
 import java.awt.GridLayout;
@@ -114,9 +115,9 @@ public class ConformanceView extends JFrame {
 			public void run() {
 				try {
 					ConformanceView frame = new ConformanceView();
-
+					frame.setResizable(false);
 					frame.setVisible(true);
-
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -215,8 +216,8 @@ public class ConformanceView extends JFrame {
 	public void actionVerifyConformance(boolean ioco) {
 		long startTime = System.nanoTime();
 
-		//lblWarningIoco.setText("");
-		//lblWarningLang.setText("");
+		// lblWarningIoco.setText("");
+		// lblWarningLang.setText("");
 		if (isFormValid(ioco)) {// isFormValid(ioco)
 			if (ioco) {
 				iocoConformance();
@@ -227,12 +228,25 @@ public class ConformanceView extends JFrame {
 			if (S.getTransitions().size() > 0 || I.getTransitions().size() > 0) {
 				if (ioco) {
 					lbl_veredict_ioco.setText(Operations.veredict(conformidade));
+					if (Operations.veredict(conformidade).equals(Constants.MSG_CONFORM)) {
+						lbl_veredict_ioco.setForeground(new Color(0,128,0));
+					}
+					if (Operations.veredict(conformidade).equals(Constants.MSG_NOT_CONFORM)) {
+						lbl_veredict_ioco.setForeground(new Color(178,34,34));
+					}
+
 					if (!failPath.equals("")) {
 						taTestCasesIoco.setText(failPath);
 						// btnTestCases_ioco.setVisible(true);
 					}
 				} else {
 					lbl_veredict_lang.setText(Operations.veredict(conformidade));
+					if (Operations.veredict(conformidade).equals(Constants.MSG_CONFORM)) {
+						lbl_veredict_lang.setForeground(new Color(0,128,0));
+					}
+					if (Operations.veredict(conformidade).equals(Constants.MSG_NOT_CONFORM)) {
+						lbl_veredict_lang.setForeground(new Color(178,34,34));
+					}
 					if (!failPath.equals("")) {
 						// btnTestCases_lang.setVisible(true);
 						taTestCasesLang.setText(failPath);
@@ -240,9 +254,9 @@ public class ConformanceView extends JFrame {
 				}
 			}
 
-		} /*else {
-			errorMessage(ioco);
-		}*/
+		} /*
+			 * else { errorMessage(ioco); }
+			 */
 
 		long endTime = System.nanoTime();
 		long totalTime = endTime - startTime;
@@ -257,7 +271,7 @@ public class ConformanceView extends JFrame {
 	BufferedImage pathImageModel = null;
 	BufferedImage pathImageImplementation = null;
 
-	public void enableShowImage(boolean lts, boolean implementation ) throws Exception {
+	public void enableShowImage(boolean lts, boolean implementation) throws Exception {
 
 		if (((!tfImplementation.getText().isEmpty() && implementation)
 				|| (!tfSpecification.getText().isEmpty() && !implementation))
@@ -282,7 +296,7 @@ public class ConformanceView extends JFrame {
 				}
 
 			} else {
-				if(S.getTransitions().size() > 0) {
+				if (S.getTransitions().size() > 0) {
 					pathImageModel = ModelImageGenerator.generateImage(S);
 					if (pathImageModel != null) {
 						btnViewModelIoco.setVisible(true);
@@ -296,7 +310,7 @@ public class ConformanceView extends JFrame {
 						btnViewModelLang.setEnabled(false);
 					}
 				}
-				
+
 			}
 		} else {
 			if (implementation) {
@@ -344,12 +358,12 @@ public class ConformanceView extends JFrame {
 
 			}
 
-			if(lts) {
+			if (lts) {
 				tfInput.setText("");
 			}
-						
-			//lblWarningIoco.setText("");
-			//lblWarningLang.setText("");
+
+			// lblWarningIoco.setText("");
+			// lblWarningLang.setText("");
 		} else {// ?/!
 			if (!implementation) {
 				S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
@@ -372,9 +386,9 @@ public class ConformanceView extends JFrame {
 						lblWarningLang.setText(lblWarningLang.getText() + ViewConstants.msgImp);
 					}
 
-				}else {
+				} else {
 					removeMessage(true, ViewConstants.msgImp);
-					removeMessage(false, ViewConstants.msgImp);					
+					removeMessage(false, ViewConstants.msgImp);
 				}
 			} else {
 
@@ -385,9 +399,9 @@ public class ConformanceView extends JFrame {
 					if (!lblWarningLang.getText().contains(ViewConstants.msgModel)) {
 						lblWarningLang.setText(lblWarningLang.getText() + ViewConstants.msgModel);
 					}
-				}else {
+				} else {
 					removeMessage(true, ViewConstants.msgModel);
-					removeMessage(false, ViewConstants.msgModel);					
+					removeMessage(false, ViewConstants.msgModel);
 				}
 			}
 
@@ -471,6 +485,9 @@ public class ConformanceView extends JFrame {
 		}
 	}
 
+	
+
+	
 	boolean isModelProcess = false;
 	boolean isImplementationProcess = false;
 
@@ -505,17 +522,22 @@ public class ConformanceView extends JFrame {
 					}
 				}
 
-				
-				
 				if (tab.equals(ViewConstants.tabIOCO) || tab.equals(ViewConstants.tabLang)) {
 					try {
 						if (!isFormValid(ioco)) {
-							errorMessage(ioco);							
-						}else {
-							lblWarningIoco.setText("");
-							lblWarningLang.setText("");
+							errorMessage(ioco);
+						} else {
+							if(ioco) {
+								lblWarningIoco.setText("");
+							}
+							
+							
+							if(!ioco) {
+								lblWarningLang.setText("");
+								verifyInpOutEmpty(false);								
+							}							
 						}
-						
+
 						if (!isModelProcess) {
 							processModels(false, ioco);
 						}
@@ -643,17 +665,17 @@ public class ConformanceView extends JFrame {
 		btnFolderSpec.setBounds(736, 29, 39, 28);
 		panel_conf.add(btnFolderSpec);
 
-		lblOutput = new JLabel("Output");
+		lblOutput = new JLabel("Output  labels");
 		lblOutput.setForeground(labelColor);
 		lblOutput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblOutput.setBounds(37, 307, 48, 22);
+		lblOutput.setBounds(37, 307, 274, 22);
 		lblOutput.setVisible(false);
 		panel_conf.add(lblOutput);
 
-		lblInput = new JLabel("Input");
+		lblInput = new JLabel("Input labels");
 		lblInput.setForeground(labelColor);
 		lblInput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblInput.setBounds(37, 227, 54, 22);
+		lblInput.setBounds(37, 227, 223, 22);
 		lblInput.setVisible(false);
 		panel_conf.add(lblInput);
 
@@ -697,7 +719,7 @@ public class ConformanceView extends JFrame {
 		tfOutput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		panel_conf.add(tfOutput);
 
-		lblLabelInp = new JLabel("(label split by comma)");
+		lblLabelInp = new JLabel("(separated by comma)");
 		lblLabelInp.setBackground(backgroundColor);
 		lblLabelInp.setForeground(tipColor);
 		lblLabelInp.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -705,7 +727,7 @@ public class ConformanceView extends JFrame {
 		lblLabelInp.setVisible(false);
 		panel_conf.add(lblLabelInp);
 
-		lblLabelOut = new JLabel("(label split by comma)");
+		lblLabelOut = new JLabel("(separated by comma)");
 		lblLabelOut.setBackground(backgroundColor);
 		lblLabelOut.setForeground(tipColor);
 		lblLabelOut.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -741,7 +763,7 @@ public class ConformanceView extends JFrame {
 		cbLabel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		panel_conf.add(cbLabel);
 
-		JLabel lblIolts = new JLabel("Model:");
+		JLabel lblIolts = new JLabel("Model");
 		lblIolts.setForeground(SystemColor.windowBorder);
 		lblIolts.setFont(new Font("Dialog", Font.BOLD, 13));
 		lblIolts.setBounds(37, 147, 144, 14);
@@ -790,19 +812,19 @@ public class ConformanceView extends JFrame {
 		JLabel lblImplementation_1 = new JLabel("Implementation");
 		lblImplementation_1.setForeground(SystemColor.windowBorder);
 		lblImplementation_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblImplementation_1.setBounds(425, 11, 105, 22);
+		lblImplementation_1.setBounds(425, 11, 133, 22);
 		panel_ioco.add(lblImplementation_1);
 
-		lblnput = new JLabel("Input");
+		lblnput = new JLabel("Input label");
 		lblnput.setForeground(SystemColor.windowBorder);
 		lblnput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblnput.setBounds(37, 71, 44, 14);
+		lblnput.setBounds(37, 71, 140, 14);
 		panel_ioco.add(lblnput);
 
-		lblOutput_1 = new JLabel("Output");
+		lblOutput_1 = new JLabel("Output label");
 		lblOutput_1.setForeground(SystemColor.windowBorder);
 		lblOutput_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblOutput_1.setBounds(425, 71, 67, 14);
+		lblOutput_1.setBounds(425, 71, 149, 14);
 		panel_ioco.add(lblOutput_1);
 
 		lblmodelIoco = new JLabel("");
@@ -855,7 +877,7 @@ public class ConformanceView extends JFrame {
 
 		panel_ioco.add(imgImplementationIoco);
 
-		btnViewModelIoco = new JButton("view the model");
+		btnViewModelIoco = new JButton("view model");
 		btnViewModelIoco.setVisible(false);
 		btnViewModelIoco.addMouseListener(new MouseAdapter() {
 			@Override
@@ -871,7 +893,7 @@ public class ConformanceView extends JFrame {
 		btnViewModelIoco.setBounds(113, 5, 154, 26);
 		panel_ioco.add(btnViewModelIoco);
 
-		btnViewImplementationIoco = new JButton("view the model");
+		btnViewImplementationIoco = new JButton("view IUT");
 		btnViewImplementationIoco.setVerticalAlignment(SwingConstants.BOTTOM);
 		btnViewImplementationIoco.setVisible(false);
 		btnViewImplementationIoco.addMouseListener(new MouseAdapter() {
@@ -902,7 +924,7 @@ public class ConformanceView extends JFrame {
 		JLabel lblWarnings = new JLabel("Warnings");
 		lblWarnings.setForeground(SystemColor.windowBorder);
 		lblWarnings.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblWarnings.setBounds(425, 179, 67, 14);
+		lblWarnings.setBounds(425, 179, 88, 14);
 		panel_ioco.add(lblWarnings);
 
 		lblWarningIoco = new TextArea("");
@@ -935,13 +957,13 @@ public class ConformanceView extends JFrame {
 		tfD.setBounds(37, 152, 352, 26);
 		panel_language.add(tfD);
 
-		lblRegexD = new JLabel("(Regex: +,*,())");
+		lblRegexD = new JLabel("Regex example: (a+b)*c");
 		lblRegexD.setForeground(SystemColor.windowBorder);
 		lblRegexD.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblRegexD.setBounds(306, 179, 93, 36);
+		lblRegexD.setBounds(255, 179, 225, 36);
 		panel_language.add(lblRegexD);
 
-		lblF = new JLabel("Failure property");
+		lblF = new JLabel("Undesirable behavior");
 		lblF.setForeground(SystemColor.windowBorder);
 		lblF.setFont(new Font("Dialog", Font.BOLD, 13));
 		lblF.setBounds(425, 128, 200, 14);
@@ -962,10 +984,10 @@ public class ConformanceView extends JFrame {
 		tfF.setBounds(425, 152, 367, 26);
 		panel_language.add(tfF);
 
-		lblRegexF = new JLabel("(Regex: +,*,())");
+		lblRegexF = new JLabel("Regex example: (a+b)*c");
 		lblRegexF.setForeground(SystemColor.windowBorder);
 		lblRegexF.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblRegexF.setBounds(709, 179, 93, 36);
+		lblRegexF.setBounds(652, 179, 184, 36);
 		panel_language.add(lblRegexF);
 
 		btnTestCases_lang = new JButton("Show test cases");
@@ -1005,10 +1027,10 @@ public class ConformanceView extends JFrame {
 		label_1.setBounds(37, 11, 52, 14);
 		panel_language.add(label_1);
 
-		lblInput_ = new JLabel("Input");
+		lblInput_ = new JLabel("Input label");
 		lblInput_.setForeground(SystemColor.windowBorder);
 		lblInput_.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblInput_.setBounds(37, 71, 44, 14);
+		lblInput_.setBounds(37, 71, 218, 14);
 		panel_language.add(lblInput_);
 
 		lblInputLang = new JLabel("");
@@ -1024,7 +1046,7 @@ public class ConformanceView extends JFrame {
 		label_5 = new JLabel("Implementation");
 		label_5.setForeground(SystemColor.windowBorder);
 		label_5.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_5.setBounds(425, 11, 105, 22);
+		label_5.setBounds(425, 11, 133, 22);
 		panel_language.add(label_5);
 
 		lblimplementationLang = new JLabel("");
@@ -1032,10 +1054,10 @@ public class ConformanceView extends JFrame {
 		lblimplementationLang.setBounds(425, 29, 367, 26);
 		panel_language.add(lblimplementationLang);
 
-		lblOutput_ = new JLabel("Output");
+		lblOutput_ = new JLabel("Output label");
 		lblOutput_.setForeground(SystemColor.windowBorder);
 		lblOutput_.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblOutput_.setBounds(425, 71, 67, 14);
+		lblOutput_.setBounds(425, 71, 167, 14);
 		panel_language.add(lblOutput_);
 
 		lblOutputLang = new JLabel("");
@@ -1080,7 +1102,7 @@ public class ConformanceView extends JFrame {
 		imgImplementationLang.setBounds(660, 235, 44, 36);
 		panel_language.add(imgImplementationLang);
 
-		btnViewModelLang = new JButton("view the model");
+		btnViewModelLang = new JButton("view model");
 		btnViewModelLang.setVisible(false);
 		btnViewModelLang.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1095,7 +1117,7 @@ public class ConformanceView extends JFrame {
 		btnViewModelLang.setBounds(113, 5, 154, 26);
 		panel_language.add(btnViewModelLang);
 
-		btnViewImplementationLang = new JButton("view the model");
+		btnViewImplementationLang = new JButton("view IUT");
 		btnViewImplementationLang.setVisible(false);
 		btnViewImplementationLang.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1125,7 +1147,7 @@ public class ConformanceView extends JFrame {
 		JLabel label = new JLabel("Warnings");
 		label.setForeground(SystemColor.windowBorder);
 		label.setFont(new Font("Dialog", Font.BOLD, 13));
-		label.setBounds(426, 276, 67, 14);
+		label.setBounds(426, 276, 93, 14);
 		panel_language.add(label);
 
 		lblWarningLang = new TextArea("");
@@ -1391,17 +1413,15 @@ public class ConformanceView extends JFrame {
 			}
 
 			if (S_.getAlphabet().size() == 0 || I_.getAlphabet().size() == 0) {
-				if (S_.getAlphabet().size() == 0
-						&& !lblWarningLang.getText().contains(ViewConstants.msgModel)) {
+				if (S_.getAlphabet().size() == 0 && !lblWarningLang.getText().contains(ViewConstants.msgModel)) {
 					lblWarningLang.setText(lblWarningLang.getText() + ViewConstants.msgModel);
-				}else {
+				} else {
 					removeMessage(false, ViewConstants.msgModel);
 				}
 
-				if (I_.getAlphabet().size() == 0
-						&& !lblWarningLang.getText().contains(ViewConstants.msgImp)) {
+				if (I_.getAlphabet().size() == 0 && !lblWarningLang.getText().contains(ViewConstants.msgImp)) {
 					lblWarningLang.setText(lblWarningLang.getText() + ViewConstants.msgImp);
-				}else {
+				} else {
 					removeMessage(false, ViewConstants.msgImp);
 				}
 
@@ -1544,8 +1564,6 @@ public class ConformanceView extends JFrame {
 		// msg += typeOfConf ? "Select the type of conformance [IOCO] or [Baseada em
 		// Linguagem] \n" : "";
 
-		
-
 		if (!constainsMessage(ioco, ViewConstants.selectImplementation) && implementation) {
 			msg += ViewConstants.selectImplementation;
 		} else {
@@ -1561,7 +1579,7 @@ public class ConformanceView extends JFrame {
 				removeMessage(ioco, ViewConstants.selectSpecification);
 			}
 		}
-		
+
 		if (!constainsMessage(ioco, ViewConstants.selectModel) && model) {
 			msg += ViewConstants.selectModel;
 		} else {
@@ -1572,6 +1590,12 @@ public class ConformanceView extends JFrame {
 		// msg += langD && langF ? "The Language D field or F language is required \n" :
 		// "";
 
+		/*
+		 * boolean ioltsLabel = cbLabel.getSelectedIndex() == 0; msg += ioltsLabel ?
+		 * "It is necessary how the IOLTS labels will be distinguished \n" : "";
+		 */
+
+		
 		if (ioco) {
 			boolean ioltsLabel = cbLabel.getSelectedIndex() == 0
 					&& cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST;
@@ -1584,22 +1608,7 @@ public class ConformanceView extends JFrame {
 				}
 			}
 
-			/*
-			 * boolean ioltsLabel = cbLabel.getSelectedIndex() == 0; msg += ioltsLabel ?
-			 * "It is necessary how the IOLTS labels will be distinguished \n" : "";
-			 */
-
-			boolean defInpuOut = (cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST
-					&& cbLabel.getSelectedItem() == ViewConstants.typeManualLabel && tfInput.getText().isEmpty()
-					&& tfOutput.getText().isEmpty());
-
-			if (!constainsMessage(ioco, ViewConstants.selectInpOut) && defInpuOut) {
-				msg += ViewConstants.selectInpOut;
-			} else {
-				if (!defInpuOut) {
-					removeMessage(ioco, ViewConstants.selectInpOut);
-				}
-			}
+			
 
 			/*
 			 * boolean defInpuOut = (cbLabel.getSelectedItem() == typeManualLabel &&
@@ -1616,6 +1625,9 @@ public class ConformanceView extends JFrame {
 					removeMessage(ioco, ViewConstants.selectIolts);
 				}
 			}
+			
+			verifyInpOutEmpty(ioco);
+			
 
 		}
 
@@ -1628,6 +1640,30 @@ public class ConformanceView extends JFrame {
 		// JOptionPane.showMessageDialog(panel, msg, "Warning",
 		// JOptionPane.WARNING_MESSAGE);
 	}
+	
+	public void verifyInpOutEmpty(boolean ioco) {
+		String msg = "";
+		boolean defInpuOut = (cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST
+				&& cbLabel.getSelectedItem() == ViewConstants.typeManualLabel && tfInput.getText().isEmpty()
+				&& tfOutput.getText().isEmpty());
+
+		if (!constainsMessage(ioco, ViewConstants.selectInpOut) && defInpuOut) {
+			msg += ViewConstants.selectInpOut;
+		} else {
+			if (!defInpuOut) {
+				removeMessage(ioco, ViewConstants.selectInpOut);
+			}
+		}
+		
+		if (ioco) {
+			lblWarningIoco.setText(lblWarningIoco.getText() + msg);
+		} else {
+			lblWarningLang.setText(lblWarningLang.getText() + msg);
+		}
+		
+	}
+	
+	
 
 	public void showTestCases() {
 		JFrame frame = new JFrame();

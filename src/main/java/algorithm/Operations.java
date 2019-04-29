@@ -660,9 +660,9 @@ public class Operations {
 	 */
 	public static String veredict(Automaton_ a) {
 		if (a.getFinalStates().size() > 0) {
-			return "IUT not conforms to the specification. ";
+			return Constants.MSG_NOT_CONFORM;
 		} else {
-			return " IUT conforms to the specification.";
+			return Constants.MSG_CONFORM;
 		}
 	}
 
