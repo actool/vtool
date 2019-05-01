@@ -170,7 +170,7 @@ public class ImportAutFile {
 				iolts.setOutputs(outputs);
 			}
 
-			System.out.println(iolts);
+			//System.out.println(iolts);
 			return iolts;
 		} catch (Exception e) {
 			throw e;
