@@ -636,11 +636,14 @@ public class Operations {
 				if (e.getInfo() != null) {
 					aux = e.getInfo().split(tagWord);
 					for (int i = 0; i < aux.length; i++) {
-						if (ioco) {// does not consider the output
-							words.add(aux[i].substring(0, (aux[i].length() - 5)));
-						} else {
-							words.add(aux[i].substring(0, aux[i].length()));
+						if(!aux[i].equals(Constants.DELTA)) {//quiescent
+							if (ioco) {// does not consider the output
+								words.add(aux[i].substring(0, (aux[i].length() - 5)));
+							} else {
+								words.add(aux[i].substring(0, aux[i].length()));
+							}
 						}
+						
 					}
 				}
 			}

@@ -10,6 +10,7 @@ import model.Automaton_;
 import model.State_;
 import model.IOLTS;
 import model.Transition_;
+import util.Constants;
 
 /**
  * Class IOCO Conformance
@@ -102,7 +103,7 @@ public class IocoConformance {
 		// define the states
 		as.setStates(Q.getStates());
 		// create new fail state
-		State_ d = new State_("falha");
+		State_ d = new State_("fail");
 		// define the alphabet like the union beteen inputs and outputs
 		as.setAlphabet(ListUtils.union(Q.getInputs(), Q.getOutputs()));
 		// add transitions, process when have TAU
@@ -114,7 +115,7 @@ public class IocoConformance {
 			for (String l : as.getAlphabet()) {
 				// if it is an output label and there is no transition starting from "e" with the label "l" 
 				//then a transition is created pointing to the failure state
-				if (as.transitionExists(e.getNome(), l).size()==0 && Q.getOutputs().contains(l)) {
+				if (as.transitionExists(e.getNome(), l).size()==0 && (Q.getOutputs().contains(l))) {
 					as.addTransition(new Transition_(e, l, d));
 				}
 			}

@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.apache.commons.collections.ListUtils;
 
+import util.Constants;
+
 /**
  * Class IOLTS 
  * @author Camila
@@ -115,6 +117,42 @@ public class IOLTS extends LTS{
     	return  s;
     }
     
+    
+	/***
+	 * Add the quiescent transition 
+	 * 
+	 * @param transition
+	 */
+	public void addQuiescentTransitions() {//quiescent
+		for (State_ s : this.states) {
+			if(isQuiescent(s)) {
+				this.addTransition(new Transition_ (s,Constants.DELTA,s));
+			}
+		}
+	}
+    
+	/***
+     * return list of output labels from state received per parameter
+     * @param e state
+     * @return list of string containing  output labels 
+     */
+	public boolean isQuiescent(State_ e) {	//quiescent		
+		if(e != null) {
+			for (Transition_ t : transitions) {
+				// checks whether the transition contains the initial state of the transition and the
+				// output label 
+				if (t.getIniState().getNome().toString().equals(e.getNome().toString())
+						&& outputs.contains(t.getLabel())) {
+					return false;				
+				}
+			}
+		}
+		
+		
+		return true;
+	}
+	
+	
     /***
      * return list of output labels from state received per parameter
      * @param e state
@@ -128,7 +166,7 @@ public class IOLTS extends LTS{
 				// checks whether the transition contains the initial state of the transition and the
 				// output label 
 				if (t.getIniState().getNome().toString().equals(e.getNome().toString())
-						&& outputs.contains(t.getLabel())) {
+						&& ((outputs.contains(t.getLabel())) || t.getLabel().equals(Constants.DELTA))) {
 					label.add(t.getLabel());				
 				}
 			}

@@ -16,7 +16,7 @@ import parser.ImportAutFile;
 public class AutGenerator {
 
 	public static void main(String[] args) {
-		int qtStates = 5;
+		int qtStates = 2000;
 		List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");
 		int qtTransition = 0;
 		String transitions = "";
@@ -26,7 +26,7 @@ public class AutGenerator {
 		List<String> notVisited = new ArrayList<String>();
 		int countState = 0;
 		String endState = "", iniState = "";
-		boolean complete = false;
+		boolean complete = true;
 
 		notVisited.add(tag + countState);
 
@@ -39,8 +39,7 @@ public class AutGenerator {
 
 		iniState = notVisited.remove(0);
 
-		while (iniState != null && (Integer.parseInt(iniState.replace(tag, "")) < (qtStates))) {// enquanto não haver a
-																								// quantidade de estados
+		while (iniState != null && ( countState != (qtStates))) {// enquanto não haver a quantidade de estados
 
 			transicaoProxEstado = false;
 			peloMenosUmaTransicao = false;
@@ -52,6 +51,10 @@ public class AutGenerator {
 				if (!teraTransicao && rand.nextInt(2) == 1) {// ´rá ter transição com este rótulo
 					teraTransicao = true;
 				}
+				
+				if( countState+1 == (qtStates)) {
+					transicaoProxEstado = true;
+				}
 
 				if (teraTransicao || !peloMenosUmaTransicao) {// ´rá ter transição com este rótulo
 					if (!transicaoProxEstado) {
@@ -60,15 +63,9 @@ public class AutGenerator {
 						endState = tag + countState;
 						notVisited.add(endState);
 					} else {
-						if (countState > 0) {// ||
-							// transicaoProxEstado && rand.nextInt(2) == 1 && countState + 1 >= qtStates
+						if (countState > 0) {							
 							endState = tag + rand.nextInt(countState);
-						} /*
-							 * else {
-							 * 
-							 * 
-							 * countState++; endState = tag + countState; notVisited.add(endState); }
-							 */
+						} 
 					}
 
 					transitions += "(" + iniState + ", " + l + ", " + endState + ")" + newline;
@@ -94,8 +91,10 @@ public class AutGenerator {
 			String header = "des(" + tag + "0," + qtTransition + ", " + qtStates + ")" + newline;
 			String aut = header + transitions;
 
-			writer = new BufferedWriter(new FileWriter(file));
+    		writer = new BufferedWriter(new FileWriter(file));
 			writer.write(aut);
+			
+			//System.out.println(aut);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

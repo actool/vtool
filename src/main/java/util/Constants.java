@@ -7,6 +7,7 @@ package util;
  */
 public class Constants {
 	public static final String TAU = "tau";
+	public static final String DELTA = "delta";
 	public static final String EPSILON = "epsilon";
 	public static char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz123456789!#$%&*()/".toCharArray();
 	public static final String SEPARATOR = "@";

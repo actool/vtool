@@ -173,7 +173,6 @@ public class LTS {
 	}
 
 	
-
 	/***
 	 * Checks whether there is a transition from the initial state and label received from
 	 * parameter, and returns all state reached by these transitions

@@ -403,6 +403,15 @@ public class ConformanceView extends JFrame {
 			}
 
 		}
+		
+		//IUT with quiescent transitions
+		if(implementation && I != null) {	//quiescent		
+			I.addQuiescentTransitions();
+			List<String> outputs = I.getOutputs();
+			outputs.add(Constants.DELTA);			
+			S.setOutputs(outputs);
+			I.setOutputs(outputs);
+		}
 
 	}
 
