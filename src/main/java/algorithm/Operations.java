@@ -36,7 +36,7 @@ import util.Constants;
  * @author Camila
  */
 public class Operations {
-	
+
 	/***
 	 * completes the automaton received by parameter
 	 * 
@@ -51,7 +51,7 @@ public class Operations {
 		// define o alphabet
 		acomp.setAlphabet(Q.getAlphabet());
 		// completes the received automaton by parameter
-		State_ scomp = new State_("complemento");
+		State_ scomp = new State_("complement");
 		// add states to automato, gives "new" to not paste reference
 		acomp.setStates(new ArrayList<State_>(Q.getStates()));
 
@@ -64,14 +64,14 @@ public class Operations {
 		acomp.addState(scomp);
 		acomp.addFinalStates(scomp);
 
-		 // reverses who was final state cases to be, who was was not becomes final
-		 //state
-		 for (State_ e : acomp.getStates()) {
-		 // checks whether the state is already in the list of end states
-		 if (!Q.getFinalStates().contains(e)) {
-		 acomp.addFinalStates(e);
-		 }
-		 }
+		// reverses who was final state cases to be, who was was not becomes final
+		// state
+		for (State_ e : acomp.getStates()) {
+			// checks whether the state is already in the list of end states
+			if (!Q.getFinalStates().contains(e)) {
+				acomp.addFinalStates(e);
+			}
+		}
 
 		List<State_> result;
 
@@ -94,7 +94,6 @@ public class Operations {
 				}
 			}
 
-			
 		}
 
 		return acomp;
@@ -166,7 +165,7 @@ public class Operations {
 			for (String s : stringState) {
 				auxState.add(new State_(s));
 			}
-			
+
 			if (!Collections.disjoint(automaton.getFinalStates(), auxState)) {
 				finalStates.add(stateName.replaceAll(Constants.SEPARATOR, ""));
 			}
@@ -424,7 +423,7 @@ public class Operations {
 	 */
 	public static Automaton_ regexToAutomaton(String linguagemRegular, String tag) {
 		// regex to automaton
-		RegExp regExp = new RegExp(linguagemRegular);
+		RegExp regExp = new RegExp(linguagemRegular, RegExp.ALL);
 		Automaton automaton = regExp.toAutomaton();
 		return AutomatonBricsInAutomaton_(automaton, tag);
 	}
@@ -636,14 +635,18 @@ public class Operations {
 				if (e.getInfo() != null) {
 					aux = e.getInfo().split(tagWord);
 					for (int i = 0; i < aux.length; i++) {
-						if(!aux[i].equals(Constants.DELTA)) {//quiescent
+						if (aux[i].replaceAll(" ", "").equals(Constants.DELTA)) {// quiescent
+							if (!words.contains(aux[i].replaceAll(" ", ""))) {
+								words.add(aux[i]);
+							}
+						} else {
 							if (ioco) {// does not consider the output
 								words.add(aux[i].substring(0, (aux[i].length() - 5)));
 							} else {
 								words.add(aux[i].substring(0, aux[i].length()));
 							}
 						}
-						
+
 					}
 				}
 			}
@@ -771,14 +774,16 @@ public class Operations {
 		int stop_s = 0;
 		int stop_i = 0;
 
-		String path = "", path_i = "", path_s = "";
+		String path_aux = "", path_i = "", path_s = "", path = "";
+
+		List<String> implOut, specOut;
 
 		for (String letter : testCases) {
 			currentState_i = I.getInitialState();
 			currentState_s = S.getInitialState();
 
 			path_i = path_s = "";
-			path += "Test case: \t" + letter + "\n";
+			path_aux = "Test case: \t" + letter + "\n";
 			path_s += currentState_s + " -> ";
 			path_i += currentState_i + " -> ";
 			stop_s = 0;
@@ -827,9 +832,19 @@ public class Operations {
 
 			}
 
-			path += "Implementation: \n\t path: " + path_i + "\n\t output: " + I.outputsOfState(currentState_i);
-			path += "\nModel: \n\t path:" + path_s + "\n\t output: " + S.outputsOfState(currentState_s);
-			path += "\n################################################################## \n";
+			path_aux += "Implementation: \n\t path: " + path_i + "\n\t output: " + I.outputsOfState(currentState_i);
+			path_aux += "\nModel: \n\t path:" + path_s + "\n\t output: " + S.outputsOfState(currentState_s);
+			path_aux += "\n################################################################## \n";
+
+			
+			if(ioco) {
+				implOut = I.outputsOfState(currentState_i);
+				specOut = S.outputsOfState(currentState_s);
+				if (!(implOut.size() == 1 && implOut.get(0).equals(Constants.DELTA) && specOut.size() == 0)) {// quiescence
+					path += path_aux;
+				}
+			}
+			
 
 		}
 		return path;

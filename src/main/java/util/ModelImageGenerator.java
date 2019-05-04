@@ -120,7 +120,12 @@ public class ModelImageGenerator {
 		}
 
 		for (Transition_ t : model.getTransitions()) {// getTransions(model)
-			g.addEdge(t.getIniState().toString(), t.getEndState().toString(), new RelationshipEdge(t.getLabel()));
+			if(t.getLabel().equals(Constants.DELTA_UNICODE)) {
+				g.addEdge(t.getIniState().toString(), t.getEndState().toString(), new RelationshipEdge(Constants.DELTA));
+			}else {
+				g.addEdge(t.getIniState().toString(), t.getEndState().toString(), new RelationshipEdge(t.getLabel()));
+			}
+			
 		}
 
 		return g;
