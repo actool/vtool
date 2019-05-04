@@ -257,6 +257,12 @@ public class ConformanceView extends JFrame {
 			 * else { errorMessage(ioco); }
 			 */
 
+		if(ioco) {
+			lblWarningIoco.setText("");
+		}else {
+			lblWarningLang.setText("");	
+		}			
+		
 		long endTime = System.nanoTime();
 		long totalTime = endTime - startTime;
 
@@ -521,7 +527,7 @@ public class ConformanceView extends JFrame {
 					ioco = true;
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {
-						ioco = false;
+						ioco = false;						
 					}
 				}
 
@@ -531,6 +537,7 @@ public class ConformanceView extends JFrame {
 							errorMessage(ioco);
 						} else {
 							verifyInpOutEmpty(false);
+							verifyModelsEmpty(false);
 
 							/*if (ioco) {
 								lblWarningIoco.setText("");
@@ -1523,8 +1530,7 @@ public class ConformanceView extends JFrame {
 	public void errorMessage(boolean ioco) {
 		// boolean langD = tfD.getText().isEmpty();
 		// boolean langF = tfF.getText().isEmpty();
-		boolean implementation = tfImplementation.getText().isEmpty();
-		boolean specification = tfSpecification.getText().isEmpty();
+		
 		// boolean typeOfConf = (!rbConfBasedLang.isSelected() && !rbIoco.isSelected());
 
 		boolean model = cbModel.getSelectedIndex() == 0;
@@ -1533,21 +1539,7 @@ public class ConformanceView extends JFrame {
 		// msg += typeOfConf ? "Select the type of conformance [IOCO] or [Baseada em
 		// Linguagem] \n" : "";
 
-		if (!constainsMessage(ioco, ViewConstants.selectImplementation) && implementation) {
-			msg += ViewConstants.selectImplementation;
-		} else {
-			if (!implementation) {
-				removeMessage(ioco, ViewConstants.selectImplementation);
-			}
-		}
-
-		if (!constainsMessage(ioco, ViewConstants.selectSpecification) && specification) {
-			msg += ViewConstants.selectSpecification;
-		} else {
-			if (!specification) {
-				removeMessage(ioco, ViewConstants.selectSpecification);
-			}
-		}
+		verifyModelsEmpty(ioco);
 
 		if (!constainsMessage(ioco, ViewConstants.selectModel) && model) {
 			msg += ViewConstants.selectModel;
@@ -1606,6 +1598,35 @@ public class ConformanceView extends JFrame {
 		// JOptionPane.WARNING_MESSAGE);
 	}
 
+	
+	public void verifyModelsEmpty(boolean ioco) {
+		String msg = "";
+		boolean implementation = tfImplementation.getText().isEmpty();
+		boolean specification = tfSpecification.getText().isEmpty();
+		if (!constainsMessage(ioco, ViewConstants.selectImplementation) && implementation) {
+			msg += ViewConstants.selectImplementation;
+		} else {
+			if (!implementation) {
+				removeMessage(ioco, ViewConstants.selectImplementation);
+			}
+		}
+
+		if (!constainsMessage(ioco, ViewConstants.selectSpecification) && specification) {
+			msg += ViewConstants.selectSpecification;
+		} else {
+			if (!specification) {
+				removeMessage(ioco, ViewConstants.selectSpecification);
+			}
+		}
+		
+		if (ioco) {
+			lblWarningIoco.setText(lblWarningIoco.getText() + msg);
+		} else {
+			lblWarningLang.setText(lblWarningLang.getText() + msg);
+		}
+
+	}
+	
 	public void verifyInpOutEmpty(boolean ioco) {
 		String msg = "";
 		boolean defInpuOut = (cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST

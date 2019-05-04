@@ -91,27 +91,35 @@ public class LanguageBasedConformance {
 
 		if (!D.equals("")) {
 			// construct automato that accepts the D language with states with name started with "d"
-			/*if(D.contains(Constants.DELTA) || D.contains(Constants.DELTA_TXT)) {
-				D = D.replace(Constants.DELTA_TXT, Constants.DELTA_UNICODE);
-				D = D.replace(Constants.DELTA, Constants.DELTA_UNICODE);
-			}*/
+			if(D.contains(Constants.DELTA) || D.contains(Constants.DELTA_TXT)) {
+				D = D.replace(Constants.DELTA_TXT, Constants.DELTA);				
+			}
 			
 			ad = Operations.regexToAutomaton(D, "d");
-//			if(as.getAlphabet().contains(Constants.DELTA_UNICODE)) {
-//				ad.getAlphabet().remove(Constants.DELTA_UNICODE);
-//				ad.getAlphabet().add(Constants.DELTA);
-//				List<Transition_> transitions = new ArrayList<Transition_>();
-//				for (Transition_ t : ad.getTransitions()) {
-//					if(t.getLabel().equals(Constants.DELTA_UNICODE)) {
-//						transitions.add(new Transition_(t.getIniState(), Constants.DELTA, t.getEndState()));
-//					}else {
-//						transitions.add(new Transition_(t.getIniState(), t.getLabel(), t.getEndState()));
-//					}
-//				}
-//				ad.setTransitions(transitions);
-//			}
+			if(as.getAlphabet().contains(Constants.DELTA_UNICODE)) {
+				List<String> alphabet = new ArrayList<String>();
+				alphabet.remove(Constants.DELTA_UNICODE);
+				for (String s : as.getAlphabet()) {
+					if(s.equals(Constants.DELTA_UNICODE)) {
+						alphabet.add(Constants.DELTA);
+					}else {
+						alphabet.add(s);
+					}
+				}				
+				ad.setAlphabet(alphabet);
+
+				List<Transition_> transitions = new ArrayList<Transition_>();
+				for (Transition_ t : ad.getTransitions()) {					
+					if(t.getLabel().contains(Constants.DELTA_UNICODE_n)) {
+						transitions.add(new Transition_(t.getIniState(), Constants.DELTA, t.getEndState()));
+					}else {
+						transitions.add(new Transition_(t.getIniState(), t.getLabel(), t.getEndState()));
+					}
+				}
+				ad.setTransitions(transitions);
+			}
 						
-			System.out.println(ad.getAlphabet());
+			
 			// Fault automaton that shows desirable behaviors not in specification
 			falhaD = Operations.intersection(ad, aCompS);
 			

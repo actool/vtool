@@ -7,9 +7,10 @@ package util;
  */
 public class Constants {
 	public static final String TAU = "tau";
-	public static final String DELTA_TXT = "d";
-	public static final String DELTA = "d";
-	public static final String DELTA_UNICODE = "d";	
+	public static final String DELTA_TXT = "delta";
+	public static final String DELTA = "δ";
+	public static final String DELTA_UNICODE = "\u03b4";
+	public static final String DELTA_UNICODE_n = "u03b4";
 	public static final String EPSILON = "epsilon";
 	public static char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz123456789!#$%&*()/".toCharArray();
 	public static final String SEPARATOR = "@";
