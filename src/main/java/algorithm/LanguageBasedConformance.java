@@ -34,6 +34,8 @@ public class LanguageBasedConformance {
 	 * @return
 	 */
 	public static Automaton_ verifyLanguageConformance(LTS S, LTS I, String D, String F) {
+		//S = Operations.convertToDeterministicAutomaton();
+		
 		// construct the fault model containing all behavior considered to be fault
 		Automaton_ at = faultModelLanguage(S, D, F);
 		// implementation automaton

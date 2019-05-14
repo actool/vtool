@@ -5,12 +5,19 @@
  */
 package algorithm;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import org.apache.commons.collections.ListUtils;
 import model.Automaton_;
 import model.State_;
 import model.IOLTS;
 import model.Transition_;
 import util.Constants;
+import util.ModelImageGenerator;
 
 /**
  * Class IOCO Conformance
@@ -49,6 +56,7 @@ public class IocoConformance {
 		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
 		System.out.println(ab);*/
 		
+
 		return ab;
 	}
 
@@ -122,9 +130,8 @@ public class IocoConformance {
 		}
 
 		// add fault state in the list, 
-		//added here for this state have no transitions
-		as.addState(d);
-		return as;
+		//added here for this state have no transitions		
+		return Operations.convertToDeterministicAutomaton(as);
 	}
 
 }

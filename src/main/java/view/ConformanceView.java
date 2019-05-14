@@ -90,8 +90,8 @@ public class ConformanceView extends JFrame {
 	TextArea lblWarningLang;
 	TextArea lblWarningIoco;
 
-	private String pathImplementation;
-	private String pathSpecification;
+	private String pathImplementation=null;
+	private String pathSpecification=null;
 	private String failPath;
 	JFileChooser fc = new JFileChooser();
 	private JTextField tfInput;
@@ -107,6 +107,9 @@ public class ConformanceView extends JFrame {
 	private SystemColor borderColor = SystemColor.windowBorder;
 	private SystemColor textColor = SystemColor.controlShadow;
 	private SystemColor buttonColor = SystemColor.activeCaptionBorder;
+
+	private Long lastModifiedSpec;
+	private Long lastModifiedImp;
 
 	/**
 	 * Launch the application.
@@ -154,25 +157,36 @@ public class ConformanceView extends JFrame {
 			// processModels(true, ioco);
 			isImplementationProcess = false;
 
-			Frame[] allFrames = Frame.getFrames();
-			for (Frame frame : allFrames) {
+			lastModifiedImp = new File(pathImplementation).lastModified();
+
+			closeFrame(true);
+			
+		} catch (Exception e) {
+
+		}
+	}
+
+	public void closeFrame(boolean implementation) {
+		Frame[] allFrames = Frame.getFrames();
+		for (Frame frame : allFrames) {
+			if(implementation) {
 				if (frame.getTitle().startsWith(ViewConstants.titleFrameImgImplementation)) {
 					showImplementationImage = true;
 					frame.setVisible(false);
 					frame.dispose();
+					//enableShowImage(implementation);
 				}
-
+			}else {
 				if (frame.getTitle().startsWith(ViewConstants.titleFrameImgSpecification)) {
 					showSpecificationImage = true;
 					frame.setVisible(false);
 					frame.dispose();
 				}
 			}
-		} catch (Exception e) {
-
+			
 		}
 	}
-
+	
 	public void getSpecificationPath() {
 
 		failPath = "";
@@ -186,15 +200,9 @@ public class ConformanceView extends JFrame {
 			lblmodelLang.setText(tfSpecification.getText());
 			isModelProcess = false;
 
-			Frame[] allFrames = Frame.getFrames();
-			for (Frame frame : allFrames) {
-				if (frame.getTitle().startsWith(ViewConstants.titleFrameImgSpecification)) {
-					showSpecificationImage = true;
-					frame.setVisible(false);
-					frame.dispose();
-				}
-			}
-
+			lastModifiedSpec = new File(pathSpecification).lastModified();
+			closeFrame(false);
+			
 		} catch (Exception e) {
 		}
 
@@ -210,15 +218,49 @@ public class ConformanceView extends JFrame {
 		}
 	}
 
+	public void verifyModelFileChange(boolean ioco) {
+		
+		if(pathSpecification!= null) {
+			if (!isModelProcess || lastModifiedSpec  != new File(pathSpecification).lastModified()) {
+				processModels(false, ioco);
+				closeFrame(false);
+				lastModifiedSpec = new File(pathSpecification).lastModified();
+				showSpecificationImage=true;
+			}
+		}
+		if(pathImplementation != null) {
+			if (!isImplementationProcess || lastModifiedImp  != new File(pathImplementation).lastModified()) {
+				processModels(true, ioco);
+				closeFrame(true);
+				lastModifiedImp = new File(pathImplementation).lastModified();
+				showImplementationImage=true;
+				
+			}
+		}
+		
+		try {
+			cleanVeredict();
+		}catch(Exception e) {
+			
+		}
+		
+		
+		
+	}
+	
+	
 	final JPanel panel = new JPanel();
 
 	public void actionVerifyConformance(boolean ioco) {
 		long startTime = System.nanoTime();
-
+		
+		verifyModelFileChange(ioco);
+		
+		
 		// lblWarningIoco.setText("");
 		// lblWarningLang.setText("");
 		if (isFormValid(ioco)) {// isFormValid(ioco)
-			if (ioco) {				
+			if (ioco) {
 				iocoConformance();
 			} else {
 				languageBasedConformance();
@@ -230,8 +272,14 @@ public class ConformanceView extends JFrame {
 					if (Operations.veredict(conformidade).equals(Constants.MSG_CONFORM)) {
 						lbl_veredict_ioco.setForeground(new Color(0, 128, 0));
 					}
-					if (Operations.veredict(conformidade).equals(Constants.MSG_NOT_CONFORM)) {
+					if (Operations.veredict(conformidade).equals(Constants.MSG_NOT_CONFORM) && !failPath.equals("")) {
 						lbl_veredict_ioco.setForeground(new Color(178, 34, 34));
+					} else {
+						if (Operations.veredict(conformidade).equals(Constants.MSG_NOT_CONFORM)
+								&& failPath.equals("")) {
+							lbl_veredict_ioco.setForeground(new Color(0, 128, 0));
+							lbl_veredict_ioco.setText(Constants.MSG_CONFORM);
+						}
 					}
 
 					if (!failPath.equals("")) {
@@ -243,9 +291,16 @@ public class ConformanceView extends JFrame {
 					if (Operations.veredict(conformidade).equals(Constants.MSG_CONFORM)) {
 						lbl_veredict_lang.setForeground(new Color(0, 128, 0));
 					}
-					if (Operations.veredict(conformidade).equals(Constants.MSG_NOT_CONFORM)) {
+					if (Operations.veredict(conformidade).equals(Constants.MSG_NOT_CONFORM) && !failPath.equals("")) {
 						lbl_veredict_lang.setForeground(new Color(178, 34, 34));
+					} else {
+						if (Operations.veredict(conformidade).equals(Constants.MSG_NOT_CONFORM)
+								&& failPath.equals("")) {
+							lbl_veredict_lang.setForeground(new Color(0, 128, 0));
+							lbl_veredict_lang.setText(Constants.MSG_CONFORM);
+						}
 					}
+
 					if (!failPath.equals("")) {
 						// btnTestCases_lang.setVisible(true);
 						taTestCasesLang.setText(failPath);
@@ -257,12 +312,12 @@ public class ConformanceView extends JFrame {
 			 * else { errorMessage(ioco); }
 			 */
 
-		if(ioco) {
+		if (ioco) {
 			lblWarningIoco.setText("");
-		}else {
-			lblWarningLang.setText("");	
-		}			
-		
+		} else {
+			lblWarningLang.setText("");
+		}
+
 		long endTime = System.nanoTime();
 		long totalTime = endTime - startTime;
 
@@ -276,63 +331,69 @@ public class ConformanceView extends JFrame {
 	BufferedImage pathImageModel = null;
 	BufferedImage pathImageImplementation = null;
 
-	public void enableShowImage(boolean lts, boolean implementation) throws Exception {
+	public void enableShowImage(boolean lts, boolean implementation) {
 
-		if (((!tfImplementation.getText().isEmpty() && implementation)
-				|| (!tfSpecification.getText().isEmpty() && !implementation))
-				&& ((cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST
-						&& ((cbLabel.getSelectedItem() == ViewConstants.typeAutomaticLabel)
-								|| (cbLabel.getSelectedItem() == ViewConstants.typeManualLabel
-										&& !tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty()))))
-				|| lts) {
-			setModel(lts, implementation);
-			if (implementation && I.getTransitions().size() > 0) {
-				pathImageImplementation = ModelImageGenerator.generateImage(I);
-				if (pathImageImplementation != null) {
-					btnViewImplementationIoco.setVisible(true);
-					btnViewImplementationLang.setVisible(true);
-					btnViewImplementationIoco.setEnabled(true);
-					btnViewImplementationLang.setEnabled(true);
+		try {
+			if (((!tfImplementation.getText().isEmpty() && implementation)
+					|| (!tfSpecification.getText().isEmpty() && !implementation))
+					&& ((cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST
+							&& ((cbLabel.getSelectedItem() == ViewConstants.typeAutomaticLabel)
+									|| (cbLabel.getSelectedItem() == ViewConstants.typeManualLabel
+											&& !tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty()))))
+					|| lts) {
+				setModel(lts, implementation);
+				if (implementation && I.getTransitions().size() > 0) {
+					pathImageImplementation = ModelImageGenerator.generateImage(I);
+					closeFrame(implementation);
+					if (pathImageImplementation != null) {
+						btnViewImplementationIoco.setVisible(true);
+						btnViewImplementationLang.setVisible(true);
+						btnViewImplementationIoco.setEnabled(true);
+						btnViewImplementationLang.setEnabled(true);
+					} else {
+						btnViewImplementationIoco.setVisible(true);
+						btnViewImplementationLang.setVisible(true);
+						btnViewImplementationIoco.setEnabled(false);
+						btnViewImplementationLang.setEnabled(false);
+					}
+
 				} else {
+					if (S.getTransitions().size() > 0) {
+						pathImageModel = ModelImageGenerator.generateImage(S);
+						closeFrame(implementation);
+						if (pathImageModel != null) {
+							btnViewModelIoco.setVisible(true);
+							btnViewModelLang.setVisible(true);
+							btnViewModelIoco.setEnabled(true);
+							btnViewModelLang.setEnabled(true);
+						} else {
+							btnViewModelIoco.setVisible(true);
+							btnViewModelLang.setVisible(true);
+							btnViewModelIoco.setEnabled(false);
+							btnViewModelLang.setEnabled(false);
+						}
+					}
+
+				}
+			} else {
+				if (implementation) {
 					btnViewImplementationIoco.setVisible(true);
 					btnViewImplementationLang.setVisible(true);
 					btnViewImplementationIoco.setEnabled(false);
 					btnViewImplementationLang.setEnabled(false);
+
+					isImplementationProcess = false;
+				} else {
+					btnViewModelIoco.setVisible(true);
+					btnViewModelLang.setVisible(true);
+					btnViewModelIoco.setEnabled(false);
+					btnViewModelLang.setEnabled(false);
+
+					isModelProcess = false;
 				}
-
-			} else {
-				if (S.getTransitions().size() > 0) {
-					pathImageModel = ModelImageGenerator.generateImage(S);
-					if (pathImageModel != null) {
-						btnViewModelIoco.setVisible(true);
-						btnViewModelLang.setVisible(true);
-						btnViewModelIoco.setEnabled(true);
-						btnViewModelLang.setEnabled(true);
-					} else {
-						btnViewModelIoco.setVisible(true);
-						btnViewModelLang.setVisible(true);
-						btnViewModelIoco.setEnabled(false);
-						btnViewModelLang.setEnabled(false);
-					}
-				}
-
 			}
-		} else {
-			if (implementation) {
-				btnViewImplementationIoco.setVisible(true);
-				btnViewImplementationLang.setVisible(true);
-				btnViewImplementationIoco.setEnabled(false);
-				btnViewImplementationLang.setEnabled(false);
+		} catch (Exception ex) {
 
-				isImplementationProcess = false;
-			} else {
-				btnViewModelIoco.setVisible(true);
-				btnViewModelLang.setVisible(true);
-				btnViewModelIoco.setEnabled(false);
-				btnViewModelLang.setEnabled(false);
-
-				isModelProcess = false;
-			}
 		}
 
 	}
@@ -409,19 +470,20 @@ public class ConformanceView extends JFrame {
 			}
 
 		}
-		
-		//IUT with quiescent transitions
-		if(implementation && I != null) {	//quiescent		
+
+		// IUT with quiescent transitions
+		if (implementation && I != null) { // quiescent
 			I.addQuiescentTransitions();
+			S.addQuiescentTransitions();
 			List<String> outputs = I.getOutputs();
-			outputs.add(Constants.DELTA);			
+			outputs.add(Constants.DELTA);
 			S.setOutputs(outputs);
 			I.setOutputs(outputs);
 		}
 
 	}
 
-	public void processModels(boolean implementation, boolean ioco) throws Exception {
+	public void processModels(boolean implementation, boolean ioco) {
 
 		boolean lts = false;
 
@@ -527,10 +589,12 @@ public class ConformanceView extends JFrame {
 					ioco = true;
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {
-						ioco = false;						
+						ioco = false;
 					}
 				}
 
+				verifyModelFileChange(ioco);
+				
 				if (tab.equals(ViewConstants.tabIOCO) || tab.equals(ViewConstants.tabLang)) {
 					try {
 						if (!isFormValid(ioco)) {
@@ -539,20 +603,13 @@ public class ConformanceView extends JFrame {
 							verifyInpOutEmpty(false);
 							verifyModelsEmpty(false);
 
-							/*if (ioco) {
-								lblWarningIoco.setText("");
-							}*/
+							/*
+							 * if (ioco) { lblWarningIoco.setText(""); }
+							 */
 
 							/*
 							 * if (!ioco) { //lblWarningLang.setText(""); verifyInpOutEmpty(false); }
 							 */
-						}
-
-						if (!isModelProcess) {
-							processModels(false, ioco);
-						}
-						if (!isImplementationProcess) {
-							processModels(true, ioco);
 						}
 
 					} catch (Exception e) {
@@ -702,8 +759,8 @@ public class ConformanceView extends JFrame {
 				cleanVeredict();
 				isModelProcess = false;
 				isImplementationProcess = false;
-				
-				if(!tfInput.getText().isEmpty()) {
+
+				if (!tfInput.getText().isEmpty()) {
 					removeMessage(true, ViewConstants.selectInpOut);
 					removeMessage(false, ViewConstants.selectInpOut);
 				}
@@ -728,8 +785,8 @@ public class ConformanceView extends JFrame {
 				cleanVeredict();
 				isModelProcess = false;
 				isImplementationProcess = false;
-				
-				if(!tfInput.getText().isEmpty()) {
+
+				if (!tfInput.getText().isEmpty()) {
 					removeMessage(true, ViewConstants.selectInpOut);
 					removeMessage(false, ViewConstants.selectInpOut);
 				}
@@ -1160,12 +1217,14 @@ public class ConformanceView extends JFrame {
 	boolean showSpecificationImage = true;
 
 	public void showModelImage(boolean implementation) {
-
 		int size = 550;
 
 		BufferedImage bimg;
 		int width;
 		int height;
+
+		verifyModelFileChange(true);
+		verifyModelFileChange(false);
 
 		String model = (implementation) ? ViewConstants.titleFrameImgImplementation + tfImplementation.getText()
 				: ViewConstants.titleFrameImgSpecification + tfSpecification.getText();
@@ -1173,6 +1232,7 @@ public class ConformanceView extends JFrame {
 		try {
 			JFrame frame = new JFrame(model);
 			frame.setVisible(true);
+			frame.setResizable(false);
 
 			JPanel panel = new JPanel();
 
@@ -1409,7 +1469,7 @@ public class ConformanceView extends JFrame {
 				if (tfD.getText().isEmpty() && tfF.getText().isEmpty()) {
 					D = "(";
 					for (String l : S_.getAlphabet()) {
-						D += l + "+";
+						D += l + "|";
 					}
 					D = D.substring(0, D.length() - 1);
 					D += ")*";
@@ -1530,7 +1590,7 @@ public class ConformanceView extends JFrame {
 	public void errorMessage(boolean ioco) {
 		// boolean langD = tfD.getText().isEmpty();
 		// boolean langF = tfF.getText().isEmpty();
-		
+
 		// boolean typeOfConf = (!rbConfBasedLang.isSelected() && !rbIoco.isSelected());
 
 		boolean model = cbModel.getSelectedIndex() == 0;
@@ -1598,7 +1658,6 @@ public class ConformanceView extends JFrame {
 		// JOptionPane.WARNING_MESSAGE);
 	}
 
-	
 	public void verifyModelsEmpty(boolean ioco) {
 		String msg = "";
 		boolean implementation = tfImplementation.getText().isEmpty();
@@ -1618,7 +1677,7 @@ public class ConformanceView extends JFrame {
 				removeMessage(ioco, ViewConstants.selectSpecification);
 			}
 		}
-		
+
 		if (ioco) {
 			lblWarningIoco.setText(lblWarningIoco.getText() + msg);
 		} else {
@@ -1626,7 +1685,7 @@ public class ConformanceView extends JFrame {
 		}
 
 	}
-	
+
 	public void verifyInpOutEmpty(boolean ioco) {
 		String msg = "";
 		boolean defInpuOut = (cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST

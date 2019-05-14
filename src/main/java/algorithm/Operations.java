@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Observable;
 import java.util.Optional;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +21,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.RegExp;
@@ -29,6 +34,7 @@ import model.IOLTS;
 import model.LTS;
 import model.Transition_;
 import util.Constants;
+import util.ModelImageGenerator;
 
 /**
  * Class Operations contain complement, determinism, union, intersection
@@ -129,6 +135,7 @@ public class Operations {
 	 * @return automato deterministico
 	 */
 	public static Automaton_ convertToDeterministicAutomaton(Automaton_ automaton) {
+		
 		// verifies whether the automaton is already deterministic
 		if (!automaton.isDeterministic()) {
 			// create new deterministic automaton
@@ -576,6 +583,23 @@ public class Operations {
 	static volatile State_ current;
 
 	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco) {
+		
+		/*System.out.println(a);				
+		IOLTS ai = new IOLTS();
+		ai.setAlphabet(a.getAlphabet());
+		ai.setInitialState(a.getInitialState());
+		ai.setStates(a.getStates());
+		ai.setTransitions(a.getTransitions());					
+		try {
+			BufferedImage bufferedImage = ModelImageGenerator.generateImage(ai);
+			File outputfile = new File("C:\\Users\\camil\\Desktop\\image.jpg");
+			ImageIO.write(bufferedImage, "jpg", outputfile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		
 		String word = "";
 		String tagWord = " , ";
 		String tagLetter = " -> ";
@@ -652,6 +676,7 @@ public class Operations {
 			}
 		}
 
+		
 		return words;
 	}
 
@@ -693,6 +718,7 @@ public class Operations {
 		int stop_i = 0;
 
 		String path = "", path_i = "", path_s = "";
+		
 
 		for (String letter : testCases) {
 			currentState_s = S.getInitialState();
@@ -712,8 +738,11 @@ public class Operations {
 					if (result_s.size() > 0) {
 						currentState_s = result_s.get(0);
 					} else {
-						currentState_s = null;
-						stop_s++;
+						//if(!p.equals(Constants.DELTA)) {
+							currentState_s = null;
+							stop_s++;
+						//}
+						
 					}
 				} else {
 					stop_s++;
@@ -777,6 +806,25 @@ public class Operations {
 		String path_aux = "", path_i = "", path_s = "", path = "";
 
 		List<String> implOut, specOut;
+		
+		
+		
+		if(ioco) {//verify if initial states results in non ioco, with test case ''
+			currentState_s = S.getInitialState();
+			currentState_i = I.getInitialState();
+			implOut = I.outputsOfState(currentState_i);
+			specOut = S.outputsOfState(currentState_s);
+			
+			if(!specOut.containsAll(implOut)) {
+				path_aux = "Test case: \t" + "" + "\n";
+				path_aux += "Implementation: \n\t path: " + currentState_i.getNome() + "\n\t output: " + I.outputsOfState(currentState_i);
+				path_aux += "\nModel: \n\t path:" + currentState_s.getNome() + "\n\t output: " + S.outputsOfState(currentState_s);
+				path_aux += "\n################################################################## \n";
+				path = path_aux;
+			}
+
+		}
+	
 
 		for (String letter : testCases) {
 			currentState_i = I.getInitialState();
@@ -797,8 +845,11 @@ public class Operations {
 					if (result_s.size() > 0) {
 						currentState_s = result_s.get(0);
 					} else {
-						currentState_s = null;
-						stop_s++;
+						//if(!p.equals(Constants.DELTA)) {
+							currentState_s = null;
+							stop_s++;
+						//}
+						
 					}
 				} else {
 					stop_s++;
@@ -832,19 +883,21 @@ public class Operations {
 
 			}
 
-			path_aux += "Implementation: \n\t path: " + path_i + "\n\t output: " + I.outputsOfState(currentState_i);
-			path_aux += "\nModel: \n\t path:" + path_s + "\n\t output: " + S.outputsOfState(currentState_s);
+			implOut = I.outputsOfState(currentState_i);
+			specOut = S.outputsOfState(currentState_s);
+			
+			path_aux += "Implementation: \n\t path: " + path_i + "\n\t output: " + implOut;
+			path_aux += "\nModel: \n\t path:" + path_s + "\n\t output: " + specOut;
 			path_aux += "\n################################################################## \n";
 
 			
-			if(ioco) {
-				implOut = I.outputsOfState(currentState_i);
-				specOut = S.outputsOfState(currentState_s);
-				if (!(implOut.size() == 1 && implOut.get(0).equals(Constants.DELTA) && specOut.size() == 0)) {// quiescence
+			if(ioco) {				
+				if (!(implOut.size() == 1  && implOut.get(0).equals(Constants.DELTA) && specOut.size() == 1 && specOut.get(0).equals(Constants.DELTA)) && !specOut.containsAll(implOut)) {// quiescence 
 					path += path_aux;
 				}
 			}
 			
+			//path += path_aux;
 
 		}
 		return path;
