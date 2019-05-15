@@ -5,6 +5,9 @@
  */
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class State_
  * @author Camila
@@ -16,6 +19,8 @@ public class State_ {
 	private int id;
 	//description used in the intersection and to get the words
 	private String info;
+	
+	
 	
 	private boolean visited;
 
@@ -41,7 +46,12 @@ public class State_ {
 	 * @param name
 	 */
 	public State_(String name) {
-		this.name = name;
+		this.name = name;		
+	}
+	
+	public State_(String name, String info) {
+		this.name = name;	
+		this.info = info;
 	}
 	
 	/***
@@ -58,7 +68,7 @@ public class State_ {
 	 * Return state name
 	 * @return name
 	 */
-	public String getNome() {
+	public String getName() {
 		return name;
 	}
 
@@ -67,7 +77,7 @@ public class State_ {
 	 * @param name
 	 *            
 	 */
-	public void setNome(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -146,5 +156,6 @@ public class State_ {
 	public void setVisited(boolean visitado) {
 		this.visited = visitado;
 	}
+
 
 }

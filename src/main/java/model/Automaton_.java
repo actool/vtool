@@ -79,7 +79,7 @@ public class Automaton_ extends LTS {
 			//the current one receives the first element from the list
 			current = aux.remove(0);
 			//if the transition from the current state with epsilon label exists
-			r = transitionExists(current.getNome(), Constants.EPSILON);
+			r = transitionExists(current.getName(), Constants.EPSILON);
 
 			//transition with epsilon was found
 			if (r.size() > 0) {
@@ -145,7 +145,7 @@ public class Automaton_ extends LTS {
 				for (Transition_ t : transitions) {
 					// verifies that the current transition is equal to some LTS transition, based on the
 					// initial state and label of both transitions
-					if (t.getIniState().getNome().equals(currentTransition.getIniState().getNome())
+					if (t.getIniState().getName().equals(currentTransition.getIniState().getName())
 							&& t.getLabel().equals(currentTransition.getLabel())) {
 						cont++;
 					}
@@ -178,7 +178,7 @@ public class Automaton_ extends LTS {
 		s += ("##############################\n");
 		s += ("Quantidade: " + this.finalStates.size() + "\n");
 		for (State_ e : this.finalStates) {
-			s += ("[" + e.getNome() + "] - ");
+			s += ("[" + e.getName() + "] - ");
 		}
 		return s;
 	}

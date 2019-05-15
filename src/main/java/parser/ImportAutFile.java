@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import model.State_;
@@ -149,6 +150,10 @@ public class ImportAutFile {
 				// add IOLTS inputs and outputs
 				iolts.setInputs(e);
 				iolts.setOutputs(s);
+				List<String> alphabet = new ArrayList<String>();
+				alphabet.addAll(e);
+				alphabet.addAll(s);
+				iolts.setAlphabet(alphabet);
 
 				ArrayList<Transition_> transicoes = new ArrayList<Transition_>();
 				String label = "";

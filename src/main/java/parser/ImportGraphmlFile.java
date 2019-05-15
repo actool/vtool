@@ -112,7 +112,7 @@ public class ImportGraphmlFile {
 			// verifies among the nodes what is the initial state
 			for (Vertex vertex : graph.getVertices()) {
 				State_ e = new State_(vertex.getProperty("description").toString());// , vertex.getId().toString()
-				if (e.getNome().equals("1")) {
+				if (e.getName().equals("1")) {
 					lts.setInitialState(e);
 				}
 			}

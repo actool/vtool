@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -85,7 +87,7 @@ public class Operations {
 		for (State_ e : Q.getStates()) {
 			for (String l : acomp.getAlphabet()) {
 				// checks whether there is a transition from state "e" with the label "l"
-				result = Q.transitionExists(e.getNome(), l);
+				result = Q.transitionExists(e.getName(), l);
 				// if there are no transitions, you must complete by creating a new transition
 				// from state "e" to state "scomp" with the label "l"
 				if (result.size() == 0) {
@@ -135,7 +137,7 @@ public class Operations {
 	 * @return automato deterministico
 	 */
 	public static Automaton_ convertToDeterministicAutomaton(Automaton_ automaton) {
-		
+
 		// verifies whether the automaton is already deterministic
 		if (!automaton.isDeterministic()) {
 			// create new deterministic automaton
@@ -146,7 +148,7 @@ public class Operations {
 			// initial state is therefore the
 			// union of all states reached separated by separator1
 			String stateName = automaton.reachableStatesWithEpsilon(automaton.getInitialState()).stream()
-					.map(x -> x.getNome()).collect(Collectors.joining(Constants.SEPARATOR));
+					.map(x -> x.getName()).collect(Collectors.joining(Constants.SEPARATOR));
 
 			// define the initial state of deterministic automaton
 			deteministic.setInitialState(new State_(stateName.replace(Constants.SEPARATOR, "")));
@@ -210,14 +212,14 @@ public class Operations {
 					if (auxState.size() > 0) {
 						// remove possible duplicate states
 						Set<String> set = new HashSet<>(auxState.size());
-						auxState.removeIf(p -> !set.add(p.getNome()));
+						auxState.removeIf(p -> !set.add(p.getName()));
 						// orders the states reached so that there is no possibility of considering, for
 						// example,
 						// that the state "ab" is different from "ba"
-						auxState.sort(Comparator.comparing(State_::getNome));
+						auxState.sort(Comparator.comparing(State_::getName));
 						// the name of the state reached is the union of all states reached separated by
 						// the separator
-						stateName = auxState.stream().map(x -> x.getNome())
+						stateName = auxState.stream().map(x -> x.getName())
 								.collect(Collectors.joining(Constants.SEPARATOR));
 
 						// verifies if the state reached is a final state, if one of the states
@@ -230,20 +232,20 @@ public class Operations {
 						// if no state is reached from stateString with the label "alphabet"
 						// then consider that starting from stateString with the label "alphabet"
 						// arrives in the "nullState" state
-						stateName = nullState.getNome();
+						stateName = nullState.getName();
 					}
 					// creates the state reached
 					state = new State_(stateName);
 					// add this state to automaton
-					deteministic.addState(new State_(state.getNome().replaceAll(Constants.SEPARATOR, "")));
+					deteministic.addState(new State_(state.getName().replaceAll(Constants.SEPARATOR, "")));
 					// adds the new transition from the "StateString" with the "alphabet" label to
 					// the "state"
 					deteministic.addTransition(new Transition_(new State_(String.join("", stringState)), alphabet,
-							new State_(state.getNome().replaceAll(Constants.SEPARATOR, ""))));
+							new State_(state.getName().replaceAll(Constants.SEPARATOR, ""))));
 
 					// if the reached state is not in the list auxCopy should add it to explore
 					// later
-					if (!auxCopy.contains(state.getNome())) {
+					if (!auxCopy.contains(state.getName())) {
 						aux.add(stateName);
 						auxCopy.add(stateName);
 					}
@@ -280,7 +282,7 @@ public class Operations {
 		Ar.setAlphabet(Q.getAlphabet());
 		// creates and defines the initial state of the automaton as the synchronization
 		// of the initial states of S and Q
-		String nameSyncState = S.getInitialState().getNome() + Constants.SEPARATOR + Q.getInitialState().getNome();
+		String nameSyncState = S.getInitialState().getName() + Constants.SEPARATOR + Q.getInitialState().getName();
 		// remove the name of the state
 		State_ r0 = new State_(nameSyncState.replaceAll(Constants.SEPARATOR, ""));
 		// used for split
@@ -326,7 +328,7 @@ public class Operations {
 						// non-determinism
 						for (State_ endStateQ : qTransitions) {
 							// creates a new state that matches what was synced
-							nameSyncState = endStateS.getNome() + Constants.SEPARATOR + endStateQ.getNome();
+							nameSyncState = endStateS.getName() + Constants.SEPARATOR + endStateQ.getName();
 							// the state name is without the separator
 							synchronized_ = new State_(nameSyncState.replaceAll(Constants.SEPARATOR, ""));
 							// description of the state with the separator
@@ -336,7 +338,7 @@ public class Operations {
 							}
 
 							// adds the created state to the automaton
-							synchronized_.setNome(synchronized_.getNome().replaceAll(Constants.SEPARATOR, ""));
+							synchronized_.setName(synchronized_.getName().replaceAll(Constants.SEPARATOR, ""));
 							Ar.addState(synchronized_);
 							// adds the transition that corresponds to synchronization
 							Ar.addTransition(new Transition_(removed, l, synchronized_));
@@ -583,23 +585,17 @@ public class Operations {
 	static volatile State_ current;
 
 	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco) {
-		
-		/*System.out.println(a);				
-		IOLTS ai = new IOLTS();
-		ai.setAlphabet(a.getAlphabet());
-		ai.setInitialState(a.getInitialState());
-		ai.setStates(a.getStates());
-		ai.setTransitions(a.getTransitions());					
-		try {
-			BufferedImage bufferedImage = ModelImageGenerator.generateImage(ai);
-			File outputfile = new File("C:\\Users\\camil\\Desktop\\image.jpg");
-			ImageIO.write(bufferedImage, "jpg", outputfile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
-		
+
+		/*
+		 * System.out.println(a); IOLTS ai = new IOLTS();
+		 * ai.setAlphabet(a.getAlphabet()); ai.setInitialState(a.getInitialState());
+		 * ai.setStates(a.getStates()); ai.setTransitions(a.getTransitions()); try {
+		 * BufferedImage bufferedImage = ModelImageGenerator.generateImage(ai); File
+		 * outputfile = new File("C:\\Users\\camil\\Desktop\\image.jpg");
+		 * ImageIO.write(bufferedImage, "jpg", outputfile); } catch (IOException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); }
+		 */
+
 		String word = "";
 		String tagWord = " , ";
 		String tagLetter = " -> ";
@@ -676,7 +672,6 @@ public class Operations {
 			}
 		}
 
-		
 		return words;
 	}
 
@@ -718,7 +713,6 @@ public class Operations {
 		int stop_i = 0;
 
 		String path = "", path_i = "", path_s = "";
-		
 
 		for (String letter : testCases) {
 			currentState_s = S.getInitialState();
@@ -733,23 +727,23 @@ public class Operations {
 			for (String p : letter.split(" -> ")) {
 
 				if (currentState_s != null) {
-					result_s = S.transitionExists(currentState_s.getNome(), p);
+					result_s = S.transitionExists(currentState_s.getName(), p);
 
 					if (result_s.size() > 0) {
 						currentState_s = result_s.get(0);
 					} else {
-						//if(!p.equals(Constants.DELTA)) {
-							currentState_s = null;
-							stop_s++;
-						//}
-						
+						// if(!p.equals(Constants.DELTA)) {
+						currentState_s = null;
+						stop_s++;
+						// }
+
 					}
 				} else {
 					stop_s++;
 				}
 
 				if (currentState_i != null) {
-					result_i = I.transitionExists(currentState_i.getNome(), p);
+					result_i = I.transitionExists(currentState_i.getName(), p);
 					if (result_i.size() > 0) {
 						currentState_i = result_i.get(0);
 					} else {
@@ -783,6 +777,93 @@ public class Operations {
 		return path;
 	}
 
+	public static State_ getStateByName(IOLTS S, String stateName) {
+		return S.getStates().stream().filter(x -> x.getName().equals(stateName)).findFirst().orElse(new State_());
+	}
+
+	public static String path(IOLTS S, boolean ioco, String testCase, String model) {
+		List<State_> stateList = new ArrayList<>();
+		String path_aux = "";
+		List<String> specOut;
+		IOLTS S_ = null;
+		List<State_> previous_states = new ArrayList<State_>();
+		List<State_> current_states = new ArrayList<State_>();
+
+		Map<State_, String> r_list = new HashMap<>();
+		String r;
+		Map<State_, String> up = new HashMap<>();
+
+		try {
+			S_ = (IOLTS) S.clone();
+			getStateByName(S_, S_.getInitialState().getName()).setInfo(S_.getInitialState().getName() + " -> ");
+		} catch (Exception e) {
+		}
+
+		Map<String, List<State_>> map = new HashMap<String, List<State_>>();
+
+		List<String> alphabet = new ArrayList();
+		alphabet.addAll(S.getOutputs());
+		alphabet.addAll(S.getInputs());
+		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+		alphabet = new ArrayList<>(hashSet_s_);
+		for (State_ s : S_.getStates()) {
+			for (String l : alphabet) {// S_.getAlphabet()
+				map.put(s + Constants.SEPARATOR + l, S_.transitionExists(s.getName(), l));
+			}
+		}
+
+		previous_states = new ArrayList<State_>();
+
+		S_.getStates().stream().forEach(x -> x.setInfo(null));
+		getStateByName(S_, S_.getInitialState().getName()).setInfo(S_.getInitialState().getName() + " -> ");
+		previous_states.add(getStateByName(S_, S_.getInitialState().getName()));
+
+		for (String p : testCase.split(" -> ")) {
+			up = new HashMap<>();
+			stateList = new ArrayList<>();
+
+			r_list.put(S_.getInitialState(), S_.getInitialState().toString() + " -> ");
+
+			for (State_ state_ : previous_states) {
+
+				current_states = map.get(state_ + Constants.SEPARATOR + p);
+				stateList.addAll(current_states);
+
+				for (State_ s : current_states) {
+
+					if (r_list.containsKey(state_)) {
+						r = r_list.get(state_) + s.toString() + " ->";
+					} else {
+						r = s.toString() + " ->";
+					}
+
+					up.put(s, r);
+
+				}
+
+			}
+
+			for (Map.Entry<State_, String> pair : up.entrySet()) {
+				r_list.put(pair.getKey(), pair.getValue());
+			}
+
+			previous_states = stateList;
+
+		}
+
+		path_aux += "\n" + model;
+
+		for (State_ s : stateList) {
+			path_aux += "\n\t path:" + r_list.get(s);
+			if (ioco) {
+				specOut = S_.outputsOfState(s);
+				path_aux += "\n\t output: " + specOut + "\n";
+			}
+		}
+
+		return path_aux;
+	}
+
 	/***
 	 * 
 	 * @param S
@@ -796,110 +877,38 @@ public class Operations {
 	 */
 	public static String path(IOLTS S, IOLTS I, Automaton_ fault, boolean ioco) {
 		List<String> testCases = getWordsFromAutomaton(fault, ioco);
-
 		State_ currentState_s;
 		State_ currentState_i;
-		List<State_> result_s, result_i;
-		int stop_s = 0;
-		int stop_i = 0;
 
-		String path_aux = "", path_i = "", path_s = "", path = "";
+		String path = "";
 
 		List<String> implOut, specOut;
-		
-		
-		
-		if(ioco) {//verify if initial states results in non ioco, with test case ''
+
+		// verify if initial states results in non ioco, with test case ''
+		if (ioco) {
 			currentState_s = S.getInitialState();
 			currentState_i = I.getInitialState();
 			implOut = I.outputsOfState(currentState_i);
 			specOut = S.outputsOfState(currentState_s);
-			
-			if(!specOut.containsAll(implOut)) {
-				path_aux = "Test case: \t" + "" + "\n";
-				path_aux += "Implementation: \n\t path: " + currentState_i.getNome() + "\n\t output: " + I.outputsOfState(currentState_i);
-				path_aux += "\nModel: \n\t path:" + currentState_s.getNome() + "\n\t output: " + S.outputsOfState(currentState_s);
-				path_aux += "\n################################################################## \n";
-				path = path_aux;
-			}
 
+			if (!specOut.containsAll(implOut)) {
+				path = "Test case: \t" + "" + "\n";
+				path += "Implementation: \n\t path: " + currentState_i.getName() + "\n\t output: "
+						+ I.outputsOfState(currentState_i);
+				path += "\nModel: \n\t path:" + currentState_s.getName() + "\n\t output: "
+						+ S.outputsOfState(currentState_s);
+				path += "\n################################################################## \n";
+
+			}
 		}
-	
 
-		for (String letter : testCases) {
-			currentState_i = I.getInitialState();
-			currentState_s = S.getInitialState();
-
-			path_i = path_s = "";
-			path_aux = "Test case: \t" + letter + "\n";
-			path_s += currentState_s + " -> ";
-			path_i += currentState_i + " -> ";
-			stop_s = 0;
-			stop_i = 0;
-
-			for (String p : letter.split(" -> ")) {
-
-				if (currentState_s != null) {
-					result_s = S.transitionExists(currentState_s.getNome(), p);
-
-					if (result_s.size() > 0) {
-						currentState_s = result_s.get(0);
-					} else {
-						//if(!p.equals(Constants.DELTA)) {
-							currentState_s = null;
-							stop_s++;
-						//}
-						
-					}
-				} else {
-					stop_s++;
-				}
-
-				if (currentState_i != null) {
-					result_i = I.transitionExists(currentState_i.getNome(), p);
-					if (result_i.size() > 0) {
-						currentState_i = result_i.get(0);
-					} else {
-						currentState_i = null;
-						stop_i++;
-					}
-				} else {
-					stop_i++;
-				}
-
-				if (stop_s <= 1) {
-					path_s += (stop_s == 1
-							? " [there are no transitions of " + path_s.split(" -> ")[path_s.split(" -> ").length - 1]
-									+ " with label " + p + "]"
-							: currentState_s) + " -> ";
-				}
-
-				if (stop_i <= 1) {
-					path_i += (stop_i == 1
-							? " [there are no transitions of " + path_i.split(" -> ")[path_i.split(" -> ").length - 1]
-									+ " with label " + p + "]"
-							: currentState_i) + " -> ";
-				}
-
-			}
-
-			implOut = I.outputsOfState(currentState_i);
-			specOut = S.outputsOfState(currentState_s);
-			
-			path_aux += "Implementation: \n\t path: " + path_i + "\n\t output: " + implOut;
-			path_aux += "\nModel: \n\t path:" + path_s + "\n\t output: " + specOut;
-			path_aux += "\n################################################################## \n";
-
-			
-			if(ioco) {				
-				if (!(implOut.size() == 1  && implOut.get(0).equals(Constants.DELTA) && specOut.size() == 1 && specOut.get(0).equals(Constants.DELTA)) && !specOut.containsAll(implOut)) {// quiescence 
-					path += path_aux;
-				}
-			}
-			
-			//path += path_aux;
-
+		for (String t : testCases) {
+			path += "Test case: \t" + t;
+			path += path(S, ioco, t, "\nModel");
+			path += path(I, ioco, t, "\nImplementation");
+			path += "\n################################################################## \n";
 		}
+
 		return path;
 	}
 

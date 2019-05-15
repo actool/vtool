@@ -188,7 +188,7 @@ public class LTS {
 		for (Transition_ t : transitions) {
 			// verifies whether the transition contains the iniState of the transition and the
 			// label passed parameter
-			if (t.getIniState().getNome().toString().equals(labelIniState.toString())
+			if (t.getIniState().getName().toString().equals(labelIniState.toString())
 					&& t.getLabel().toString().equals(labelTransition.toString())) {				
 				// adds the status reached
 				endStates.add(t.getEndState());
@@ -208,7 +208,7 @@ public class LTS {
 		List<Transition_> transitionsOfState = new ArrayList<Transition_>();
 		for (Transition_ t : transitions) {
 			// verifies that the transition starts from the parameter state
-			if (t.getIniState().getNome().equals(state.getNome())) {
+			if (t.getIniState().getName().equals(state.getName())) {
 				// add transition to list
 				transitionsOfState.add(t);
 			}
@@ -248,7 +248,7 @@ public class LTS {
 		s += ("##############################\n");
 		s += ("           Initial State \n");
 		s += ("##############################\n");
-		s += ("[" + initialState.getNome() +"]"+ "\n\n");
+		s += ("[" + initialState.getName() +"]"+ "\n\n");
 
 		// states
 		s += ("##############################\n");
@@ -256,7 +256,7 @@ public class LTS {
 		s += ("##############################\n");
 		s += ("Length: " + this.states.size() + "\n");
 		for (State_ e : this.states) {
-			s += ("[" + e.getNome() + "]-");
+			s += ("[" + e.getName() + "]-");
 		}
 
 		// transitions
@@ -265,7 +265,7 @@ public class LTS {
 		s += ("##############################\n");
 		s += ("Length: " + this.transitions.size() + "\n");
 		for (Transition_ t : this.transitions) {
-			s += (t.getIniState().getNome() + " - " + t.getLabel() + " - " + t.getEndState().getNome() + "\n");
+			s += (t.getIniState().getName() + " - " + t.getLabel() + " - " + t.getEndState().getName() + "\n");
 		}
 
 		// alphabet
