@@ -247,40 +247,23 @@ public class ConformanceView extends JFrame {
 
 	}
 
-	final JPanel panel = new JPanel();
-
-	public void actionVerifyConformance(boolean ioco) {
-		long startTime = System.nanoTime();
-
-		verifyModelFileChange(ioco);
-
-		// lblWarningIoco.setText("");
-		// lblWarningLang.setText("");
-		if (isFormValid(ioco)) {// isFormValid(ioco)
-			if (ioco) {
-				iocoConformance();
-			} else {
-				languageBasedConformance();
-			}
-
+	public void showVeredict(boolean ioco) {
+		if (conformidade != null) {// verified compliance
 			if (S.getTransitions().size() > 0 || I.getTransitions().size() > 0) {
 				if (ioco) {
-					if(!failPath.equals("")) {
+					if (!failPath.equals("")) {
 						lbl_veredict_ioco.setText(Constants.MSG_NOT_CONFORM);
-					}else {
+					} else {
 						lbl_veredict_ioco.setText(Constants.MSG_CONFORM);
 					}
-					
-					
-					
+
 					if (lbl_veredict_ioco.getText().equals(Constants.MSG_CONFORM)) {
 						lbl_veredict_ioco.setForeground(new Color(0, 128, 0));
 					}
 					if (lbl_veredict_ioco.getText().equals(Constants.MSG_NOT_CONFORM) && !failPath.equals("")) {
 						lbl_veredict_ioco.setForeground(new Color(178, 34, 34));
 					} else {
-						if (lbl_veredict_ioco.getText().equals(Constants.MSG_NOT_CONFORM)
-								&& failPath.equals("")) {
+						if (lbl_veredict_ioco.getText().equals(Constants.MSG_NOT_CONFORM) && failPath.equals("")) {
 							lbl_veredict_ioco.setForeground(new Color(0, 128, 0));
 							lbl_veredict_ioco.setText(Constants.MSG_CONFORM);
 						}
@@ -291,22 +274,21 @@ public class ConformanceView extends JFrame {
 						// btnTestCases_ioco.setVisible(true);
 					}
 				} else {
-					//lbl_veredict_lang.setText(Operations.veredict(conformidade));
-					
-					if(!failPath.equals("")) {
+					// lbl_veredict_lang.setText(Operations.veredict(conformidade));
+
+					if (!failPath.equals("")) {
 						lbl_veredict_lang.setText(Constants.MSG_NOT_CONFORM);
-					}else {
+					} else {
 						lbl_veredict_lang.setText(Constants.MSG_CONFORM);
 					}
-					
+
 					if (lbl_veredict_lang.getText().equals(Constants.MSG_CONFORM)) {
 						lbl_veredict_lang.setForeground(new Color(0, 128, 0));
 					}
 					if (lbl_veredict_lang.getText().equals(Constants.MSG_NOT_CONFORM) && !failPath.equals("")) {
 						lbl_veredict_lang.setForeground(new Color(178, 34, 34));
 					} else {
-						if (lbl_veredict_lang.getText().equals(Constants.MSG_NOT_CONFORM)
-								&& failPath.equals("")) {
+						if (lbl_veredict_lang.getText().equals(Constants.MSG_NOT_CONFORM) && failPath.equals("")) {
 							lbl_veredict_lang.setForeground(new Color(0, 128, 0));
 							lbl_veredict_lang.setText(Constants.MSG_CONFORM);
 						}
@@ -318,16 +300,39 @@ public class ConformanceView extends JFrame {
 					}
 				}
 			}
+		}
+	}
+
+	final JPanel panel = new JPanel();
+
+	public void actionVerifyConformance(boolean ioco) {
+		verifyModelFileChange(ioco);
+		errorMessage(ioco);
+
+		long startTime = System.nanoTime();
+
+		// IOLTS s = S;
+		// IOLTS i = I;
+
+		verifyModelFileChange(ioco);
+
+		if (isFormValid(ioco)) {// isFormValid(ioco)
+			if (ioco) {
+				iocoConformance();
+			} else {
+				languageBasedConformance();
+			}
+
+			showVeredict(ioco);
+
+			/*
+			 * if (ioco) { lblWarningIoco.setText(""); } else { lblWarningLang.setText("");
+			 * }
+			 */
 
 		} /*
 			 * else { errorMessage(ioco); }
 			 */
-
-		if (ioco) {
-			lblWarningIoco.setText("");
-		} else {
-			lblWarningLang.setText("");
-		}
 
 		long endTime = System.nanoTime();
 		long totalTime = endTime - startTime;
@@ -423,16 +428,22 @@ public class ConformanceView extends JFrame {
 		}
 
 		if (cbLabel.getSelectedIndex() == 2 || lts) {// manual input/output
+			ArrayList<String> inp = new ArrayList<>(Arrays.asList(tfInput.getText().split(",")));
+			ArrayList<String> out = new ArrayList<>(Arrays.asList(tfOutput.getText().split(",")));
+
+			// remove space after/before alphabet on tfInput/tfOutput
+			for (int i = 0; i < inp.size(); i++) {
+				inp.set(i, inp.get(i).trim());
+			}
+
+			for (int i = 0; i < out.size(); i++) {
+				out.set(i, out.get(i).trim());
+			}
+
 			if (!implementation) {
-				S = ImportAutFile.autToIOLTS(pathSpecification, true,
-						new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
-						new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-
+				S = ImportAutFile.autToIOLTS(pathSpecification, true, inp, out);
 			} else {
-				I = ImportAutFile.autToIOLTS(pathImplementation, true,
-						new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
-						new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-
+				I = ImportAutFile.autToIOLTS(pathImplementation, true, inp, out);
 			}
 
 			if (lts) {
@@ -483,14 +494,13 @@ public class ConformanceView extends JFrame {
 		}
 
 		// IUT with quiescent transitions
-		if (implementation && I != null) { // quiescent
-			I.addQuiescentTransitions();
-			S.addQuiescentTransitions();
-			/*List<String> outputs = I.getOutputs();
-			outputs.add(Constants.DELTA);
-			S.setOutputs(outputs);
-			I.setOutputs(outputs);*/
+		if (implementation && I != null) {
+			I.addQuiescentTransitions();						
 		}
+		if (!implementation && S != null) {
+			S.addQuiescentTransitions();
+		}
+	
 
 	}
 
@@ -588,8 +598,8 @@ public class ConformanceView extends JFrame {
 			showModelLabel(false);
 			lblInputIoco.setText(StringUtils.join(a, ","));
 			lblInputLang.setText(StringUtils.join(a, ","));
-			
-			 a = new ArrayList<>();
+
+			a = new ArrayList<>();
 			if (S != null) {
 				a.addAll(S.getOutputs());
 			}
@@ -997,6 +1007,10 @@ public class ConformanceView extends JFrame {
 				if (showSpecificationImage && btnViewModelIoco.isEnabled()) {
 					showModelImage(false);
 				}
+				if (!failPath.equals("")) {
+					taTestCasesIoco.setText(failPath);
+				}
+				showVeredict(true);
 
 			}
 		});
@@ -1014,6 +1028,12 @@ public class ConformanceView extends JFrame {
 				if (showImplementationImage && btnViewImplementationIoco.isEnabled()) {
 					showModelImage(true);
 				}
+
+				if (!failPath.equals("")) {
+					taTestCasesIoco.setText(failPath);
+				}
+
+				showVeredict(true);
 			}
 		});
 		btnViewImplementationIoco.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1069,7 +1089,7 @@ public class ConformanceView extends JFrame {
 		tfD.setBounds(37, 152, 352, 26);
 		panel_language.add(tfD);
 
-		lblRegexD = new JLabel("Regex example: (a+b)*c");
+		lblRegexD = new JLabel("Regex example: (a|b)*c");
 		lblRegexD.setForeground(SystemColor.windowBorder);
 		lblRegexD.setFont(new Font("Dialog", Font.BOLD, 12));
 		lblRegexD.setBounds(255, 179, 225, 36);
@@ -1096,7 +1116,7 @@ public class ConformanceView extends JFrame {
 		tfF.setBounds(425, 152, 367, 26);
 		panel_language.add(tfF);
 
-		lblRegexF = new JLabel("Regex example: (a+b)*c");
+		lblRegexF = new JLabel("Regex example: (a|b)*c");
 		lblRegexF.setForeground(SystemColor.windowBorder);
 		lblRegexF.setFont(new Font("Dialog", Font.BOLD, 12));
 		lblRegexF.setBounds(652, 179, 184, 36);
@@ -1209,6 +1229,10 @@ public class ConformanceView extends JFrame {
 				if (showSpecificationImage && btnViewModelLang.isEnabled()) {
 					showModelImage(false);
 				}
+				if (!failPath.equals("")) {
+					taTestCasesLang.setText(failPath);
+				}
+				showVeredict(false);
 			}
 		});
 		btnViewModelLang.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1224,6 +1248,10 @@ public class ConformanceView extends JFrame {
 				if (showImplementationImage && btnViewImplementationLang.isEnabled()) {
 					showModelImage(true);
 				}
+				if (!failPath.equals("")) {
+					taTestCasesLang.setText(failPath);
+				}
+				showVeredict(false);
 			}
 		});
 		btnViewImplementationLang.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1453,7 +1481,7 @@ public class ConformanceView extends JFrame {
 
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			conformidade = IocoConformance.verifyIOCOConformance(S, I);
-			failPath = Operations.path(S, I, conformidade, true);			
+			failPath = Operations.path(S, I, conformidade, true);
 		}
 
 		// }
@@ -1512,7 +1540,10 @@ public class ConformanceView extends JFrame {
 				D = tfD.getText();
 				if (tfD.getText().isEmpty() && tfF.getText().isEmpty()) {
 					D = "(";
-					for (String l : S_.getAlphabet()) {
+					List<String> alphabets = new ArrayList<>();
+					alphabets.addAll(S_.getAlphabet());
+					alphabets.addAll(I_.getAlphabet());
+					for (String l : new ArrayList<>(new LinkedHashSet<>(alphabets))) {
 						D += l + "|";
 					}
 					D = D.substring(0, D.length() - 1);
@@ -1590,17 +1621,33 @@ public class ConformanceView extends JFrame {
 	private JLabel lblLabel_;
 
 	public boolean isFormValid(boolean ioco) {
+		boolean defineInpOut = true;
+		if (S != null && I != null) {
+			List<String> inpOut = new ArrayList<>();
+			inpOut.addAll(S.getInputs());
+			inpOut.addAll(S.getOutputs());
+			inpOut.addAll(I.getInputs());
+			inpOut.addAll(I.getOutputs());
+
+			List<String> alphabet = new ArrayList<>();
+			alphabet.addAll(S.getAlphabet());
+			alphabet.addAll(I.getAlphabet());
+
+			defineInpOut = inpOut.containsAll(alphabet);
+		}
+
 		return (!tfImplementation.getText().isEmpty() && !tfSpecification.getText().isEmpty()// implementation and //
 																								// specification field
 				&& (cbModel.getSelectedIndex() != 0 || (!ioco || cbModel.getSelectedIndex() == 0)))
 				&& (!ioco || (ioco && cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST
 						&& ((cbLabel.getSelectedItem() == ViewConstants.typeAutomaticLabel)
 								|| (cbLabel.getSelectedItem() == ViewConstants.typeManualLabel
-										&& !tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty()))));// model
-																												// selected
-																												// (IOLTS
-																												// or
-																												// LTS)
+										&& (!tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty()))
+										&& defineInpOut)));// model
+		// selected
+		// (IOLTS
+		// or
+		// LTS)
 
 		/*
 		 * return (!tfImplementation.getText().isEmpty() &&
@@ -1690,6 +1737,27 @@ public class ConformanceView extends JFrame {
 
 			verifyInpOutEmpty(ioco);
 
+			boolean defineInpOut = true;
+			if (S != null && I != null) {
+				List<String> inpOut = new ArrayList<>();
+				inpOut.addAll(S.getInputs());
+				inpOut.addAll(S.getOutputs());
+				inpOut.addAll(I.getInputs());
+				inpOut.addAll(I.getOutputs());
+
+				List<String> alphabet = new ArrayList<>();
+				alphabet.addAll(S.getAlphabet());
+				alphabet.addAll(I.getAlphabet());
+
+				defineInpOut = inpOut.containsAll(alphabet);
+			}
+			if (!constainsMessage(ioco, ViewConstants.labelInpOut) && !defineInpOut) {
+				msg += ViewConstants.labelInpOut;
+			} else {
+				if (!lts) {
+					removeMessage(ioco, ViewConstants.labelInpOut);
+				}
+			}
 		}
 
 		if (ioco) {
@@ -1733,8 +1801,8 @@ public class ConformanceView extends JFrame {
 	public void verifyInpOutEmpty(boolean ioco) {
 		String msg = "";
 		boolean defInpuOut = (cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST
-				&& cbLabel.getSelectedItem() == ViewConstants.typeManualLabel && tfInput.getText().isEmpty()
-				&& tfOutput.getText().isEmpty());
+				&& cbLabel.getSelectedItem() == ViewConstants.typeManualLabel
+				&& (tfInput.getText().isEmpty() || tfOutput.getText().isEmpty()));
 
 		if (!constainsMessage(ioco, ViewConstants.selectInpOut) && defInpuOut) {
 			msg += ViewConstants.selectInpOut;

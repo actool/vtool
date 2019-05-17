@@ -32,5 +32,5 @@ public class ViewConstants {
 	public static final String selectIoltsLabel = "Choose the I/O partition mode";//"It is necessary how the IOLTS labels will be distinguished \n";
 	public static final String selectInpOut = "Define the input and output labels \n";//"The fields Input and Output is required \n";
 	public static final String selectIolts = "IOCO relation is defined over IOLTS models \n";//"The informed model must be IOLTS \n";
-
+	public static final String labelInpOut="There labels that were not set as input/output \n";
 }

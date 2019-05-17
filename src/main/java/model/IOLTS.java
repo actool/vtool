@@ -141,11 +141,12 @@ public class IOLTS extends LTS implements Cloneable {
 	 * @param transition
 	 */
 	public void addQuiescentTransitions() {// quiescent
+		this.addToAlphabet(Constants.DELTA);
+		
 		for (State_ s : this.states) {
 			if (isQuiescent(s)) {
 				this.addTransition(new Transition_(s, Constants.DELTA, s));
-				this.outputs.add(Constants.DELTA);
-				this.addToAlphabet(Constants.DELTA);
+				this.outputs.add(Constants.DELTA);				
 			}
 		}
 	}

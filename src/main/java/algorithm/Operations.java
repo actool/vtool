@@ -525,63 +525,6 @@ public class Operations {
 		return new State_(tag + stringState);
 	}
 
-	// /***
-	// * Recebe um automato e retorna uma palavra alcançada apartir de cada estado
-	// * final do automato
-	// *
-	// * @return palavraFinal conjunto de palavras que levam aos estados finais do
-	// * automato
-	// */
-	// // provisório para fins de teste
-	// static Estado atual;
-	//
-	// private static List<String> getPalavrasAutomato(Automato a) {
-	// String palavra = "";
-	// // String palavraFinal = "";
-	// Transicao t_atual = null;
-	// List<String> palavras = new ArrayList<String>();
-	//
-	// // percorre todos os estados finais
-	// for (Estado estado : a.getEstadosFinais()) {
-	// Estado estadoFinalErro = estado;
-	// atual = estadoFinalErro;
-	// palavra = "";
-	//
-	// // percorre de tras para frente até alcançar o estado inicial
-	// while (!atual.equals(a.getEstadoInicial())) {
-	// // recupera uma transição cujo "estadoFim" é igual ao estado "atual"
-	// t_atual = a.getTransicoes().stream().filter(y ->
-	// y.getEstadoFim().getNome().equals(atual.getNome()))
-	// .findFirst().get();
-	//
-	// // adiciona o rótulo a palavra
-	// if (t_atual.getRotulo().charAt(0) == Constantes.TAG_ENTRADA
-	// || t_atual.getRotulo().charAt(0) == Constantes.TAG_SAIDA) {
-	// // trata quando tem rótulo de entrada e saída
-	// palavra += t_atual.getRotulo().substring(1, t_atual.getRotulo().length())
-	// + t_atual.getRotulo().charAt(0) + " >- ";
-	// } else {
-	// palavra += t_atual.getRotulo() + " >- ";
-	// }
-	//
-	// // move o estado atual para o estadoIni da transição
-	// atual = t_atual.getEstadoIni();
-	// }
-	//
-	// if (!palavra.replaceAll(" ", "").equals("")) {
-	// palavras.add((new StringBuilder(palavra.substring(0, palavra.length() -
-	// 1)).reverse().toString()).substring(3,palavra.length()-1));
-	// }
-	//
-	// // adiciona a palavra encontrada invertida pois a palavra é descoberta de
-	// tras
-	// // pra frente
-	// // palavraFinal += new StringBuilder(palavra).reverse().toString() + " - ";
-	// }
-	//
-	// return palavras; // palavraFinal;
-	// }
-
 	static volatile State_ current;
 
 	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco) {
@@ -705,75 +648,22 @@ public class Operations {
 	 */
 	public static String path(LTS S, LTS I, Automaton_ faultModel, boolean ioco) {
 		List<String> testCases = getWordsFromAutomaton(faultModel, ioco);
+		String path = "";
+		for (String t : testCases) {
+			IOLTS iolts_s = new IOLTS(S);
+			iolts_s.setInputs(iolts_s.getAlphabet());
+			iolts_s.setOutputs(new ArrayList<String>());
 
-		State_ currentState_s;
-		State_ currentState_i;
-		List<State_> result_s, result_i;
-		int stop_s = 0;
-		int stop_i = 0;
+			IOLTS iolts_i = new IOLTS(I);
+			iolts_i.setInputs(iolts_i.getAlphabet());
+			iolts_i.setOutputs(new ArrayList<String>());
 
-		String path = "", path_i = "", path_s = "";
-
-		for (String letter : testCases) {
-			currentState_s = S.getInitialState();
-			currentState_i = I.getInitialState();
-			path_i = path_s = "";
-			path += "Test case: \t" + letter + "\n";
-			path_s += currentState_s + " -> ";
-			path_i += currentState_i + " -> ";
-			stop_s = 0;
-			stop_i = 0;
-
-			for (String p : letter.split(" -> ")) {
-
-				if (currentState_s != null) {
-					result_s = S.transitionExists(currentState_s.getName(), p);
-
-					if (result_s.size() > 0) {
-						currentState_s = result_s.get(0);
-					} else {
-						// if(!p.equals(Constants.DELTA)) {
-						currentState_s = null;
-						stop_s++;
-						// }
-
-					}
-				} else {
-					stop_s++;
-				}
-
-				if (currentState_i != null) {
-					result_i = I.transitionExists(currentState_i.getName(), p);
-					if (result_i.size() > 0) {
-						currentState_i = result_i.get(0);
-					} else {
-						currentState_i = null;
-						stop_i++;
-					}
-				} else {
-					stop_i++;
-				}
-
-				if (stop_s <= 1) {
-					path_s += (stop_s == 1
-							? " [there are no transitions of " + path_s.split(" -> ")[path_s.split(" -> ").length - 1]
-									+ " with label " + p + "]"
-							: currentState_s) + " -> ";
-				}
-
-				if (stop_i <= 1) {
-					path_i += (stop_i == 1
-							? " [there are no transitions of " + path_i.split(" -> ")[path_i.split(" -> ").length - 1]
-									+ " with label " + p + "]"
-							: currentState_i) + " -> ";
-				}
-			}
-
-			path += "Implementation: \n\t path: " + path_i;
-			path += "\nModel: \n\t path:" + path_s;
+			path += "Test case: \t" + t;
+			path += path(iolts_s, ioco, t, "\nModel");
+			path += path(iolts_i, ioco, t, "\nImplementation");
 			path += "\n################################################################## \n";
-
 		}
+
 		return path;
 	}
 
@@ -782,6 +672,7 @@ public class Operations {
 	}
 
 	public static String path(IOLTS S, boolean ioco, String testCase, String model) {
+		List<State_> end = new ArrayList<>();;
 		List<State_> stateList = new ArrayList<>();
 		String path_aux = "";
 		List<String> specOut;
@@ -811,55 +702,88 @@ public class Operations {
 				map.put(s + Constants.SEPARATOR + l, S_.transitionExists(s.getName(), l));
 			}
 		}
+		
+		
 
+		boolean break_conditional = false;
 		previous_states = new ArrayList<State_>();
 
 		S_.getStates().stream().forEach(x -> x.setInfo(null));
 		getStateByName(S_, S_.getInitialState().getName()).setInfo(S_.getInitialState().getName() + " -> ");
 		previous_states.add(getStateByName(S_, S_.getInitialState().getName()));
 
+		// break_conditional = false;
 		for (String p : testCase.split(" -> ")) {
 			up = new HashMap<>();
-			stateList = new ArrayList<>();
-
-			r_list.put(S_.getInitialState(), S_.getInitialState().toString() + " -> ");
+			
+			if(! r_list.containsKey(S_.getInitialState())) {
+				r_list.put(S_.getInitialState(), S_.getInitialState().toString() + " -> ");
+			}
+			
+			
 
 			for (State_ state_ : previous_states) {
 
 				current_states = map.get(state_ + Constants.SEPARATOR + p);
-				stateList.addAll(current_states);
-
-				for (State_ s : current_states) {
-
-					if (r_list.containsKey(state_)) {
-						r = r_list.get(state_) + s.toString() + " ->";
-					} else {
-						r = s.toString() + " ->";
+				
+				
+				if (current_states.size() == 0) {
+					
+					if (!r_list.get(state_).contains("there are no transitions")) {
+						r = r_list.get(state_) + "[there are no transitions of " + state_.getName() + " with label " + p
+								+ " ] -> ";
+						up.put(state_, r);
 					}
 
-					up.put(s, r);
-
+					// break_conditional = true;
+				} else {
+					
+					for (State_ s : current_states) {
+						if (!r_list.get(state_).contains("there are no transitions")) {
+							stateList = new ArrayList<>();
+							stateList.addAll(current_states);
+							if (r_list.containsKey(state_)) {
+								r = r_list.get(state_) + s.toString() + " ->";
+							} else {
+								r = s.toString() + " ->";
+							}
+							up.put(s, r);
+						}
+					}
 				}
-
 			}
 
+			end = new ArrayList<>();
 			for (Map.Entry<State_, String> pair : up.entrySet()) {
-				r_list.put(pair.getKey(), pair.getValue());
+				r_list.put(pair.getKey(), pair.getValue());		
+				end.add(pair.getKey());
 			}
 
 			previous_states = stateList;
 
 		}
-
-		path_aux += "\n" + model;
-
-		for (State_ s : stateList) {
-			path_aux += "\n\t path:" + r_list.get(s);
+		
+		String a = "";
+		List<String> outputs = new ArrayList<>();
+		
+		for (State_ s : end) {
+			a += "\n\t path:" + r_list.get(s);
 			if (ioco) {
 				specOut = S_.outputsOfState(s);
-				path_aux += "\n\t output: " + specOut + "\n";
+				a += "\n\t output: " + specOut + "\n";
+				outputs.addAll(specOut);
 			}
 		}
+		
+		if (ioco) {
+			hashSet_s_ = new LinkedHashSet<>(outputs);
+			outputs = new ArrayList<>(hashSet_s_);
+			
+			path_aux += "\n" + model + " outputs: " + outputs + "\n";
+			}else {
+				path_aux += "\n" + model;
+			}
+		path_aux+=a;
 
 		return path_aux;
 	}
@@ -893,9 +817,9 @@ public class Operations {
 
 			if (!specOut.containsAll(implOut)) {
 				path = "Test case: \t" + "" + "\n";
-				path += "Implementation: \n\t path: " + currentState_i.getName() + "\n\t output: "
+				path += "Implementation output: "+implOut+" \n\t path: " + currentState_i.getName() + "\n\t output: "
 						+ I.outputsOfState(currentState_i);
-				path += "\nModel: \n\t path:" + currentState_s.getName() + "\n\t output: "
+				path += "\nModel output: "+specOut+" \n\t path:" + currentState_s.getName() + "\n\t output: "
 						+ S.outputsOfState(currentState_s);
 				path += "\n################################################################## \n";
 
