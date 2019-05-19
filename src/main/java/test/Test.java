@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -92,9 +93,31 @@ public class Test {
 		
 
 		try {
-			IOLTS i = ImportAutFile.autToIOLTS("C:\\Users\\camil\\Documents\\determinismo\\naodet-spec.aut", true, new ArrayList<String>(Arrays.asList("a","b")), new ArrayList<String>(Arrays.asList("x")));
-			i.addQuiescentTransitions();
-			System.out.println(Operations.path(i, true, "a -> b -> b -> b", "Spec"));
+			IOLTS i = ImportAutFile.autToIOLTS("C:\\Users\\camil\\Documents\\aut-separados\\determinismo\\naodet-spec.aut", true, new ArrayList<String>(Arrays.asList("a","b")), new ArrayList<String>(Arrays.asList("x")));
+			i.addQuiescentTransitions();			
+			BufferedImage  img = ModelImageGenerator.generateImage(i);
+			File outputfile = new File("C:\\Users\\camil\\Desktop\\saved.png");
+			 ImageIO.write(img, "png", outputfile);
+			
+			
+			// create automaton
+			Automaton_ as = new Automaton_();
+			// changes attributes based on LTS
+			as.setStates(i.getStates());
+			as.setInitialState(i.getInitialState());
+			as.setAlphabet(i.getAlphabet());			
+			as.setTransitions(Operations.processTauTransition(i.getTransitions()));
+			as.setFinalStates(Arrays.asList(new State_("s3")));
+			/* Automaton_ as = i.ioltsToAutomaton();
+			 as.setFinalStates(Arrays.asList(new State_("s3")));
+			System.out.println(as);*/
+			
+			List<String> words = Operations.getWordsFromAutomaton(as, true);
+			
+			for (String w : words) {
+				System.out.println(w);
+			}
+			//System.out.println(Operations.path(i, true, "a -> b -> b -> b", "Spec"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

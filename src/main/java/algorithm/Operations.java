@@ -590,44 +590,13 @@ public class Operations {
 				if (e.getInfo() != null) {
 					aux = e.getInfo().split(tagWord);
 					for (int i = 0; i < aux.length; i++) {
-						if (aux[i].replaceAll(" ", "").equals(Constants.DELTA)) {// quiescent
-							if (!words.contains(aux[i].replaceAll(" ", ""))) {
-								words.add(aux[i]);
-							}
-						} else {
-							if (ioco) {// does not consider the output
-
-								if (aux[i].length() - 5 > 0) {
-									words.add(aux[i].substring(0, (aux[i].length() - 5)));
-								} else {
-									words.add(aux[i].substring(0, aux[i].length()));
-								}
-
-							} else {
-								words.add(aux[i].substring(0, aux[i].length()));
-							}
-						}
-
+						words.add(aux[i]);
 					}
 				}
 			}
 		}
 		
-		//when have self-loop on final states
-		/*List<String> new_words = new ArrayList<>();
-		List<State_> states_reached;
-		for (State_ s : a.getFinalStates()) {
-			for (String l : a.getAlphabet()) {
-				states_reached = a.transitionExists(s.getName(), l);
-				if(states_reached.contains(s)) {
-					for (String w : words) {
-						new_words.add(w+ " -> "+ l);
-					}
-					
-				}
-			}
-		}
-		words.addAll(new_words);*/
+
 
 		return words;
 	}
@@ -754,11 +723,11 @@ public class Operations {
 				specOut = S_.outputsOfState(s);
 				a += "\n\t output: " + specOut + "\n";
 				outputs.addAll(specOut);
-			} else {
+			} /*else {
 				if (r_list.get(s).contains("there are no transitions")) {
 					a += "\n\t output: \n";
 				}
-			}
+			}*/
 		}
 
 		if (ioco) {
@@ -795,21 +764,6 @@ public class Operations {
 		fs = new ArrayList<>(hashSet_s_);
 		automaton_s.setFinalStates(fs);
 
-		/*System.out.println(automaton_s);
-		IOLTS ai = new IOLTS();
-		ai.setAlphabet(automaton_s.getAlphabet());
-		ai.setInitialState(automaton_s.getInitialState());
-		ai.setStates(automaton_s.getStates());
-		ai.setTransitions(automaton_s.getTransitions());
-		try {
-			BufferedImage bufferedImage = ModelImageGenerator.generateImage(ai);
-			File outputfile = new File("C:\\Users\\camil\\Desktop\\image.jpg");
-			ImageIO.write(bufferedImage, "jpg", outputfile);
-		} catch (IOException e) {
-
-		}*/
-
-		
 		hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
 		return  new ArrayList<>(hashSet_s_);
 
@@ -878,7 +832,7 @@ public class Operations {
 			implOut = I.outputsOfState(currentState_i);
 			specOut = S.outputsOfState(currentState_s);
 
-			if (!specOut.containsAll(implOut)) {
+			if (!specOut.containsAll(implOut) && !(ioco && specOut.size() == 0)) {//(ioco && specOut.size() == 0) -> when the test case can not be run completely
 				path = "Test case: \t" + "" + "\n";
 				path += "Implementation output: " + implOut + " \n\t path: " + currentState_i.getName()
 						+ "\n\t output: " + I.outputsOfState(currentState_i);
@@ -895,7 +849,7 @@ public class Operations {
 			ArrayList<String> out_s = (ArrayList<String>) result_s[2];
 			ArrayList<String> out_i = (ArrayList<String>) result_i[2];
 
-			if (!out_s.containsAll(out_i)) {
+			if (!out_s.containsAll(out_i) && !(ioco && out_s.size() == 0)) {
 				path += "Test case: \t" + t;
 				path += result_s[1];
 				path += result_i[1];
