@@ -230,12 +230,12 @@ public class Operations {
 								&& !finalStates.contains(stateName.replaceAll(Constants.SEPARATOR, ""))) {
 							finalStates.add(stateName.replaceAll(Constants.SEPARATOR, ""));
 						}
-					} else {
-						// if no state is reached from stateString with the label "alphabet"
-						// then consider that starting from stateString with the label "alphabet"
-						// arrives in the "nullState" state
-						stateName = nullState.getName();
-					}
+//					} else {
+//						// if no state is reached from stateString with the label "alphabet"
+//						// then consider that starting from stateString with the label "alphabet"
+//						// arrives in the "nullState" state
+//						stateName = nullState.getName();
+//					}
 					// creates the state reached
 					state = new State_(stateName);
 					// add this state to automaton
@@ -251,6 +251,7 @@ public class Operations {
 						aux.add(stateName);
 						auxCopy.add(stateName);
 					}
+				}
 				}
 			}
 
@@ -595,8 +596,6 @@ public class Operations {
 				}
 			}
 		}
-		
-
 
 		return words;
 	}
@@ -663,6 +662,7 @@ public class Operations {
 
 		// break_conditional = false;
 		for (String p : testCase.split(" -> ")) {
+
 			up = new HashMap<>();
 
 			if (!r_list.containsKey(S_.getInitialState())) {
@@ -695,8 +695,9 @@ public class Operations {
 								up.put(s, r);
 							} else {
 								r = s.toString() + " ->";
+								up.put(s, r);
 							}
-							
+
 						} else {
 							up.put(state_, r_list.get(state_));
 						}
@@ -710,7 +711,7 @@ public class Operations {
 				end.add(pair.getKey());
 			}
 
-			previous_states = stateList;
+			previous_states = end;
 
 		}
 
@@ -723,11 +724,10 @@ public class Operations {
 				specOut = S_.outputsOfState(s);
 				a += "\n\t output: " + specOut + "\n";
 				outputs.addAll(specOut);
-			} /*else {
-				if (r_list.get(s).contains("there are no transitions")) {
-					a += "\n\t output: \n";
-				}
-			}*/
+			} /*
+				 * else { if (r_list.get(s).contains("there are no transitions")) { a +=
+				 * "\n\t output: \n"; } }
+				 */
 		}
 
 		if (ioco) {
@@ -752,20 +752,20 @@ public class Operations {
 		}
 		HashSet hashSet_s_ = new LinkedHashSet<>(tc);
 		tc = new ArrayList<>(hashSet_s_);
-		Automaton_ automaton_s = iolts_s.ioltsToAutomaton();
-		for (State_ s : automaton_s.getStates()) {
-			for (State_ st : tc) {
-				if (s.getName().contains(st.getName())) {
-					fs.add(s);
-				}
-			}
-		}
-		hashSet_s_ = new LinkedHashSet<>(fs);
-		fs = new ArrayList<>(hashSet_s_);
-		automaton_s.setFinalStates(fs);
-
+		
+		// create automaton
+		Automaton_ automaton_s = new Automaton_();
+		// changes attributes based on LTS
+		automaton_s.setStates(iolts_s.getStates());
+		automaton_s.setInitialState(iolts_s.getInitialState());
+		automaton_s.setAlphabet(iolts_s.getAlphabet());
+		
+		automaton_s.setTransitions(Operations.processTauTransition(iolts_s.getTransitions()));
+		automaton_s.setFinalStates(tc);
+		
+	
 		hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
-		return  new ArrayList<>(hashSet_s_);
+		return new ArrayList<>(hashSet_s_);
 
 	}
 
@@ -832,7 +832,9 @@ public class Operations {
 			implOut = I.outputsOfState(currentState_i);
 			specOut = S.outputsOfState(currentState_s);
 
-			if (!specOut.containsAll(implOut) && !(ioco && specOut.size() == 0)) {//(ioco && specOut.size() == 0) -> when the test case can not be run completely
+			if (!specOut.containsAll(implOut) && !(ioco && specOut.size() == 0)) {// (ioco && specOut.size() == 0) ->
+																					// when the test case can not be run
+																					// completely
 				path = "Test case: \t" + "" + "\n";
 				path += "Implementation output: " + implOut + " \n\t path: " + currentState_i.getName()
 						+ "\n\t output: " + I.outputsOfState(currentState_i);

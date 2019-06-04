@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -338,7 +339,7 @@ public class ConformanceView extends JFrame {
 		long totalTime = endTime - startTime;
 
 		long convert = TimeUnit.SECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
-		// convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
+		 convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
 
 		System.out.println(convert);
 
@@ -654,6 +655,7 @@ public class ConformanceView extends JFrame {
 						if (!isFormValid(ioco)) {
 							errorMessage(ioco);
 						} else {
+							errorMessage(ioco);//clean error message
 							verifyInpOutEmpty(false);
 							verifyModelsEmpty(false);
 
@@ -1748,7 +1750,9 @@ public class ConformanceView extends JFrame {
 				List<String> alphabet = new ArrayList<>();
 				alphabet.addAll(S.getAlphabet());
 				alphabet.addAll(I.getAlphabet());
-
+				HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+				alphabet = new ArrayList<>(hashSet_s_);
+				alphabet.remove(Constants.DELTA);
 				defineInpOut = inpOut.containsAll(alphabet);
 			}
 			if (!constainsMessage(ioco, ViewConstants.labelInpOut) && !defineInpOut) {
