@@ -16,7 +16,7 @@ import parser.ImportAutFile;
 public class AutGenerator {
 
 	public static void main(String[] args) {
-		int qtStates = 50;//2000;
+		int qtStates = 125;//2000;
 		List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");
 		int qtTransition = 0;
 		String transitions = "";

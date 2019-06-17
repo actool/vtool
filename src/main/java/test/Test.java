@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -61,7 +62,17 @@ public class Test {
 		s.addTransition(new Transition_(s2,"a",s2));
 		//s.addTransition(new Transition_(s2,"a",s0));//
 		
-		System.out.println(Operations.convertToDeterministicAutomaton(s));
+		//System.out.println(Operations.convertToDeterministicAutomaton(s));
+		
+		
+		String labelIniState = s1.getName();
+		String labelTransition = "b";
+		
+		Transition_ result = s.getTransitions()
+			      .stream().parallel()
+			      .filter(x -> x.getIniState().getName().equals(labelIniState) && x.getLabel().equals(labelTransition)).findFirst().orElse(null);
+		
+		System.out.println(result);
 		
 //		IOLTS iolts = new IOLTS();	
 //		State_ s0 = new State_("s0");

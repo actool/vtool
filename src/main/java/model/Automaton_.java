@@ -79,7 +79,7 @@ public class Automaton_ extends LTS {
 			//the current one receives the first element from the list
 			current = aux.remove(0);
 			//if the transition from the current state with epsilon label exists
-			r = transitionExists(current.getName(), Constants.EPSILON);
+			r = reachedStates(current.getName(), Constants.EPSILON);
 
 			//transition with epsilon was found
 			if (r.size() > 0) {

@@ -150,6 +150,7 @@ public class Transition_ {
 			result = false;
 		} else {
 			Transition_ t = (Transition_) obj;
+			
 			//returns if the initial state, label, and final state are equal
 			result = t.iniState.equals(iniState) && t.endState.equals(endState) && label.equals(t.label);
 		}

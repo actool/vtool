@@ -88,13 +88,15 @@ public class Operations {
 		// completes states that are not input / output complete
 		for (State_ e : Q.getStates()) {
 			for (String l : acomp.getAlphabet()) {
-				// checks whether there is a transition from state "e" with the label "l"
-				result = Q.transitionExists(e.getName(), l);
+
 				// if there are no transitions, you must complete by creating a new transition
 				// from state "e" to state "scomp" with the label "l"
-				if (result.size() == 0) {
+				if (!Q.transitionExists(e.getName(), l)) {
 					acomp.addTransition(new Transition_(e, l, scomp));
 				} else {
+					// checks whether there is a transition from state "e" with the label "l"
+					result = Q.reachedStates(e.getName(), l);
+
 					// when no deterministic, so starting from "e" with "l" can
 					// reach more than one end state, so a transition for each found state must be
 					// created
@@ -196,11 +198,10 @@ public class Operations {
 					// for each state that is composed the state. ex: (state1 @ state2) in this case
 					// there are two states
 					for (int i = 0; i < stringState.length; i++) {
-						// check if the transition exists from the stringState[i] with the word
-						// "alphabet"
-						result = automaton.transitionExists(stringState[i], alphabet);
-						// if there is a transition
-						if (result.size() > 0) {
+						if (automaton.transitionExists(stringState[i], alphabet)) {
+							// check if the transition exists from the stringState[i] with the word
+							// "alphabet"
+							result = automaton.reachedStates(stringState[i], alphabet);
 							// for each state reached by the transitions found
 							for (State_ estadosFim : result) {
 								// add the reachable states with EPSILON from the states
@@ -208,6 +209,7 @@ public class Operations {
 								auxState.addAll(automaton.reachableStatesWithEpsilon(estadosFim));
 							}
 						}
+
 					}
 
 					// if there are states reached from stateString with the label "alphabet"
@@ -230,28 +232,28 @@ public class Operations {
 								&& !finalStates.contains(stateName.replaceAll(Constants.SEPARATOR, ""))) {
 							finalStates.add(stateName.replaceAll(Constants.SEPARATOR, ""));
 						}
-//					} else {
-//						// if no state is reached from stateString with the label "alphabet"
-//						// then consider that starting from stateString with the label "alphabet"
-//						// arrives in the "nullState" state
-//						stateName = nullState.getName();
-//					}
-					// creates the state reached
-					state = new State_(stateName);
-					// add this state to automaton
-					deteministic.addState(new State_(state.getName().replaceAll(Constants.SEPARATOR, "")));
-					// adds the new transition from the "StateString" with the "alphabet" label to
-					// the "state"
-					deteministic.addTransition(new Transition_(new State_(String.join("", stringState)), alphabet,
-							new State_(state.getName().replaceAll(Constants.SEPARATOR, ""))));
+						// } else {
+						// // if no state is reached from stateString with the label "alphabet"
+						// // then consider that starting from stateString with the label "alphabet"
+						// // arrives in the "nullState" state
+						// stateName = nullState.getName();
+						// }
+						// creates the state reached
+						state = new State_(stateName);
+						// add this state to automaton
+						deteministic.addState(new State_(state.getName().replaceAll(Constants.SEPARATOR, "")));
+						// adds the new transition from the "StateString" with the "alphabet" label to
+						// the "state"
+						deteministic.addTransition(new Transition_(new State_(String.join("", stringState)), alphabet,
+								new State_(state.getName().replaceAll(Constants.SEPARATOR, ""))));
 
-					// if the reached state is not in the list auxCopy should add it to explore
-					// later
-					if (!auxCopy.contains(state.getName())) {
-						aux.add(stateName);
-						auxCopy.add(stateName);
+						// if the reached state is not in the list auxCopy should add it to explore
+						// later
+						if (!auxCopy.contains(state.getName())) {
+							aux.add(stateName);
+							auxCopy.add(stateName);
+						}
 					}
-				}
 				}
 			}
 
@@ -318,12 +320,14 @@ public class Operations {
 
 			// check for transitions in S and Q that synchronize
 			for (String l : Ar.getAlphabet()) {
-				// if there exists in S transitions starting from state "s" with the label "l"
-				sTransitions = S.transitionExists(s, l);
-				// if there exists in Q transitions from state "q" with the label "l"
-				qTransitions = Q.transitionExists(q, l);
+
 				// synchronizes in Q and S
-				if (sTransitions.size() > 0 && qTransitions.size() > 0) {
+				if (S.transitionExists(s, l) && Q.transitionExists(q, l)) {
+					// if there exists in S transitions starting from state "s" with the label "l"
+					sTransitions = S.reachedStates(s, l);
+					// if there exists in Q transitions from state "q" with the label "l"
+					qTransitions = Q.reachedStates(q, l);
+
 					// synchronized states in S, there may be more than one in case of no
 					// determinism
 					for (State_ endStateS : sTransitions) {
@@ -647,9 +651,14 @@ public class Operations {
 		alphabet.addAll(S.getInputs());
 		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
 		alphabet = new ArrayList<>(hashSet_s_);
+		List<State_> reachedStates;
 		for (State_ s : S_.getStates()) {
 			for (String l : alphabet) {// S_.getAlphabet()
-				map.put(s + Constants.SEPARATOR + l, S_.transitionExists(s.getName(), l));
+				reachedStates = S_.reachedStates(s.getName(), l);
+				if(reachedStates.size() > 0) {
+					map.put(s + Constants.SEPARATOR + l, reachedStates);
+				}
+				
 			}
 		}
 
@@ -675,8 +684,8 @@ public class Operations {
 
 				if (current_states == null || current_states.size() == 0) {// current_states == null ||
 
-					if (!r_list.get(state_).contains("there are no transitions")) {
-						r = r_list.get(state_) + "[there are no transitions of " + state_.getName() + " with label " + p
+					if (!r_list.get(state_).contains(Constants.NO_TRANSITION)) {
+						r = r_list.get(state_) + "[" + Constants.NO_TRANSITION + state_.getName() + " with label " + p
 								+ " ] -> ";
 						up.put(state_, r);
 					} else {
@@ -687,7 +696,7 @@ public class Operations {
 				} else {
 
 					for (State_ s : current_states) {
-						if (!r_list.get(state_).contains("there are no transitions")) {
+						if (!r_list.get(state_).contains(Constants.NO_TRANSITION)) {
 							stateList = new ArrayList<>();
 							stateList.addAll(current_states);
 							if (r_list.containsKey(state_)) {
@@ -720,7 +729,7 @@ public class Operations {
 
 		for (State_ s : end) {
 			a += "\n\t path:" + r_list.get(s);
-			if (ioco && !r_list.get(s).contains("there are no transitions")) {
+			if (ioco && !r_list.get(s).contains(Constants.NO_TRANSITION)) {
 				specOut = S_.outputsOfState(s);
 				a += "\n\t output: " + specOut + "\n";
 				outputs.addAll(specOut);
@@ -745,6 +754,8 @@ public class Operations {
 
 	public static List<String> getTestCases(Automaton_ faultModel, boolean ioco, IOLTS iolts_s) {
 		List<String> testCases_testSuit = getWordsFromAutomaton(faultModel, ioco);
+
+		// if(ioco) {
 		List<State_> tc = new ArrayList<>();
 		List<State_> fs = new ArrayList<>();
 		for (String t : testCases_testSuit) {
@@ -752,20 +763,22 @@ public class Operations {
 		}
 		HashSet hashSet_s_ = new LinkedHashSet<>(tc);
 		tc = new ArrayList<>(hashSet_s_);
-		
+
 		// create automaton
 		Automaton_ automaton_s = new Automaton_();
 		// changes attributes based on LTS
 		automaton_s.setStates(iolts_s.getStates());
 		automaton_s.setInitialState(iolts_s.getInitialState());
 		automaton_s.setAlphabet(iolts_s.getAlphabet());
-		
+
 		automaton_s.setTransitions(Operations.processTauTransition(iolts_s.getTransitions()));
 		automaton_s.setFinalStates(tc);
-		
-	
+
 		hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
 		return new ArrayList<>(hashSet_s_);
+		// }else {
+		// return testCases_testSuit;
+		// }
 
 	}
 
@@ -781,7 +794,6 @@ public class Operations {
 	 *         specification
 	 */
 	public static String path(LTS S, LTS I, Automaton_ faultModel, boolean ioco) {
-
 		IOLTS iolts_s = new IOLTS(S);
 		IOLTS iolts_i = new IOLTS(I);
 
@@ -793,12 +805,18 @@ public class Operations {
 		List<String> testCases = getWordsFromAutomaton(faultModel, ioco);
 		// List<String> testCases = getTestCases(faultModel, ioco, iolts_s);
 
+		String result_s, result_i;
 		String path = "";
 		for (String t : testCases) {
+			result_s = path(iolts_s, ioco, t, "\nModel")[1].toString();
+			result_i = path(iolts_i, ioco, t, "\nImplementation")[1].toString();
+			// if((!ioco && (result_s.contains(Constants.NO_TRANSITION) ||
+			// result_i.contains(Constants.NO_TRANSITION))) || ioco) {
 			path += "Test case: \t" + t;
-			path += path(iolts_s, ioco, t, "\nModel")[1];
-			path += path(iolts_i, ioco, t, "\nImplementation")[1];
+			path += result_s;
+			path += result_i;
 			path += "\n################################################################## \n";
+			// }
 		}
 
 		return path;
@@ -816,17 +834,20 @@ public class Operations {
 	 *         specification
 	 */
 	public static String path(IOLTS S, IOLTS I, Automaton_ fault, boolean ioco) {
-		// List<String> testCases = getWordsFromAutomaton(fault, ioco);
-		List<String> testCases = getTestCases(fault, ioco, S);
-		State_ currentState_s;
-		State_ currentState_i;
-
+		
+		
+		List<String> testCases;
 		String path = "";
 
-		List<String> implOut, specOut;
-
-		// verify if initial states results in non ioco, with test case ''
 		if (ioco) {
+			testCases = getTestCases(fault, ioco, S);
+			State_ currentState_s;
+			State_ currentState_i;
+
+			List<String> implOut, specOut;
+
+			// verify if initial states results in non ioco, with test case ''
+
 			currentState_s = S.getInitialState();
 			currentState_i = I.getInitialState();
 			implOut = I.outputsOfState(currentState_i);
@@ -843,6 +864,10 @@ public class Operations {
 				path += "\n################################################################## \n";
 
 			}
+
+		} else {
+			testCases = getWordsFromAutomaton(fault, ioco);
+
 		}
 
 		for (String t : testCases) {
@@ -851,7 +876,10 @@ public class Operations {
 			ArrayList<String> out_s = (ArrayList<String>) result_s[2];
 			ArrayList<String> out_i = (ArrayList<String>) result_i[2];
 
-			if (!out_s.containsAll(out_i) && !(ioco && out_s.size() == 0)) {
+			if (!out_s.containsAll(out_i) && !(ioco && out_s.size() == 0)// IOCO
+			// && (!ioco && (result_s[1].toString().contains(Constants.NO_TRANSITION) ||
+			// result_i[1].toString().contains(Constants.NO_TRANSITION))) //LANG
+			) {
 				path += "Test case: \t" + t;
 				path += result_s[1];
 				path += result_i[1];

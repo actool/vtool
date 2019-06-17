@@ -14,6 +14,7 @@ import algorithm.*;
 import dk.brics.automaton.RegExp;
 import model.*;
 import parser.ImportAutFile;
+import parser.ImportAutFile_Thread;
 import util.Constants;
 import util.ModelImageGenerator;
 
@@ -147,7 +148,7 @@ public class ConformanceView extends JFrame {
 
 	public void getImplementationPath() {
 		failPath = "";
-		cleanVeredict();
+		cleanVeredict();		
 		try {
 			configFilterFile();
 			fc.showOpenDialog(ConformanceView.this);
@@ -318,13 +319,16 @@ public class ConformanceView extends JFrame {
 		verifyModelFileChange(ioco);
 
 		if (isFormValid(ioco)) {// isFormValid(ioco)
-			if (ioco) {
-				iocoConformance();
-			} else {
-				languageBasedConformance();
-			}
 
-			showVeredict(ioco);
+			if (S != null && I != null) {
+				if (ioco) {
+					iocoConformance();
+				} else {
+					languageBasedConformance();
+				}
+
+				showVeredict(ioco);
+			}
 
 			/*
 			 * if (ioco) { lblWarningIoco.setText(""); } else { lblWarningLang.setText("");
@@ -339,7 +343,7 @@ public class ConformanceView extends JFrame {
 		long totalTime = endTime - startTime;
 
 		long convert = TimeUnit.SECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
-		 convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
+		convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
 
 		System.out.println(convert);
 
@@ -415,93 +419,125 @@ public class ConformanceView extends JFrame {
 
 	}
 
-	public void setModel(boolean lts, boolean implementation) throws Exception {
-		LTS S_ = new LTS(), I_ = new LTS();
+	public void setModel(boolean lts, boolean implementation) {
 
-		if (lts) {
-			if (!implementation) {
-				S_ = ImportAutFile.autToLTS(pathSpecification);
-
-			} else {
-				I_ = ImportAutFile.autToLTS(pathImplementation);
-			}
-			tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
-		}
-
-		if (cbLabel.getSelectedIndex() == 2 || lts) {// manual input/output
-			ArrayList<String> inp = new ArrayList<>(Arrays.asList(tfInput.getText().split(",")));
-			ArrayList<String> out = new ArrayList<>(Arrays.asList(tfOutput.getText().split(",")));
-
-			// remove space after/before alphabet on tfInput/tfOutput
-			for (int i = 0; i < inp.size(); i++) {
-				inp.set(i, inp.get(i).trim());
-			}
-
-			for (int i = 0; i < out.size(); i++) {
-				out.set(i, out.get(i).trim());
-			}
-
-			if (!implementation) {
-				S = ImportAutFile.autToIOLTS(pathSpecification, true, inp, out);
-			} else {
-				I = ImportAutFile.autToIOLTS(pathImplementation, true, inp, out);
-			}
+		try {
+			LTS S_ = new LTS(), I_ = new LTS();
 
 			if (lts) {
-				tfInput.setText("");
+				if (!implementation) {
+					S_ = ImportAutFile_Thread.autToLTS(pathSpecification);
+
+				} else {
+					I_ = ImportAutFile_Thread.autToLTS(pathImplementation);
+				}
+				tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
 			}
 
-			// lblWarningIoco.setText("");
-			// lblWarningLang.setText("");
-		} else {// ?/!
-			if (!implementation) {
-				S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
-						new ArrayList<String>());
+			if (cbLabel.getSelectedIndex() == 2 || lts) {// manual input/output
+				ArrayList<String> inp = new ArrayList<>(Arrays.asList(tfInput.getText().split(",")));
+				ArrayList<String> out = new ArrayList<>(Arrays.asList(tfOutput.getText().split(",")));
 
-			} else {
-				I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
-						new ArrayList<String>());
+				// remove space after/before alphabet on tfInput/tfOutput
+				for (int i = 0; i < inp.size(); i++) {
+					inp.set(i, inp.get(i).trim());
+				}
+
+				for (int i = 0; i < out.size(); i++) {
+					out.set(i, out.get(i).trim());
+				}
+
+				if (!implementation) {
+					S = ImportAutFile_Thread.autToIOLTS(pathSpecification, true, inp, out);
+				} else {
+					I = ImportAutFile_Thread.autToIOLTS(pathImplementation, true, inp, out);
+				}
+
+				if (lts) {
+					tfInput.setText("");
+				}
+
+				// lblWarningIoco.setText("");
+				// lblWarningLang.setText("");
+			} else {// ?/!
+				if (!implementation) {
+					S = ImportAutFile_Thread.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
+							new ArrayList<String>());
+
+					 System.out.println("---------------------MODEL--------------------------");
+					 System.out.println(S);
+					 System.out.println("-----------------------------------------------");
+				} else {
+					I = ImportAutFile_Thread.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
+							new ArrayList<String>());
+
+					 System.out.println("-------------------IMPLEMENTATION----------------------------");
+					 System.out.println(I);
+					 System.out.println("-----------------------------------------------");
+
+				}
+
+				boolean msg = false;
+
+				if (S != null) {
+					if (S.getTransitions().size() == 0) {
+						msg = true;
+					}
+				}
+
+				if (I != null) {
+					if (I.getTransitions().size() == 0) {
+						msg = true;
+					}
+				}
+
+				if (msg) {
+					if (!lblWarningIoco.getText().contains(ViewConstants.msgImp)) {
+						lblWarningIoco.setText(lblWarningIoco.getText() + ViewConstants.msgImp);
+					}
+
+					if (!lblWarningLang.getText().contains(ViewConstants.msgImp)) {
+						lblWarningLang.setText(lblWarningLang.getText() + ViewConstants.msgImp);
+					}
+
+				} else {
+					removeMessage(true, ViewConstants.msgImp);
+					removeMessage(false, ViewConstants.msgImp);
+				}
 
 			}
-
-			boolean msg = false;
-
-			if (S != null) {
-				if (S.getTransitions().size() == 0) {
-					msg = true;
+			
+			
+			
+			if (I == null) {				
+				isImplementationProcess = false;
+			}else {
+				// IUT with quiescent transitions
+				if (implementation) {
+					I.addQuiescentTransitions();
 				}
 			}
 
-			if (I != null) {
-				if (I.getTransitions().size() == 0) {
-					msg = true;
+			if(S == null) {
+				isModelProcess = false;
+			}else {
+				if (!implementation ) {
+					S.addQuiescentTransitions();
 				}
 			}
-
-			if (msg) {
-				if (!lblWarningIoco.getText().contains(ViewConstants.msgImp)) {
-					lblWarningIoco.setText(lblWarningIoco.getText() + ViewConstants.msgImp);
-				}
-
-				if (!lblWarningLang.getText().contains(ViewConstants.msgImp)) {
-					lblWarningLang.setText(lblWarningLang.getText() + ViewConstants.msgImp);
-				}
-
-			} else {
-				removeMessage(true, ViewConstants.msgImp);
-				removeMessage(false, ViewConstants.msgImp);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(implementation) {
+				isImplementationProcess = false;
+				I = null;
+			}else {
+				isModelProcess = false;
+				S = null;
 			}
-
+			
+			
 		}
-
-		// IUT with quiescent transitions
-		if (implementation && I != null) {
-			I.addQuiescentTransitions();						
-		}
-		if (!implementation && S != null) {
-			S.addQuiescentTransitions();
-		}
-	
 
 	}
 
@@ -655,7 +691,7 @@ public class ConformanceView extends JFrame {
 						if (!isFormValid(ioco)) {
 							errorMessage(ioco);
 						} else {
-							errorMessage(ioco);//clean error message
+							errorMessage(ioco);// clean error message
 							verifyInpOutEmpty(false);
 							verifyModelsEmpty(false);
 
@@ -1481,6 +1517,10 @@ public class ConformanceView extends JFrame {
 		// new ArrayList<String>());
 		// }
 
+		// System.out.println(S);
+		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		// System.out.println(I);
+
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			conformidade = IocoConformance.verifyIOCOConformance(S, I);
 			failPath = Operations.path(S, I, conformidade, true);
@@ -1533,8 +1573,8 @@ public class ConformanceView extends JFrame {
 				I_ = I.toLTS();
 
 			} else {
-				S_ = ImportAutFile.autToLTS(pathSpecification);
-				I_ = ImportAutFile.autToLTS(pathImplementation);
+				S_ = ImportAutFile_Thread.autToLTS(pathSpecification);
+				I_ = ImportAutFile_Thread.autToLTS(pathImplementation);
 			}
 
 			if (S_.getAlphabet().size() != 0 || I_.getAlphabet().size() != 0) {

@@ -144,7 +144,7 @@ public class IOLTS extends LTS implements Cloneable {
 		this.addToAlphabet(Constants.DELTA);
 		
 		for (State_ s : this.states) {
-			if (isQuiescent(s)) {
+			if (isQuiescent(s) && s != null) {
 				this.addTransition(new Transition_(s, Constants.DELTA, s));
 				this.outputs.add(Constants.DELTA);				
 			}

@@ -6,6 +6,8 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import algorithm.Operations;
@@ -126,6 +128,8 @@ public class LTS {
 	 *            
 	 */
 	public void setAlphabet(List<String> alphabet) {
+		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+		alphabet = new ArrayList<>(hashSet_s_);
 		this.alphabet = alphabet;
 	}
 
@@ -154,6 +158,7 @@ public class LTS {
 		if (!this.transitions.contains(transition)) {
 			this.transitions.add(transition);
 		}
+			
 
 		// add the label in the alphabet list
 		this.addToAlphabet(transition.getLabel());
@@ -173,6 +178,13 @@ public class LTS {
 	}
 
 	
+	
+	public boolean transitionExists(String labelIniState, String labelTransition){
+		Transition_ result = this.getTransitions()
+			      .stream().parallel()
+			      .filter(x -> x.getIniState().getName().equals(labelIniState) && x.getLabel().equals(labelTransition)).findFirst().orElse(null);
+	return result!=null;
+	}
 	/***
 	 * Checks whether there is a transition from the initial state and label received from
 	 * parameter, and returns all state reached by these transitions
@@ -181,10 +193,12 @@ public class LTS {
 	 * @param labelTransition
 	 * @return list of states reached
 	 */
-	public List<State_> transitionExists(String labelIniState, String labelTransition) {				
+	public List<State_> reachedStates(String labelIniState, String labelTransition) {				
 		// list of reached states
 		List<State_> endStates = new ArrayList<State_>();
 	
+		
+		
 		for (Transition_ t : transitions) {
 			// verifies whether the transition contains the iniState of the transition and the
 			// label passed parameter

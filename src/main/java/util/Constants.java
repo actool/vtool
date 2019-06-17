@@ -21,5 +21,7 @@ public class Constants {
 	public static final String MSG_CONFORM = "IUT conforms to the specification.";
 	public static final String MSG_NOT_CONFORM = "IUT does not conforms to the specification.";
 	
+	public static final String NO_TRANSITION = "there are no transitions of ";
+	
 
 }

@@ -68,40 +68,44 @@ public class ModelImageGenerator {
 	public static BufferedImage generateImage(IOLTS model) throws IOException {
 
 		try {
-			File imgFile = File.createTempFile("model", ".png");
-			imgFile.createNewFile();
+			int maxTransition = 30;
 
-			DirectedPseudograph<String, DefaultEdge> g = ioltsToGraph(model);
+			//generate image from models with up to maxTransition transitions
+			if (model.getTransitions().size() <= maxTransition) {
+				File imgFile = File.createTempFile("model", ".png");
+				imgFile.createNewFile();
 
-			JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
+				DirectedPseudograph<String, DefaultEdge> g = ioltsToGraph(model);
 
-			Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(graphAdapter));
+				JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
 
-			boolean imageGenerated = true;
-			int limitSecondToGenerateImage = 5;
+				Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(graphAdapter));
 
-			try {
-				control.get(limitSecondToGenerateImage, TimeUnit.SECONDS);
-			} catch (Exception ex) {// TimeoutException
-				control.cancel(true);
-				imageGenerated = false;
+				boolean imageGenerated = true;
+				int limitSecondToGenerateImage = 5;
+
+				try {
+					control.get(limitSecondToGenerateImage, TimeUnit.SECONDS);
+				} catch (Exception ex) {// TimeoutException
+					control.cancel(true);
+					imageGenerated = false;
+				}
+
+				if (imageGenerated) {
+					layout.execute(graphAdapter.getDefaultParent());
+
+					BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true,
+							null);
+
+					// System.out.println(imgFile.getAbsolutePath());
+					// ImageIO.write(image, "PNG", imgFile);
+					// return imgFile.getAbsolutePath();
+					return image;
+				} else {
+					return null;
+					// return "";
+				}
 			}
-
-			if (imageGenerated) {
-				layout.execute(graphAdapter.getDefaultParent());
-
-				BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true,
-						null);
-
-				// System.out.println(imgFile.getAbsolutePath());
-				// ImageIO.write(image, "PNG", imgFile);
-				// return imgFile.getAbsolutePath();
-				return image;
-			} else {
-				return null;
-				// return "";
-			}
-
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -120,12 +124,13 @@ public class ModelImageGenerator {
 		}
 
 		for (Transition_ t : model.getTransitions()) {// getTransions(model)
-			if(t.getLabel().equals(Constants.DELTA_UNICODE)) {
-				g.addEdge(t.getIniState().toString(), t.getEndState().toString(), new RelationshipEdge(Constants.DELTA));
-			}else {
+			if (t.getLabel().equals(Constants.DELTA_UNICODE)) {
+				g.addEdge(t.getIniState().toString(), t.getEndState().toString(),
+						new RelationshipEdge(Constants.DELTA));
+			} else {
 				g.addEdge(t.getIniState().toString(), t.getEndState().toString(), new RelationshipEdge(t.getLabel()));
 			}
-			
+
 		}
 
 		return g;
