@@ -10,18 +10,17 @@ import java.util.List;
 
 /**
  * Class State_
+ * 
  * @author Camila
  */
 public class State_ {
-	//name of state
+	// name of state
 	private String name;
-	//id used for integration with libraries
+	// id used for integration with libraries
 	private int id;
-	//description used in the intersection and to get the words
+	// description used in the intersection and to get the words
 	private String info;
-	
-	
-	
+	// to get path
 	private boolean visited;
 
 	/***
@@ -32,7 +31,8 @@ public class State_ {
 	}
 
 	/***
-	 *  Constructor receives a state and generates a copy of it
+	 * Constructor receives a state and generates a copy of it
+	 * 
 	 * @param state
 	 */
 	public State_(State_ state) {
@@ -40,32 +40,42 @@ public class State_ {
 		this.name = state.name;
 		this.info = state.info;
 	}
-	
+
 	/***
 	 * Constructor receives the state name
+	 * 
 	 * @param name
 	 */
 	public State_(String name) {
-		this.name = name;		
+		this.name = name;
 	}
-	
+
+	/***
+	 * Constructor receives the state name, info
+	 * 
+	 * @param name, info
+	 */
 	public State_(String name, String info) {
-		this.name = name;	
+		this.name = name;
 		this.info = info;
 	}
-	
+
 	/***
 	 * Constructor receives state name and id, used for integration with libraries
-	 * @param state name 
-	 * @param state id 
+	 * 
+	 * @param state
+	 *            name
+	 * @param state
+	 *            id
 	 */
 	public State_(String name, int id) {
 		this.name = name;
-		this.setId(id);	
+		this.setId(id);
 	}
 
 	/**
 	 * Return state name
+	 * 
 	 * @return name
 	 */
 	public String getName() {
@@ -74,8 +84,9 @@ public class State_ {
 
 	/**
 	 * Alter state name
+	 * 
 	 * @param name
-	 *            
+	 * 
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -83,7 +94,8 @@ public class State_ {
 
 	/***
 	 * Return state id
-	 * @return id 
+	 * 
+	 * @return id
 	 */
 	public int getId() {
 		return id;
@@ -91,6 +103,7 @@ public class State_ {
 
 	/***
 	 * Alter state id
+	 * 
 	 * @param id
 	 */
 	public void setId(int id) {
@@ -98,7 +111,44 @@ public class State_ {
 	}
 
 	/***
-	 * Overwrites the equals of the state, equality between states is only considering the name
+	 * Retorn info
+	 * 
+	 * @return info
+	 */
+	public String getInfo() {
+		return info;
+	}
+
+	/***
+	 * alter info
+	 * 
+	 * @param info
+	 */
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
+	/***
+	 * Return visited
+	 * 
+	 * @return visited
+	 */
+	public boolean isVisited() {
+		return visited;
+	}
+
+	/***
+	 * alter visited
+	 * 
+	 * @param visited
+	 */
+	public void setVisited(boolean visited) {
+		this.visited = visited;
+	}
+
+	/***
+	 * Overwrites the equals of the state, equality between states is only
+	 * considering the name
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -113,49 +163,25 @@ public class State_ {
 	}
 
 	/***
-	 * Retorn info
-	 * @return info 
-	 */
-	public String getInfo() {
-		return info;
-	}
-
-	/***
-	 * alter info
-	 * @param info 
-	 */
-	public void setInfo(String info) {
-		this.info = info;
-	}
-
-	/***
 	 * Method to string override
+	 * 
 	 * @return name of state
 	 */
 	@Override
-	public String toString() {		
+	public String toString() {
 		return name;
 	}
-	
+
 	/***
 	 * Overwrites state hash based on name and id
 	 */
 	@Override
 	public int hashCode() {
-	    final int prime = 7;
-	    int result = 56;
-	    result = prime * result + ((name == null) ? 0 : name.hashCode());
-	    result = prime * result + id;
-	    return result;
+		final int prime = 7;
+		int result = 56;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + id;
+		return result;
 	}
-
-	public boolean isVisited() {
-		return visited;
-	}
-
-	public void setVisited(boolean visitado) {
-		this.visited = visitado;
-	}
-
 
 }

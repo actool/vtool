@@ -11,22 +11,24 @@ import java.util.Random;
 
 import algorithm.Operations;
 import model.IOLTS;
-import parser.ImportAutFile;
+import parser.ImportAutFile_WithoutThread;
 
 public class AutGenerator {
 
 	public static void main(String[] args) {
 		int qtStates = 125;//2000;
 		List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");
-		int qtTransition = 0;
-		String transitions = "";
+		boolean complete = true;
 		String tag = "g";
 		String directory = "C:\\Users\\camil\\Desktop\\";
+		
+		int qtTransition = 0;
+		String transitions = "";
 		File file = new File(directory, "model" + qtStates + "states.aut");
 		List<String> notVisited = new ArrayList<String>();
 		int countState = 0;
 		String endState = "", iniState = "";
-		boolean complete = true;
+		
 
 		notVisited.add(tag + countState);
 

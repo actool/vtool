@@ -21,14 +21,12 @@ public class IOLTS extends LTS implements Cloneable {
 	private List<String> inputs;
 	private List<String> outputs;
 
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
-
 	/***
 	 * Empty constructor
 	 */
 	public IOLTS() {
+		inputs = new ArrayList<>();
+		outputs = new ArrayList<>();
 	}
 
 	/***
@@ -90,9 +88,9 @@ public class IOLTS extends LTS implements Cloneable {
 	public LTS toLTS() {
 		// in automato there is no distinction between input and output labels, so the
 		// input and output labels are joined to form the alphabet
-		List<String> alfabeto = ListUtils.union(this.inputs, this.outputs);
+		List<String> alphabet = ListUtils.union(this.inputs, this.outputs);
 		// Instances an LTS with IOLTS atributtes
-		LTS lts = new LTS(this.getStates(), this.getInitialState(), alfabeto, this.getTransitions());
+		LTS lts = new LTS(getStates(), this.getInitialState(), alphabet, this.getTransitions());
 		return lts;
 	}
 
@@ -103,36 +101,7 @@ public class IOLTS extends LTS implements Cloneable {
 	 */
 	public Automaton_ ioltsToAutomaton() {
 		// build automato from LTS
-		return toLTS().ltsToAutomaton();
-	}
-
-	/***
-	 * Overwriting the toString method, with the separation between the input and
-	 * output label
-	 * 
-	 * @return the string describing the IOLTS
-	 */
-	@Override
-	public String toString() {
-		// calls LTS toString
-		String s = super.toString();
-		// add description of input labels
-		s += ("##############################\n");
-		s += ("           Inputs \n");
-		s += ("##############################\n");
-		s += ("length: " + this.getInputs().size() + "\n");
-		for (String e : this.getInputs()) {
-			s += ("[" + e + "] - ");
-		}
-		// add description of output labels
-		s += ("\n##############################\n");
-		s += ("           Outputs \n");
-		s += ("##############################\n");
-		s += ("length: " + this.getOutputs().size() + "\n");
-		for (String e : this.getOutputs()) {
-			s += ("[" + e + "] - ");
-		}
-		return s;
+		return this.toLTS().ltsToAutomaton();
 	}
 
 	/***
@@ -142,11 +111,11 @@ public class IOLTS extends LTS implements Cloneable {
 	 */
 	public void addQuiescentTransitions() {// quiescent
 		this.addToAlphabet(Constants.DELTA);
-		
+
 		for (State_ s : this.states) {
 			if (isQuiescent(s) && s != null) {
 				this.addTransition(new Transition_(s, Constants.DELTA, s));
-				this.outputs.add(Constants.DELTA);				
+				this.outputs.add(Constants.DELTA);
 			}
 		}
 	}
@@ -197,6 +166,42 @@ public class IOLTS extends LTS implements Cloneable {
 		}
 
 		return label;
+	}
+
+	/***
+	 * Overwriting the toString method, with the separation between the input and
+	 * output label
+	 * 
+	 * @return the string describing the IOLTS
+	 */
+	@Override
+	public String toString() {
+		// calls LTS toString
+		String s = super.toString();
+		// add description of input labels
+		s += ("##############################\n");
+		s += ("           Inputs \n");
+		s += ("##############################\n");
+		s += ("length: " + this.getInputs().size() + "\n");
+		for (String e : this.getInputs()) {
+			s += ("[" + e + "] - ");
+		}
+		// add description of output labels
+		s += ("\n##############################\n");
+		s += ("           Outputs \n");
+		s += ("##############################\n");
+		s += ("length: " + this.getOutputs().size() + "\n");
+		for (String e : this.getOutputs()) {
+			s += ("[" + e + "] - ");
+		}
+		return s;
+	}
+
+	/**
+	 * implements clone method from interface Cloneable
+	 */
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 }

@@ -13,8 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import algorithm.*;
 import dk.brics.automaton.RegExp;
 import model.*;
+import parser.ImportAutFile_WithoutThread;
 import parser.ImportAutFile;
-import parser.ImportAutFile_Thread;
 import util.Constants;
 import util.ModelImageGenerator;
 
@@ -426,10 +426,10 @@ public class ConformanceView extends JFrame {
 
 			if (lts) {
 				if (!implementation) {
-					S_ = ImportAutFile_Thread.autToLTS(pathSpecification);
+					S_ = ImportAutFile.autToLTS(pathSpecification);
 
 				} else {
-					I_ = ImportAutFile_Thread.autToLTS(pathImplementation);
+					I_ = ImportAutFile.autToLTS(pathImplementation);
 				}
 				tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
 			}
@@ -448,9 +448,9 @@ public class ConformanceView extends JFrame {
 				}
 
 				if (!implementation) {
-					S = ImportAutFile_Thread.autToIOLTS(pathSpecification, true, inp, out);
+					S = ImportAutFile.autToIOLTS(pathSpecification, true, inp, out);
 				} else {
-					I = ImportAutFile_Thread.autToIOLTS(pathImplementation, true, inp, out);
+					I = ImportAutFile.autToIOLTS(pathImplementation, true, inp, out);
 				}
 
 				if (lts) {
@@ -461,19 +461,19 @@ public class ConformanceView extends JFrame {
 				// lblWarningLang.setText("");
 			} else {// ?/!
 				if (!implementation) {
-					S = ImportAutFile_Thread.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
+					S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
-					 System.out.println("---------------------MODEL--------------------------");
-					 System.out.println(S);
-					 System.out.println("-----------------------------------------------");
+//					 System.out.println("---------------------MODEL--------------------------");
+//					 System.out.println(S);
+//					 System.out.println("-----------------------------------------------");
 				} else {
-					I = ImportAutFile_Thread.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
+					I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
-					 System.out.println("-------------------IMPLEMENTATION----------------------------");
-					 System.out.println(I);
-					 System.out.println("-----------------------------------------------");
+//					 System.out.println("-------------------IMPLEMENTATION----------------------------");
+//					 System.out.println(I);
+//					 System.out.println("-----------------------------------------------");
 
 				}
 
@@ -1573,8 +1573,8 @@ public class ConformanceView extends JFrame {
 				I_ = I.toLTS();
 
 			} else {
-				S_ = ImportAutFile_Thread.autToLTS(pathSpecification);
-				I_ = ImportAutFile_Thread.autToLTS(pathImplementation);
+				S_ = ImportAutFile.autToLTS(pathSpecification);
+				I_ = ImportAutFile.autToLTS(pathImplementation);
 			}
 
 			if (S_.getAlphabet().size() != 0 || I_.getAlphabet().size() != 0) {

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import model.IOLTS;
 import model.LTS;
 import model.State_;
 import model.Transition_;
@@ -21,41 +22,40 @@ import util.Constants;
 public class ReadFile extends Thread {
 	private int iniLine;
 	private int endLine;
-	String file;
-	String id;
-	// private static LTS lts= new LTS();
-	private static List<Transition_> transitions = new ArrayList<>();
-	private static List<State_> states = new ArrayList<>();
-	private static List<String> inputs = new ArrayList<>();
-	private static List<String> outputs = new ArrayList<>();
+	private String file;
 	
+
+	private static IOLTS iolts = new IOLTS();
+
 	private static String msg = "";
 
-	private List<Transition_> transitions_ = new ArrayList<>();
-	private List<State_> states_ = new ArrayList<>();
-	private List<String> inputs_ = new ArrayList<>();
-	private List<String> outputs_ = new ArrayList<>();
-
-	public void init(int iniLine, int endLine, String file, String id) {
+	public void init(int iniLine, int endLine, String file) {
 		this.iniLine = iniLine;
 		this.endLine = endLine;
 		this.file = file;
-		this.id = id;
-		// this.transitions = new ArrayList<>();
-		// this.states_ = new ArrayList<>();
+		
 	}
 
 	public void run() {
+		List<Transition_> transitions_ = new ArrayList<>();
+		List<State_> states_ = new ArrayList<>();
+		List<String> inputs_ = new ArrayList<>();
+		List<String> outputs_ = new ArrayList<>();
+		
+		List<Transition_> transitions = new ArrayList<>();
+		List<State_> states = new ArrayList<>();
+		List<String> inputs = new ArrayList<>();
+		List<String> outputs = new ArrayList<>();
+
 		int count = this.iniLine;
 		String line;
 		Supplier<Stream<String>> streamSupplier;
 		boolean inconsistentLine;
-		
+
 		int msg_cont = 0;
 		State_ iniState, endState;
 		Transition_ transition;
 		String label;
-		
 
 		while (count < this.endLine) {
 			Path path = Paths.get(this.file);
@@ -73,7 +73,7 @@ public class ReadFile extends Thread {
 			// each transition is configured as follows: (<from-state>, <label>,
 			// <to-state>)
 			line = streamSupplier.get().skip(count + 1).findFirst().get();
-			//System.out.println("line" + (count + 1));
+			// System.out.println("line" + (count + 1));
 			inconsistentLine = false;
 
 			// checks for '(' on the read line
@@ -108,41 +108,51 @@ public class ReadFile extends Thread {
 				iniState = new State_(val[0].trim());
 				endState = new State_(val[2].trim());
 				label = val[1].trim();
-				if(label.charAt(0) == Constants.OUTPUT_TAG) {
-					transition = new Transition_(iniState, label.substring(1, label.length()) , endState);	
+				if (label.charAt(0) == Constants.OUTPUT_TAG) {
+					transition = new Transition_(iniState, label.substring(1, label.length()), endState);
 					outputs_.add(label.substring(1, label.length()));
-				}else {
-					if(label.charAt(0) == Constants.INPUT_TAG) {
-						transition = new Transition_(iniState, label.substring(1, label.length()) , endState);	
+				} else {
+					if (label.charAt(0) == Constants.INPUT_TAG) {
+						transition = new Transition_(iniState, label.substring(1, label.length()), endState);
 						inputs_.add(label.substring(1, label.length()));
-					}else {
-						transition = new Transition_(iniState, label, endState);	
+					} else {
+						transition = new Transition_(iniState, label, endState);
 					}
-					
+
 				}
-				
-				// //System.out.println(transition);
-				// // assigns the attributes to the LTS
-				// lts.addState(iniState);
-				// lts.addState(endState);
-				// lts.addTransition(transition);
 
 				states_.add(iniState);
 				states_.add(endState);
 				transitions_.add(transition);
-				// transitions.add(transition);
-				// System.out.println(transitions_.size());
-				// System.out.println("ADD");
+
 			}
 
 			count++;
 		}
 
-		
-		states.addAll(states_);		
+		states = iolts.getStates();
+		states.addAll(states_);
+		HashSet hashSet_s_ = new LinkedHashSet<>(states);
+		states = new ArrayList<>(hashSet_s_);
+		iolts.setStates(states);
+
+		transitions = iolts.getTransitions();
 		transitions.addAll(transitions_);
-		inputs.addAll(inputs_);
+		hashSet_s_ = new LinkedHashSet<>(transitions);
+		transitions = new ArrayList<>(hashSet_s_);
+		iolts.setTransitions(transitions);
+		
+		outputs = iolts.getOutputs();
 		outputs.addAll(outputs_);
+		hashSet_s_ = new LinkedHashSet<>(outputs);
+		outputs = new ArrayList<>(hashSet_s_);
+		iolts.setOutputs(outputs);
+		
+		inputs = iolts.getInputs();
+		inputs.addAll(inputs_);
+		hashSet_s_ = new LinkedHashSet<>(inputs);
+		inputs = new ArrayList<>(hashSet_s_);
+		iolts.setInputs(inputs);
 
 	}
 
@@ -150,27 +160,12 @@ public class ReadFile extends Thread {
 		return msg;
 	}
 	
-	public List<State_> getStates() {
-		return states;
+	public IOLTS getIolts() {
+		return this.iolts;
 	}
 
-	public List<Transition_> getTransitions() {
-		return this.transitions;
-	}
-	
-	public List<String> getInputs() {
-		return this.inputs;
-	}
-	
-	public List<String> getOutputs() {
-		return this.outputs;
-	}
-
-	public void initStaticVariables() {
-		this.states = new ArrayList<>();
-		this.transitions = new ArrayList<>();
-		this.inputs = new ArrayList<>();
-		this.outputs = new ArrayList<>();
+	public void initIolts() {		
+		this.iolts = new IOLTS();
 	}
 
 }

@@ -7,18 +7,19 @@ package model;
 
 /**
  * Class Transition_
+ * 
  * @author Camila
  */
 public class Transition_ {
-	//transition label
+	// transition label
 	private String label;
-	//type of transition INPUT/OUTPUT
+	// type of transition INPUT/OUTPUT
 	private TransitionType tType;
-	//state from
+	// state from
 	private State_ iniState;
-	//state to
+	// state to
 	private State_ endState;
-	//id used for libraries
+	// id used for libraries
 	private String id;
 
 	/***
@@ -29,6 +30,7 @@ public class Transition_ {
 
 	/***
 	 * Contrast with all parameters
+	 * 
 	 * @param id
 	 * @param iniState
 	 * @param label
@@ -43,6 +45,7 @@ public class Transition_ {
 
 	/***
 	 * Contrutor with inistate, label, endState
+	 * 
 	 * @param iniState
 	 * @param label
 	 * @param endState
@@ -55,6 +58,7 @@ public class Transition_ {
 
 	/**
 	 * Returns the transition label
+	 * 
 	 * @return label
 	 */
 	public String getLabel() {
@@ -63,8 +67,9 @@ public class Transition_ {
 
 	/**
 	 * Alter label
+	 * 
 	 * @param label
-	 *           
+	 * 
 	 */
 	public void setLabel(String label) {
 		this.label = label;
@@ -72,6 +77,7 @@ public class Transition_ {
 
 	/**
 	 * Retorn type of transition
+	 * 
 	 * @return tType
 	 */
 	public TransitionType getType() {
@@ -80,14 +86,17 @@ public class Transition_ {
 
 	/**
 	 * Alter o type of transition
+	 * 
 	 * @param tType
-	 *            
+	 * 
 	 */
 	public void setType(TransitionType tType) {
 		this.tType = tType;
 	}
 
-	/**Retorn the iniState
+	/**
+	 * Retorn the iniState
+	 * 
 	 * @return iniState
 	 */
 	public State_ getIniState() {
@@ -96,8 +105,9 @@ public class Transition_ {
 
 	/**
 	 * Alter the iniState
+	 * 
 	 * @param iniState
-	 *            
+	 * 
 	 */
 	public void setIniState(State_ iniState) {
 		this.iniState = iniState;
@@ -105,6 +115,7 @@ public class Transition_ {
 
 	/**
 	 * Retorn the endState
+	 * 
 	 * @return endState
 	 */
 	public State_ getEndState() {
@@ -113,6 +124,7 @@ public class Transition_ {
 
 	/**
 	 * Alter the endState
+	 * 
 	 * @param endState
 	 * 
 	 */
@@ -121,7 +133,8 @@ public class Transition_ {
 	}
 
 	/***
-	 * Retorn id 
+	 * Retorn id
+	 * 
 	 * @return id
 	 */
 	private String getId() {
@@ -129,7 +142,8 @@ public class Transition_ {
 	}
 
 	/***
-	 * Alter id 
+	 * Alter id
+	 * 
 	 * @param id
 	 */
 	private void setId(String id) {
@@ -138,34 +152,26 @@ public class Transition_ {
 
 	/***
 	 * Equals method overwrite
+	 * 
 	 * @return if the transitions are the same
 	 */
 	@Override
 	public boolean equals(Object obj) {
 
 		boolean result;
-		//if the transition is null, or of different class
+		// if the transition is null, or of different class
 		if (obj == null || obj.getClass() != getClass()) {
-			//transition not is equal
+			// transition not is equal
 			result = false;
 		} else {
 			Transition_ t = (Transition_) obj;
-			
-			//returns if the initial state, label, and final state are equal
+
+			// returns if the initial state, label, and final state are equal
 			result = t.iniState.equals(iniState) && t.endState.equals(endState) && label.equals(t.label);
 		}
 		return result;
 	}
 
-	/***
-	 * Enum type of transition if it is IN or OUT
-	 * @author camila
-	 *
-	 */
-	public enum TransitionType {
-		INPUT, OUTPUT
-	};
-	
 	/***
 	 * ToString method overwrite
 	 */
@@ -173,4 +179,15 @@ public class Transition_ {
 	public String toString() {
 		return "[" + iniState + " - " + label + " - " + endState + "] \n";
 	}
+
+	/***
+	 * Enum type of transition if it is IN or OUT
+	 * 
+	 * @author camila
+	 *
+	 */
+	public enum TransitionType {
+		INPUT, OUTPUT
+	};
+
 }

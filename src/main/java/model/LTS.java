@@ -12,7 +12,6 @@ import java.util.List;
 
 import algorithm.Operations;
 
-
 /**
  * Class LTS
  * 
@@ -65,7 +64,7 @@ public class LTS {
 	/**
 	 * Alter set of states
 	 * 
-	 * @param states 
+	 * @param states
 	 *            set of states
 	 * 
 	 */
@@ -86,7 +85,7 @@ public class LTS {
 	 * Alter the initial state
 	 * 
 	 * @param initialState
-	 *            
+	 * 
 	 * 
 	 */
 	public void setInitialState(State_ initialState) {
@@ -105,8 +104,9 @@ public class LTS {
 	/**
 	 * Alter list of transition
 	 * 
-	 * @param transitions list of transition
-	 *            
+	 * @param transitions
+	 *            list of transition
+	 * 
 	 */
 	public void setTransitions(List<Transition_> transitions) {
 		this.transitions = transitions;
@@ -125,7 +125,7 @@ public class LTS {
 	 * Alter alphabet
 	 * 
 	 * @param alphabet
-	 *            
+	 * 
 	 */
 	public void setAlphabet(List<String> alphabet) {
 		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
@@ -134,11 +134,11 @@ public class LTS {
 	}
 
 	/***
-	 * Add the received parameter state to the LTS state list
-	 * checking first whether the state already exists
+	 * Add the received parameter state to the LTS state list checking first whether
+	 * the state already exists
 	 * 
 	 * @param state
-	 *            
+	 * 
 	 */
 	public void addState(State_ state) {
 		// verifies whether the state already exists in the set of LTS states
@@ -148,8 +148,8 @@ public class LTS {
 	}
 
 	/***
-	 * Add the transition to the transition list, add the
-	 * transition in alphabet list
+	 * Add the transition to the transition list, add the transition in alphabet
+	 * list
 	 * 
 	 * @param transition
 	 */
@@ -158,7 +158,6 @@ public class LTS {
 		if (!this.transitions.contains(transition)) {
 			this.transitions.add(transition);
 		}
-			
 
 		// add the label in the alphabet list
 		this.addToAlphabet(transition.getLabel());
@@ -168,7 +167,7 @@ public class LTS {
 	 * Add letter to alphabet
 	 * 
 	 * @param letter
-	 *            
+	 * 
 	 */
 	public void addToAlphabet(String letter) {
 		// verifies whether letter already exists in the alphabet
@@ -177,33 +176,39 @@ public class LTS {
 		}
 	}
 
-	
-	
-	public boolean transitionExists(String labelIniState, String labelTransition){
-		Transition_ result = this.getTransitions()
-			      .stream().parallel()
-			      .filter(x -> x.getIniState().getName().equals(labelIniState) && x.getLabel().equals(labelTransition)).findFirst().orElse(null);
-	return result!=null;
-	}
 	/***
-	 * Checks whether there is a transition from the initial state and label received from
-	 * parameter, and returns all state reached by these transitions
+	 * Checks whether there is a transition from the initial state and label
+	 * received from parameter, and returns true/false
+	 * 
+	 * @param labelIniState
+	 * @param labelTransition
+	 * @return
+	 */
+	public boolean transitionExists(String labelIniState, String labelTransition) {
+		Transition_ result = this.getTransitions().stream().parallel()
+				.filter(x -> x.getIniState().getName().equals(labelIniState) && x.getLabel().equals(labelTransition))
+				.findFirst().orElse(null);
+		return result != null;
+	}
+
+	/***
+	 * Checks whether there is a transition from the initial state and label
+	 * received from parameter, and returns all state reached by these transitions
 	 * 
 	 * @param labelIniState
 	 * @param labelTransition
 	 * @return list of states reached
 	 */
-	public List<State_> reachedStates(String labelIniState, String labelTransition) {				
+	public List<State_> reachedStates(String labelIniState, String labelTransition) {
 		// list of reached states
 		List<State_> endStates = new ArrayList<State_>();
-	
-		
-		
+
 		for (Transition_ t : transitions) {
-			// verifies whether the transition contains the iniState of the transition and the
+			// verifies whether the transition contains the iniState of the transition and
+			// the
 			// label passed parameter
 			if (t.getIniState().getName().toString().equals(labelIniState.toString())
-					&& t.getLabel().toString().equals(labelTransition.toString())) {				
+					&& t.getLabel().toString().equals(labelTransition.toString())) {
 				// adds the status reached
 				endStates.add(t.getEndState());
 			}
@@ -216,7 +221,7 @@ public class LTS {
 	 * Retrieves the transitions that depart from the state passed by parameter
 	 * 
 	 * @param state
-	 * @return transitionsOfState 
+	 * @return transitionsOfState
 	 */
 	public List<Transition_> transitionsByIniState(State_ state) {
 		List<Transition_> transitionsOfState = new ArrayList<Transition_>();
@@ -238,14 +243,8 @@ public class LTS {
 	 */
 	public Automaton_ ltsToAutomaton() {
 		// create automaton
-		Automaton_ as = new Automaton_();
-		// changes attributes based on LTS
-		as.setStates(this.states);
-		as.setInitialState(this.initialState);
-		as.setAlphabet(this.alphabet);
-		as.setFinalStates(this.states);
-		as.setTransitions(Operations.processTauTransition(this.transitions));
-
+		Automaton_ as = new Automaton_(this.states,this.initialState,this.alphabet,this.states, this.transitions);
+		
 		// convert to deterministic
 		return Operations.convertToDeterministicAutomaton(as);
 	}
@@ -262,7 +261,7 @@ public class LTS {
 		s += ("##############################\n");
 		s += ("           Initial State \n");
 		s += ("##############################\n");
-		s += ("[" + initialState.getName() +"]"+ "\n\n");
+		s += ("[" + initialState.getName() + "]" + "\n\n");
 
 		// states
 		s += ("##############################\n");
@@ -286,7 +285,7 @@ public class LTS {
 		s += ("\n##############################\n");
 		s += ("         Alphabet\n");
 		s += ("##############################\n");
-		s+="[";
+		s += "[";
 		for (String t : this.alphabet) {
 			s += (t + " - ");
 		}
@@ -294,6 +293,5 @@ public class LTS {
 
 		return s;
 	}
-
 
 }
