@@ -343,9 +343,10 @@ public class ConformanceView extends JFrame {
 		long totalTime = endTime - startTime;
 
 		long convert = TimeUnit.SECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
-		convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
-
-		System.out.println(convert);
+		//convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
+		String time = convert + " seconds";
+		System.out.println(time);
+		
 
 	}
 
