@@ -316,7 +316,7 @@ public class ConformanceView extends JFrame {
 		// IOLTS s = S;
 		// IOLTS i = I;
 
-		verifyModelFileChange(ioco);
+		//verifyModelFileChange(ioco);
 
 		if (isFormValid(ioco)) {// isFormValid(ioco)
 

@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.rmi.server.Operation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,7 +107,7 @@ public class AutGenerator {
 			writer = new BufferedWriter(new FileWriter(file));
 			writer.write(aut);
 
-			System.out.println(aut);
+			// System.out.println(aut);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -131,6 +133,7 @@ public class AutGenerator {
 
 			iolts = ImportAutFile.autToIOLTS(pathModelBase, false, null, null);
 			iolts.setAlphabet(ListUtils.union(iolts.getInputs(), iolts.getOutputs()));
+
 			// System.out.println("ORIGINAL >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			// System.out.println(iolts);
 			totalTransitions = iolts.getTransitions().size();
@@ -194,8 +197,7 @@ public class AutGenerator {
 				iolts.getTransitions().remove(t);
 
 			}
-			
-			
+
 			File file = new File(pathNewFile, autFileName + ".aut");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(ioltsToAut(iolts));
@@ -216,13 +218,23 @@ public class AutGenerator {
 				+ iolts.getStates().size() + ")" + newline;
 
 		for (Transition_ t : iolts.getTransitions()) {
-			aut += "(" + t.getIniState() + "," + t.getLabel() + "," + t.getEndState() + ")" + newline;
+			if (iolts.getInputs().contains(t.getLabel())) {
+				aut += "(" + t.getIniState() + "," + Constants.INPUT_TAG + t.getLabel() + "," + t.getEndState() + ")"
+						+ newline;
+			}
+
+			if (iolts.getOutputs().contains(t.getLabel())) {
+				aut += "(" + t.getIniState() + "," + Constants.OUTPUT_TAG + t.getLabel() + "," + t.getEndState() + ")"
+						+ newline;
+			}
+
 		}
 
 		return aut;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		// GENERATE <ONE> RANDOM MODEL
 		// int numberOfStates = 10;// 2000;
 		// List<String> labels = Arrays.asList("?a", "?b", "!x", "!y");// , "?c"
 		// boolean inputEnabled = true;
@@ -231,8 +243,107 @@ public class AutGenerator {
 		// generate(numberOfStates, labels, inputEnabled, tag, path, "model" +
 		// numberOfStates + "states");
 
-		generateByPercentage("C:\\Users\\camil\\Desktop\\model10states.aut", "C:\\Users\\camil\\Desktop\\", "impl10",
-				10);
+		// GENERATE <ONE> - PERCENTAGE MODEL
+		// generateByPercentage("C:\\Users\\camil\\Desktop\\model10states.aut",
+		// "C:\\Users\\camil\\Desktop\\", "impl10",10);
+
+		// GENERATE <IN LOTE> - NUM State
+		// int totalModels = 50;// 500;
+		// int constDivision = 5;
+		// int minStates = 20;
+		// int maxStates = 40;
+		// boolean inputEnabled = true;
+		// String tag = "g";
+		// String rootPath = "C:\\Users\\camil\\Desktop\\aut - teste de desempenho";
+		// String iutAutPath = "C:\\Users\\camil\\Desktop\\model30states.aut";
+		// IOLTS ioltsModel = ImportAutFile.autToIOLTS(iutAutPath, false, null, null);
+		// List<String> labels = new ArrayList<>();
+		// for (String l : ioltsModel.getInputs()) {
+		// labels.add(Constants.INPUT_TAG + l);
+		// }
+		// for (String l : ioltsModel.getOutputs()) {
+		// labels.add(Constants.OUTPUT_TAG + l);
+		// }
+		// generateAutInLot_NumStates(totalModels, constDivision, minStates, maxStates,
+		// inputEnabled, tag, rootPath,
+		// labels);
+
+		// GENERATE <IN LOTE> - PERCENTAGE
+		int totalModels = 25;// 500;
+		String rootPath = "C:\\Users\\camil\\Desktop\\aut-percentage";
+		String iutAutPath = "C:\\Users\\camil\\Desktop\\model10states.aut";
+		generateAutInLot_PercentageStates(totalModels, rootPath, iutAutPath);
+	}
+
+	public static void generateAutInLot_PercentageStates(int totalModels, String rootPath, String iutAutPath)
+			throws IOException {
+		int[] percentageVariation = { 20, 40, 60, 80, 100 };
+		// String currentFolder;
+		int constDivision = (totalModels / percentageVariation.length);
+		int count = 0;
+		for (int i = 0; i < percentageVariation.length; i++) {
+			// new folder
+			// currentFolder = rootPath + "/" + percentageVariation[i] + "percent";
+			// Files.createDirectories(Paths.get(currentFolder));
+
+			// aut per group
+			for (int j = 0; j < constDivision; j++) {
+				generateByPercentage(iutAutPath, rootPath, percentageVariation[i] + "pct_model" + "_" + count,
+						percentageVariation[i]);// currentFolder
+				count++;
+			}
+		}
+
+	}
+
+	public static void generateAutInLot_NumStates(int totalModels, int constDivision, int minStates, int maxStates,
+			boolean inputEnabled, String tag, String rootPath, List<String> labels) throws IOException {
+		// int quantityGroups = totalModels / constDivision;
+		int variationNumStates = (maxStates - minStates) / constDivision;
+		int countStates = minStates;
+		int randomNumStates;
+
+		int residual = ((maxStates - minStates) % constDivision) + 1;
+		int count = 0;
+		// String currentFolder = "";
+
+		// group (limit num states)
+		for (int i = 0; i < constDivision; i++) {
+			// new folder
+			// if (residual != 0 && i == constDivision - 1) {
+			// currentFolder = rootPath + "/" + countStates + "-" + (countStates +
+			// variationNumStates - 1 + residual)
+			// + "states";
+			// } else {
+			// currentFolder = rootPath + "/" + countStates + "-" + (countStates +
+			// variationNumStates - 1) + "states";
+			// }
+			// Files.createDirectories(Paths.get(currentFolder));
+
+			// aut per group
+			for (int j = 0; j < (totalModels / constDivision); j++) {
+				if (residual != 0 && i == constDivision - 1) {
+					randomNumStates = getRandomNumberInRange(countStates,
+							countStates + variationNumStates - 1 + residual);
+
+				} else {
+					randomNumStates = getRandomNumberInRange(countStates, countStates + variationNumStates - 1);
+				}
+
+				generate(randomNumStates, labels, inputEnabled, tag, rootPath,
+						randomNumStates + "model" + "_" + count + ".aut");// currentFolder
+
+				count++;
+			}
+
+			countStates += variationNumStates;
+		}
+	}
+
+	private static int getRandomNumberInRange(int min, int max) {
+
+		Random r = new Random();
+		return r.ints(min, (max + 1)).limit(1).findFirst().getAsInt();
 
 	}
 }
