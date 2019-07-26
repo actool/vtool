@@ -120,15 +120,17 @@ public class AutGenerator {
 
 	public static void generateByPercentage(String pathModelBase, String pathNewFile, String autFileName,
 			double percentage) {
-		BufferedReader reader;
+		//BufferedReader reader;
 		String thisLine = null;
 		String[] split;
 		int randNum;
-
+		//int transitionsPercentageToAdd, percentageAdd = 0;
+		//int percentageToAdd = 5;
+		
 		State_ sourceState, targetState;
 		IOLTS iolts = new IOLTS();
 		try {
-			reader = new BufferedReader(new FileReader(pathModelBase));
+			//reader = new BufferedReader(new FileReader(pathModelBase));
 			int totalTransitions = 0;
 
 			iolts = ImportAutFile.autToIOLTS(pathModelBase, false, null, null);
@@ -138,6 +140,9 @@ public class AutGenerator {
 			// System.out.println(iolts);
 			totalTransitions = iolts.getTransitions().size();
 
+			//define max num transition to add, 
+			//transitionsPercentageToAdd = (totalTransitions*percentageToAdd)/100;
+			
 			// define number of transitions to modify
 			List<Integer> lines = new ArrayList<>();
 			int numberLinesToChange = (int) (((totalTransitions) * percentage) / 100);
@@ -234,14 +239,14 @@ public class AutGenerator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// GENERATE <ONE> RANDOM MODEL
-		// int numberOfStates = 10;// 2000;
-		// List<String> labels = Arrays.asList("?a", "?b", "!x", "!y");// , "?c"
-		// boolean inputEnabled = true;
-		// String tag = "g";
-		// String path = "C:\\Users\\camil\\Desktop\\";
-		// generate(numberOfStates, labels, inputEnabled, tag, path, "model" +
-		// numberOfStates + "states");
+		 ////GENERATE <ONE> RANDOM MODEL
+//		 int numberOfStates = 50;// 2000;
+//		 List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");// , "?c"
+//		 boolean inputEnabled = true;
+//		 String tag = "g";
+//		 String path = "C:\\Users\\camil\\Desktop\\";
+//		 generate(numberOfStates, labels, inputEnabled, tag, path, "spec" +
+//		 numberOfStates + "states");
 
 		// GENERATE <ONE> - PERCENTAGE MODEL
 		// generateByPercentage("C:\\Users\\camil\\Desktop\\model10states.aut",
@@ -268,10 +273,10 @@ public class AutGenerator {
 		// inputEnabled, tag, rootPath,
 		// labels);
 
-		// GENERATE <IN LOTE> - PERCENTAGE
-		int totalModels = 25;// 500;
-		String rootPath = "C:\\Users\\camil\\Desktop\\aut-percentage";
-		String iutAutPath = "C:\\Users\\camil\\Desktop\\model10states.aut";
+////		 GENERATE <IN LOTE> - PERCENTAGE
+		int totalModels = 500;// 500;
+		String rootPath = "C:\\Users\\camil\\Desktop\\teste desempenho - Everest\\iut50-specPercentage\\spec";
+		String iutAutPath = "C:\\Users\\camil\\Desktop\\teste desempenho - Everest\\iut50-specPercentage\\iut50states.aut";
 		generateAutInLot_PercentageStates(totalModels, rootPath, iutAutPath);
 	}
 
@@ -288,7 +293,7 @@ public class AutGenerator {
 
 			// aut per group
 			for (int j = 0; j < constDivision; j++) {
-				generateByPercentage(iutAutPath, rootPath, percentageVariation[i] + "pct_model" + "_" + count,
+				generateByPercentage(iutAutPath, rootPath, percentageVariation[i] + "pct_spec" + "_" + count,
 						percentageVariation[i]);// currentFolder
 				count++;
 			}
@@ -331,7 +336,7 @@ public class AutGenerator {
 				}
 
 				generate(randomNumStates, labels, inputEnabled, tag, rootPath,
-						randomNumStates + "model" + "_" + count + ".aut");// currentFolder
+						randomNumStates + "states_spec" + "_" + count + ".aut");// currentFolder
 
 				count++;
 			}

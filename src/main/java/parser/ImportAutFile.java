@@ -160,7 +160,7 @@ public class ImportAutFile {
 		String msg = configs[3];
 
 		int msg_cont = 0;
-
+		
 		// if there is inconsistency in the first line of the file
 		if (msg != "") {
 			msg += ("expected format:" + "\n");
