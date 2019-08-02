@@ -199,8 +199,14 @@ public class ImportAutFile {
 			// count line of file (number of transitions)
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			int totalLines = 0;
-			while (reader.readLine() != null)
-				totalLines++;
+			String linee = "";
+			while ( linee != null) {
+				linee = reader.readLine();
+				if(linee!= null && !linee.isEmpty()) {
+					totalLines++;
+				}				
+			}
+				
 			reader.close();
 
 			totalLines -= 1;// remove header line from count

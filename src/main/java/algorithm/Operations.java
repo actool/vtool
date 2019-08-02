@@ -510,10 +510,12 @@ public class Operations {
 					for (int i = 0; i < aux.length; i++) {
 						
 						if(ioco) {
-							//remove autput
-							idx = aux[i].lastIndexOf(tagLetter);	
-							//System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
-							words.add(aux[i].substring(0, idx));
+							if(aux[i].contains(tagLetter)) {
+								//remove autput
+								idx = aux[i].lastIndexOf(tagLetter);	
+								//System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
+								words.add(aux[i].substring(0, idx));
+							}							
 						}else {
 							words.add(aux[i]);
 						}
