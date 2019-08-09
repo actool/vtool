@@ -148,7 +148,7 @@ public class ConformanceView extends JFrame {
 
 	public void getImplementationPath() {
 		failPath = "";
-		cleanVeredict();		
+		cleanVeredict();
 		try {
 			configFilterFile();
 			fc.showOpenDialog(ConformanceView.this);
@@ -316,7 +316,7 @@ public class ConformanceView extends JFrame {
 		// IOLTS s = S;
 		// IOLTS i = I;
 
-		//verifyModelFileChange(ioco);
+		// verifyModelFileChange(ioco);
 
 		if (isFormValid(ioco)) {// isFormValid(ioco)
 
@@ -343,10 +343,9 @@ public class ConformanceView extends JFrame {
 		long totalTime = endTime - startTime;
 
 		long convert = TimeUnit.SECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
-		//convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
+		// convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
 		String time = convert + " seconds";
 		System.out.println(time);
-		
 
 	}
 
@@ -432,7 +431,18 @@ public class ConformanceView extends JFrame {
 				} else {
 					I_ = ImportAutFile.autToLTS(pathImplementation);
 				}
+
+				if (S_.getStates().size() != 0 && I_.getStates().size() != 0) {
+					List<String> alphabet = new ArrayList();
+					alphabet.addAll(S_.getAlphabet());
+					alphabet.addAll(I_.getAlphabet());
+					HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+					alphabet = new ArrayList<>(hashSet_s_);
+					S_.setAlphabet(alphabet);
+					I_.setAlphabet(alphabet);
+				}
 				tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
+
 			}
 
 			if (cbLabel.getSelectedIndex() == 2 || lts) {// manual input/output
@@ -465,16 +475,16 @@ public class ConformanceView extends JFrame {
 					S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
-//					 System.out.println("---------------------MODEL--------------------------");
-//					 System.out.println(S);
-//					 System.out.println("-----------------------------------------------");
+					// System.out.println("---------------------MODEL--------------------------");
+					// System.out.println(S);
+					// System.out.println("-----------------------------------------------");
 				} else {
 					I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
-//					 System.out.println("-------------------IMPLEMENTATION----------------------------");
-//					 System.out.println(I);
-//					 System.out.println("-----------------------------------------------");
+					// System.out.println("-------------------IMPLEMENTATION----------------------------");
+					// System.out.println(I);
+					// System.out.println("-----------------------------------------------");
 
 				}
 
@@ -507,41 +517,69 @@ public class ConformanceView extends JFrame {
 				}
 
 			}
-			
-			
-			
-			if (I == null) {				
+
+			if (I == null) {
 				isImplementationProcess = false;
-			}else {
+			} else {
 				// IUT with quiescent transitions
 				if (implementation) {
 					I.addQuiescentTransitions();
 				}
 			}
 
-			if(S == null) {
+			if (S == null) {
 				isModelProcess = false;
-			}else {
-				if (!implementation ) {
+			} else {
+				if (!implementation) {
 					S.addQuiescentTransitions();
 				}
 			}
-			
+
+			if (S != null && I!= null) {
+				standardizeLabelsIOLTS();
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(implementation) {
+			if (implementation) {
 				isImplementationProcess = false;
 				I = null;
-			}else {
+			} else {
 				isModelProcess = false;
 				S = null;
 			}
-			
-			
+
 		}
 
 	}
 
+	
+	public void standardizeLabelsIOLTS() {
+		List<String> alphabet = new ArrayList();
+		alphabet.addAll(S.getAlphabet());
+		alphabet.addAll(I.getAlphabet());
+		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+		alphabet = new ArrayList<>(hashSet_s_);
+		S.setAlphabet(alphabet);
+		I.setAlphabet(alphabet);
+
+		alphabet = new ArrayList();
+		alphabet.addAll(S.getInputs());
+		alphabet.addAll(I.getInputs());
+		hashSet_s_ = new LinkedHashSet<>(alphabet);
+		alphabet = new ArrayList<>(hashSet_s_);
+		S.setInputs(alphabet);
+		I.setInputs(alphabet);
+		
+		alphabet = new ArrayList();
+		alphabet.addAll(S.getOutputs());
+		alphabet.addAll(I.getOutputs());
+		hashSet_s_ = new LinkedHashSet<>(alphabet);
+		alphabet = new ArrayList<>(hashSet_s_);
+		S.setOutputs(alphabet);
+		I.setOutputs(alphabet);
+	}
+	
 	public void processModels(boolean implementation, boolean ioco) {
 
 		boolean lts = false;
