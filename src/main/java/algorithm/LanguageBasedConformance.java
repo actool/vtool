@@ -6,6 +6,8 @@
 package algorithm;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import model.Automaton_;
@@ -35,7 +37,12 @@ public class LanguageBasedConformance {
 	 */
 	public static Automaton_ verifyLanguageConformance(LTS S, LTS I, String D, String F) {
 		//S = Operations.convertToDeterministicAutomaton();
-		
+		List<String> alphabet = new ArrayList();
+		alphabet.addAll(I.getAlphabet());
+		alphabet.addAll(S.getAlphabet());
+		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+		alphabet = new ArrayList<>(hashSet_s_);					
+		S.setAlphabet(alphabet);
 		// construct the fault model containing all behavior considered to be fault
 		Automaton_ at = faultModelLanguage(S, D, F);
 		// implementation automaton
@@ -85,7 +92,7 @@ public class LanguageBasedConformance {
 
 		if (!F.equals("")) {
 			// construct automato that accepts the language F with states with name started with "f"
-			af = Operations.regexToAutomaton(F, "f");
+			af = Operations.regexToAutomaton(F, "f", S.getAlphabet());
 
 			// Fault automaton that shows the undesirable behaviors present in the specification
 			falhaF = Operations.intersection(af, as);
@@ -97,7 +104,7 @@ public class LanguageBasedConformance {
 				D = D.replace(Constants.DELTA_TXT, Constants.DELTA);				
 			}
 			
-			ad = Operations.regexToAutomaton(D, "d");
+			ad = Operations.regexToAutomaton(D, "d", S.getAlphabet());
 			if(as.getAlphabet().contains(Constants.DELTA_UNICODE)) {
 				List<String> alphabet = new ArrayList<String>();
 				alphabet.remove(Constants.DELTA_UNICODE);
@@ -111,12 +118,15 @@ public class LanguageBasedConformance {
 				ad.setAlphabet(alphabet);
 
 				List<Transition_> transitions = new ArrayList<Transition_>();
-				for (Transition_ t : ad.getTransitions()) {					
-					if(t.getLabel().contains(Constants.DELTA_UNICODE_n)) {
-						transitions.add(new Transition_(t.getIniState(), Constants.DELTA, t.getEndState()));
-					}else {
-						transitions.add(new Transition_(t.getIniState(), t.getLabel(), t.getEndState()));
-					}
+				for (Transition_ t : ad.getTransitions()) {
+					//if(t != null) {
+						if(t.getLabel().contains(Constants.DELTA_UNICODE_n)) {
+							transitions.add(new Transition_(t.getIniState(), Constants.DELTA, t.getEndState()));
+						}else {
+							transitions.add(new Transition_(t.getIniState(), t.getLabel(), t.getEndState()));
+						}
+				//	}
+					
 				}
 				ad.setTransitions(transitions);
 			}

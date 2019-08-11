@@ -437,11 +437,43 @@ public class Operations {
 	 *            "2", "3" and therefore there may be conflict going forward
 	 * @return automaton which accepts the regex received by parameter
 	 */
-	public static Automaton_ regexToAutomaton(String linguagemRegular, String tag) {
+	public static Automaton_ regexToAutomaton(String regex, String tag, List<String> alphabet) {
+		// order alphabet descending by length string and then alphabetically
+		Collections.sort(alphabet, new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				if (o1.length() != o2.length()) {
+					return o2.length() - o1.length(); // overflow impossible since lengths are non-negative
+				}
+				return o1.compareTo(o2);
+			}
+		});
+
+		Map<String, String> map = new HashMap<String, String>();
+		for (int i = 0; i < alphabet.size(); i++) {
+			map.put(Character.toString(Constants.ALPHABET[i]), alphabet.get(i));
+			regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET[i]));
+		}
+
 		// regex to automaton
-		RegExp regExp = new RegExp(linguagemRegular, RegExp.ALL);
+		RegExp regExp = new RegExp(regex, RegExp.ALL);
 		Automaton automaton = regExp.toAutomaton();
-		return automatonBricsInAutomaton_(automaton, tag);
+
+		Automaton_ automatonBrics = automatonBricsInAutomaton_(automaton, tag);
+		List<Transition_> newTransition = new ArrayList<>();
+		for (Transition_ t : automatonBrics.getTransitions()) {
+			newTransition.add(new Transition_(t.getIniState(), map.get(t.getLabel()), t.getEndState()));
+		}
+		List<String> newAlphabet = new ArrayList<>();
+		for (String a : automatonBrics.getAlphabet()) {
+			newAlphabet.add(map.get(a));
+		}
+		automatonBrics.setAlphabet(newAlphabet);
+		automatonBrics.setTransitions(newTransition);
+		
+		
+		return automatonBrics;
 	}
 
 	static volatile State_ current;
@@ -508,18 +540,18 @@ public class Operations {
 				if (e.getInfo() != null) {
 					aux = e.getInfo().split(tagWord);
 					for (int i = 0; i < aux.length; i++) {
-						
-						if(ioco) {
-							if(aux[i].contains(tagLetter)) {
-								//remove autput
-								idx = aux[i].lastIndexOf(tagLetter);	
-								//System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
+
+						if (ioco) {
+							if (aux[i].contains(tagLetter)) {
+								// remove autput
+								idx = aux[i].lastIndexOf(tagLetter);
+								// System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
 								words.add(aux[i].substring(0, idx));
-							}							
-						}else {
+							}
+						} else {
 							words.add(aux[i]);
 						}
-						
+
 					}
 				}
 			}
@@ -674,33 +706,33 @@ public class Operations {
 
 	public static List<String> getTestCases(Automaton_ faultModel, boolean ioco, IOLTS iolts_s) {
 		List<String> testCases_testSuit = getWordsFromAutomaton(faultModel, ioco);
-		//System.out.println(testCases_testSuit);
+		// System.out.println(testCases_testSuit);
 		return testCases_testSuit;
-		
-//		// if(ioco) {
-//		List<State_> tc = new ArrayList<>();
-//		List<State_> fs = new ArrayList<>();
-//		for (String t : testCases_testSuit) {
-//			tc.addAll((List<State_>) path(iolts_s, ioco, t, "\nModel")[0]);
-//		}
-//		HashSet hashSet_s_ = new LinkedHashSet<>(tc);
-//		tc = new ArrayList<>(hashSet_s_);
-//
-//		// create automaton
-//		Automaton_ automaton_s = new Automaton_();
-//		// changes attributes based on LTS
-//		automaton_s.setStates(iolts_s.getStates());
-//		automaton_s.setInitialState(iolts_s.getInitialState());
-//		automaton_s.setAlphabet(iolts_s.getAlphabet());
-//
-//		automaton_s.setTransitions(Operations.processTauTransition(iolts_s.getTransitions()));
-//		automaton_s.setFinalStates(tc);
-//
-//		hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
-//		return new ArrayList<>(hashSet_s_);
-//		// }else {
-//		// return testCases_testSuit;
-//		// }
+
+		// // if(ioco) {
+		// List<State_> tc = new ArrayList<>();
+		// List<State_> fs = new ArrayList<>();
+		// for (String t : testCases_testSuit) {
+		// tc.addAll((List<State_>) path(iolts_s, ioco, t, "\nModel")[0]);
+		// }
+		// HashSet hashSet_s_ = new LinkedHashSet<>(tc);
+		// tc = new ArrayList<>(hashSet_s_);
+		//
+		// // create automaton
+		// Automaton_ automaton_s = new Automaton_();
+		// // changes attributes based on LTS
+		// automaton_s.setStates(iolts_s.getStates());
+		// automaton_s.setInitialState(iolts_s.getInitialState());
+		// automaton_s.setAlphabet(iolts_s.getAlphabet());
+		//
+		// automaton_s.setTransitions(Operations.processTauTransition(iolts_s.getTransitions()));
+		// automaton_s.setFinalStates(tc);
+		//
+		// hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
+		// return new ArrayList<>(hashSet_s_);
+		// // }else {
+		// // return testCases_testSuit;
+		// // }
 
 	}
 
@@ -777,11 +809,11 @@ public class Operations {
 			if (!specOut.containsAll(implOut) && !(ioco && specOut.size() == 0)) {// (ioco && specOut.size() == 0) ->
 																					// when the test case can not be run
 																					// completely
-				path = "Test case: \t" + "" ;	//+ "\n"			
+				path = "Test case: \t" + ""; // + "\n"
 				path += "\n\nModel outputs: " + specOut + " \n\n\t path:" + currentState_s.getName() + "\n\t output: "
 						+ S.outputsOfState(currentState_s);
 				path += "\n\nImplementation outputs: " + implOut + " \n\n\t path: " + currentState_i.getName()
-				+ "\n\t output: " + I.outputsOfState(currentState_i);
+						+ "\n\t output: " + I.outputsOfState(currentState_i);
 				path += "\n\n################################################################## \n";
 
 			}
@@ -880,7 +912,7 @@ public class Operations {
 
 		return listaTransicoes;
 	}
-	
+
 	public static State_ getStateByName(IOLTS S, String stateName) {
 		return S.getStates().stream().filter(x -> x.getName().equals(stateName)).findFirst().orElse(new State_());
 	}
@@ -902,7 +934,5 @@ public class Operations {
 		stringState = stringState.substring(idxInitial, idxFinal).replaceAll("\\s+", "");
 		return new State_(tag + stringState);
 	}
-
-	
 
 }
