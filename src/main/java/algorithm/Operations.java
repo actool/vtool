@@ -471,8 +471,7 @@ public class Operations {
 		}
 		automatonBrics.setAlphabet(newAlphabet);
 		automatonBrics.setTransitions(newTransition);
-		
-		
+
 		return automatonBrics;
 	}
 
@@ -535,28 +534,41 @@ public class Operations {
 		}
 
 		int idx = 0;
+		word = "";
 		for (State_ e : a.getStates()) {
 			if (a.getFinalStates().contains(e)) {
 				if (e.getInfo() != null) {
 					aux = e.getInfo().split(tagWord);
 					for (int i = 0; i < aux.length; i++) {
 
-						if (ioco) {
-							if (aux[i].contains(tagLetter)) {
-								// remove autput
-								idx = aux[i].lastIndexOf(tagLetter);
-								// System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
-								words.add(aux[i].substring(0, idx));
+//						if (ioco) {
+//							if (aux[i].contains(tagLetter)) {
+//								// remove output
+//								idx = aux[i].lastIndexOf(tagLetter);
+//								// System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
+//								word = aux[i].substring(0, idx);	
+//									
+//							}
+//						} else {
+//							word = aux[i];							
+//						}
+						word = aux[i];
+						System.out.println(word);
+						words.add(word);
+						if(a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null) {
+							for (String w : a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo().split(tagWord)) {
+								words.add(w+tagLetter+word);
+								System.out.println("*" + w+tagLetter+word);
 							}
-						} else {
-							words.add(aux[i]);
 						}
+						
 
 					}
 				}
 			}
 		}
 
+		System.out.println("-----");
 		return words;
 	}
 
@@ -707,32 +719,33 @@ public class Operations {
 	public static List<String> getTestCases(Automaton_ faultModel, boolean ioco, IOLTS iolts_s) {
 		List<String> testCases_testSuit = getWordsFromAutomaton(faultModel, ioco);
 		// System.out.println(testCases_testSuit);
-		return testCases_testSuit;
+		// return testCases_testSuit;--
 
-		// // if(ioco) {
-		// List<State_> tc = new ArrayList<>();
-		// List<State_> fs = new ArrayList<>();
-		// for (String t : testCases_testSuit) {
-		// tc.addAll((List<State_>) path(iolts_s, ioco, t, "\nModel")[0]);
+		// if(ioco) {
+		List<State_> tc = new ArrayList<>();
+		List<State_> fs = new ArrayList<>();
+		for (String t : testCases_testSuit) {
+			tc.addAll((List<State_>) path(iolts_s, ioco, t, "\nModel")[0]);
+		}
+		HashSet hashSet_s_ = new LinkedHashSet<>(tc);
+		tc = new ArrayList<>(hashSet_s_);
+
+		// create automaton
+		Automaton_ automaton_s 
+		= new Automaton_();
+		// changes attributes based on LTS
+		automaton_s.setStates(iolts_s.getStates());
+		automaton_s.setInitialState(iolts_s.getInitialState());
+		automaton_s.setAlphabet(iolts_s.getAlphabet());
+		automaton_s.setTransitions(Operations.processTauTransition(iolts_s.getTransitions()));
+		//automaton_s= iolts_s.ioltsToAutomaton();
+		automaton_s.setFinalStates(tc);
+
+		hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
+		return new ArrayList<>(hashSet_s_);
+		// }else {
+		// return testCases_testSuit;
 		// }
-		// HashSet hashSet_s_ = new LinkedHashSet<>(tc);
-		// tc = new ArrayList<>(hashSet_s_);
-		//
-		// // create automaton
-		// Automaton_ automaton_s = new Automaton_();
-		// // changes attributes based on LTS
-		// automaton_s.setStates(iolts_s.getStates());
-		// automaton_s.setInitialState(iolts_s.getInitialState());
-		// automaton_s.setAlphabet(iolts_s.getAlphabet());
-		//
-		// automaton_s.setTransitions(Operations.processTauTransition(iolts_s.getTransitions()));
-		// automaton_s.setFinalStates(tc);
-		//
-		// hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
-		// return new ArrayList<>(hashSet_s_);
-		// // }else {
-		// // return testCases_testSuit;
-		// // }
 
 	}
 
