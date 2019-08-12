@@ -535,6 +535,7 @@ public class Operations {
 
 		int idx = 0;
 		word = "";
+		boolean iniStateCovered = false;
 		for (State_ e : a.getStates()) {
 			if (a.getFinalStates().contains(e)) {
 				if (e.getInfo() != null) {
@@ -553,14 +554,18 @@ public class Operations {
 //							word = aux[i];							
 //						}
 						word = aux[i];
-						System.out.println(word);
 						words.add(word);
-						if(a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null) {
+						//words accept by initialState, cover initState
+						if(a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null && !iniStateCovered) {
 							for (String w : a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo().split(tagWord)) {
 								words.add(w+tagLetter+word);
-								System.out.println("*" + w+tagLetter+word);
+								//System.out.println("*" + w+tagLetter+word);
 							}
+							iniStateCovered = true;
 						}
+//						}else {							
+//							words.add(word);
+//						}
 						
 
 					}
@@ -568,7 +573,7 @@ public class Operations {
 			}
 		}
 
-		System.out.println("-----");
+		//System.out.println("-----");
 		return words;
 	}
 
