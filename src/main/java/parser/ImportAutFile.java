@@ -145,6 +145,12 @@ public class ImportAutFile {
 				iolts.setOutputs(outputs);
 			}
 
+			/*List<String> alphabet = new ArrayList();
+			alphabet.addAll(iolts.getInputs());
+			alphabet.addAll(iolts.getOutputs());
+			HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+			alphabet = new ArrayList<>(hashSet_s_);
+			iolts.setAlphabet(alphabet);*/
 			// System.out.println(iolts);
 			return iolts;
 		} catch (Exception e) {
@@ -261,38 +267,6 @@ public class ImportAutFile {
 					iolts = r1.getIolts();
 					iolts.setInitialState(new State_(configs[0]));
 					
-					
-//					// get states and transitions
-//					states = r1.getStates();
-//					transitions = r1.getTransitions();
-//
-//					// add LTS states/transitions
-//					HashSet hashSet_s_ = new LinkedHashSet<>(states);
-//					states = new ArrayList<>(hashSet_s_);
-//					iolts.setTransitions(transitions);
-//					iolts.setStates(states);
-//
-//					// remove all null from list
-//					transitions.removeAll(Collections.singletonList(null));
-//
-//					// set alphabet
-//					List<String> alphabet = transitions.stream().map(Transition_::getLabel)
-//							.collect(Collectors.toList());
-//					hashSet_s_ = new LinkedHashSet<>(alphabet);
-//					alphabet = new ArrayList<>(hashSet_s_);
-//					iolts.setAlphabet(alphabet);
-//
-//					// set inputs
-//					hashSet_s_ = new LinkedHashSet<>(r1.getInputs());
-//					alphabet = new ArrayList<>(hashSet_s_);
-//					alphabet.removeAll(Collections.singletonList(null));
-//					iolts.setInputs(alphabet);
-//
-//					// set outputs
-//					hashSet_s_ = new LinkedHashSet<>(r1.getOutputs());
-//					alphabet = new ArrayList<>(hashSet_s_);
-//					alphabet.removeAll(Collections.singletonList(null));
-//					iolts.setOutputs(alphabet);
 
 				} catch (InterruptedException e) {
 					// if exception occur run again, initialize static variables
@@ -319,7 +293,8 @@ public class ImportAutFile {
 
 			// if there is no inconsistency in reading the transitions, you do not need
 			// validate if qt of transitions and states beat with configuration (JTorx)
-			if (msg_cont == 0) {// if (msg.equals("")) {
+			if (msg_cont == 0) {// if (msg.equals("")) {	
+				
 				return iolts;
 			} else {
 				msg = ("inconsistencies in reading the .aut file! \n" + "Path: " + path + "\n" + "Message: \n" + msg);

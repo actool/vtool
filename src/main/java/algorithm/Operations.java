@@ -556,13 +556,13 @@ public class Operations {
 						word = aux[i];
 						words.add(word);
 						//words accept by initialState, cover initState
-						if(a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null && !iniStateCovered) {
-							for (String w : a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo().split(tagWord)) {
-								words.add(w+tagLetter+word);
-								//System.out.println("*" + w+tagLetter+word);
-							}
-							iniStateCovered = true;
-						}
+//						if(a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null && !iniStateCovered) {
+//							for (String w : a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo().split(tagWord)) {
+//								words.add(w+tagLetter+word);
+//								//System.out.println("*" + w+tagLetter+word);
+//							}
+//							iniStateCovered = true;
+//						}
 //						}else {							
 //							words.add(word);
 //						}

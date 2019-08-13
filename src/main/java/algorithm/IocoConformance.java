@@ -8,6 +8,10 @@ package algorithm;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -33,6 +37,13 @@ public class IocoConformance {
 	 * @return
 	 */
 	public static Automaton_ verifyIOCOConformance(IOLTS S, IOLTS I) {
+		List<String> alphabet = new ArrayList();
+		alphabet.addAll(I.getAlphabet());
+		alphabet.addAll(S.getAlphabet());
+		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+		alphabet = new ArrayList<>(hashSet_s_);					
+		S.setAlphabet(alphabet);
+		
 		// build the fault model, containing all fail behaviors based on specification model
 		Automaton_ at = faultModelIoco(S);
 		// automaton underlying the implementation

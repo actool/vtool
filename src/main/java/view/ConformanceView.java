@@ -321,6 +321,8 @@ public class ConformanceView extends JFrame {
 		if (isFormValid(ioco)) {// isFormValid(ioco)
 
 			if (S != null && I != null) {
+				
+				
 				if (ioco) {
 					iocoConformance();
 				} else {
@@ -427,12 +429,14 @@ public class ConformanceView extends JFrame {
 			if (lts) {
 				if (!implementation) {
 					S_ = ImportAutFile.autToLTS(pathSpecification);
+					tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
 
 				} else {
 					I_ = ImportAutFile.autToLTS(pathImplementation);
+					tfInput.setText(StringUtils.join(I_.getAlphabet(), ","));
 				}
 
-				if (S_.getStates().size() != 0 && I_.getStates().size() != 0) {
+				/*if (S_.getStates().size() != 0 && I_.getStates().size() != 0) {
 					List<String> alphabet = new ArrayList();
 					alphabet.addAll(S_.getAlphabet());
 					alphabet.addAll(I_.getAlphabet());
@@ -440,8 +444,8 @@ public class ConformanceView extends JFrame {
 					alphabet = new ArrayList<>(hashSet_s_);
 					S_.setAlphabet(alphabet);
 					I_.setAlphabet(alphabet);
-				}
-				tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
+				}*/
+				
 
 			}
 
@@ -535,9 +539,33 @@ public class ConformanceView extends JFrame {
 				}
 			}
 
-			if (S != null && I!= null) {
+			/*if (S != null && I!= null) {
+				List<String> alphabet = new ArrayList();
+				alphabet.addAll(S.getAlphabet());
+				alphabet.addAll(I.getAlphabet());
+				HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+				alphabet = new ArrayList<>(hashSet_s_);
+				S.setAlphabet(alphabet);
+				I.setAlphabet(alphabet);
+				
+				alphabet = new ArrayList();
+				alphabet.addAll(S.getInputs());
+				alphabet.addAll(I.getInputs());
+				hashSet_s_ = new LinkedHashSet<>(alphabet);
+				alphabet = new ArrayList<>(hashSet_s_);
+				S.setInputs(alphabet);
+				I.setInputs(alphabet);
+				
+				alphabet = new ArrayList();
+				alphabet.addAll(S.getOutputs());
+				alphabet.addAll(I.getOutputs());
+				hashSet_s_ = new LinkedHashSet<>(alphabet);
+				alphabet = new ArrayList<>(hashSet_s_);
+				S.setOutputs(alphabet);
+				I.setOutputs(alphabet);
+				
 				standardizeLabelsIOLTS(implementation);
-			}
+			}*/
 
 		} catch (Exception e) {
 			e.printStackTrace();

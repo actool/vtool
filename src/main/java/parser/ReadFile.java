@@ -38,6 +38,7 @@ public class ReadFile extends Thread {
 	public void run() {
 		List<Transition_> transitions_ = new ArrayList<>();
 		List<State_> states_ = new ArrayList<>();
+		List<String> alphabet_ = new ArrayList<>();
 		List<String> inputs_ = new ArrayList<>();
 		List<String> outputs_ = new ArrayList<>();
 
@@ -45,6 +46,7 @@ public class ReadFile extends Thread {
 		List<State_> states = new ArrayList<>();
 		List<String> inputs = new ArrayList<>();
 		List<String> outputs = new ArrayList<>();
+		List<String> alphabet = new ArrayList<>();
 
 		int count = this.iniLine;
 		String line;
@@ -112,17 +114,20 @@ public class ReadFile extends Thread {
 					endState = new State_(val[2].trim());
 					label = val[1].trim();
 					if (label.charAt(0) == Constants.OUTPUT_TAG) {
-						transition = new Transition_(iniState, label.substring(1, label.length()), endState);
-						outputs_.add(label.substring(1, label.length()));
+						label = label.substring(1, label.length());
+						transition = new Transition_(iniState, label, endState);						
+						outputs_.add(label);						
 					} else {
 						if (label.charAt(0) == Constants.INPUT_TAG) {
-							transition = new Transition_(iniState, label.substring(1, label.length()), endState);
-							inputs_.add(label.substring(1, label.length()));
-						} else {
+							label = label.substring(1, label.length());
 							transition = new Transition_(iniState, label, endState);
+							inputs_.add(label);							
+						} else {
+							transition = new Transition_(iniState, label, endState);								
 						}
-
 					}
+					
+					alphabet_.add(label);
 
 					states_.add(iniState);
 					states_.add(endState);
@@ -157,6 +162,13 @@ public class ReadFile extends Thread {
 		hashSet_s_ = new LinkedHashSet<>(inputs);
 		inputs = new ArrayList<>(hashSet_s_);
 		iolts.setInputs(inputs);
+		
+		alphabet = iolts.getAlphabet();
+		alphabet.addAll(alphabet_);
+		hashSet_s_ = new LinkedHashSet<>(alphabet);
+		alphabet = new ArrayList<>(hashSet_s_);
+		iolts.setAlphabet(alphabet);
+		
 
 	}
 
