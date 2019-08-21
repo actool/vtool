@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.stream.Stream;
@@ -28,6 +30,8 @@ import model.Transition_;
 import util.Constants;
 
 import org.sikuli.script.*;
+
+import com.android.dx.util.FileUtils;
 
 public class Main {
 
@@ -215,31 +219,40 @@ public class Main {
 
 		String path = "C:\\Users\\camil\\Google Drive\\UEL\\jtorx\\jtorx-1.11.2-win\\jtorx.bat";
 		String txtFile = "C:\\Users\\camil\\Desktop\\teste.txt";
-		String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\";// "C:\\Users\\camil\\Desktop\\Nova pasta
-																		// (2)\\+1000\\"
+		// String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\";
+		 String root_aut = "C:\\Users\\camil\\Documents\\aut-modelos\\";
+		//String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\";
 
 		boolean parar = false;
 		long total_seconds = 0;
 		long time_ini, time_end;
 		ProcessBuilder processBuilder = new ProcessBuilder(path);
+		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 
 		int count = 0;
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(txtFile))) {
 
-			Process process = processBuilder.start();
+			// Process process = processBuilder.start();
+			
 
 			// Thread.sleep(1500);// até abrir o jtorx
 
 			String root_img = "C:\\Users\\camil\\Desktop\\jtorx-img\\";
 			Screen s = new Screen();
 			// spec
-			s.type(root_img + "inp-model.PNG", root_aut + "vending-machine-spec-nconf.aut");// iut1000states.aut
+			// s.type(root_img + "inp-model.PNG", root_aut +
+			// "vending-machine-spec-nconf.aut");// iolts-spec.aut
+			 s.type(root_img + "inp-model.PNG", root_aut + "iolts-spec.aut");
+			//s.type(root_img + "inp-model.PNG", root_aut + "iut1000states.aut");
 
 			for (int i = 0; i < 8; i++) {
 				s.type(Key.TAB);
 			}
 			// iut
-			s.type(root_aut + "vending-machine-iut.aut");// iut1000states.aut
+			// s.type(root_aut + "vending-machine-iut.aut");// iolts-impl-r.aut
+			 s.type(root_aut + "iolts-impl-r.aut");//
+			//s.type(root_aut + "iut1000states.aut");
+
 			s.click(root_img + "cb-interpretation.PNG");
 			s.type(Key.DOWN);
 			s.type(Key.DOWN);// ?in !out
@@ -247,47 +260,131 @@ public class Main {
 
 			s.type(Key.TAB);// second cb
 			s.type(Key.DOWN);// Strace
-			
 
 			s.click(root_img + "item-menu-ioco.PNG");
 
-			time_ini = System.currentTimeMillis();
-
 			s.click(root_img + "btn-check.PNG");
+			time_ini = System.currentTimeMillis();
 			
-			s.waitVanish(new Pattern(root_img + "lbl-result.PNG").similar(0.9f));
+			long t0 = 0;
 
-			InputStream i = process.getInputStream();
-			BufferedReader reader0 = new BufferedReader(new InputStreamReader(i));
-			BufferedReader reader = new BufferedReader(new InputStreamReader(i));// process.getInputStream()
-			SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+			// s.waitVanish(new Pattern(root_img + "lbl-result.PNG").similar(0.7f));
+
+			// #####################################
+
+			while (true) {
+				try {
+					Object a = s.find(new Pattern(root_img + "lbl-result.PNG").similar(1.0f));
+					System.out.println(a);
+
+					// if(a == null) {
+					// break;
+					// }
+					// if (s.find(root_img + "lbl-fail-veredict.PNG") != null
+					// || s.find(root_img + "lbl-conform-veredict.PNG") != null)
+					// break;
+					// }
+				} catch (FindFailed e) {
+					break;
+				}
+
+				System.out.println("WHILE..."+formatter.format(new Date(System.currentTimeMillis())));
+				t0 = System.currentTimeMillis();
+			}
+
+			// #####################################
+
+			time_end = System.currentTimeMillis();
+			total_seconds = ((time_end - time_ini) - (time_end - t0) ); // / 1000;
+			System.err.println("after waitVanish: " + total_seconds + " milisegundos " + formatter.format(new Date(System.currentTimeMillis())));
+
+			// BufferedReader reader = new BufferedReader(new InputStreamReader(
+			// process.getInputStream()));// process.getInputStream()
+			
 
 			String line = "";
-			while (reader.ready() && (line = reader.readLine()) != null) {// (line = reader.readLine()) != null
-				count++;
-				line = line + " time: " + formatter.format(new Date(System.currentTimeMillis())) + "\n"; //
-				writer.write(line);
-				writer.newLine();
-				time_end = System.currentTimeMillis();
-				total_seconds = (time_end - time_ini) / 1000;
-			}
+			/*
+			 * while (reader.ready() && (line = reader.readLine()) != null) {// (line =
+			 * reader.readLine()) != null count++; line = line + " time: " +
+			 * formatter.format(new Date(System.currentTimeMillis())) + "\n"; //
+			 * writer.write(line); writer.newLine(); time_end = System.currentTimeMillis();
+			 *total_seconds = (time_end - time_ini) / 1000; }
+			 */
 
 			if (s.exists(root_img + "lbl-conform-veredict.PNG") != null) {
 				System.err.println("CONF");
 			} else {
 				if (s.exists(root_img + "lbl-fail-veredict.PNG") != null) {
+					String root_save_aut_result = "C:\\Users\\camil\\Desktop\\Nova pasta\\";
+
 					System.err.println("NAO CONF");
+
+					// first line (testcases)
+					for (int j = 0; j < 4; j++) {
+						s.type(Key.TAB);
+					}
+					s.type(Key.DOWN);
+					s.type(Key.UP);
+
+					s.click(root_img + "btn-save.PNG");
+					s.type(root_save_aut_result + "1.aut");
+					s.type(Key.ENTER);
+
+					// second line
+					s.type(Key.TAB);
+					s.type(Key.DOWN);
+					Scanner scanner = null;
+
+					Thread.sleep(1500);
+
+					scanner = new Scanner(new File(root_save_aut_result + "1.aut"));
+					String previous = scanner.useDelimiter("\\Z").next();
+					scanner.close();
+
+					String aux = "";
+					// s.atMouse().getY(), s.getLastMatch().getY()
+
+					// other lines
+					count = 1;
+					while (true) {
+						count++;
+						s.click(root_img + "btn-save.PNG");
+						s.type(root_save_aut_result + count + ".aut");
+						s.type(Key.ENTER);
+						Thread.sleep(1500);
+						scanner = new Scanner(new File(root_save_aut_result + count + ".aut"));
+						aux = scanner.useDelimiter("\\Z").next();
+						scanner.close();
+
+						if (aux.equals(previous)) {
+							// File file = new File(root_save_aut_result + count + ".aut");
+							// if(file.exists()) {
+							Files.delete(Paths.get(root_save_aut_result + count + ".aut"));
+							// file.delete();
+							// System.out.println("EXISTE ** ");
+							// }else {
+							// System.out.println("NAO EXISTE **");
+							// }
+
+							break;
+						} else {
+							previous = aux;
+							s.type(Key.TAB);
+							s.type(Key.DOWN);
+						}
+					}
+
 				}
 			}
-			System.err.println("TERMINOU: " + total_seconds + " segundos");
+			System.err.println("TERMINOU: " + total_seconds + " milisegundos");
 
-			s.click(root_img + "img-close.PNG");
+			// s.click(root_img + "img-close.PNG");
 
-			int exitVal = process.waitFor();
-			if (exitVal == 0) {
-				writer.close();
-				System.exit(0);
-			}
+			// int exitVal = process.waitFor();
+			// if (exitVal == 0) {
+			// writer.close();
+			// System.exit(0);
+			// }
 
 		} catch (Exception e) {
 			System.out.println("------EXCEPTION");
