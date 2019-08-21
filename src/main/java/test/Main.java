@@ -31,7 +31,7 @@ import org.sikuli.script.*;
 
 public class Main {
 
-	public static void main(String[] args)  {
+	public static void main(String[] args) {
 		/*
 		 * Automaton_ a = new Automaton_(); State_ s0= new State_("s0"); State_ s1= new
 		 * State_("s1"); State_ s2= new State_("s2"); State_ s3= new State_("s3");
@@ -215,6 +215,8 @@ public class Main {
 
 		String path = "C:\\Users\\camil\\Google Drive\\UEL\\jtorx\\jtorx-1.11.2-win\\jtorx.bat";
 		String txtFile = "C:\\Users\\camil\\Desktop\\teste.txt";
+		String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\";// "C:\\Users\\camil\\Desktop\\Nova pasta
+																		// (2)\\+1000\\"
 
 		boolean parar = false;
 		long total_seconds = 0;
@@ -226,83 +228,63 @@ public class Main {
 
 			Process process = processBuilder.start();
 
-			Thread.sleep(1500);// até abrir o jtorx
+			// Thread.sleep(1500);// até abrir o jtorx
 
-			String root = "C:\\Users\\camil\\Desktop\\jtorx-img\\";
+			String root_img = "C:\\Users\\camil\\Desktop\\jtorx-img\\";
 			Screen s = new Screen();
-			// s.click("C:\\Users\\camil\\Desktop\\jtorx-img\\btn-browse.PNG");
-			s.type(root + "inp-model.PNG", "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut");
+			// spec
+			s.type(root_img + "inp-model.PNG", root_aut + "vending-machine-spec-nconf.aut");// iut1000states.aut
 
 			for (int i = 0; i < 8; i++) {
 				s.type(Key.TAB);
 			}
-
-			s.type("C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut");
-			s.click(root + "cb-interpretation.PNG");
+			// iut
+			s.type(root_aut + "vending-machine-iut.aut");// iut1000states.aut
+			s.click(root_img + "cb-interpretation.PNG");
 			s.type(Key.DOWN);
 			s.type(Key.DOWN);// ?in !out
 			s.click();
 
 			s.type(Key.TAB);// second cb
 			s.type(Key.DOWN);// Strace
-			// s.click();
+			
 
-			s.click(root + "item-menu-ioco.PNG");
+			s.click(root_img + "item-menu-ioco.PNG");
 
 			time_ini = System.currentTimeMillis();
 
-			s.click(root + "btn-check.PNG");
-
-			// s.waitVanish(new Pattern(root + "btn-stop.PNG").similar(0.95f));
-
-			s.waitVanish(new Pattern(root + "lbl-result.PNG").similar(0.9f));
-
+			s.click(root_img + "btn-check.PNG");
 			
-			
-			
+			s.waitVanish(new Pattern(root_img + "lbl-result.PNG").similar(0.9f));
+
 			InputStream i = process.getInputStream();
 			BufferedReader reader0 = new BufferedReader(new InputStreamReader(i));
-			BufferedReader reader = new BufferedReader(new InputStreamReader(i));//process.getInputStream()
+			BufferedReader reader = new BufferedReader(new InputStreamReader(i));// process.getInputStream()
 			SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-			
+
 			String line = "";
-			while ((line = reader.readLine()) != null) {//
-				
+			while (reader.ready() && (line = reader.readLine()) != null) {// (line = reader.readLine()) != null
 				count++;
-				// if (line != null) {
-
-				// if (line.contains("---------------- closed ----------------")) {
-				// parar = true;
-				// }
-
-				// if (!parar) {
-
 				line = line + " time: " + formatter.format(new Date(System.currentTimeMillis())) + "\n"; //
-				// output.append(line);
 				writer.write(line);
 				writer.newLine();
 				time_end = System.currentTimeMillis();
-				System.err.println(count + ") TERMINOU: " + (time_end - time_ini) / 1000);
 				total_seconds = (time_end - time_ini) / 1000;
-
-				// }
-
-				// } else {
-				// System.out.println("NULL+++++++++++++++++++++++++++++++++++++++++++++");
-				// break;
-				// }
-				
-				
-				
-				 
-				
-
 			}
-			
+
+			if (s.exists(root_img + "lbl-conform-veredict.PNG") != null) {
+				System.err.println("CONF");
+			} else {
+				if (s.exists(root_img + "lbl-fail-veredict.PNG") != null) {
+					System.err.println("NAO CONF");
+				}
+			}
+			System.err.println("TERMINOU: " + total_seconds + " segundos");
+
+			s.click(root_img + "img-close.PNG");
+
 			int exitVal = process.waitFor();
 			if (exitVal == 0) {
-				System.out.println("TOTAL: " + total_seconds);
-				// System.out.println(output);
 				writer.close();
 				System.exit(0);
 			}
