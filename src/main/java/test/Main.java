@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.stream.Stream;
@@ -218,22 +219,45 @@ public class Main {
 		// System.out.println(testCases);
 
 		String path = "C:\\Users\\camil\\Google Drive\\UEL\\jtorx\\jtorx-1.11.2-win\\jtorx.bat";
+		
 		String txtFile = "C:\\Users\\camil\\Desktop\\teste.txt";
 		// String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\";
-		 String root_aut = "C:\\Users\\camil\\Documents\\aut-modelos\\";
-		//String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\";
+		// String root_aut = "C:\\Users\\camil\\Documents\\aut-modelos\\";
+		String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\";
 
 		boolean parar = false;
 		long total_seconds = 0;
 		long time_ini, time_end;
-		ProcessBuilder processBuilder = new ProcessBuilder(path);
+
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 
 		int count = 0;
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(txtFile))) {
 
-			// Process process = processBuilder.start();
+		
+			/*ProcessBuilder builder = new ProcessBuilder();
+			builder.command("cmd.exe", "/c", path);
+			Process process = builder.start();*/
 			
+		
+			//Process process = Runtime.getRuntime().exec("cmd /c " + path);
+			
+			//ProcessBuilder processBuilder = new ProcessBuilder(path);
+			//Process process = processBuilder.start();
+			// run jar JTorx
+			// Thread thread = new Thread(new Runnable() {
+			// public void run() {
+			// try {
+			// ProcessBuilder processBuilder = new ProcessBuilder(path);
+			// // Process process =
+			// processBuilder.start();
+			// } catch (IOException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+			// }
+			// });
+			// thread.start();
 
 			// Thread.sleep(1500);// até abrir o jtorx
 
@@ -242,16 +266,16 @@ public class Main {
 			// spec
 			// s.type(root_img + "inp-model.PNG", root_aut +
 			// "vending-machine-spec-nconf.aut");// iolts-spec.aut
-			 s.type(root_img + "inp-model.PNG", root_aut + "iolts-spec.aut");
-			//s.type(root_img + "inp-model.PNG", root_aut + "iut1000states.aut");
+			// s.type(root_img + "inp-model.PNG", root_aut + "iolts-spec.aut");
+			s.type(root_img + "inp-model.PNG", root_aut + "iut1000states.aut");
 
 			for (int i = 0; i < 8; i++) {
 				s.type(Key.TAB);
 			}
 			// iut
 			// s.type(root_aut + "vending-machine-iut.aut");// iolts-impl-r.aut
-			 s.type(root_aut + "iolts-impl-r.aut");//
-			//s.type(root_aut + "iut1000states.aut");
+			// s.type(root_aut + "iolts-impl-r.aut");//
+			s.type(root_aut + "iut1000states.aut");
 
 			s.click(root_img + "cb-interpretation.PNG");
 			s.type(Key.DOWN);
@@ -263,53 +287,59 @@ public class Main {
 
 			s.click(root_img + "item-menu-ioco.PNG");
 
-			s.click(root_img + "btn-check.PNG");
 			time_ini = System.currentTimeMillis();
-			
+			s.click(root_img + "btn-check.PNG");
+
 			long t0 = 0;
 
 			// s.waitVanish(new Pattern(root_img + "lbl-result.PNG").similar(0.7f));
 
 			// #####################################
+			System.out.println("------------ +- -------------");
 
 			while (true) {
 				try {
 					Object a = s.find(new Pattern(root_img + "lbl-result.PNG").similar(1.0f));
-					System.out.println(a);
+					System.out.println("TRY");
 
-					// if(a == null) {
-					// break;
-					// }
-					// if (s.find(root_img + "lbl-fail-veredict.PNG") != null
-					// || s.find(root_img + "lbl-conform-veredict.PNG") != null)
-					// break;
-					// }
 				} catch (FindFailed e) {
+					System.err.println("CATCH");
 					break;
 				}
 
-				System.out.println("WHILE..."+formatter.format(new Date(System.currentTimeMillis())));
+				// System.out.println("WHILE..."+formatter.format(new
+				// Date(System.currentTimeMillis())));
 				t0 = System.currentTimeMillis();
 			}
 
+//			String line = "";
+//			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//			while (reader.ready() && (line = reader.readLine()) != null) {
+//				line = line + " time: " + formatter.format(new Date(System.currentTimeMillis())) + "\n";
+//				System.out.println(line);
+//			}
 			// #####################################
 
 			time_end = System.currentTimeMillis();
-			total_seconds = ((time_end - time_ini) - (time_end - t0) ); // / 1000;
-			System.err.println("after waitVanish: " + total_seconds + " milisegundos " + formatter.format(new Date(System.currentTimeMillis())));
+			 total_seconds = ((time_end - time_ini));
+			 System.out.println(total_seconds + " segundos ");
+			total_seconds = ((time_end - time_ini) - (time_end - t0)); // / 1000;
+			 System.err.println("after waitVanish: " + total_seconds + " milisegundos " +
+			 formatter.format(new Date(System.currentTimeMillis())));
 
-			// BufferedReader reader = new BufferedReader(new InputStreamReader(
-			// process.getInputStream()));// process.getInputStream()
+		//	BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));// process.getInputStream()
+
 			
 
-			String line = "";
-			/*
-			 * while (reader.ready() && (line = reader.readLine()) != null) {// (line =
-			 * reader.readLine()) != null count++; line = line + " time: " +
-			 * formatter.format(new Date(System.currentTimeMillis())) + "\n"; //
-			 * writer.write(line); writer.newLine(); time_end = System.currentTimeMillis();
-			 *total_seconds = (time_end - time_ini) / 1000; }
-			 */
+//			while (reader.ready() && (line = reader.readLine()) != null) {// (line = reader.readLine()) != null;
+//				count++;
+//				line = line + " time: " + formatter.format(new Date(System.currentTimeMillis())) + "\n"; //
+//				// writer.write(line);
+//				// writer.newLine();
+//				System.out.println(line);
+//				time_end = System.currentTimeMillis();
+//				total_seconds = (time_end - time_ini) / 1000;
+//			}
 
 			if (s.exists(root_img + "lbl-conform-veredict.PNG") != null) {
 				System.err.println("CONF");

@@ -321,8 +321,7 @@ public class ConformanceView extends JFrame {
 		if (isFormValid(ioco)) {// isFormValid(ioco)
 
 			if (S != null && I != null) {
-				
-				
+
 				if (ioco) {
 					iocoConformance();
 				} else {
@@ -436,16 +435,13 @@ public class ConformanceView extends JFrame {
 					tfInput.setText(StringUtils.join(I_.getAlphabet(), ","));
 				}
 
-				/*if (S_.getStates().size() != 0 && I_.getStates().size() != 0) {
-					List<String> alphabet = new ArrayList();
-					alphabet.addAll(S_.getAlphabet());
-					alphabet.addAll(I_.getAlphabet());
-					HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
-					alphabet = new ArrayList<>(hashSet_s_);
-					S_.setAlphabet(alphabet);
-					I_.setAlphabet(alphabet);
-				}*/
-				
+				/*
+				 * if (S_.getStates().size() != 0 && I_.getStates().size() != 0) { List<String>
+				 * alphabet = new ArrayList(); alphabet.addAll(S_.getAlphabet());
+				 * alphabet.addAll(I_.getAlphabet()); HashSet hashSet_s_ = new
+				 * LinkedHashSet<>(alphabet); alphabet = new ArrayList<>(hashSet_s_);
+				 * S_.setAlphabet(alphabet); I_.setAlphabet(alphabet); }
+				 */
 
 			}
 
@@ -539,33 +535,24 @@ public class ConformanceView extends JFrame {
 				}
 			}
 
-			/*if (S != null && I!= null) {
-				List<String> alphabet = new ArrayList();
-				alphabet.addAll(S.getAlphabet());
-				alphabet.addAll(I.getAlphabet());
-				HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
-				alphabet = new ArrayList<>(hashSet_s_);
-				S.setAlphabet(alphabet);
-				I.setAlphabet(alphabet);
-				
-				alphabet = new ArrayList();
-				alphabet.addAll(S.getInputs());
-				alphabet.addAll(I.getInputs());
-				hashSet_s_ = new LinkedHashSet<>(alphabet);
-				alphabet = new ArrayList<>(hashSet_s_);
-				S.setInputs(alphabet);
-				I.setInputs(alphabet);
-				
-				alphabet = new ArrayList();
-				alphabet.addAll(S.getOutputs());
-				alphabet.addAll(I.getOutputs());
-				hashSet_s_ = new LinkedHashSet<>(alphabet);
-				alphabet = new ArrayList<>(hashSet_s_);
-				S.setOutputs(alphabet);
-				I.setOutputs(alphabet);
-				
-				standardizeLabelsIOLTS(implementation);
-			}*/
+			/*
+			 * if (S != null && I!= null) { List<String> alphabet = new ArrayList();
+			 * alphabet.addAll(S.getAlphabet()); alphabet.addAll(I.getAlphabet()); HashSet
+			 * hashSet_s_ = new LinkedHashSet<>(alphabet); alphabet = new
+			 * ArrayList<>(hashSet_s_); S.setAlphabet(alphabet); I.setAlphabet(alphabet);
+			 * 
+			 * alphabet = new ArrayList(); alphabet.addAll(S.getInputs());
+			 * alphabet.addAll(I.getInputs()); hashSet_s_ = new LinkedHashSet<>(alphabet);
+			 * alphabet = new ArrayList<>(hashSet_s_); S.setInputs(alphabet);
+			 * I.setInputs(alphabet);
+			 * 
+			 * alphabet = new ArrayList(); alphabet.addAll(S.getOutputs());
+			 * alphabet.addAll(I.getOutputs()); hashSet_s_ = new LinkedHashSet<>(alphabet);
+			 * alphabet = new ArrayList<>(hashSet_s_); S.setOutputs(alphabet);
+			 * I.setOutputs(alphabet);
+			 * 
+			 * standardizeLabelsIOLTS(implementation); }
+			 */
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -581,49 +568,48 @@ public class ConformanceView extends JFrame {
 
 	}
 
-	
 	public void standardizeLabelsIOLTS(boolean implementation) {
 		List<String> alphabet = new ArrayList();
 		HashSet hashSet_s_;
-		if(implementation) {						
+		if (implementation) {
 			alphabet.addAll(I.getAlphabet());
 			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);			
+			alphabet = new ArrayList<>(hashSet_s_);
 			I.setAlphabet(alphabet);
-			
-			alphabet = new ArrayList();			
+
+			alphabet = new ArrayList();
 			alphabet.addAll(I.getInputs());
 			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);			
+			alphabet = new ArrayList<>(hashSet_s_);
 			I.setInputs(alphabet);
-			
-			alphabet = new ArrayList();			
+
+			alphabet = new ArrayList();
 			alphabet.addAll(I.getOutputs());
 			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);			
+			alphabet = new ArrayList<>(hashSet_s_);
 			I.setOutputs(alphabet);
-			
-		}else {
-			alphabet.addAll(S.getAlphabet());		
+
+		} else {
+			alphabet.addAll(S.getAlphabet());
 			hashSet_s_ = new LinkedHashSet<>(alphabet);
 			alphabet = new ArrayList<>(hashSet_s_);
 			S.setAlphabet(alphabet);
-			
+
 			alphabet = new ArrayList();
-			alphabet.addAll(S.getInputs());			
+			alphabet.addAll(S.getInputs());
 			hashSet_s_ = new LinkedHashSet<>(alphabet);
 			alphabet = new ArrayList<>(hashSet_s_);
 			S.setInputs(alphabet);
-			
+
 			alphabet = new ArrayList();
-			alphabet.addAll(S.getOutputs());			
+			alphabet.addAll(S.getOutputs());
 			hashSet_s_ = new LinkedHashSet<>(alphabet);
 			alphabet = new ArrayList<>(hashSet_s_);
-			S.setOutputs(alphabet);	
+			S.setOutputs(alphabet);
 		}
-			
+
 	}
-	
+
 	public void processModels(boolean implementation, boolean ioco) {
 
 		boolean lts = false;
@@ -1606,7 +1592,12 @@ public class ConformanceView extends JFrame {
 
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			conformidade = IocoConformance.verifyIOCOConformance(S, I);
-			failPath = Operations.path(S, I, conformidade, true);
+			if (conformidade.getFinalStates().size() > 0) {
+				failPath = Operations.path(S, I, conformidade, true);
+			} else {
+				failPath = "";
+			}
+
 		}
 
 		// }
@@ -1680,7 +1671,11 @@ public class ConformanceView extends JFrame {
 
 				if (regexIsValid(D) && regexIsValid(F)) {
 					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);
-					failPath = Operations.path(S_, I_, conformidade, false);
+					if (conformidade.getFinalStates().size() > 0) {
+						failPath = Operations.path(S_, I_, conformidade, false);
+					} else {
+						failPath = "";
+					}
 					removeMessage(false, ViewConstants.invalidRegex);
 				} else {
 					// JOptionPane.showMessageDialog(panel, "Invalid regex!", "Warning",

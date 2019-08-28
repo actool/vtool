@@ -217,7 +217,7 @@ public class AutGenerator {
 
 	}
 
-	private static String ioltsToAut(IOLTS iolts) {
+	public static String ioltsToAut(IOLTS iolts) {
 		String newline = System.getProperty("line.separator");
 		String aut = "des(" + iolts.getInitialState() + "," + iolts.getTransitions().size() + ","
 				+ iolts.getStates().size() + ")" + newline;

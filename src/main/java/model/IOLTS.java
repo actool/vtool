@@ -100,6 +100,7 @@ public class IOLTS extends LTS implements Cloneable {
 	 * @return the underlying automaton
 	 */
 	public Automaton_ ioltsToAutomaton() {
+
 		// build automato from LTS
 		return this.toLTS().ltsToAutomaton();
 	}

@@ -486,29 +486,64 @@ public class Operations {
 		stateToVisit.add(a.getInitialState());
 		a.getStates().forEach(p -> p.setInfo(null));
 		a.getStates().forEach(p -> p.setVisited(false));
+		a.getStates().forEach(p -> p.setId(-1));
+		a.getTransitions().forEach(p -> p.getEndState().setId(-1));
 
 		State_ endState, iniState;
 		String[] aux;
 		List<String> words = new ArrayList<String>();
 		List<String> news = new ArrayList<String>();
+		int id = 0, current_id = 0;
 
-		while (!stateToVisit.isEmpty()) {
+		while (!stateToVisit.isEmpty())
+
+		{
+			current_id = -1;
 			current = stateToVisit.remove(0);
 			current = a.getStates().stream().filter(x -> x.equals(current)).findFirst().orElse(null);
+			// System.out.println(current);
 			if (!current.isVisited()) {
 				current.setVisited(true);
 				List<Transition_> transicoes = a.transitionsByIniState(current);
+
+				// order transitions (endState)
+				if (current.getId() == -1) {
+					current.setId(id);
+					current_id = id;
+					id++;
+				}
+				for (Transition_ t : transicoes) {
+					endState = t.getEndState();
+					if (endState.getId() == -1) {
+						endState.setId(id);
+						id++;
+					}
+					if (current_id != -1 && endState == current) {
+						endState.setId(current_id);
+					}
+				}
+
+				Comparator<Transition_> compareById = (Transition_ o1, Transition_ o2) -> Integer
+						.compare(o1.getEndState().getId(), o2.getEndState().getId());
+				Collections.sort(transicoes, compareById);
+
 				for (Transition_ t : transicoes) {
 					news = new ArrayList<String>();
 					iniState = a.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null);
 					endState = a.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null);
+
 					word = "";
+
 					if (iniState.getInfo() != null) {
 						aux = iniState.getInfo().split(tagWord);
 						if (aux.length > 0) {
 							for (int i = 0; i < aux.length; i++) {
 								word = aux[i] + tagLetter + t.getLabel() + tagWord;
 								news.add(word);
+							}
+							
+							if(iniState.equals(a.getInitialState())) {
+								news.add(t.getLabel() + tagWord);
 							}
 						} else {
 							word = iniState.getInfo() + tagLetter + t.getLabel() + tagWord;
@@ -542,38 +577,41 @@ public class Operations {
 					aux = e.getInfo().split(tagWord);
 					for (int i = 0; i < aux.length; i++) {
 
-//						if (ioco) {
-//							if (aux[i].contains(tagLetter)) {
-//								// remove output
-//								idx = aux[i].lastIndexOf(tagLetter);
-//								// System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
-//								word = aux[i].substring(0, idx);	
-//									
-//							}
-//						} else {
-//							word = aux[i];							
-//						}
+						// if (ioco) {
+						// if (aux[i].contains(tagLetter)) {
+						// // remove output
+						// idx = aux[i].lastIndexOf(tagLetter);
+						// // System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
+						// word = aux[i].substring(0, idx);
+						//
+						// }
+						// } else {
+						// word = aux[i];
+						// }
 						word = aux[i];
 						words.add(word);
-						//words accept by initialState, cover initState
-//						if(a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null && !iniStateCovered) {
-//							for (String w : a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null).getInfo().split(tagWord)) {
-//								words.add(w+tagLetter+word);
-//								//System.out.println("*" + w+tagLetter+word);
-//							}
-//							iniStateCovered = true;
-//						}
-//						}else {							
-//							words.add(word);
-//						}
-						
+						// words accept by initialState, cover initState
+						// if(a.getStates().stream().filter(x ->
+						// x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null &&
+						// !iniStateCovered) {
+						// for (String w : a.getStates().stream().filter(x ->
+						// x.equals(a.getInitialState())).findFirst().orElse(null).getInfo().split(tagWord))
+						// {
+						// words.add(w+tagLetter+word);
+						// //System.out.println("*" + w+tagLetter+word);
+						// }
+						// iniStateCovered = true;
+						// }
+						// }else {
+						// words.add(word);
+						// }
 
 					}
 				}
 			}
 		}
 
-		//System.out.println("-----");
+		// System.out.println("-----");
 		return words;
 	}
 
@@ -736,14 +774,13 @@ public class Operations {
 		tc = new ArrayList<>(hashSet_s_);
 
 		// create automaton
-		Automaton_ automaton_s 
-		= new Automaton_();
+		Automaton_ automaton_s = new Automaton_();
 		// changes attributes based on LTS
 		automaton_s.setStates(iolts_s.getStates());
 		automaton_s.setInitialState(iolts_s.getInitialState());
 		automaton_s.setAlphabet(iolts_s.getAlphabet());
 		automaton_s.setTransitions(Operations.processTauTransition(iolts_s.getTransitions()));
-		//automaton_s= iolts_s.ioltsToAutomaton();
+		// automaton_s= iolts_s.ioltsToAutomaton();
 		automaton_s.setFinalStates(tc);
 
 		hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
