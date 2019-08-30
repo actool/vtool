@@ -1,5 +1,6 @@
 package test;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -218,8 +219,8 @@ public class Main {
 		//
 		// System.out.println(testCases);
 
-		String path = "C:\\Users\\camil\\Google Drive\\UEL\\jtorx\\jtorx-1.11.2-win\\jtorx.bat";
-		
+		String batchFile = "C:\\Users\\camil\\Google Drive\\UEL\\jtorx\\jtorx-1.11.2-win\\jtorx.bat";
+
 		String txtFile = "C:\\Users\\camil\\Desktop\\teste.txt";
 		// String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\";
 		// String root_aut = "C:\\Users\\camil\\Documents\\aut-modelos\\";
@@ -234,32 +235,10 @@ public class Main {
 		int count = 0;
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(txtFile))) {
 
-		
-			/*ProcessBuilder builder = new ProcessBuilder();
-			builder.command("cmd.exe", "/c", path);
-			Process process = builder.start();*/
-			
-		
-			//Process process = Runtime.getRuntime().exec("cmd /c " + path);
-			
-			//ProcessBuilder processBuilder = new ProcessBuilder(path);
-			//Process process = processBuilder.start();
-			// run jar JTorx
-			// Thread thread = new Thread(new Runnable() {
-			// public void run() {
-			// try {
-			// ProcessBuilder processBuilder = new ProcessBuilder(path);
-			// // Process process =
-			// processBuilder.start();
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// }
-			// });
-			// thread.start();
-
-			// Thread.sleep(1500);// até abrir o jtorx
+			Desktop d = Desktop.getDesktop();
+			d.open(new File(batchFile));
+			// Runtime.getRuntime().exec(command);
+			Thread.sleep(500);// até abrir o jtorx
 
 			String root_img = "C:\\Users\\camil\\Desktop\\jtorx-img\\";
 			Screen s = new Screen();
@@ -295,59 +274,73 @@ public class Main {
 			// s.waitVanish(new Pattern(root_img + "lbl-result.PNG").similar(0.7f));
 
 			// #####################################
-			System.out.println("------------ +- -------------");
+			// System.out.println("------------ +- ------------- ..." +
+			// System.currentTimeMillis());
 
 			while (true) {
 				try {
+					t0 = System.currentTimeMillis();
 					Object a = s.find(new Pattern(root_img + "lbl-result.PNG").similar(1.0f));
-					System.out.println("TRY");
+					// System.out.println("TRY .. " + t0);
 
 				} catch (FindFailed e) {
-					System.err.println("CATCH");
+					time_end = System.currentTimeMillis();
+					// System.out.println("CATCH ... " +System.currentTimeMillis());
 					break;
 				}
 
 				// System.out.println("WHILE..."+formatter.format(new
 				// Date(System.currentTimeMillis())));
-				t0 = System.currentTimeMillis();
+
 			}
 
-//			String line = "";
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//			while (reader.ready() && (line = reader.readLine()) != null) {
-//				line = line + " time: " + formatter.format(new Date(System.currentTimeMillis())) + "\n";
-//				System.out.println(line);
-//			}
+			// String line = "";
+			// BufferedReader reader = new BufferedReader(new
+			// InputStreamReader(p.getInputStream()));
+			// while (reader.ready() && (line = reader.readLine()) != null) {
+			// line = line + " time: " + formatter.format(new
+			// Date(System.currentTimeMillis())) + "\n";
+			// System.out.println(line);
+			// }
 			// #####################################
 
-			time_end = System.currentTimeMillis();
-			 total_seconds = ((time_end - time_ini));
-			 System.out.println(total_seconds + " segundos ");
-			total_seconds = ((time_end - time_ini) - (time_end - t0)); // / 1000;
-			 System.err.println("after waitVanish: " + total_seconds + " milisegundos " +
-			 formatter.format(new Date(System.currentTimeMillis())));
+			// total_seconds = ((time_end - time_ini));
+			// System.out.println(total_seconds + " segundos ");
+			System.out.println("ini: " + time_ini);
+			System.out.println("end: " + time_end);
+			System.out.println("t0: " + t0);
+			System.out.println("time_end - t0: " + (time_end - t0));
+			System.out.println("end end : " + (time_end - (time_end - t0)));
 
-		//	BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));// process.getInputStream()
+			total_seconds = ((time_end - (time_end - t0)) - time_ini); // / 1000;
 
-			
+			// total_seconds = ( time_end - time_ini) - (time_end - t0); // / 1000;
+			System.out.println("total: " + total_seconds);
+			System.out.println("after waitVanish: " + total_seconds + " milisegundos "
+					+ formatter.format(new Date(System.currentTimeMillis())));
 
-//			while (reader.ready() && (line = reader.readLine()) != null) {// (line = reader.readLine()) != null;
-//				count++;
-//				line = line + " time: " + formatter.format(new Date(System.currentTimeMillis())) + "\n"; //
-//				// writer.write(line);
-//				// writer.newLine();
-//				System.out.println(line);
-//				time_end = System.currentTimeMillis();
-//				total_seconds = (time_end - time_ini) / 1000;
-//			}
+			// BufferedReader reader = new BufferedReader(new
+			// InputStreamReader(process.getInputStream()));// process.getInputStream()
+
+			// while (reader.ready() && (line = reader.readLine()) != null) {// (line =
+			// reader.readLine()) != null;
+			// count++;
+			// line = line + " time: " + formatter.format(new
+			// Date(System.currentTimeMillis())) + "\n"; //
+			// // writer.write(line);
+			// // writer.newLine();
+			// System.out.println(line);
+			// time_end = System.currentTimeMillis();
+			// total_seconds = (time_end - time_ini) / 1000;
+			// }
 
 			if (s.exists(root_img + "lbl-conform-veredict.PNG") != null) {
-				System.err.println("CONF");
+				System.err.println("IOCO CONFORM");
 			} else {
 				if (s.exists(root_img + "lbl-fail-veredict.PNG") != null) {
 					String root_save_aut_result = "C:\\Users\\camil\\Desktop\\Nova pasta\\";
 
-					System.err.println("NAO CONF");
+					System.err.println("IOCO DOESN'T CONFORM");
 
 					// first line (testcases)
 					for (int j = 0; j < 4; j++) {
@@ -408,7 +401,19 @@ public class Main {
 			}
 			System.err.println("TERMINOU: " + total_seconds + " milisegundos");
 
-			// s.click(root_img + "img-close.PNG");
+			String s_ = "";
+			Process p = Runtime.getRuntime().exec("TASKLIST /FI \"IMAGENAME eq java.exe\"");
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+			while ((s_ = stdInput.readLine()) != null) {
+				s_ = s_.replaceAll("\\s{2,}", " ").trim();
+				String array[] = s_.split(" ");
+				if (array.length == 6 && array[0].equals("java.exe")) {
+					System.out.println("memoria: " + array[4]);
+				}
+			}
+
+			s.click(root_img + "img-close.PNG");
 
 			// int exitVal = process.waitFor();
 			// if (exitVal == 0) {
