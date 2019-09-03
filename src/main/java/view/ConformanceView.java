@@ -112,11 +112,8 @@ public class ConformanceView extends JFrame {
 	JLabel lblInputIoco;
 	JLabel lblOutputIoco;
 	JTextArea taTestCasesIoco;
-
-	JProgressBar progressBar;
-	JLabel lblProcessing;
 	JPanel panel_conf;
-	
+
 	private SystemColor backgroundColor = SystemColor.menu;
 	private SystemColor labelColor = SystemColor.windowBorder;
 	private SystemColor tipColor = SystemColor.windowBorder;
@@ -152,7 +149,6 @@ public class ConformanceView extends JFrame {
 	}
 
 	public void cleanVeredict() {
-		lbl_veredict_ioco.setText("[ Verdict ]");
 		lbl_veredict_lang.setText("");
 
 		taTestCasesIoco.setText("");
@@ -320,14 +316,13 @@ public class ConformanceView extends JFrame {
 
 	final JPanel panel = new JPanel();
 
+	public void actionVerifyConformance(boolean ioco) {
 
-	public void actionVerifyConformance(boolean ioco)   {
-		
-		
-		
-		/*lbl_veredict_ioco.setText("Processing...");
-		lbl_veredict_ioco.setVisible(true);*/
-		
+		/*
+		 * lbl_veredict_ioco.setText("Processing...");
+		 * lbl_veredict_ioco.setVisible(true);
+		 */
+
 		verifyModelFileChange(ioco);
 		errorMessage(ioco);
 
@@ -342,29 +337,14 @@ public class ConformanceView extends JFrame {
 
 			if (S != null && I != null) {
 
-				// JDialog dialog = processingDialog();
-				// SwingUtilities.invokeLater(new Runnable() {
-				// public void run() {
-				// dialog.setVisible(true);
-				// }
-				// });
-
-				// Thread t = new Thread(new Runnable() {
-				// public void run() {
-				// dialog.setVisible(true);
-				// }
-				// });
-				// t.start();
-
-				
-				//progressBar_1.setVisible(true);
+				JFrame loading = loadingDialog();
+				loading.setVisible(true);
 				if (ioco) {
 					iocoConformance();
 				} else {
 					languageBasedConformance();
 				}
-
-				// dialog.dispose();
+				loading.dispose();
 
 				showVeredict(ioco);
 				// btnVerifyConf_ioco.setText("Verify");
@@ -761,53 +741,31 @@ public class ConformanceView extends JFrame {
 	boolean isModelProcess = false;
 	boolean isImplementationProcess = false;
 
-	// JDialog dialog;
-	//
-	// private JDialog processingDialog() {
-	// Frame ff = new JFrame("MessageDialog");
-	// JOptionPane pane = new JOptionPane();
-	// pane.setMessage("Processing...");
-	// JProgressBar jProgressBar = new JProgressBar();
-	// // jProgressBar.setValue(15);
-	// jProgressBar.setIndeterminate(true);
-	// jProgressBar.setVisible(true);
-	// jProgressBar.setStringPainted(true);
-	// pane.add(jProgressBar, 1);
-	//
-	// ff.pack();
-	// dialog = pane.createDialog(ff, "Processing");
-	// dialog.setLocationRelativeTo(null);
-	// dialog.pack();
-	// // dialog.setVisible(true);
-	//
-	// return dialog;
-	// }
-
-	private JFrame processingDialog() {
-
+	private JFrame loadingDialog() {
+		JFrame jframe = new JFrame("Processing...");
 		// JLabel lblLoading = new JLabel("Processing ...");
 		// lblLoading.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		// lblLoading.setBounds(186, 11, 89, 26);
 		// lblLoading.setVisible(true);
-		//
 		// JProgressBar progressBar = new JProgressBar();
 		// progressBar.setIndeterminate(true);
-		// progressBar.setBounds(24, 54, 389, 32);
+		// progressBar.setBounds(22, 36, 389, 14);
 		// progressBar.setVisible(true);
+		//
 		//
 		// JPanel contentPane = new JPanel();
 		// contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		// contentPane.setLayout(null);
 		// contentPane.add(lblLoading);
 		// contentPane.add(progressBar);
-		//
-		// JFrame frame = new JFrame("Processing...");
-		//
-		// frame.add(contentPane);
-		// frame.setBounds(100, 100, 450, 141);
-		// frame.setVisible(true);
 
-		return new LoadingView();// frame
+		// jframe.setBounds(100, 100, 450, 105);
+		int width = 350;
+		int height = 105;
+
+		jframe.setBounds(getX() + (getWidth() - width)/2, getY() + (getHeight() - height)/2, width, height);
+		return jframe;
+
 	}
 
 	/**
@@ -836,12 +794,18 @@ public class ConformanceView extends JFrame {
 
 				String tab = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
 
+				JFrame loading = loadingDialog();
+
+				// TODO Auto-generated method stub
 				if (tab.equals(ViewConstants.tabIOCO)) {
-					ioco = true;																				
-					
+					ioco = true;
+
+					loading.setVisible(true);
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {
 						ioco = false;
+
+						loading.setVisible(true);
 					}
 				}
 
@@ -870,12 +834,8 @@ public class ConformanceView extends JFrame {
 					}
 				}
 
-				// if (dialog_ != null) {
-				// dialog_.dispose();
-				// }
-				if (progressBar != null && lblProcessing != null) {
-					progressBar.setVisible(false);
-					lblProcessing.setVisible(false);
+				if (loading != null) {
+					loading.dispose();
 				}
 
 			}
@@ -885,26 +845,12 @@ public class ConformanceView extends JFrame {
 		tabbedPane.setFont(new Font("Microsoft YaHei Light", Font.PLAIN, 13));
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
-		 panel_conf = new JPanel();
+		panel_conf = new JPanel();
 		panel_conf.setForeground(SystemColor.textInactiveText);
 		panel_conf.setBackground(backgroundColor);
 		panel_conf.setToolTipText("");
 		tabbedPane.addTab("Configuration", null, panel_conf, null);
 		panel_conf.setLayout(null);
-		
-		// TODO Auto-generated method stub
-		progressBar = new JProgressBar();
-		progressBar.setIndeterminate(true);
-		progressBar.setBounds(37, 408, 288, 28);
-		progressBar.setVisible(false);
-		panel_conf.add(progressBar);
-
-		lblProcessing = new JLabel("Processing ...");
-		lblProcessing.setForeground(Color.BLACK);
-		lblProcessing.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblProcessing.setBounds(37, 383, 102, 14);
-		lblProcessing.setVisible(false);
-		panel_conf.add(lblProcessing);
 
 		cbModel = new JComboBox();
 		cbModel.setForeground(textColor);
@@ -1123,8 +1069,6 @@ public class ConformanceView extends JFrame {
 		lblIolts.setBounds(37, 147, 144, 14);
 		panel_conf.add(lblIolts);
 
-		
-
 		panel_ioco = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabIOCO, null, panel_ioco, null);
 		panel_ioco.setLayout(null);
@@ -1286,12 +1230,6 @@ public class ConformanceView extends JFrame {
 		lblWarningIoco.setForeground(SystemColor.controlShadow);
 		lblWarningIoco.setBounds(425, 201, 367, 247);
 		panel_ioco.add(lblWarningIoco);
-		
-		progressBar_1 = new JProgressBar();
-		progressBar_1.setIndeterminate(true);
-		progressBar_1.setBounds(201, 135, 146, 14);
-		progressBar_1.setVisible(false);
-		panel_ioco.add(progressBar_1);
 
 		panel_language = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabLang, null, panel_language, null);
@@ -1866,7 +1804,6 @@ public class ConformanceView extends JFrame {
 	private JLabel imgImplementationLang;
 	private JLabel lblLabelLang;
 	private JLabel lblLabel_;
-	private JProgressBar progressBar_1;
 
 	public boolean isFormValid(boolean ioco) {
 		boolean defineInpOut = true;

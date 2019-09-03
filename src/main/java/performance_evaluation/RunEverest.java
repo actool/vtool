@@ -17,12 +17,12 @@ import org.sikuli.script.Screen;
 public class RunEverest {
 	public static void main(String[] args) throws Exception {
 		String root_img = new File("src/main/java/performance_evaluation/everet-img").getCanonicalPath() + "\\";
-		//String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut";
-		//String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut";
-		 String pathAutSpec =
-		 "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-spec.aut";
-		 String pathAutIUT =
-		 "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-r.aut";
+		String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut";
+		String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut";
+//		 String pathAutSpec =
+//		 "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-spec.aut";
+//		 String pathAutIUT =
+//		 "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-r.aut";
 
 		String everestJar = "C:\\Users\\camil\\Desktop\\everest.bat";
 
@@ -51,7 +51,7 @@ public class RunEverest {
 		while (true) {
 			try {
 				System.currentTimeMillis();
-				s.find(new Pattern(root_img + "btn-folder.PNG").similar(1.0f));
+				s.find(new Pattern(root_img + "img-processing.PNG").similar(1.0f));
 			} catch (FindFailed e) {
 				break;
 			}
@@ -66,7 +66,7 @@ public class RunEverest {
 		while (true) {
 			try {
 				t0 = System.currentTimeMillis();
-				Object a = s.find(new Pattern(root_img + "lbl-verdict.PNG").similar(1.0f));
+				Object a = s.find(new Pattern(root_img + "img-processing.PNG").similar(1.0f));//"lbl-verdict.PNG"
 				// System.out.println("TRY .. " + t0);
 
 			} catch (FindFailed e) {
@@ -108,7 +108,7 @@ public class RunEverest {
 			}
 		}
 
-		// s.click(root_img + "img-close.PNG");
+		 s.click(root_img + "img-close.PNG");
 
 	}
 
