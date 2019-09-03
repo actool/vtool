@@ -74,9 +74,9 @@ public class RunJTorx {
 
 			s.click(root_img + "item-menu-ioco.PNG");
 
-			time_ini = System.currentTimeMillis();
+			
 			s.click(root_img + "btn-check.PNG");
-
+			time_ini = System.currentTimeMillis();
 			long t0 = 0;
 
 			while (true) {
@@ -206,8 +206,12 @@ public class RunJTorx {
 			// s.type(root_aut + "iolts-impl-r.aut");//
 			// s.type(root_aut + "iut1000states.aut");
 
-			String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut";
-			String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut";
+//			String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut";
+//			String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\iut1000states.aut";
+			String pathAutSpec =
+					 "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-spec.aut";
+					 String pathAutIUT =
+					 "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-r.aut";
 
 			String root_img = new File("src/main/java/performance_evaluation/jtorx-img").getCanonicalPath() + "\\";
 			String pathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta\\";

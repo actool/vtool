@@ -113,6 +113,10 @@ public class ConformanceView extends JFrame {
 	JLabel lblOutputIoco;
 	JTextArea taTestCasesIoco;
 
+	JProgressBar progressBar;
+	JLabel lblProcessing;
+	JPanel panel_conf;
+	
 	private SystemColor backgroundColor = SystemColor.menu;
 	private SystemColor labelColor = SystemColor.windowBorder;
 	private SystemColor tipColor = SystemColor.windowBorder;
@@ -148,7 +152,7 @@ public class ConformanceView extends JFrame {
 	}
 
 	public void cleanVeredict() {
-		lbl_veredict_ioco.setText("");
+		lbl_veredict_ioco.setText("[ Verdict ]");
 		lbl_veredict_lang.setText("");
 
 		taTestCasesIoco.setText("");
@@ -316,7 +320,14 @@ public class ConformanceView extends JFrame {
 
 	final JPanel panel = new JPanel();
 
-	public void actionVerifyConformance(boolean ioco) {
+
+	public void actionVerifyConformance(boolean ioco)   {
+		
+		
+		
+		/*lbl_veredict_ioco.setText("Processing...");
+		lbl_veredict_ioco.setVisible(true);*/
+		
 		verifyModelFileChange(ioco);
 		errorMessage(ioco);
 
@@ -345,6 +356,8 @@ public class ConformanceView extends JFrame {
 				// });
 				// t.start();
 
+				
+				//progressBar_1.setVisible(true);
 				if (ioco) {
 					iocoConformance();
 				} else {
@@ -453,11 +466,11 @@ public class ConformanceView extends JFrame {
 
 			if (lts) {
 				if (!implementation) {
-					S_ = ImportAutFile.autToLTS(pathSpecification);
+					S_ = ImportAutFile_WithoutThread.autToLTS(pathSpecification);
 					tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
 
 				} else {
-					I_ = ImportAutFile.autToLTS(pathImplementation);
+					I_ = ImportAutFile_WithoutThread.autToLTS(pathImplementation);
 					tfInput.setText(StringUtils.join(I_.getAlphabet(), ","));
 				}
 
@@ -485,9 +498,9 @@ public class ConformanceView extends JFrame {
 				}
 
 				if (!implementation) {
-					S = ImportAutFile.autToIOLTS(pathSpecification, true, inp, out);
+					S = ImportAutFile_WithoutThread.autToIOLTS(pathSpecification, true, inp, out);
 				} else {
-					I = ImportAutFile.autToIOLTS(pathImplementation, true, inp, out);
+					I = ImportAutFile_WithoutThread.autToIOLTS(pathImplementation, true, inp, out);
 				}
 
 				if (lts) {
@@ -498,14 +511,14 @@ public class ConformanceView extends JFrame {
 				// lblWarningLang.setText("");
 			} else {// ?/!
 				if (!implementation) {
-					S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
+					S = ImportAutFile_WithoutThread.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
 					// System.out.println("---------------------MODEL--------------------------");
 					// System.out.println(S);
 					// System.out.println("-----------------------------------------------");
 				} else {
-					I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
+					I = ImportAutFile_WithoutThread.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
 					// System.out.println("-------------------IMPLEMENTATION----------------------------");
@@ -816,25 +829,16 @@ public class ConformanceView extends JFrame {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
-
 		tabbedPane.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {				
-				
+			public void stateChanged(ChangeEvent arg0) {
+
 				boolean ioco = false;
 
 				String tab = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
-				
-				if (tab.equals(ViewConstants.tabIOCO)) {
-					ioco = true;
-					
-					Thread thread = new Thread(){
-					    public void run(){
-					    	processingDialog();
-					    }
-					  };
 
-					  thread.start();
-					 
+				if (tab.equals(ViewConstants.tabIOCO)) {
+					ioco = true;																				
+					
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {
 						ioco = false;
@@ -869,8 +873,11 @@ public class ConformanceView extends JFrame {
 				// if (dialog_ != null) {
 				// dialog_.dispose();
 				// }
+				if (progressBar != null && lblProcessing != null) {
+					progressBar.setVisible(false);
+					lblProcessing.setVisible(false);
+				}
 
-				
 			}
 		});
 
@@ -878,12 +885,26 @@ public class ConformanceView extends JFrame {
 		tabbedPane.setFont(new Font("Microsoft YaHei Light", Font.PLAIN, 13));
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
-		JPanel panel_conf = new JPanel();
+		 panel_conf = new JPanel();
 		panel_conf.setForeground(SystemColor.textInactiveText);
 		panel_conf.setBackground(backgroundColor);
 		panel_conf.setToolTipText("");
 		tabbedPane.addTab("Configuration", null, panel_conf, null);
 		panel_conf.setLayout(null);
+		
+		// TODO Auto-generated method stub
+		progressBar = new JProgressBar();
+		progressBar.setIndeterminate(true);
+		progressBar.setBounds(37, 408, 288, 28);
+		progressBar.setVisible(false);
+		panel_conf.add(progressBar);
+
+		lblProcessing = new JLabel("Processing ...");
+		lblProcessing.setForeground(Color.BLACK);
+		lblProcessing.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblProcessing.setBounds(37, 383, 102, 14);
+		lblProcessing.setVisible(false);
+		panel_conf.add(lblProcessing);
 
 		cbModel = new JComboBox();
 		cbModel.setForeground(textColor);
@@ -979,7 +1000,7 @@ public class ConformanceView extends JFrame {
 			 * @Override public void mouseClicked(MouseEvent e) { getSpecificationPath(); }
 			 */
 			@Override
-			public void mousePressed(MouseEvent e) {				
+			public void mousePressed(MouseEvent e) {
 				getSpecificationPath();
 
 			}
@@ -1102,10 +1123,11 @@ public class ConformanceView extends JFrame {
 		lblIolts.setBounds(37, 147, 144, 14);
 		panel_conf.add(lblIolts);
 
+		
+
 		panel_ioco = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabIOCO, null, panel_ioco, null);
 		panel_ioco.setLayout(null);
-		 
 
 		btnVerifyConf_ioco = new JButton("Verify");
 
@@ -1264,6 +1286,12 @@ public class ConformanceView extends JFrame {
 		lblWarningIoco.setForeground(SystemColor.controlShadow);
 		lblWarningIoco.setBounds(425, 201, 367, 247);
 		panel_ioco.add(lblWarningIoco);
+		
+		progressBar_1 = new JProgressBar();
+		progressBar_1.setIndeterminate(true);
+		progressBar_1.setBounds(201, 135, 146, 14);
+		progressBar_1.setVisible(false);
+		panel_ioco.add(progressBar_1);
 
 		panel_language = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabLang, null, panel_language, null);
@@ -1745,8 +1773,8 @@ public class ConformanceView extends JFrame {
 				I_ = I.toLTS();
 
 			} else {
-				S_ = ImportAutFile.autToLTS(pathSpecification);
-				I_ = ImportAutFile.autToLTS(pathImplementation);
+				S_ = ImportAutFile_WithoutThread.autToLTS(pathSpecification);
+				I_ = ImportAutFile_WithoutThread.autToLTS(pathImplementation);
 			}
 
 			if (S_.getAlphabet().size() != 0 || I_.getAlphabet().size() != 0) {
@@ -1838,6 +1866,7 @@ public class ConformanceView extends JFrame {
 	private JLabel imgImplementationLang;
 	private JLabel lblLabelLang;
 	private JLabel lblLabel_;
+	private JProgressBar progressBar_1;
 
 	public boolean isFormValid(boolean ioco) {
 		boolean defineInpOut = true;

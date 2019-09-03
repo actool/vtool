@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+
 import java.awt.Font;
 
 public class LoadingView extends JFrame {
@@ -34,8 +36,7 @@ public class LoadingView extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public LoadingView() {
-		this.setTitle("Processing");
+	public LoadingView() {				
 		JLabel lblLoading = new JLabel("Processing ...");
 		lblLoading.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblLoading.setBounds(186, 11, 89, 26);
@@ -43,18 +44,20 @@ public class LoadingView extends JFrame {
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setIndeterminate(true);
 		progressBar.setBounds(24, 54, 389, 32);
-		progressBar.setVisible(true);		
+		progressBar.setVisible(true);
+
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 141);
-		contentPane = new JPanel();		
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));		
-		contentPane.setLayout(null);				
-		contentPane.add(lblLoading);				
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
+		contentPane.add(lblLoading);
 		contentPane.add(progressBar);
+		
 		setContentPane(contentPane);
+		this.setTitle("Processing");
 		this.setVisible(true);
-		
-		
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 141);
+
 	}
 }
