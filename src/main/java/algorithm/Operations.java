@@ -504,9 +504,14 @@ public class Operations {
 				atual = t_atual.getIniState();
 			}
 
-			if (!palavra.replaceAll(" ", "").equals("")) {
-				palavras.add((new StringBuilder(palavra.substring(0, palavra.length() - 1)).reverse().toString())
-						.substring(3, palavra.length() - 1));
+			if (!palavra.replaceAll(" ", "").equals("")) {				
+				palavra = palavra.replaceAll(" ", "");
+				String[] array = palavra.split(">-");
+				Collections.reverse(Arrays.asList(array));				  
+				palavras.add(String.join(" -> ", array));
+				
+//				palavras.add((new StringBuilder(palavra.substring(0, palavra.length() - 1)).reverse().toString())
+//						.substring(3, palavra.length() - 1));
 			}
 
 			// adiciona a palavra encontrada invertida pois a palavra é descoberta de
