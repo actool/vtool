@@ -2,8 +2,11 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
@@ -25,10 +28,12 @@ import javax.swing.JLabel;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.JWindow;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,11 +45,14 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.DefaultComboBoxModel;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -62,6 +70,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.JTextArea;
 
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 public class ConformanceView extends JFrame {
 	private JComboBox cbModel;
@@ -322,13 +331,30 @@ public class ConformanceView extends JFrame {
 
 			if (S != null && I != null) {
 
+				// JDialog dialog = processingDialog();
+				// SwingUtilities.invokeLater(new Runnable() {
+				// public void run() {
+				// dialog.setVisible(true);
+				// }
+				// });
+
+				// Thread t = new Thread(new Runnable() {
+				// public void run() {
+				// dialog.setVisible(true);
+				// }
+				// });
+				// t.start();
+
 				if (ioco) {
 					iocoConformance();
 				} else {
 					languageBasedConformance();
 				}
 
+				// dialog.dispose();
+
 				showVeredict(ioco);
+				// btnVerifyConf_ioco.setText("Verify");
 			}
 
 			/*
@@ -722,6 +748,55 @@ public class ConformanceView extends JFrame {
 	boolean isModelProcess = false;
 	boolean isImplementationProcess = false;
 
+	// JDialog dialog;
+	//
+	// private JDialog processingDialog() {
+	// Frame ff = new JFrame("MessageDialog");
+	// JOptionPane pane = new JOptionPane();
+	// pane.setMessage("Processing...");
+	// JProgressBar jProgressBar = new JProgressBar();
+	// // jProgressBar.setValue(15);
+	// jProgressBar.setIndeterminate(true);
+	// jProgressBar.setVisible(true);
+	// jProgressBar.setStringPainted(true);
+	// pane.add(jProgressBar, 1);
+	//
+	// ff.pack();
+	// dialog = pane.createDialog(ff, "Processing");
+	// dialog.setLocationRelativeTo(null);
+	// dialog.pack();
+	// // dialog.setVisible(true);
+	//
+	// return dialog;
+	// }
+
+	private JFrame processingDialog() {
+
+		// JLabel lblLoading = new JLabel("Processing ...");
+		// lblLoading.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		// lblLoading.setBounds(186, 11, 89, 26);
+		// lblLoading.setVisible(true);
+		//
+		// JProgressBar progressBar = new JProgressBar();
+		// progressBar.setIndeterminate(true);
+		// progressBar.setBounds(24, 54, 389, 32);
+		// progressBar.setVisible(true);
+		//
+		// JPanel contentPane = new JPanel();
+		// contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		// contentPane.setLayout(null);
+		// contentPane.add(lblLoading);
+		// contentPane.add(progressBar);
+		//
+		// JFrame frame = new JFrame("Processing...");
+		//
+		// frame.add(contentPane);
+		// frame.setBounds(100, 100, 450, 141);
+		// frame.setVisible(true);
+
+		return new LoadingView();// frame
+	}
+
 	/**
 	 * Create the frame.
 	 */
@@ -741,12 +816,25 @@ public class ConformanceView extends JFrame {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
+
 		tabbedPane.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
+			public void stateChanged(ChangeEvent arg0) {				
+				
 				boolean ioco = false;
+
 				String tab = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+				
 				if (tab.equals(ViewConstants.tabIOCO)) {
 					ioco = true;
+					
+					Thread thread = new Thread(){
+					    public void run(){
+					    	processingDialog();
+					    }
+					  };
+
+					  thread.start();
+					 
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {
 						ioco = false;
@@ -776,9 +864,13 @@ public class ConformanceView extends JFrame {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
 				}
 
+				// if (dialog_ != null) {
+				// dialog_.dispose();
+				// }
+
+				
 			}
 		});
 
@@ -887,7 +979,7 @@ public class ConformanceView extends JFrame {
 			 * @Override public void mouseClicked(MouseEvent e) { getSpecificationPath(); }
 			 */
 			@Override
-			public void mousePressed(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {				
 				getSpecificationPath();
 
 			}
@@ -1013,8 +1105,10 @@ public class ConformanceView extends JFrame {
 		panel_ioco = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabIOCO, null, panel_ioco, null);
 		panel_ioco.setLayout(null);
+		 
 
 		btnVerifyConf_ioco = new JButton("Verify");
+
 		btnVerifyConf_ioco.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -1390,6 +1484,7 @@ public class ConformanceView extends JFrame {
 		panel_language.add(lblWarningLang);
 
 		cleanVeredict();
+
 	}
 
 	boolean showImplementationImage = true;
@@ -1591,12 +1686,15 @@ public class ConformanceView extends JFrame {
 		// System.out.println(I);
 
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
+			failPath = "";
 			conformidade = IocoConformance.verifyIOCOConformance(S, I);
-			if (conformidade.getFinalStates().size() > 0) {
-				failPath = Operations.path(S, I, conformidade, true);
-			} else {
-				failPath = "";
-			}
+			failPath = Operations.path(S, I, conformidade, true, false);
+
+			// if ( conformidade.getFinalStates().size() > 0) {
+			// failPath = Operations.path(S, I, conformidade, true, true);
+			// } else {
+			// failPath = "";
+			// }
 
 		}
 
@@ -1672,7 +1770,7 @@ public class ConformanceView extends JFrame {
 				if (regexIsValid(D) && regexIsValid(F)) {
 					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);
 					if (conformidade.getFinalStates().size() > 0) {
-						failPath = Operations.path(S_, I_, conformidade, false);
+						failPath = Operations.path(S_, I_, conformidade, false, false);
 					} else {
 						failPath = "";
 					}

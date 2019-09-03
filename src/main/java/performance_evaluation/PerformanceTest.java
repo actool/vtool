@@ -1,4 +1,4 @@
-package util;
+package performance_evaluation;
 
 import java.awt.image.ReplicateScaleFilter;
 import java.io.BufferedReader;
@@ -370,7 +370,7 @@ public class PerformanceTest {
 				endTimeVerify = System.nanoTime() - startTime;
 				startTime = System.nanoTime();
 				System.out.println("  > verificou");
-				returnInfo = Operations.path(S, I, complianceAutomaton, true);
+				returnInfo = Operations.path(S, I, complianceAutomaton, true, false);
 				endTimeGenerateTS = System.nanoTime() - startTime;
 				System.out.println("  > gerou ts");
 			} else {
@@ -394,7 +394,7 @@ public class PerformanceTest {
 
 				endTimeVerify = System.nanoTime() - startTime;
 				startTime = System.nanoTime();
-				returnInfo = Operations.path(S_, I_, complianceAutomaton, false);
+				returnInfo = Operations.path(S_, I_, complianceAutomaton, false, false);
 				endTimeGenerateTS = System.nanoTime() - startTime;
 
 			}

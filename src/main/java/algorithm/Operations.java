@@ -7,13 +7,6 @@ package algorithm;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Observable;
-import java.util.Optional;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,10 +16,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
-
-import javafx.util.Pair;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.RegExp;
@@ -38,7 +27,6 @@ import model.IOLTS;
 import model.LTS;
 import model.Transition_;
 import util.Constants;
-import util.ModelImageGenerator;
 
 /**
  * Class Operations contain complement, determinism, union, intersection
@@ -475,9 +463,72 @@ public class Operations {
 		return automatonBrics;
 	}
 
+	/***
+	 * Receive an automaton and return a word reached from each automato's final
+	 * state
+	 *
+	 * @return one word per final state
+	 * 
+	 */
+	static State_ atual;
+
+	public static List<String> getOneWordPerFinalState(Automaton_ a) {
+		String palavra = "";
+		// String palavraFinal = "";
+		Transition_ t_atual = null;
+		List<String> palavras = new ArrayList<String>();
+
+		// percorre todos os estados finais
+		for (State_ state : a.getFinalStates()) {
+			State_ finalState = state;
+			atual = finalState;
+			palavra = "";
+
+			// percorre de tras para frente até alcançar o estado inicial
+			while (!atual.equals(a.getInitialState())) {
+				// recupera uma transição cujo "estadoFim" é igual ao estado "atual"
+				t_atual = a.getTransitions().stream().filter(y -> y.getEndState().getName().equals(atual.getName()))
+						.findFirst().get();
+
+				// adiciona o rótulo a palavra
+				if (t_atual.getLabel().charAt(0) == Constants.INPUT_TAG
+						|| t_atual.getLabel().charAt(0) == Constants.OUTPUT_TAG) {
+					// trata quando tem rótulo de entrada e saída
+					palavra += t_atual.getLabel().substring(1, t_atual.getLabel().length())
+							+ t_atual.getLabel().charAt(0) + " >- ";
+				} else {
+					palavra += t_atual.getLabel() + " >- ";
+				}
+
+				// move o estado atual para o estadoIni da transição
+				atual = t_atual.getIniState();
+			}
+
+			if (!palavra.replaceAll(" ", "").equals("")) {
+				palavras.add((new StringBuilder(palavra.substring(0, palavra.length() - 1)).reverse().toString())
+						.substring(3, palavra.length() - 1));
+			}
+
+			// adiciona a palavra encontrada invertida pois a palavra é descoberta de
+			// tras
+			// pra frente
+			// palavraFinal += new StringBuilder(palavra).reverse().toString() + " - ";
+		}
+
+		return palavras; // palavraFinal;
+	}
+
 	static volatile State_ current;
 
-	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco) {
+	/***
+	 * Receive an automaton and return the words reached from each automato's final
+	 * state
+	 * 
+	 * @param a
+	 * @param ioco
+	 * @return all words that reach the final states
+	 */
+	public static List<String> getWordsFromAutomaton(Automaton_ a) {// boolean ioco
 
 		String word = "";
 		String tagWord = " , ";
@@ -495,9 +546,7 @@ public class Operations {
 		List<String> news = new ArrayList<String>();
 		int id = 0, current_id = 0;
 
-		while (!stateToVisit.isEmpty())
-
-		{
+		while (!stateToVisit.isEmpty()) {
 			current_id = -1;
 			current = stateToVisit.remove(0);
 			current = a.getStates().stream().filter(x -> x.equals(current)).findFirst().orElse(null);
@@ -541,8 +590,8 @@ public class Operations {
 								word = aux[i] + tagLetter + t.getLabel() + tagWord;
 								news.add(word);
 							}
-							
-							if(iniState.equals(a.getInitialState())) {
+
+							if (iniState.equals(a.getInitialState())) {
 								news.add(t.getLabel() + tagWord);
 							}
 						} else {
@@ -759,8 +808,15 @@ public class Operations {
 		return new Object[] { end, path_aux, outputs };// new Pair<>(end, path_aux);// path_aux;
 	}
 
-	public static List<String> getTestCases(Automaton_ faultModel, boolean ioco, IOLTS iolts_s) {
-		List<String> testCases_testSuit = getWordsFromAutomaton(faultModel, ioco);
+	public static List<String> getTestCases(Automaton_ faultModel, boolean ioco, IOLTS iolts_s,
+			boolean transitionCoverSpec) {
+		List<String> testCases_testSuit;
+		if (transitionCoverSpec) {
+			testCases_testSuit = getWordsFromAutomaton(faultModel);// ioco
+		} else {
+			testCases_testSuit = getOneWordPerFinalState(faultModel);
+		}
+
 		// System.out.println(testCases_testSuit);
 		// return testCases_testSuit;--
 
@@ -768,7 +824,7 @@ public class Operations {
 		List<State_> tc = new ArrayList<>();
 		List<State_> fs = new ArrayList<>();
 		for (String t : testCases_testSuit) {
-			tc.addAll((List<State_>) path(iolts_s, ioco, t, "\nModel")[0]);
+			tc.addAll((List<State_>) path(iolts_s, ioco, t, "\nModel")[0]);//
 		}
 		HashSet hashSet_s_ = new LinkedHashSet<>(tc);
 		tc = new ArrayList<>(hashSet_s_);
@@ -783,7 +839,12 @@ public class Operations {
 		// automaton_s= iolts_s.ioltsToAutomaton();
 		automaton_s.setFinalStates(tc);
 
-		hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s, ioco));
+		if (transitionCoverSpec) {
+			hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s));// ioco
+		} else {
+			hashSet_s_ = new LinkedHashSet<>(getOneWordPerFinalState(automaton_s));// ioco
+		}
+
 		return new ArrayList<>(hashSet_s_);
 		// }else {
 		// return testCases_testSuit;
@@ -802,7 +863,7 @@ public class Operations {
 	 * @return the paths covered by the test cases by implementation and
 	 *         specification
 	 */
-	public static String path(LTS S, LTS I, Automaton_ faultModel, boolean ioco) {
+	public static String path(LTS S, LTS I, Automaton_ faultModel, boolean ioco, boolean transitionCoverSpec) {
 		IOLTS iolts_s = new IOLTS(S);
 		IOLTS iolts_i = new IOLTS(I);
 
@@ -811,8 +872,13 @@ public class Operations {
 		iolts_i.setInputs(iolts_i.getAlphabet());
 		iolts_i.setOutputs(new ArrayList<String>());
 
-		List<String> testCases = getWordsFromAutomaton(faultModel, ioco);
-		// List<String> testCases = getTestCases(faultModel, ioco, iolts_s);
+		List<String> testCases;
+		if (transitionCoverSpec) {
+			testCases = getWordsFromAutomaton(faultModel);// ioco
+			// List<String> testCases = getTestCases(faultModel, ioco, iolts_s);
+		} else {
+			testCases = getOneWordPerFinalState(faultModel);
+		}
 
 		String result_s, result_i;
 		String path = "";
@@ -842,13 +908,13 @@ public class Operations {
 	 * @return the paths covered by the test cases by implementation and
 	 *         specification
 	 */
-	public static String path(IOLTS S, IOLTS I, Automaton_ faultModel, boolean ioco) {
+	public static String path(IOLTS S, IOLTS I, Automaton_ faultModel, boolean ioco, boolean transitionCoverSpec) {
 
 		List<String> testCases;
 		String path = "";
 
 		if (ioco) {
-			testCases = getTestCases(faultModel, ioco, S);
+			testCases = getTestCases(faultModel, ioco, S, transitionCoverSpec);// ioco
 			State_ currentState_s;
 			State_ currentState_i;
 
@@ -874,8 +940,11 @@ public class Operations {
 			}
 
 		} else {
-			testCases = getWordsFromAutomaton(faultModel, ioco);
-
+			if (transitionCoverSpec) {
+				testCases = getWordsFromAutomaton(faultModel);// ioco
+			} else {
+				testCases = getOneWordPerFinalState(faultModel);
+			}
 		}
 
 		for (String t : testCases) {
