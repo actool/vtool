@@ -32,8 +32,11 @@ public class IocoConformance {
 
 	/***
 	 * Verify if a implementation is IOCO conforms to specification, returns the resultant automaton of this verification
-	 * @param S IOLTS model of specification
-	 * @param I IOLTS implementation
+	 * 
+	 * @param S
+	 *            IOLTS model of specification
+	 * @param I
+	 *            IOLTS implementation
 	 * @return
 	 */
 	public static Automaton_ verifyIOCOConformance(IOLTS S, IOLTS I) {
@@ -41,31 +44,38 @@ public class IocoConformance {
 		alphabet.addAll(I.getAlphabet());
 		alphabet.addAll(S.getAlphabet());
 		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
-		alphabet = new ArrayList<>(hashSet_s_);					
+		alphabet = new ArrayList<>(hashSet_s_);
 		S.setAlphabet(alphabet);
-		
-		// build the fault model, containing all fail behaviors based on specification model
+
+		// build the fault model, containing all fail behaviors based on specification
+		// model
 		Automaton_ at = faultModelIoco(S);
 		// automaton underlying the implementation
 		Automaton_ ai = I.ioltsToAutomaton();
 		// intersection between the implementation and failure model to find fault
 		Automaton_ ab = Operations.intersection(at, ai);
-		
-		/*System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println("<<<<<<<<<<<<<<<<<<<< verification IOCO conformance >>>>>>>>>>>>>>>>>>>>>");
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		System.out.println("Fault model");
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-		System.out.println(at);
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		System.out.println("implementation");
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-		System.out.println(ai);
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		System.out.println("Intersection [Fault model X Implementation]");
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-		System.out.println(ab);*/
+
+		/*
+		 * System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		 * ; System.out.
+		 * println("<<<<<<<<<<<<<<<<<<<< verification IOCO conformance >>>>>>>>>>>>>>>>>>>>>"
+		 * );
+		 * System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		 * ;
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		 * System.out.println("Fault model");
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
+		 * ; System.out.println(at);
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		 * System.out.println("implementation");
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
+		 * ; System.out.println(ai);
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		 * System.out.println("Intersection [Fault model X Implementation]");
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
+		 * ; System.out.println(ab);
+		 */
+
 		
 
 		return ab;
@@ -74,8 +84,9 @@ public class IocoConformance {
 	/***
 	 * Build the fault model based on specification model
 	 * 
-	 * @param S specification model
-	 *            
+	 * @param S
+	 *            specification model
+	 * 
 	 * @return the fault model automaton
 	 */
 	private static Automaton_ faultModelIoco(IOLTS S) {
@@ -85,33 +96,40 @@ public class IocoConformance {
 		Automaton_ aCompS = Operations.complement(as);
 		// automaton D with the desired behaviors
 		Automaton_ ad = modelD(S);
-		
-		
-		/*System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println("<<<<<<<<<<<<<<<<<<<< modeloDeFalha>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		System.out.println("Automato Especificação");
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-		System.out.println(as);
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		System.out.println("Automato Complemento Especificação");
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-		System.out.println(aCompS);
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		System.out.println("Automato D");
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-		System.out.println(ad);*/
-		
-		//intersection between the desirable behavior and the complement of the specification (which is not in the specification)
+
+		/*
+		 * System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		 * ;
+		 * System.out.println("<<<<<<<<<<<<<<<<<<<< modeloDeFalha>>>>>>>>>>>>>>>>>>>>>"
+		 * );
+		 * System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		 * ;
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		 * System.out.println("Automato Especificação");
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
+		 * ; System.out.println(as);
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		 * System.out.println("Automato Complemento Especificação");
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
+		 * ; System.out.println(aCompS);
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		 * System.out.println("Automato D");
+		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
+		 * ; System.out.println(ad);
+		 */
+
+		// intersection between the desirable behavior and the complement of the
+		// specification (which is not in the specification)
 		return Operations.intersection(ad, aCompS);
 	}
 
 	/***
-	 * Construct the automaton D with the desired behaviors based on the specification received by parameter
+	 * Construct the automaton D with the desired behaviors based on the
+	 * specification received by parameter
 	 * 
-	 * @param S automaton underlying the specification
-	 *            
+	 * @param S
+	 *            automaton underlying the specification
+	 * 
 	 * @return automaton D with the desirable behaviors
 	 */
 	private static Automaton_ modelD(IOLTS S) {
@@ -132,16 +150,17 @@ public class IocoConformance {
 
 		for (State_ e : S.getStates()) {
 			for (String l : as.getAlphabet()) {
-				// if it is an output label and there is no transition starting from "e" with the label "l" 
-				//then a transition is created pointing to the failure state
+				// if it is an output label and there is no transition starting from "e" with
+				// the label "l"
+				// then a transition is created pointing to the failure state
 				if (!as.transitionExists(e.getName(), l) && (S.getOutputs().contains(l))) {
 					as.addTransition(new Transition_(e, l, d));
 				}
 			}
 		}
 
-		// add fault state in the list, 
-		//added here for this state have no transitions		
+		// add fault state in the list,
+		// added here for this state have no transitions
 		return Operations.convertToDeterministicAutomaton(as);
 	}
 

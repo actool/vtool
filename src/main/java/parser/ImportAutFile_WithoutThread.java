@@ -158,11 +158,10 @@ public class ImportAutFile_WithoutThread {
 				ArrayList<Transition_> transicoes = new ArrayList<Transition_>();
 				String label = "";
 
-				
 				for (Transition_ t : iolts.getTransitions()) {
 					// remove the transitions from the labels ! ?
 					label = t.getLabel().substring(1, t.getLabel().length());
-					//check whether the labels with !/? were defined in the file
+					// check whether the labels with !/? were defined in the file
 					if (e.contains(label) || s.contains(label)) {
 						transicoes.add(new Transition_(t.getIniState(), label, t.getEndState()));
 					}
@@ -175,7 +174,7 @@ public class ImportAutFile_WithoutThread {
 				iolts.setOutputs(outputs);
 			}
 
-			//System.out.println(iolts);
+			// System.out.println(iolts);
 			return iolts;
 		} catch (Exception e) {
 			throw e;
@@ -240,46 +239,50 @@ public class ImportAutFile_WithoutThread {
 					// <to-state>)
 					line = sc.nextLine();
 
-					// checks for '(' on the read line
-					int ini = line.indexOf("(");
-					if (ini < 0) {
-						msg += ("line [" + count + "] is invalid absence of '(' " + "\n");
-						inconsistentLine = true;
-						msg_cont += 1;
-					}
+					if (!line.isEmpty()) {
+						// checks for '(' on the read line
+						int ini = line.indexOf("(");
+						if (ini < 0) {
+							msg += ("line [" + count + "] is invalid absence of '(' " + "\n");
+							inconsistentLine = true;
+							msg_cont += 1;
+						}
 
-					// checks for ')' on the read line
-					line = line.replaceAll("\\s+$", "");
-					int fim = line.length() - 1;
-					if (line.charAt(fim) != ')') {
-						msg += ("line [" + count + "] is invalid absence of ')' " + "\n");
-						inconsistentLine = true;
-						msg_cont += 1;
-					}
+						// checks for ')' on the read line
+						line = line.replaceAll("\\s+$", "");
+						int fim = line.length() - 1;
+						if (fim < 0 || line.charAt(fim) != ')') {
+							msg += ("line [" + count + "] is invalid absence of ')' " + "\n");
+							inconsistentLine = true;
+							msg_cont += 1;
+						}
 
-					// checks to see if there are 3 parameters (<from-state>, <label>, <to-state>)
-					line = line.substring(ini + 1, fim);
-					String[] val = line.split(",");
-					if (val.length != 3) {
-						msg += ("line [" + count + "] should have been passed 3 parameters separated by commas" + "\n");
-						inconsistentLine = true;
-						msg_cont += 1;
-					}
+						// checks to see if there are 3 parameters (<from-state>, <label>, <to-state>)
+						line = line.substring(ini + 1, fim);
+						String[] val = line.split(",");
+						if (val.length != 3) {
+							msg += ("line [" + count + "] should have been passed 3 parameters separated by commas"
+									+ "\n");
+							inconsistentLine = true;
+							msg_cont += 1;
+						}
 
-					// if the transition line is complete, without inconsistency
-					if (!inconsistentLine) {
-						// creates states and transitions
-						iniState = new State_(val[0].trim());
-						endState = new State_(val[2].trim());
-						transition = new Transition_(iniState, val[1].trim(), endState);
+						// if the transition line is complete, without inconsistency
+						if (!inconsistentLine) {
+							// creates states and transitions
+							iniState = new State_(val[0].trim());
+							endState = new State_(val[2].trim());
+							transition = new Transition_(iniState, val[1].trim(), endState);
 
-						// assigns the attributes to the LTS
-						lts.addState(iniState);
-						lts.addState(endState);
-						lts.addTransition(transition);
+							// assigns the attributes to the LTS
+							lts.addState(iniState);
+							lts.addState(endState);
+							lts.addTransition(transition);
+						}
+						// number of transitions
+						count++;
+
 					}
-					// number of transitions
-					count++;
 				}
 
 				if (msg.equals("")) {
@@ -296,7 +299,8 @@ public class ImportAutFile_WithoutThread {
 				}
 
 			} catch (Exception e) {
-				throw new Exception("Error converting file to LTS");
+				throw e;
+				// throw new Exception("Error converting file to LTS");
 			}
 
 			// if there is no inconsistency in reading the transitions, you do not need
