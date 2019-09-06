@@ -32,9 +32,10 @@ public class ImportAutFile_WithoutThread {
 	public static String[] headerParameters(String path) {
 		String[] configs = new String[4];
 		String lineConfig = "";
+		Scanner sc = null;
 		try {
 			File file = new File(path);
-			Scanner sc = new Scanner(file);
+			 sc = new Scanner(file);
 			// first line of file
 			// des (<initial-state>, <number-of-transitions>, <number-of-states>)
 			// String lineConfiguration = "des (1, 2, 3)";
@@ -80,11 +81,18 @@ public class ImportAutFile_WithoutThread {
 				}
 			}
 			configs = append(configs, msg);
+			
+	
 		} catch (FileNotFoundException e) {
 			System.err.println("Error reading file:");
 			System.err.println(e);
+		}finally {
+			if(sc != null) {
+				sc.close();
+			}
 		}
 
+		
 		return configs;
 	}
 
@@ -226,9 +234,10 @@ public class ImportAutFile_WithoutThread {
 			// line counter starts from line 2 because line 1 is the line of
 			// configuration
 			int count = 2;
+			Scanner sc = null;
 			try {
 				File file = new File(path);
-				Scanner sc = new Scanner(file);
+				 sc = new Scanner(file);
 				// skip the first line of configuration
 				sc.nextLine();
 				// if there is line of the file to be read
@@ -301,6 +310,10 @@ public class ImportAutFile_WithoutThread {
 			} catch (Exception e) {
 				throw e;
 				// throw new Exception("Error converting file to LTS");
+			}finally {
+				if(sc!=null) {
+					sc.close();
+				}
 			}
 
 			// if there is no inconsistency in reading the transitions, you do not need

@@ -2,45 +2,32 @@ package performance_evaluation;
 
 import java.awt.Desktop;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.stream.Stream;
-
-import algorithm.Operations;
-import model.Automaton_;
-import model.IOLTS;
-import model.State_;
-import model.Transition_;
-import parser.ImportAutFile;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import parser.ImportAutFile_WithoutThread;
+import performance_evaluation.PerformanceTest.TimeOut;
 import util.Constants;
 
 import org.sikuli.script.*;
 
 import com.android.dx.util.FileUtils;
+
+import model.IOLTS;
 
 public class RunJTorx {
 
@@ -51,39 +38,117 @@ public class RunJTorx {
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });
-			String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta\\test1.csv";
+			
 
-			// String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\";
-			// String root_aut = "C:\\Users\\camil\\Documents\\aut-modelos\\";
-			// String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\";
+			// // String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\";
+			// // String root_aut = "C:\\Users\\camil\\Documents\\aut-modelos\\";
+			// // String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\";
+			//
+			// // spec
+			// // s.type(root_img + "inp-model.PNG", root_aut +
+			// // "vending-machine-spec-nconf.aut");// iolts-spec.aut
+			// // s.type(root_img + "inp-model.PNG", root_aut + "iolts-spec.aut");
+			// // s.type(root_img + "inp-model.PNG", root_aut + "iut1000states.aut");
+			//
+			// // iut
+			// // s.type(root_aut + "vending-machine-iut.aut");// iolts-impl-r.aut
+			// // s.type(root_aut + "iolts-impl-r.aut");//
+			// // s.type(root_aut + "iut1000states.aut");
+			//
+			// // String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// // (2)\\+1000\\1000pct_spec.aut";
+			// // String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// // (2)\\+1000\\1000pct_spec.aut";
+			//
+			// // String pathAutSpec =
+			// // "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-spec.aut";// iolts-spec
+			// // String pathAutIUT =
+			// // "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-r.aut";// iolts-impl
+			//
+			// String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\-1000\\250-500\\1555states_spec.aut";
+			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\-1000\\250-500\\1555states_spec.aut";
+			//
+			// String pathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta\\test1\\";
+			// boolean stateVariation = true;// state or percentage
+			//
+			// run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV,
+			// pathCsv, stateVariation);
 
-			// spec
-			// s.type(root_img + "inp-model.PNG", root_aut +
-			// "vending-machine-spec-nconf.aut");// iolts-spec.aut
-			// s.type(root_img + "inp-model.PNG", root_aut + "iolts-spec.aut");
-			// s.type(root_img + "inp-model.PNG", root_aut + "iut1000states.aut");
-
-			// iut
-			// s.type(root_aut + "vending-machine-iut.aut");// iolts-impl-r.aut
-			// s.type(root_aut + "iolts-impl-r.aut");//
-			// s.type(root_aut + "iut1000states.aut");
-
-			 //String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\1000pct_spec.aut";
-			 //String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\+1000\\1000pct_spec.aut";
-
-			//String pathAutSpec = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-spec.aut";// iolts-spec
-			//String pathAutIUT = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-r.aut";// iolts-impl
-
-			 String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\-1000\\250-500\\1555states_spec.aut";
-			String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\-1000\\250-500\\1555states_spec.aut";
-
-			String pathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta\\test1\\";
 			boolean stateVariation = true;// state or percentage
+			String rootPathModels = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao4-iut30-specPercentage\\spec\\";
+			String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao4-iut30-specPercentage\\iut30states.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao4-iut30-specPercentage\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao4-iut30-specPercentage\\iut30states.csv";
 
-			run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation);
+			String errorFolder = rootPathModels + "\\error\\";
+			Path errorPath = Paths.get(errorFolder);
+			String successFolder = rootPathModels + "\\success\\";
+			Path successPath = Paths.get(successFolder);
+			if (!Files.exists(errorPath)) {
+				Files.createDirectory(errorPath);
+			}
+			if (!Files.exists(successPath)) {
+				Files.createDirectory(successPath);
+			}
+
+			File folder = new File(rootPathModels);
+			File[] listOfFiles = folder.listFiles();
+			String pathSaveTS;
+
+			String pathModel;
+			int count = 0;
+			for (File file : listOfFiles) {
+				if (file.getName().indexOf(".") != -1
+						&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+					pathModel = rootPathModels + file.getName();
+					pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut", "")+"\\";
+					count++;
+					Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(batchFileJTorx,
+							root_img, pathModel, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation));
+
+					try {
+						int limitTime = 3;
+						control.get(limitTime, TimeUnit.MINUTES);
+						Files.move(Paths.get(pathModel), Paths.get(successFolder + file.getName()));
+					} catch (Exception e) {// TimeoutException
+						// mover arquivo para pasta de erro
+						e.printStackTrace();
+
+						Files.move(Paths.get(pathModel), Paths.get(errorFolder + file.getName()));
+					}
+
+				}
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public static class TimeOut implements Callable<String> {
+		String batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv;
+		boolean stateVariation;
+		List<String> headerCSV;
+
+		public TimeOut(String batchFileJTorx, String root_img, String pathAutSpec, String pathAutIUT, String pathSaveTS,
+				List<String> headerCSV, String pathCsv, boolean stateVariation) throws Exception {
+
+			this.batchFileJTorx = batchFileJTorx;
+			this.root_img = root_img;
+			this.pathAutSpec = pathAutSpec;
+			this.pathAutIUT = pathAutIUT;
+			this.pathSaveTS = pathSaveTS;
+			this.headerCSV = headerCSV;
+			this.pathCsv = pathCsv;
+			this.stateVariation = stateVariation;
+		}
+
+		@Override
+		public String call() throws Exception {
+			run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation);
+			return "";
 		}
 	}
 
@@ -92,12 +157,12 @@ public class RunJTorx {
 	public static void run(String batchFileJTorx, String root_img, String pathAutSpec, String pathAutIUT,
 			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation) throws Exception {
 
-		// run JTorex
+		// run JTorx
 		Desktop d = Desktop.getDesktop();
 
 		d.open(new File(batchFileJTorx));
 		// wait until open Jtorx
-		Thread.sleep(500);
+		Thread.sleep(700);
 
 		// type spec model
 		Screen s = new Screen();
@@ -172,6 +237,7 @@ public class RunJTorx {
 
 				// save test cases
 				String nameTestCaseAutFile = "";
+				String nameTCFile = "";
 				// create folder to save
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd__HH_mm_ss");
 				if (!Files.exists(Paths.get(pathSaveTS))) {
@@ -185,7 +251,9 @@ public class RunJTorx {
 				s.type(Key.UP);
 				// save test case
 				s.click(root_img + "btn-save.PNG");
+				
 				nameTestCaseAutFile = pathSaveTS + "1_" + dtf.format(LocalDateTime.now()) + ".aut";
+				Thread.sleep(500);
 				s.type(nameTestCaseAutFile);
 				s.type(Key.ENTER);
 
@@ -205,9 +273,12 @@ public class RunJTorx {
 				count = 1;
 				while (true) {
 					count++;
-					nameTestCaseAutFile = pathSaveTS + count + "_" + dtf.format(LocalDateTime.now()) + ".aut";
+					nameTCFile = count + "_" + dtf.format(LocalDateTime.now()) + ".aut";
+					nameTestCaseAutFile = pathSaveTS + nameTCFile;
+					
 					s.click(root_img + "btn-save.PNG");
-					s.type(nameTestCaseAutFile);
+					Thread.sleep(500);
+					s.type(nameTCFile);
 					s.type(Key.ENTER);
 					Thread.sleep(1500);
 					scanner = new Scanner(new File(nameTestCaseAutFile));
@@ -267,13 +338,13 @@ public class RunJTorx {
 					endSubstring = pathModel.indexOf("pct_spec");
 					variationType = "percentage";
 				}
-				if(endSubstring > 0) {
+				if (endSubstring > 0) {
 					variation = pathModel.substring(iniSubstring, endSubstring);
-				}else {
+				} else {
 					variationType = "";
 					variation = "";
 				}
-				
+
 			}
 
 			ArrayList<String> row = new ArrayList<String>();
@@ -326,5 +397,7 @@ public class RunJTorx {
 			e.printStackTrace();
 		}
 	}
+
+	
 
 }
