@@ -335,7 +335,7 @@ public class PerformanceTest {
 		} catch (Exception e)
 
 		{
-
+			e.printStackTrace();
 		}
 	}
 
