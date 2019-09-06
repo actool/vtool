@@ -29,9 +29,56 @@ import parser.ImportAutFile;
 import parser.ImportAutFile_WithoutThread;
 
 public class AutGenerator {
+	public static void main(String[] args) throws Exception {
+		//// GENERATE <ONE> RANDOM MODEL
+		// int numberOfStates = 50;// 2000;
+		// List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");// , "?c"
+		// boolean inputEnabled = true;
+		// String tag = "g";
+		// String path = "C:\\Users\\camil\\Desktop\\";
+		// generate(numberOfStates, labels, inputEnabled, tag, path, "spec" +
+		// numberOfStates + "states");
+
+		// GENERATE <ONE> - PERCENTAGE MODEL
+		// generateByPercentage("C:\\Users\\camil\\Desktop\\model10states.aut",
+		// "C:\\Users\\camil\\Desktop\\", "impl10",10);
+
+		// GENERATE <IN LOTE> - NUM State
+		int totalModels = 2;// 500;
+		int constDivision = 2;
+		int minStates = 1500;
+		int maxStates = 2000;
+		boolean inputEnabled = false;
+		String tag = "g";
+		String rootPath = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\-1000\\250-500\\spec\\";
+		String iutAutPath = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao3-iut30-specPercentage\\iut30states.aut";
+		IOLTS ioltsModel = ImportAutFile.autToIOLTS(iutAutPath, false, null, null);
+		List<String> labels = new ArrayList<>();
+		for (String l : ioltsModel.getInputs()) {
+			labels.add(Constants.INPUT_TAG + l);
+		}
+		for (String l : ioltsModel.getOutputs()) {
+			labels.add(Constants.OUTPUT_TAG + l);
+		}
+		generateAutInLot_NumStates(totalModels, constDivision, minStates, maxStates, inputEnabled, tag, rootPath,
+				labels);
+
+		//// GENERATE <IN LOTE> - PERCENTAGE
+		// int totalModels = 500;// 500;
+		// String rootPath = "C:\\Users\\camil\\Desktop\\teste desempenho -
+		//// Everest\\iut50-specPercentage\\spec";
+		// String iutAutPath = "C:\\Users\\camil\\Desktop\\teste desempenho -
+		//// Everest\\iut50-specPercentage\\iut50states.aut";
+		// generateAutInLot_PercentageStates(totalModels, rootPath, iutAutPath);
+	}
 
 	public static void generate(int numberOfStates, List<String> labels, boolean inputEnabled, String tag, String path,
-			String autFileName) {
+			String autFileName) throws Exception {
+
+		if (!Files.exists(Paths.get(path))) {
+			Files.createDirectory(Paths.get(path));
+		}
+
 		int qtTransition = 0;
 		String transitions = "";
 		File file = new File(path, autFileName + ".aut");
@@ -238,49 +285,6 @@ public class AutGenerator {
 		return aut;
 	}
 
-	public static void main(String[] args) throws Exception {
-		//// GENERATE <ONE> RANDOM MODEL
-		// int numberOfStates = 50;// 2000;
-		// List<String> labels = Arrays.asList("?a", "?b", "?c", "!x", "!y");// , "?c"
-		// boolean inputEnabled = true;
-		// String tag = "g";
-		// String path = "C:\\Users\\camil\\Desktop\\";
-		// generate(numberOfStates, labels, inputEnabled, tag, path, "spec" +
-		// numberOfStates + "states");
-
-		// GENERATE <ONE> - PERCENTAGE MODEL
-		// generateByPercentage("C:\\Users\\camil\\Desktop\\model10states.aut",
-		// "C:\\Users\\camil\\Desktop\\", "impl10",10);
-
-		// GENERATE <IN LOTE> - NUM State
-		int totalModels = 500;// 500;
-		int constDivision = 5;
-		int minStates = 20;
-		int maxStates = 40;
-		boolean inputEnabled = false;
-		String tag = "g";
-		String rootPath = "C:\\Users\\camil\\Desktop\\teste desempenho - Everest\\iut30-specNumStates2\\spec";
-		String iutAutPath = "C:\\Users\\camil\\Desktop\\teste desempenho - Everest\\iut30-specNumStates2\\iut30states.aut";
-		IOLTS ioltsModel = ImportAutFile.autToIOLTS(iutAutPath, false, null, null);
-		List<String> labels = new ArrayList<>();
-		for (String l : ioltsModel.getInputs()) {
-			labels.add(Constants.INPUT_TAG + l);
-		}
-		for (String l : ioltsModel.getOutputs()) {
-			labels.add(Constants.OUTPUT_TAG + l);
-		}
-		generateAutInLot_NumStates(totalModels, constDivision, minStates, maxStates, inputEnabled, tag, rootPath,
-				labels);
-
-		//// GENERATE <IN LOTE> - PERCENTAGE
-		// int totalModels = 500;// 500;
-		// String rootPath = "C:\\Users\\camil\\Desktop\\teste desempenho -
-		//// Everest\\iut50-specPercentage\\spec";
-		// String iutAutPath = "C:\\Users\\camil\\Desktop\\teste desempenho -
-		//// Everest\\iut50-specPercentage\\iut50states.aut";
-		// generateAutInLot_PercentageStates(totalModels, rootPath, iutAutPath);
-	}
-
 	public static void generateAutInLot_PercentageStates(int totalModels, String rootPath, String iutAutPath)
 			throws IOException {
 		int[] percentageVariation = { 20, 40, 60, 80, 100 };
@@ -303,7 +307,7 @@ public class AutGenerator {
 	}
 
 	public static void generateAutInLot_NumStates(int totalModels, int constDivision, int minStates, int maxStates,
-			boolean inputEnabled, String tag, String rootPath, List<String> labels) throws IOException {
+			boolean inputEnabled, String tag, String rootPath, List<String> labels) throws Exception {
 		// int quantityGroups = totalModels / constDivision;
 		int variationNumStates = (maxStates - minStates) / constDivision;
 		int countStates = minStates;
@@ -337,7 +341,7 @@ public class AutGenerator {
 				}
 
 				generate(randomNumStates, labels, inputEnabled, tag, rootPath,
-						randomNumStates + "states_spec" + "_" + count );// currentFolder
+						randomNumStates + "states_spec" + "_" + count);// currentFolder
 
 				count++;
 			}
