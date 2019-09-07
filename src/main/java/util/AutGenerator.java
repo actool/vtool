@@ -44,13 +44,13 @@ public class AutGenerator {
 		// "C:\\Users\\camil\\Desktop\\", "impl10",10);
 
 		// GENERATE <IN LOTE> - NUM State
-		int totalModels = 2;// 500;
-		int constDivision = 2;
-		int minStates = 1500;
-		int maxStates = 2000;
+//		int totalModels = 50;// 500;
+//		int constDivision = 5;
+//		int minStates = 1950;
+//		int maxStates = 2050;
 		boolean inputEnabled = false;
 		String tag = "g";
-		String rootPath = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\-1000\\250-500\\spec\\";
+		String rootPath = "C:\\Users\\camil\\Desktop\\models\\";
 		String iutAutPath = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao3-iut30-specPercentage\\iut30states.aut";
 		IOLTS ioltsModel = ImportAutFile.autToIOLTS(iutAutPath, false, null, null);
 		List<String> labels = new ArrayList<>();
@@ -60,9 +60,17 @@ public class AutGenerator {
 		for (String l : ioltsModel.getOutputs()) {
 			labels.add(Constants.OUTPUT_TAG + l);
 		}
-		generateAutInLot_NumStates(totalModels, constDivision, minStates, maxStates, inputEnabled, tag, rootPath,
-				labels);
+//		generateAutInLot_NumStates(totalModels, constDivision, minStates, maxStates, inputEnabled, tag, rootPath,
+//				labels);
 
+		int nstate = 3000;
+		for (int i = 0; i < 10; i++) {
+			generate(nstate, labels, inputEnabled, tag, rootPath,
+					nstate + "states_spec" + "_" + i);
+		}
+		
+		
+		
 		//// GENERATE <IN LOTE> - PERCENTAGE
 		// int totalModels = 500;// 500;
 		// String rootPath = "C:\\Users\\camil\\Desktop\\teste desempenho -

@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,7 +32,8 @@ import util.ModelImageGenerator;
 public class IocoConformance {
 
 	/***
-	 * Verify if a implementation is IOCO conforms to specification, returns the resultant automaton of this verification
+	 * Verify if a implementation is IOCO conforms to specification, returns the
+	 * resultant automaton of this verification
 	 * 
 	 * @param S
 	 *            IOLTS model of specification
@@ -49,12 +51,18 @@ public class IocoConformance {
 
 		// build the fault model, containing all fail behaviors based on specification
 		// model
+		System.out.println("at" + new Date());
 		Automaton_ at = faultModelIoco(S);
+		System.out.println("ai" + new Date());
 		// automaton underlying the implementation
 		Automaton_ ai = I.ioltsToAutomaton();
+		System.out.println("ab" + new Date());
+		
+		System.out.println(at.getTransitions().size()+"  -   "+ai.getTransitions().size());
 		// intersection between the implementation and failure model to find fault
 		Automaton_ ab = Operations.intersection(at, ai);
 
+		System.out.println("fim ab:"+ new Date());
 		/*
 		 * System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 		 * ; System.out.
@@ -75,8 +83,7 @@ public class IocoConformance {
 		 * System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
 		 * ; System.out.println(ab);
 		 */
-
-		
+		// System.out.println(ab);
 
 		return ab;
 	}
@@ -90,12 +97,17 @@ public class IocoConformance {
 	 * @return the fault model automaton
 	 */
 	private static Automaton_ faultModelIoco(IOLTS S) {
+		System.out.println("as" + new Date());
 		// automaton underlying the specification IOLTS S
 		Automaton_ as = S.ioltsToAutomaton();
 		// automaton complement of specification
+		System.out.println("aCompS" + new Date());
 		Automaton_ aCompS = Operations.complement(as);
 		// automaton D with the desired behaviors
+		System.out.println("ad" + new Date());
 		Automaton_ ad = modelD(S);
+
+		System.out.println("fim ad" + new Date());
 
 		/*
 		 * System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")

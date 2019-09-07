@@ -38,7 +38,6 @@ public class RunJTorx {
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });
-			
 
 			// // String root_aut = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\";
 			// // String root_aut = "C:\\Users\\camil\\Documents\\aut-modelos\\";
@@ -73,14 +72,23 @@ public class RunJTorx {
 			// String pathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta\\test1\\";
 			// boolean stateVariation = true;// state or percentage
 			//
+
+			// String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\modelos2000states\\2050states_spec_49.aut";
+			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\modelos2000states\\2050states_spec_49.aut";
+			// String pathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta\\";
+			// String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta\\teste.csv";
+			// boolean stateVariation = true;
 			// run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV,
 			// pathCsv, stateVariation);
 
 			boolean stateVariation = true;// state or percentage
-			String rootPathModels = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao4-iut30-specPercentage\\spec\\";
-			String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao4-iut30-specPercentage\\iut30states.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao4-iut30-specPercentage\\";
-			String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao4-iut30-specPercentage\\iut30states.csv";
+			String rootPathModels = "C:\\Users\\camil\\Desktop\\models\\aut\\";
+			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\versao4-iut30-specPercentage\\iut30states.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\models\\result\\ts\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\models\\result\\jtorx.csv";
 
 			String errorFolder = rootPathModels + "\\error\\";
 			Path errorPath = Paths.get(errorFolder);
@@ -103,10 +111,10 @@ public class RunJTorx {
 				if (file.getName().indexOf(".") != -1
 						&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
 					pathModel = rootPathModels + file.getName();
-					pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut", "")+"\\";
+					pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut", "") + "\\";
 					count++;
 					Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(batchFileJTorx,
-							root_img, pathModel, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation));
+							root_img, pathModel, pathModel, pathSaveTS, headerCSV, pathCsv, stateVariation));
 
 					try {
 						int limitTime = 3;
@@ -118,15 +126,67 @@ public class RunJTorx {
 
 						Files.move(Paths.get(pathModel), Paths.get(errorFolder + file.getName()));
 					}
-
 				}
 			}
+
+			// boolean stateVariation = true;// state or percentage
+			// String rootPathModels = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\versao4-iut30-specPercentage\\spec\\";
+			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\versao4-iut30-specPercentage\\iut30states.aut";
+			// String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\versao4-iut30-specPercentage\\";
+			// String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta
+			// (2)\\versao4-iut30-specPercentage\\iut30states.csv";
+			//
+			// String errorFolder = rootPathModels + "\\error\\";
+			// Path errorPath = Paths.get(errorFolder);
+			// String successFolder = rootPathModels + "\\success\\";
+			// Path successPath = Paths.get(successFolder);
+			// if (!Files.exists(errorPath)) {
+			// Files.createDirectory(errorPath);
+			// }
+			// if (!Files.exists(successPath)) {
+			// Files.createDirectory(successPath);
+			// }
+			//
+			// File folder = new File(rootPathModels);
+			// File[] listOfFiles = folder.listFiles();
+			// String pathSaveTS;
+			//
+			// String pathModel;
+			// int count = 0;
+			// for (File file : listOfFiles) {
+			// if (file.getName().indexOf(".") != -1
+			// && file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+			// pathModel = rootPathModels + file.getName();
+			// pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut",
+			// "")+"\\";
+			// count++;
+			// Future<String> control = Executors.newSingleThreadExecutor().submit(new
+			// TimeOut(batchFileJTorx,
+			// root_img, pathModel, pathAutIUT, pathSaveTS, headerCSV, pathCsv,
+			// stateVariation));
+			//
+			// try {
+			// int limitTime = 3;
+			// control.get(limitTime, TimeUnit.MINUTES);
+			// Files.move(Paths.get(pathModel), Paths.get(successFolder + file.getName()));
+			// } catch (Exception e) {// TimeoutException
+			// // mover arquivo para pasta de erro
+			// e.printStackTrace();
+			//
+			// Files.move(Paths.get(pathModel), Paths.get(errorFolder + file.getName()));
+			// }
+			//
+			// }
+			// }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static class TimeOut implements Callable<String> {
 		String batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv;
 		boolean stateVariation;
@@ -251,7 +311,7 @@ public class RunJTorx {
 				s.type(Key.UP);
 				// save test case
 				s.click(root_img + "btn-save.PNG");
-				
+
 				nameTestCaseAutFile = pathSaveTS + "1_" + dtf.format(LocalDateTime.now()) + ".aut";
 				Thread.sleep(500);
 				s.type(nameTestCaseAutFile);
@@ -275,7 +335,7 @@ public class RunJTorx {
 					count++;
 					nameTCFile = count + "_" + dtf.format(LocalDateTime.now()) + ".aut";
 					nameTestCaseAutFile = pathSaveTS + nameTCFile;
-					
+
 					s.click(root_img + "btn-save.PNG");
 					Thread.sleep(500);
 					s.type(nameTCFile);
@@ -397,7 +457,5 @@ public class RunJTorx {
 			e.printStackTrace();
 		}
 	}
-
-	
 
 }

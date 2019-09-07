@@ -15,6 +15,7 @@ import model.IOLTS;
 import model.State_;
 import model.Transition_;
 import parser.ImportAutFile;
+import parser.ImportAutFile_WithoutThread;
 import util.Constants;
 import util.ModelImageGenerator;
 
@@ -46,22 +47,22 @@ public class Test {
 //		System.out.println(Operations.intersection(q,s));
 		
 		
-		Automaton_ s = new Automaton_();
-		State_ s0 = new State_("s0");
-		State_ s1 = new State_("s1");
-		State_ s2 = new State_("s2");		
-		s.setInitialState(s0);
-		s.addFinalStates(s2);
-		s.addTransition(new Transition_(s0,Constants.EPSILON,s2));
-		//s.addTransition(new Transition_(s0,"b",s2));//
-		s.addTransition(new Transition_(s0,"b",s1));
-		s.addTransition(new Transition_(s1,"b",s1));
-		s.addTransition(new Transition_(s1,"b",s2));
-		s.addTransition(new Transition_(s1,"a",s2));
-		s.addTransition(new Transition_(s2,"a",s2));
-		//s.addTransition(new Transition_(s2,"a",s0));//
-		
-		System.out.println(Operations.convertToDeterministicAutomaton(s));
+//		Automaton_ s = new Automaton_();
+//		State_ s0 = new State_("s0");
+//		State_ s1 = new State_("s1");
+//		State_ s2 = new State_("s2");		
+//		s.setInitialState(s0);
+//		s.addFinalStates(s2);
+//		s.addTransition(new Transition_(s0,Constants.EPSILON,s2));
+//		//s.addTransition(new Transition_(s0,"b",s2));//
+//		s.addTransition(new Transition_(s0,"b",s1));
+//		s.addTransition(new Transition_(s1,"b",s1));
+//		s.addTransition(new Transition_(s1,"b",s2));
+//		s.addTransition(new Transition_(s1,"a",s2));
+//		s.addTransition(new Transition_(s2,"a",s2));
+//		//s.addTransition(new Transition_(s2,"a",s0));//
+//		
+//		System.out.println(Operations.convertToDeterministicAutomaton(s));
 		
 //		IOLTS iolts = new IOLTS();	
 //		State_ s0 = new State_("s0");
@@ -154,7 +155,11 @@ public class Test {
 //	
 //		
 //		System.out.println(Operations.convertToDeterministicAutomaton(a));
-			
+		
+		String path = "C:\\Users\\camil\\Documents\\100pct_spec_400aa.aut"; 
+		IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(path, false, null, null);
+		System.out.println(Operations.convertToDeterministicAutomaton(iolts.ioltsToAutomaton()));
+		
 		
 	}
 

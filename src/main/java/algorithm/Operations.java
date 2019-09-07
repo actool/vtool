@@ -528,7 +528,7 @@ public class Operations {
 	 * @param ioco
 	 * @return all words that reach the final states
 	 */
-	public static List<String> getWordsFromAutomaton(Automaton_ a) {// boolean ioco
+	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean transitionCoverSpec) {// boolean ioco
 
 		String word = "";
 		String tagWord = " , ";
@@ -624,38 +624,52 @@ public class Operations {
 			if (a.getFinalStates().contains(e)) {
 				if (e.getInfo() != null) {
 					aux = e.getInfo().split(tagWord);
-					for (int i = 0; i < aux.length; i++) {
+					if(transitionCoverSpec) {
+						for (int i = 0; i < aux.length; i++) {
 
-						// if (ioco) {
-						// if (aux[i].contains(tagLetter)) {
-						// // remove output
-						// idx = aux[i].lastIndexOf(tagLetter);
-						// // System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
-						// word = aux[i].substring(0, idx);
-						//
-						// }
-						// } else {
-						// word = aux[i];
-						// }
-						word = aux[i];
+							// if (ioco) {
+							// if (aux[i].contains(tagLetter)) {
+							// // remove output
+							// idx = aux[i].lastIndexOf(tagLetter);
+							// // System.out.println(aux[i] + " >> " + aux[i].substring(0, idx));
+							// word = aux[i].substring(0, idx);
+							//
+							// }
+							// } else {
+							// word = aux[i];
+							// }
+							word = aux[i];
+							words.add(word);
+							// words accept by initialState, cover initState
+							// if(a.getStates().stream().filter(x ->
+							// x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null &&
+							// !iniStateCovered) {
+							// for (String w : a.getStates().stream().filter(x ->
+							// x.equals(a.getInitialState())).findFirst().orElse(null).getInfo().split(tagWord))
+							// {
+							// words.add(w+tagLetter+word);
+							// //System.out.println("*" + w+tagLetter+word);
+							// }
+							// iniStateCovered = true;
+							// }
+							// }else {
+							// words.add(word);
+							// }
+
+						}
+					}else {
+					  Arrays.sort(aux, new java.util.Comparator<String>() {
+						    @Override
+						    public int compare(String s1, String s2) {
+						        // TODO: Argument validation (nullity, length)
+						        return s1.length() - s2.length();// comparision
+						    }
+						});
+						
+						word = aux[0];
 						words.add(word);
-						// words accept by initialState, cover initState
-						// if(a.getStates().stream().filter(x ->
-						// x.equals(a.getInitialState())).findFirst().orElse(null).getInfo() != null &&
-						// !iniStateCovered) {
-						// for (String w : a.getStates().stream().filter(x ->
-						// x.equals(a.getInitialState())).findFirst().orElse(null).getInfo().split(tagWord))
-						// {
-						// words.add(w+tagLetter+word);
-						// //System.out.println("*" + w+tagLetter+word);
-						// }
-						// iniStateCovered = true;
-						// }
-						// }else {
-						// words.add(word);
-						// }
-
 					}
+					
 				}
 			}
 		}
@@ -811,11 +825,11 @@ public class Operations {
 	public static List<String> getTestCases(Automaton_ faultModel, boolean ioco, IOLTS iolts_s,
 			boolean transitionCoverSpec) {
 		List<String> testCases_testSuit;
-		if (transitionCoverSpec) {
-			testCases_testSuit = getWordsFromAutomaton(faultModel);// ioco
-		} else {
-			testCases_testSuit = getOneWordPerFinalState(faultModel);
-		}
+		//if (transitionCoverSpec) {
+			testCases_testSuit = getWordsFromAutomaton(faultModel, transitionCoverSpec);// ioco
+		//} else {
+		//	testCases_testSuit = getOneWordPerFinalState(faultModel);
+		//}
 
 		// System.out.println(testCases_testSuit);
 		// return testCases_testSuit;--
@@ -839,11 +853,11 @@ public class Operations {
 		// automaton_s= iolts_s.ioltsToAutomaton();
 		automaton_s.setFinalStates(tc);
 
-		if (transitionCoverSpec) {
-			hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s));// ioco
-		} else {
-			hashSet_s_ = new LinkedHashSet<>(getOneWordPerFinalState(automaton_s));// ioco
-		}
+		//if (transitionCoverSpec) {
+			hashSet_s_ = new LinkedHashSet<>(getWordsFromAutomaton(automaton_s,transitionCoverSpec));// ioco
+//		} else {
+//			hashSet_s_ = new LinkedHashSet<>(getOneWordPerFinalState(automaton_s));// ioco
+//		}
 
 		return new ArrayList<>(hashSet_s_);
 		// }else {
@@ -873,12 +887,12 @@ public class Operations {
 		iolts_i.setOutputs(new ArrayList<String>());
 
 		List<String> testCases;
-		if (transitionCoverSpec) {
-			testCases = getWordsFromAutomaton(faultModel);// ioco
+//		if (transitionCoverSpec) {
+			testCases = getWordsFromAutomaton(faultModel, transitionCoverSpec);// ioco
 			// List<String> testCases = getTestCases(faultModel, ioco, iolts_s);
-		} else {
-			testCases = getOneWordPerFinalState(faultModel);
-		}
+//		} else {
+//			testCases = getOneWordPerFinalState(faultModel);
+//		}
 
 		String result_s, result_i;
 		String path = "";
@@ -940,11 +954,11 @@ public class Operations {
 			}
 
 		} else {
-			if (transitionCoverSpec) {
-				testCases = getWordsFromAutomaton(faultModel);// ioco
-			} else {
-				testCases = getOneWordPerFinalState(faultModel);
-			}
+		//	if (transitionCoverSpec) {
+				testCases = getWordsFromAutomaton(faultModel, transitionCoverSpec);// ioco
+//			} else {
+//				testCases = getOneWordPerFinalState(faultModel);
+//			}
 		}
 
 		for (String t : testCases) {
