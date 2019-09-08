@@ -169,6 +169,37 @@ public class IOLTS extends LTS implements Cloneable {
 		return label;
 	}
 
+	public List<String> labelNotDefinedOnState(String labelIniState) {
+		List<Transition_> result = new ArrayList<>();
+		
+		for (Transition_ t : getTransitions()) {
+			if (t.getIniState().getName().equals(labelIniState)) {
+				result.add(t);
+			}
+		}
+
+		List<String> alphab = new ArrayList(this.getAlphabet());
+		
+
+		for (Transition_ t : result) {
+			alphab.remove(t.getLabel());
+			
+		}
+		
+		List<String> alphabet_new = new ArrayList<>();
+		for (String a : alphab) {
+			if(this.getInputs().contains(a)) {
+				alphabet_new.add(Constants.INPUT_TAG+a);
+			}else {
+				alphabet_new.add(Constants.OUTPUT_TAG+a);
+			}
+			
+		}
+		
+		
+		return alphabet_new;
+	}
+
 	/***
 	 * Overwriting the toString method, with the separation between the input and
 	 * output label

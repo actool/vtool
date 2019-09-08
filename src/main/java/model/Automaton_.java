@@ -176,7 +176,8 @@ public class Automaton_ extends LTS {
 
 					// if there is more than one (itself and any other) transition equal to the
 					// current transition
-					if (cont > 1) {						
+					if (cont > 1) {	
+						//System.out.println(t.getIniState());
 						// it is not deterministic
 						return false;
 					}

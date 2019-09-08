@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import algorithm.Operations;
 
@@ -190,6 +191,9 @@ public class LTS {
 				.findFirst().orElse(null);
 		return result != null;
 	}
+	
+	
+	
 
 	/***
 	 * Checks whether there is a transition from the initial state and label

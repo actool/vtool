@@ -156,9 +156,13 @@ public class Test {
 //		
 //		System.out.println(Operations.convertToDeterministicAutomaton(a));
 		
-		String path = "C:\\Users\\camil\\Documents\\100pct_spec_400aa.aut"; 
-		IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(path, false, null, null);
-		System.out.println(Operations.convertToDeterministicAutomaton(iolts.ioltsToAutomaton()));
+		for (int j = 0; j < 100; j++) {
+			String path = "C:\\Users\\camil\\Desktop\\teste\\iut30states_new_"+j+".aut"; 
+			IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(path, false, null, null);
+			System.out.println(iolts.getStates().size() + " - " + iolts.ioltsToAutomaton().isDeterministic());
+			
+		}
+		
 		
 		
 	}
