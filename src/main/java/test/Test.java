@@ -156,13 +156,32 @@ public class Test {
 //		
 //		System.out.println(Operations.convertToDeterministicAutomaton(a));
 		
-		for (int j = 0; j < 100; j++) {
-			String path = "C:\\Users\\camil\\Desktop\\teste\\iut30states_new_"+j+".aut"; 
-			IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(path, false, null, null);
-			System.out.println(iolts.getStates().size() + " - " + iolts.ioltsToAutomaton().isDeterministic());
-			
-		}
+//		for (int j = 0; j < 100; j++) {
+//			String path = "C:\\Users\\camil\\Desktop\\models-30\\spec\\iut30states_new_"+j+".aut"; 
+//			IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(path, false, null, null);
+//			System.out.println(iolts.getStates().size() + " - " + iolts.ioltsToAutomaton().isDeterministic());
+//			
+//		}
 		
+		File folder = new File("C:\\Users\\camil\\Desktop\\novos");
+		File[] listOfFiles = folder.listFiles();
+		for (File file : listOfFiles) {
+			if (file.getName().indexOf(".") != -1
+					&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+				
+				String path = file.getAbsolutePath(); 
+				//System.out.println(path);
+				IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(path, false, null, null);
+				Automaton_ a = iolts.ioltsToAutomaton();
+				//System.out.println(a.getStates().size() + " - " + a.isDeterministic() + " - " + file.getName());
+				 a.isDeterministic();
+				System.out.println( file.getName() + " - " + a.getStates().size());
+				//System.out.println(a);
+			}
+			}
+		
+		
+		//100pct_spec_10
 		
 		
 	}

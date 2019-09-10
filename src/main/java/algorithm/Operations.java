@@ -928,7 +928,7 @@ public class Operations {
 		String path = "";
 
 		if (ioco) {
-			testCases = getTestCases(faultModel, ioco, S, transitionCoverSpec);// ioco
+			testCases = getTestCases(faultModel, ioco, S, transitionCoverSpec);// (faultModel, ioco, S, transitionCoverSpec)
 			State_ currentState_s;
 			State_ currentState_i;
 

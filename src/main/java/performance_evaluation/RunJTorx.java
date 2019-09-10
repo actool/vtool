@@ -84,11 +84,11 @@ public class RunJTorx {
 			// pathCsv, stateVariation);
 
 			boolean stateVariation = true;// state or percentage
-			String rootPathModels = "C:\\Users\\camil\\Desktop\\models\\aut\\";
-			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
-			// (2)\\versao4-iut30-specPercentage\\iut30states.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\models\\result\\ts\\";
-			String pathCsv = "C:\\Users\\camil\\Desktop\\models\\result\\jtorx.csv";
+			String rootPathModels = "C:\\Users\\camil\\Desktop\\models-30\\spec\\";
+			String pathAutIUT = "C:\\Users\\camil\\Desktop\\models-30\\30states_iut.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\models-30\\";			
+			String pathCsv = "C:\\Users\\camil\\Desktop\\models-30\\jtorx.csv";
+										
 
 			String errorFolder = rootPathModels + "\\error\\";
 			Path errorPath = Paths.get(errorFolder);
@@ -114,16 +114,17 @@ public class RunJTorx {
 					pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut", "") + "\\";
 					count++;
 					Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(batchFileJTorx,
-							root_img, pathModel, pathModel, pathSaveTS, headerCSV, pathCsv, stateVariation));
+							root_img, pathModel, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation));
 
 					try {
 						int limitTime = 3;
 						control.get(limitTime, TimeUnit.MINUTES);
+						Thread.sleep(500);
 						Files.move(Paths.get(pathModel), Paths.get(successFolder + file.getName()));
 					} catch (Exception e) {// TimeoutException
 						// mover arquivo para pasta de erro
 						e.printStackTrace();
-
+						Thread.sleep(500);
 						Files.move(Paths.get(pathModel), Paths.get(errorFolder + file.getName()));
 					}
 				}
@@ -222,7 +223,7 @@ public class RunJTorx {
 
 		d.open(new File(batchFileJTorx));
 		// wait until open Jtorx
-		Thread.sleep(700);
+		Thread.sleep(2000);
 
 		// type spec model
 		Screen s = new Screen();
@@ -297,12 +298,15 @@ public class RunJTorx {
 
 				// save test cases
 				String nameTestCaseAutFile = "";
-				String nameTCFile = "";
+				String nameTCFile = "";			
 				// create folder to save
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd__HH_mm_ss");
 				if (!Files.exists(Paths.get(pathSaveTS))) {
 					Files.createDirectory(Paths.get(pathSaveTS));
 				}
+				
+				Thread.sleep(700);					
+				
 				// first line (testcases)
 				for (int j = 0; j < 4; j++) {
 					s.type(Key.TAB);
@@ -311,7 +315,7 @@ public class RunJTorx {
 				s.type(Key.UP);
 				// save test case
 				s.click(root_img + "btn-save.PNG");
-
+				Thread.sleep(500);
 				nameTestCaseAutFile = pathSaveTS + "1_" + dtf.format(LocalDateTime.now()) + ".aut";
 				Thread.sleep(500);
 				s.type(nameTestCaseAutFile);
@@ -322,7 +326,7 @@ public class RunJTorx {
 				s.type(Key.DOWN);
 				Scanner scanner = null;
 
-				Thread.sleep(1500);
+				Thread.sleep(2000);
 
 				scanner = new Scanner(new File(nameTestCaseAutFile));
 				String previous = scanner.useDelimiter("\\Z").next();
@@ -355,6 +359,8 @@ public class RunJTorx {
 						s.type(Key.DOWN);
 					}
 				}
+				
+				
 
 			}
 		}

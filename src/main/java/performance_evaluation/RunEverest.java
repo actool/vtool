@@ -36,12 +36,14 @@ import performance_evaluation.RunJTorx.TimeOut;
 
 public class RunEverest {
 	public static void main(String[] args) throws Exception {
-		try {
+		try
+		{
 			String root_img = new File("src/main/java/performance_evaluation/everet-img").getCanonicalPath() + "\\";
 			String batchFileEverest = "C:\\Users\\camil\\Desktop\\everest.bat";
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });
+		
 			// String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta\\test1.csv";
 			// String pathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta\\testSuite.csv";
 			//
@@ -121,12 +123,19 @@ public class RunEverest {
 //				}
 //			}
 			
+			
+			
 
 			boolean stateVariation = true;// state or percentage
-			String rootPathModels = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao5-iut30-specPercentage\\spec\\";
-			String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao5-iut30-specPercentage\\iut30states.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao5-iut30-specPercentage\\";
-			String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta (2)\\versao5-iut30-specPercentage\\iut30states.csv";
+			String rootPathModels = "C:\\Users\\camil\\Desktop\\models-30\\spec\\";
+			String pathAutIUT = "C:\\Users\\camil\\Desktop\\models-30\\30states_iut.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\models-30\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\models-30\\everest.csv";
+			
+//			String rootPathModels = "C:\\Users\\camil\\Desktop\\novos\\spec\\";
+//			String pathAutIUT = "C:\\Users\\camil\\Desktop\\models-30\\30states_iut.aut";
+//			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\novos\\";
+//			String pathCsv = "C:\\Users\\camil\\Desktop\\novos\\everest.csv";
 
 			String errorFolder = rootPathModels + "\\error\\";
 			Path errorPath = Paths.get(errorFolder);
@@ -143,6 +152,7 @@ public class RunEverest {
 			File[] listOfFiles = folder.listFiles();
 			String pathSaveTS;
 
+			System.out.println(Arrays.asList(listOfFiles));
 			String pathModel;
 			int count = 0;
 			for (File file : listOfFiles) {
@@ -155,13 +165,15 @@ public class RunEverest {
 							root_img, pathModel, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation));
 
 					try {
-						int limitTime = 30;
-						control.get(limitTime, TimeUnit.MINUTES);
+						int limitTime = 40;
+						control.get(limitTime, TimeUnit.SECONDS);
+						
+						Thread.sleep(500);
 						Files.move(Paths.get(pathModel), Paths.get(successFolder + file.getName()));
 					} catch (Exception e) {// TimeoutException
 																	
 						Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
-
+						Thread.sleep(500);
 						// mover arquivo para pasta de erro
 						Files.move(Paths.get(pathModel), Paths.get(errorFolder + file.getName()));
 						
