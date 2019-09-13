@@ -211,16 +211,16 @@ public class IOLTS extends LTS implements Cloneable {
 	
 	
 	public int numberDistinctTransitions(IOLTS param_iolts) {
-		int this_n_transition = getTransitions().size();
-		int param_n_transition = param_iolts.getTransitions().size();		
+		int this_n_transition = new Integer(getTransitions().size());
+		int param_n_transition = new Integer(param_iolts.getTransitions().size());		
 		List<Transition_> transitions_max, transitions_min;
 		int n_distinct_transitions = 0;
 		if (this_n_transition <= param_n_transition) {
-			transitions_max = param_iolts.getTransitions();
-			transitions_min = getTransitions();
+			transitions_max = new ArrayList<>( param_iolts.getTransitions());
+			transitions_min = new ArrayList<>(getTransitions());
 		} else {
-			transitions_max = getTransitions();
-			transitions_min = param_iolts.getTransitions();
+			transitions_max = new ArrayList<>(getTransitions());
+			transitions_min = new ArrayList<>(param_iolts.getTransitions());
 		}
 		
 		for (Transition_ t : transitions_max) {
@@ -234,29 +234,32 @@ public class IOLTS extends LTS implements Cloneable {
 	}
 
 	public List<Transition_> equalsTransitions(IOLTS param_iolts) {
-		List<Transition_> transitions = new ArrayList<>();
+		List<Transition_> transitions_ = new ArrayList<>();
 		
-		int this_n_transition = getTransitions().size();
-		int param_n_transition = param_iolts.getTransitions().size();		
+		int this_n_transition = new Integer(getTransitions().size());
+		int param_n_transition = new Integer(param_iolts.getTransitions().size());		
 		List<Transition_> transitions_max, transitions_min;
 		int n_distinct_transitions = 0;
 		if (this_n_transition <= param_n_transition) {
-			transitions_max = param_iolts.getTransitions();
-			transitions_min = getTransitions();
+			transitions_max = new ArrayList<>( param_iolts.getTransitions());
+			transitions_min = new ArrayList<>( getTransitions());
 		} else {
-			transitions_max = getTransitions();
-			transitions_min = param_iolts.getTransitions();
+			transitions_max = new ArrayList<>( getTransitions());
+			transitions_min = new ArrayList<>( param_iolts.getTransitions());
 		}
+		
 		
 		for (Transition_ t : transitions_max) {
 			if(!transitions_min.contains(t)) {
 				n_distinct_transitions++;
 			}else {
-				transitions.add(t);
+				transitions_.add(t);
 			}
 		}
 		
-		return transitions;
+		
+		
+		return transitions_;
 
 	}
 

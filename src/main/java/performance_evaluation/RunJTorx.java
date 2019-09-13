@@ -84,15 +84,15 @@ public class RunJTorx {
 			// pathCsv, stateVariation);
 
 			boolean stateVariation = true;// state or percentage
-			String rootPathModels = "C:\\Users\\camil\\Desktop\\models-30\\spec\\";
-			String pathAutIUT = "C:\\Users\\camil\\Desktop\\models-30\\30states_iut.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\models-30\\";			
-			String pathCsv = "C:\\Users\\camil\\Desktop\\models-30\\jtorx.csv";
+			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\teste\\iut\\";
+			String pathAutSpec = "C:\\Users\\camil\\Desktop\\teste\\spec.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\teste\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\teste\\jtorx.csv";
 										
 
-			String errorFolder = rootPathModels + "\\error\\";
+			String errorFolder = rootPathIUTs + "\\error\\";
 			Path errorPath = Paths.get(errorFolder);
-			String successFolder = rootPathModels + "\\success\\";
+			String successFolder = rootPathIUTs + "\\success\\";
 			Path successPath = Paths.get(successFolder);
 			if (!Files.exists(errorPath)) {
 				Files.createDirectory(errorPath);
@@ -101,31 +101,31 @@ public class RunJTorx {
 				Files.createDirectory(successPath);
 			}
 
-			File folder = new File(rootPathModels);
+			File folder = new File(rootPathIUTs);
 			File[] listOfFiles = folder.listFiles();
 			String pathSaveTS;
 
-			String pathModel;
+			String pathIUT;
 			int count = 0;
 			for (File file : listOfFiles) {
 				if (file.getName().indexOf(".") != -1
 						&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
-					pathModel = rootPathModels + file.getName();
+					pathIUT = rootPathIUTs + file.getName();
 					pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut", "") + "\\";
 					count++;
 					Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(batchFileJTorx,
-							root_img, pathModel, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation));
+							root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV, pathCsv, stateVariation));
 
 					try {
 						int limitTime = 3;
 						control.get(limitTime, TimeUnit.MINUTES);
 						Thread.sleep(500);
-						Files.move(Paths.get(pathModel), Paths.get(successFolder + file.getName()));
+						Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
 					} catch (Exception e) {// TimeoutException
 						// mover arquivo para pasta de erro
 						e.printStackTrace();
 						Thread.sleep(500);
-						Files.move(Paths.get(pathModel), Paths.get(errorFolder + file.getName()));
+						Files.move(Paths.get(pathIUT), Paths.get(errorFolder + file.getName()));
 					}
 				}
 			}
@@ -193,13 +193,13 @@ public class RunJTorx {
 		boolean stateVariation;
 		List<String> headerCSV;
 
-		public TimeOut(String batchFileJTorx, String root_img, String pathAutSpec, String pathAutIUT, String pathSaveTS,
+		public TimeOut(String batchFileJTorx, String root_img, String pathIUT, String pathSpec, String pathSaveTS,
 				List<String> headerCSV, String pathCsv, boolean stateVariation) throws Exception {
 
 			this.batchFileJTorx = batchFileJTorx;
 			this.root_img = root_img;
-			this.pathAutSpec = pathAutSpec;
-			this.pathAutIUT = pathAutIUT;
+			this.pathAutSpec = pathSpec;
+			this.pathAutIUT = pathIUT;
 			this.pathSaveTS = pathSaveTS;
 			this.headerCSV = headerCSV;
 			this.pathCsv = pathCsv;
@@ -252,20 +252,20 @@ public class RunJTorx {
 		// check button
 		s.click(root_img + "btn-check.PNG");
 
-		long time_ini = System.currentTimeMillis();
-		long time_end, t0 = 0;
+		double time_ini = System.nanoTime();
+		double time_end, t0 = 0;
 		// wait until verify
 		while (true) {
 			try {
-				t0 = System.currentTimeMillis();
+				t0 = System.nanoTime();
 				s.find(new Pattern(root_img + "lbl-result.PNG").similar(1.0f));
 			} catch (FindFailed e) {
-				time_end = System.currentTimeMillis();
+				time_end = System.nanoTime();
 				break;
 			}
 		}
 
-		long total_seconds = ((time_end - (time_end - t0)) - time_ini); // / 1000;
+		double total_seconds = ((time_end - (time_end - t0)) - time_ini)/1000000; // / 1000;
 
 		System.err.println("FINISHED: " + total_seconds + " milliseconds");
 
@@ -376,7 +376,7 @@ public class RunJTorx {
 		s.click(root_img + "img-close.PNG");
 	}
 
-	public static void saveOnCSVFile(String pathCsv, String pathModel, String pathIUT, boolean conform, long time,
+	public static void saveOnCSVFile(String pathCsv, String pathModel, String pathIUT, boolean conform, double time,
 			String unitTime, String memory, String unityMemory, boolean stateVariation, List<String> headerCSV,
 			int nTestCase, String pathSaveTS) {
 
@@ -425,7 +425,7 @@ public class RunJTorx {
 			row.add(Objects.toString(conform));
 			row.add(variation);
 			row.add(variationType);
-			row.add(Objects.toString(time));
+			row.add(String.format("%.5f",time));
 			row.add(unitTime);
 			row.add(Objects.toString(memory));
 			row.add(unityMemory);
