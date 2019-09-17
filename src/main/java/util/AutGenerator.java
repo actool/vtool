@@ -75,7 +75,7 @@ public class AutGenerator {
 		//// Everest\\iut50-specPercentage\\iut50states.aut";
 		// generateAutInLot_PercentageStates(totalModels, rootPath, iutAutPath);
 
-		int percentage = 100;
+		int percentage = 80;
 		long seed = System.currentTimeMillis();
 		boolean inputEnabled = true;
 		int nStates = 3;
@@ -86,21 +86,28 @@ public class AutGenerator {
 		// "g", "C:\\Users\\camil\\Desktop\\teste", nStates+"iut" + "_"+i , seed);
 		// }
 
-		 for (int j = 0; j < 10; j++) {
-		 generateByPercentage("C:\\Users\\camil\\Desktop\\teste\\spec.aut",
-		 "C:\\Users\\camil\\Desktop\\teste\\iut",
-		 percentage + "pct_iut_" + j, percentage, "g", seed, inputEnabled);
-		 }
+//		for (int j = 0; j < 10; j++) {
+//			generateByPercentage("C:\\Users\\camil\\Desktop\\teste\\spec.aut", "C:\\Users\\camil\\Desktop\\teste\\iut",
+//					percentage + "pct_iut_" + j, percentage, "g", seed, inputEnabled);
+//		}
 
-		String file;
-		for (int i = 0; i < 10; i++) {
-			file = "C:\\Users\\camil\\Desktop\\teste\\" + "100pct_spec_" + i + ".aut";
-			IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(file, false, null, null);
-			IOLTS iolts_ = ImportAutFile_WithoutThread.autToIOLTS("C:\\Users\\camil\\Desktop\\teste\\spec.aut", false,
-					null, null);
-			iolts_.setAlphabet(ListUtils.union(iolts.getInputs(), iolts.getOutputs()));
-			System.out.println("iguais: "+ iolts_.equalsTransitions(iolts).size() + " - diferentes: " +iolts_.numberDistinctTransitions(iolts) + " - inp Enab: " + iolts.isInputEnabled() + " - determin: "
-					+ iolts.ioltsToAutomaton().isDeterministic() + " > " + file);
+		String pathIUT, rootPathIUTs = "C:\\Users\\camil\\Desktop\\teste\\iut\\";
+		File folder = new File(rootPathIUTs);
+		File[] listOfFiles = folder.listFiles();
+
+		for (File file : listOfFiles) {
+			if (file.getName().indexOf(".") != -1
+					&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+				pathIUT = rootPathIUTs + file.getName();
+
+				IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(pathIUT, false, null, null);
+				IOLTS iolts_ = ImportAutFile_WithoutThread.autToIOLTS("C:\\Users\\camil\\Desktop\\teste\\spec.aut",
+						false, null, null);
+				iolts_.setAlphabet(ListUtils.union(iolts.getInputs(), iolts.getOutputs()));
+				System.out.println("iguais: " + iolts_.equalsTransitions(iolts).size() + " - diferentes: "
+						+ iolts_.numberDistinctTransitions(iolts) + " - inp Enab: " + iolts.isInputEnabled()
+						+ " - determin: " + iolts.ioltsToAutomaton().isDeterministic() + " > " + file);
+			}
 		}
 
 	}
@@ -128,8 +135,6 @@ public class AutGenerator {
 			iolts_base = ImportAutFile.autToIOLTS(pathModelBase, false, null, null);
 			iolts_base.setAlphabet(ListUtils.union(iolts.getInputs(), iolts.getOutputs()));
 
-			
-			
 			// System.out.println("ORIGINAL >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			// System.out.println(iolts);
 			totalTransitions = iolts.getTransitions().size();
@@ -141,8 +146,6 @@ public class AutGenerator {
 			List<Integer> lines = new ArrayList<>();
 			int numberLinesToChange = (int) (((totalTransitions) * percentage) / 100);
 			int line = 0;
-
-			
 
 			Random rand = new Random();
 			rand.setSeed(seed * System.currentTimeMillis());
@@ -233,7 +236,7 @@ public class AutGenerator {
 
 						if (!runAgain) {
 							String label = l_aux.get(rand.nextInt(l_aux.size()));
-							addTransitions.add(new Transition_(s_aux, label.substring(1,label.length()),
+							addTransitions.add(new Transition_(s_aux, label.substring(1, label.length()),
 									iolts.getStates().get(rand.nextInt(numberOfStates))));
 						}
 
@@ -312,10 +315,9 @@ public class AutGenerator {
 					}
 				}
 
-				
 			}
 
-			//System.out.println(iolts.getTransitions());
+			// System.out.println(iolts.getTransitions());
 			File file = new File(pathNewFile, autFileName + ".aut");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(ioltsToAut(iolts));

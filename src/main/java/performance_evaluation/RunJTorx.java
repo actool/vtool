@@ -84,10 +84,10 @@ public class RunJTorx {
 			// pathCsv, stateVariation);
 
 			boolean stateVariation = true;// state or percentage
-			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\teste\\iut\\";
-			String pathAutSpec = "C:\\Users\\camil\\Desktop\\teste\\spec.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\teste\\";
-			String pathCsv = "C:\\Users\\camil\\Desktop\\teste\\jtorx.csv";
+			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\models-30-new\\iut\\";
+			String pathAutSpec = "C:\\Users\\camil\\Desktop\\models-30-new\\spec.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\models-30-new\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\models-30-new\\jtorx.csv";
 										
 
 			String errorFolder = rootPathIUTs + "\\error\\";
@@ -253,22 +253,24 @@ public class RunJTorx {
 		s.click(root_img + "btn-check.PNG");
 
 		double time_ini = System.nanoTime();
-		double time_end, t0 = 0;
+		//time_ini = System.currentTimeMillis();
+		double time_end = 0;
 		// wait until verify
 		while (true) {
 			try {
-				t0 = System.nanoTime();
-				s.find(new Pattern(root_img + "lbl-result.PNG").similar(1.0f));
-			} catch (FindFailed e) {
 				time_end = System.nanoTime();
+				s.find(new Pattern(root_img + "lbl-result.PNG").similar(1f));
+				time_end = System.nanoTime();
+			} catch (FindFailed e) {
 				break;
 			}
 		}
-
-		double total_seconds = ((time_end - (time_end - t0)) - time_ini)/1000000; // / 1000;
+		
+		double total_seconds = (time_end - time_ini)/1e6;
+		
 
 		System.err.println("FINISHED: " + total_seconds + " milliseconds");
-
+		
 		// get memory consumption (cmd)
 		String s_ = "";
 		Process p = Runtime.getRuntime().exec("TASKLIST /FI \"IMAGENAME eq java.exe\"");
@@ -359,8 +361,6 @@ public class RunJTorx {
 						s.type(Key.DOWN);
 					}
 				}
-				
-				
 
 			}
 		}
@@ -425,7 +425,7 @@ public class RunJTorx {
 			row.add(Objects.toString(conform));
 			row.add(variation);
 			row.add(variationType);
-			row.add(String.format("%.5f",time));
+			row.add(String.format("%.2f",time));
 			row.add(unitTime);
 			row.add(Objects.toString(memory));
 			row.add(unityMemory);

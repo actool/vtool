@@ -1086,7 +1086,7 @@ public class ConformanceView extends JFrame {
 		btnVerifyConf_ioco.setBackground(Color.LIGHT_GRAY);
 		panel_ioco.add(btnVerifyConf_ioco);
 
-		lbl_veredict_ioco = new JLabel("");
+		lbl_veredict_ioco = new JLabel("[Verdict]");
 		lbl_veredict_ioco.setForeground(SystemColor.windowBorder);
 		lbl_veredict_ioco.setFont(new Font("Dialog", Font.BOLD, 13));
 		lbl_veredict_ioco.setBounds(187, 142, 474, 20);
