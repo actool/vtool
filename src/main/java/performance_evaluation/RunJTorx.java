@@ -385,7 +385,7 @@ public class RunJTorx {
 			String variation = "";
 			// String testCasesCSV = pathCsv.substring(0, pathCsv.lastIndexOf("\\")) +
 			// "\\testCases.csv";
-			int iniSubstring = pathModel.lastIndexOf("\\") + 1;
+			int iniSubstring = pathIUT.lastIndexOf("\\") + 1;
 			int endSubstring;
 
 			int numStatesIut, numStatesModel, numTransitionsIut, numTransitionsModel;
@@ -398,14 +398,14 @@ public class RunJTorx {
 			numTransitionsIut = iolts_iut.getTransitions().size();
 
 			if (stateVariation) {
-				endSubstring = pathModel.indexOf("states_spec");
+				endSubstring = pathIUT.indexOf("states_iut");
 				variationType = "numStates";
 				if (endSubstring < 0) {
-					endSubstring = pathModel.indexOf("pct_spec");
+					endSubstring = pathIUT.indexOf("pct_iut");
 					variationType = "percentage";
 				}
 				if (endSubstring > 0) {
-					variation = pathModel.substring(iniSubstring, endSubstring);
+					variation = pathIUT.substring(iniSubstring, endSubstring);
 				} else {
 					variationType = "";
 					variation = "";
@@ -425,7 +425,7 @@ public class RunJTorx {
 			row.add(Objects.toString(conform));
 			row.add(variation);
 			row.add(variationType);
-			row.add(String.format("%.2f",time));
+			row.add(String.format("%.2f",time).replace(",", "."));
 			row.add(unitTime);
 			row.add(Objects.toString(memory));
 			row.add(unityMemory);
