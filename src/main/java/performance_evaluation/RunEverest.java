@@ -41,102 +41,14 @@ public class RunEverest {
 			String batchFileEverest = "C:\\Users\\camil\\Desktop\\everest.bat";
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
-					"unity", "memory", "unit", "pathTSSaved" });
-
-			// String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta\\test1.csv";
-			// String pathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta\\testSuite.csv";
-			//
-			// String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta
-			// (2)\\+1000\\1000pct_spec.aut";
-			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
-			// (2)\\+1000\\1000pct_spec.aut";
-
-			// String pathAutSpec =
-			// "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-spec.aut";// iolts-spec
-			// String pathAutIUT =
-			// "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-q.aut";// iolts-impl
-
-			// String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta
-			// (2)\\-1000\\250-500\\1555states_spec.aut";
-			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
-			// (2)\\-1000\\250-500\\1555states_spec.aut";
-
-			// boolean stateVariation = true;
-
-			// String pathAutSpec = "C:\\Users\\camil\\Desktop\\Nova pasta
-			// (2)\\modelos2000states\\2050states_spec_49.aut";
-			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\Nova pasta
-			// (2)\\modelos2000states\\2050states_spec_49.aut";
-			// String pathSaveTS = "C:\\Users\\camil\\Desktop\\Nova pasta\\";
-			// String pathCsv = "C:\\Users\\camil\\Desktop\\Nova pasta\\teste.csv";
-			// boolean stateVariation = true;
-			// run(batchFileEverest, root_img, pathAutSpec, pathAutIUT, pathSaveTS,
-			// headerCSV,
-			// pathCsv, stateVariation);
-
-			// boolean stateVariation = true;// state or percentage
-			// String rootPathModels = "C:\\Users\\camil\\Desktop\\models\\aut\\";
-			// String rootPathSaveTS =
-			// "C:\\Users\\camil\\Desktop\\models\\result\\testSuite.csv";
-			// String pathCsv = "C:\\Users\\camil\\Desktop\\models\\result\\everest.csv";
-			//
-			// String errorFolder = rootPathModels + "\\error\\";
-			// Path errorPath = Paths.get(errorFolder);
-			// String successFolder = rootPathModels + "\\success\\";
-			// Path successPath = Paths.get(successFolder);
-			// if (!Files.exists(errorPath)) {
-			// Files.createDirectory(errorPath);
-			// }
-			// if (!Files.exists(successPath)) {
-			// Files.createDirectory(successPath);
-			// }
-			//
-			// File folder = new File(rootPathModels);
-			// File[] listOfFiles = folder.listFiles();
-			// String pathSaveTS;
-			//
-			// String pathModel;
-			// int count = 0;
-			// for (File file : listOfFiles) {
-			// if (file.getName().indexOf(".") != -1
-			// && file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
-			// pathModel = rootPathModels + file.getName();
-			// pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut",
-			// "") + "\\";
-			// count++;
-			// Future<String> control = Executors.newSingleThreadExecutor().submit(new
-			// TimeOut(batchFileEverest,
-			// root_img, pathModel,
-			//
-			// pathModel, pathSaveTS, headerCSV, pathCsv, stateVariation));
-			//
-			// try {
-			// int limitTime = 3;
-			// control.get(limitTime, TimeUnit.MINUTES);
-			//
-			//
-			// Thread.sleep(500);
-			//
-			// Files.move(Paths.get(pathModel), Paths.get(successFolder + file.getName()));
-			// } catch (Exception e) {// TimeoutException
-			// // mover arquivo para pasta de erro
-			// e.printStackTrace();
-			//
-			// Files.move(Paths.get(pathModel), Paths.get(errorFolder + file.getName()));
-			// }
-			// }
-			// }
+					"unity", "memory", "unit", "pathTSSaved" });		
 
 			boolean stateVariation = true;// state or percentage
-			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\models-30-new\\iut\\";
-			String pathAutSpec = "C:\\Users\\camil\\Desktop\\models-30-new\\spec.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\models-30-new\\";
-			String pathCsv = "C:\\Users\\camil\\Desktop\\models-30-new\\everest.csv";
+			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\25-100\\25\\iut\\";
+			String pathAutSpec = "C:\\Users\\camil\\Desktop\\25-100\\25\\25states_spec.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\25-100\\25\\result\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\25-100\\25\\result\\everest.csv";
 
-			// String rootPathModels = "C:\\Users\\camil\\Desktop\\novos\\spec\\";
-			// String pathAutIUT = "C:\\Users\\camil\\Desktop\\models-30\\30states_iut.aut";
-			// String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\novos\\";
-			// String pathCsv = "C:\\Users\\camil\\Desktop\\novos\\everest.csv";
 
 			String errorFolder = rootPathIUTs + "\\error\\";
 			Path errorPath = Paths.get(errorFolder);
@@ -166,8 +78,9 @@ public class RunEverest {
 							root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV, pathCsv, stateVariation));
 
 					try {
-						int limitTime = 9000000;//40
-						control.get(limitTime, TimeUnit.SECONDS);
+						int limitTime = 5;//40
+						control.get(limitTime, TimeUnit.MINUTES);
+
 
 						Thread.sleep(500);
 						Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
@@ -191,6 +104,14 @@ public class RunEverest {
 
 			}
 
+			
+			// //run one test 			
+//			String pathSaveTS = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\ts.csv";
+//			String pathCsv = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\everest.csv";
+//			
+//			String path = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\ex-2\\";
+//			run( batchFileEverest,  root_img,  path+"iolts-spec-n.aut",  path+"iolts-iut-p.aut",
+//					 pathSaveTS,  headerCSV,  pathCsv,  false);
 		} catch (Exception e) {
 			Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
 			// TODO Auto-generated catch block

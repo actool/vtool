@@ -42,6 +42,7 @@ public class IocoConformance {
 	 * @return
 	 */
 	public static Automaton_ verifyIOCOConformance(IOLTS S, IOLTS I) {
+		//System.out.println(new Date());
 		List<String> alphabet = new ArrayList();
 		alphabet.addAll(I.getAlphabet());
 		alphabet.addAll(S.getAlphabet());
@@ -49,20 +50,23 @@ public class IocoConformance {
 		alphabet = new ArrayList<>(hashSet_s_);
 		S.setAlphabet(alphabet);
 
-		// build the fault model, containing all fail behaviors based on specification
-		// model
-		//System.out.println("at" + new Date());
+//		System.out.println("tamanho s: " + S.getTransitions().size());
+//		System.out.println("tamanho i: " + I.getTransitions().size());
+		// build the fault model, containing all fail behaviors based on specification		
 		Automaton_ at = faultModelIoco(S);
-		//System.out.println("ai" + new Date());
+//		System.out.println("tamanho at: " + at.getTransitions().size());
+		
 		// automaton underlying the implementation
 		Automaton_ ai = I.ioltsToAutomaton();
-		//System.out.println("ab" + new Date());
+//		System.out.println("tamanho ai: " + ai.getTransitions().size());
 		
-		//System.out.println(at.getTransitions().size()+"  -   "+ai.getTransitions().size());
+		
 		// intersection between the implementation and failure model to find fault
-		Automaton_ ab = Operations.intersection(at, ai);
-
-		//System.out.println("fim ab:"+ new Date());
+		Automaton_ ab = Operations.intersection(at, ai);		
+		//System.out.println("tamanho ab: " + ab.getTransitions().size());
+		//System.out.println(new Date());
+		
+		
 		/*
 		 * System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 		 * ; System.out.
@@ -97,17 +101,20 @@ public class IocoConformance {
 	 * @return the fault model automaton
 	 */
 	private static Automaton_ faultModelIoco(IOLTS S) {
-		//System.out.println("as" + new Date());
+		
 		// automaton underlying the specification IOLTS S
 		Automaton_ as = S.ioltsToAutomaton();
+//		System.out.println("tamanho as: " + as.getTransitions().size());
+		
 		// automaton complement of specification
-		//System.out.println("aCompS" + new Date());
 		Automaton_ aCompS = Operations.complement(as);
+//		System.out.println("tamanho acompS: " + aCompS.getTransitions().size());
+		
 		// automaton D with the desired behaviors
-		//System.out.println("ad" + new Date());
 		Automaton_ ad = modelD(S);
+//		System.out.println("tamanho ad: " + ad.getTransitions().size());
 
-		//System.out.println("fim ad" + new Date());
+		
 
 		/*
 		 * System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")

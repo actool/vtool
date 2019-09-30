@@ -262,6 +262,7 @@ public class ConformanceView extends JFrame {
 		if (conformidade != null) {// verified compliance
 			if (S.getTransitions().size() > 0 || I.getTransitions().size() > 0) {
 				if (ioco) {
+					//System.out.println("|"+failPath+"|");
 					if (!failPath.equals("")) {
 						lbl_veredict_ioco.setText(Constants.MSG_NOT_CONFORM);
 					} else {
@@ -280,14 +281,15 @@ public class ConformanceView extends JFrame {
 						}
 					}
 
-					if (!failPath.equals("")) {
+					//if (!failPath.equals("")) {
 						taTestCasesIoco.setText(failPath);
 						// btnTestCases_ioco.setVisible(true);
-					}
+					//}
 				} else {
 					// lbl_veredict_lang.setText(Operations.veredict(conformidade));
 
-					if (!failPath.equals("")) {
+					
+					if (failPath.isEmpty()) {
 						lbl_veredict_lang.setText(Constants.MSG_NOT_CONFORM);
 					} else {
 						lbl_veredict_lang.setText(Constants.MSG_CONFORM);
