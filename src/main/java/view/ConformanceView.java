@@ -280,6 +280,7 @@ public class ConformanceView extends JFrame {
 							lbl_veredict_ioco.setText(Constants.MSG_CONFORM);
 						}
 					}
+					lbl_veredict_ioco.setVisible(true);
 
 					//if (!failPath.equals("")) {
 						taTestCasesIoco.setText(failPath);
@@ -289,7 +290,7 @@ public class ConformanceView extends JFrame {
 					// lbl_veredict_lang.setText(Operations.veredict(conformidade));
 
 					
-					if (failPath.isEmpty()) {
+					if (!failPath.equals("")) {
 						lbl_veredict_lang.setText(Constants.MSG_NOT_CONFORM);
 					} else {
 						lbl_veredict_lang.setText(Constants.MSG_CONFORM);
@@ -328,7 +329,7 @@ public class ConformanceView extends JFrame {
 		verifyModelFileChange(ioco);
 		errorMessage(ioco);
 
-		long startTime = System.nanoTime();
+		
 
 		// IOLTS s = S;
 		// IOLTS i = I;
@@ -361,13 +362,7 @@ public class ConformanceView extends JFrame {
 			 * else { errorMessage(ioco); }
 			 */
 
-		long endTime = System.nanoTime();
-		long totalTime = endTime - startTime;
-
-		long convert = TimeUnit.SECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
-		// convert = TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
-		String time = convert + " seconds";
-		System.out.println(time);
+		
 
 	}
 
@@ -802,6 +797,7 @@ public class ConformanceView extends JFrame {
 				if (tab.equals(ViewConstants.tabIOCO)) {
 					ioco = true;
 
+					lbl_veredict_ioco.setVisible(false);
 					loading.setVisible(true);
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {

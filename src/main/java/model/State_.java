@@ -6,7 +6,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class State_
@@ -23,11 +25,15 @@ public class State_ {
 	// to get path
 	private boolean visited;
 
+
+
+
 	/***
 	 * empty constructor
 	 */
 	public State_() {
 		this.name = "";
+		
 	}
 
 	/***
@@ -39,6 +45,7 @@ public class State_ {
 		this.id = state.id;
 		this.name = state.name;
 		this.info = state.info;
+		
 	}
 
 	/***
@@ -48,6 +55,7 @@ public class State_ {
 	 */
 	public State_(String name) {
 		this.name = name;
+		
 	}
 
 	/***

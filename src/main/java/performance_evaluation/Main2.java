@@ -31,12 +31,12 @@ public class Main2 {
 		
 		
 		Automaton_ a = iolts.ioltsToAutomaton();
-//		List<State_> states = new ArrayList<>();
-//		states.add(new State_("q2"));
-//		states.add(new State_("q1"));
-//		a.setFinalStates(states);
+		List<State_> states = new ArrayList<>();
+		states.add(new State_("q0"));
+		states.add(new State_("q3"));
+		a.setFinalStates(states);
 		
-		System.out.println(Operations.getWordsFromAutomaton(a));//true
+		//System.out.println(Operations.getWordsFromAutomaton(a));//true
 		
 		
 		
