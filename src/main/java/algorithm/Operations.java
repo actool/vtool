@@ -111,18 +111,18 @@ public class Operations {
 	 * 
 	 * @return as transitions without the TAU label
 	 */
-	public static List<Transition_> processTauTransition(List<Transition_> transitions) {
-		List<Transition_> newTransitions = new ArrayList<Transition_>();
-		// treats transitions when TAU in LTS converts to EPSILON in automato
-		for (Transition_ t : transitions) {
-			if (t.getLabel().equals(Constants.TAU)) {
-				newTransitions.add(new Transition_(t.getIniState(), Constants.EPSILON, t.getEndState()));
-			} else {
-				newTransitions.add(t);
-			}
-		}
-		return newTransitions;
-	}
+//	public static List<Transition_> processTauTransition(List<Transition_> transitions) {
+//		List<Transition_> newTransitions = new ArrayList<Transition_>();
+//		// treats transitions when TAU in LTS converts to EPSILON in automato
+//		for (Transition_ t : transitions) {
+//			if (t.getLabel().equals(Constants.TAU)) {
+//				newTransitions.add(new Transition_(t.getIniState(), Constants.EPSILON, t.getEndState()));
+//			} else {
+//				newTransitions.add(t);
+//			}
+//		}
+//		return newTransitions;
+//	}
 
 	/***
 	 * It transforms the nondeterministic automaton into deterministic, removing the
@@ -348,7 +348,9 @@ public class Operations {
 							if (S.getFinalStates().contains(new State_(endStateS.getName()))
 									&& Q.getFinalStates().contains(new State_(endStateQ.getName()))) {
 								Ar.addFinalStates(synchronized_);
+								
 								if (nFinalState != null && Ar.getFinalStates().size() == nFinalState) {
+									//System.err.println("break");
 									break endIntersection;
 								}
 							}
@@ -659,8 +661,7 @@ public class Operations {
 
 				current = parent_state.get(current);
 
-				if (current == null) {
-					System.out.println("word:" + word);
+				if (current == null) {					
 					break;
 				}
 
@@ -678,13 +679,14 @@ public class Operations {
 			}
 
 			if (ioco) { // remove last output if ioco
+				//System.err.println("word:"+word);
 				if (word.lastIndexOf(" -> ") != -1) {
 					word = word.substring(0, word.lastIndexOf(" -> "));
 				}
 			}
 
 			if (!words.contains(word)) {
-				System.out.println("word: " + word);
+				//System.out.println("word:"+word);
 				words.add(word);
 			}
 
@@ -694,7 +696,7 @@ public class Operations {
 			}
 		}
 
-		System.out.println("fim getword");
+		
 		return words;
 
 	}
@@ -1060,6 +1062,7 @@ public class Operations {
 				specOut = S_.outputsOfState(s);
 				a += "\n\t output: " + specOut + "\n";
 				outputs.addAll(specOut);
+				System.err.println(s+" - " + specOut);
 			} /*
 				 * else { if (r_list.get(s).contains("there are no transitions")) { a +=
 				 * "\n\t output: \n"; } }
@@ -1141,7 +1144,8 @@ public class Operations {
 		String path = "";
 		if (ioco) {
 			testCases = getWordsFromAutomaton(faultModel, ioco);
-
+			System.out.println("testCases: " + testCases);
+			
 			State_ currentState_s;
 			State_ currentState_i;
 
@@ -1177,17 +1181,19 @@ public class Operations {
 			// }
 		}
 
-		for (String t : testCases) {
-			System.out.println("test case");
+		
+		System.out.println(S);
+		
+		for (String t : testCases) {			
 			Object[] result_s = path(S, ioco, t, "\nModel");
 			Object[] result_i = path(I, ioco, t, "\nImplementation");
 			ArrayList<String> out_s = (ArrayList<String>) result_s[2];
 			ArrayList<String> out_i = (ArrayList<String>) result_i[2];
 
-			// System.out.println("teste: " + t);
-			// System.out.println("model state: " + result_s[0] + " saida: "+out_s);
-			// System.out.println("iut state: " + result_i[0] + " saida: " + out_i);
-			// System.out.println("-------------------------------------------------");
+			 System.out.println("teste: " + t);
+			 System.out.println("model state: " + result_s[0] + " saida: "+out_s);
+			 System.out.println("iut state: " + result_i[0] + " saida: " + out_i);
+			 System.out.println("-------------------------------------------------");
 
 			if (!out_s.containsAll(out_i) && !(ioco && out_s.size() == 0)// IOCO
 			// && (!ioco && (result_s[1].toString().contains(Constants.NO_TRANSITION) ||

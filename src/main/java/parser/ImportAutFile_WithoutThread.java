@@ -281,7 +281,13 @@ public class ImportAutFile_WithoutThread {
 							// creates states and transitions
 							iniState = new State_(val[0].trim());
 							endState = new State_(val[2].trim());
-							transition = new Transition_(iniState, val[1].trim(), endState);
+							
+							if(val[1].trim().equals(Constants.TAU)) {//process tau
+								transition = new Transition_(iniState, Constants.EPSILON, endState);
+							}else {
+								transition = new Transition_(iniState, val[1].trim(), endState);
+							}
+							
 
 							// assigns the attributes to the LTS
 							lts.addState(iniState);
@@ -318,7 +324,7 @@ public class ImportAutFile_WithoutThread {
 
 			// if there is no inconsistency in reading the transitions, you do not need
 			// validate if qt of transitions and states beat with configuration (JTorx)
-			if (msg_cont == 0) {// if (msg.equals("")) {
+			if (msg_cont == 0) {// if (msg.equals("")) {				
 				return lts;
 			} else {
 				msg = ("inconsistencies in reading the .aut file! \n" + "Path: " + path + "\n" + "Message: \n" + msg);

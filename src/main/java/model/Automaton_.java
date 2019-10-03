@@ -29,7 +29,7 @@ public class Automaton_ extends LTS {
 		this.initialState = iniState;
 		this.alphabet = alphabet;
 		this.finalStates = finalStates;
-		this.transitions = Operations.processTauTransition(transitions);
+		this.transitions =  transitions;//Operations.processTauTransition(transitions);
 	}
 	
 	/***

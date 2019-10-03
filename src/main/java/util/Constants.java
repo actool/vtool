@@ -23,7 +23,7 @@ public class Constants {
 	
 	public static final String NO_TRANSITION = "there are no transitions of ";
 	
-	public static final Integer MAX_TEST_CASES = 8;
+	public static final Integer MAX_TEST_CASES = 10;
 	public static final Integer MAX_TEST_CASES_REAL = 5;
 	
 	
