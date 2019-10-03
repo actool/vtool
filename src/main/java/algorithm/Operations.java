@@ -302,7 +302,7 @@ public class Operations {
 		List<State_> sTransitions, qTransitions;
 
 		// while there are states to be synchronized
-		 while (synchronizedStates.size() > 0) {
+		endIntersection: while (synchronizedStates.size() > 0) {
 			// emoves the first element from the list of states to be synchronized
 			removed = synchronizedStates.remove(0);
 
@@ -341,25 +341,24 @@ public class Operations {
 							synchronized_.setName(synchronized_.getName().replaceAll(Constants.SEPARATOR, ""));
 							Ar.addState(synchronized_);
 
+							// adds the transition that corresponds to synchronization
+							Ar.addTransition(new Transition_(removed, l, synchronized_));
+
 							// add final state
 							if (S.getFinalStates().contains(new State_(endStateS.getName()))
 									&& Q.getFinalStates().contains(new State_(endStateQ.getName()))) {
 								Ar.addFinalStates(synchronized_);
 								if (nFinalState != null && Ar.getFinalStates().size() == nFinalState) {
-									System.err.println("break.." + Ar.getFinalStates().size());
-									
+									break endIntersection;
 								}
 							}
 
-							// adds the transition that corresponds to synchronization
-							Ar.addTransition(new Transition_(removed, l, synchronized_));
 						}
 					}
 				}
 			}
 		}
 
-		System.err.println("saiu do while.." + Ar.getFinalStates().size());
 		// part = null;
 		// s = "";
 		// q = "";
@@ -580,9 +579,7 @@ public class Operations {
 
 	// // state coverage, dijkstra
 	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco) {
-		
-		
-		
+
 		String tagSeparator = " -> ";
 		List<String> words = new ArrayList<>();
 
@@ -611,16 +608,16 @@ public class Operations {
 		// dijkstra
 		List<Transition_> transitions;
 		while (cost_state_rm.size() != 0) {
-			// // verify if all final states was explorated, ****** se der bug tira isso
-			// cont = 0;
-			// for (State_ s : a.getFinalStates()) {
-			// if (cost_state_rm.containsKey(s.getName())) {
-			// cont++;
-			// }
-			// }
-			// if (cont == 0) {
-			// break;
-			// }
+			// verify if all final states was explorated, ****** se der bug tira isso
+			cont = 0;
+			for (State_ s : a.getFinalStates()) {
+				if (cost_state_rm.containsKey(s.getName())) {
+					cont++;
+				}
+			}
+			if (cont == 0) {
+				break;
+			}
 
 			// lowest cost state
 			Entry<String, Integer> min = Collections.min(cost_state_rm.entrySet(),
@@ -660,13 +657,12 @@ public class Operations {
 			while (!current.equals(a.getInitialState().getName())) {
 				word += label.get(current) + tagSeparator;
 
-				//System.out.println("current:" + current);
 				current = parent_state.get(current);
-				
-//				if(current==null) {
-//					System.out.println("word:" + word);
-//					break;
-//				}
+
+				if (current == null) {
+					System.out.println("word:" + word);
+					break;
+				}
 
 			}
 			// invert word, to initi by initState
@@ -688,14 +684,17 @@ public class Operations {
 			}
 
 			if (!words.contains(word)) {
+				System.out.println("word: " + word);
 				words.add(word);
 			}
 
-			if (words.size() == 5) {
+			
+			if (words.size() == Constants.MAX_TEST_CASES) {
 				break;
 			}
 		}
 
+		System.out.println("fim getword");
 		return words;
 
 	}
@@ -1137,7 +1136,7 @@ public class Operations {
 	 *         specification
 	 */
 	public static String path(IOLTS S, IOLTS I, Automaton_ faultModel, boolean ioco, boolean transitionCoverSpec) {
-
+		int contTestCase = 0;
 		List<String> testCases;
 		String path = "";
 		if (ioco) {
@@ -1153,11 +1152,14 @@ public class Operations {
 			currentState_i = I.getInitialState();
 			implOut = I.outputsOfState(currentState_i);
 			specOut = S.outputsOfState(currentState_s);
+			
+			
 
 			// verify if initial state is not conform
 			if (!specOut.containsAll(implOut) && !(ioco && specOut.size() == 0)) {// (ioco && specOut.size() == 0) ->
 																					// when the test case can not be run
 																					// completely
+				contTestCase++;
 				path = "Test case: \t" + ""; // + "\n"
 				path += "\n\nModel outputs: " + specOut + " \n\n\t path:" + currentState_s.getName() + "\n\t output: "
 						+ S.outputsOfState(currentState_s);
@@ -1176,6 +1178,7 @@ public class Operations {
 		}
 
 		for (String t : testCases) {
+			System.out.println("test case");
 			Object[] result_s = path(S, ioco, t, "\nModel");
 			Object[] result_i = path(I, ioco, t, "\nImplementation");
 			ArrayList<String> out_s = (ArrayList<String>) result_s[2];
@@ -1190,10 +1193,15 @@ public class Operations {
 			// && (!ioco && (result_s[1].toString().contains(Constants.NO_TRANSITION) ||
 			// result_i[1].toString().contains(Constants.NO_TRANSITION))) //LANG
 			) {
+				contTestCase++;
 				path += "Test case: \t" + t;
 				path += result_s[1];
 				path += result_i[1];
 				path += "\n################################################################## \n";
+			}
+			
+			if(contTestCase>=Constants.MAX_TEST_CASES_REAL) {
+				break;
 			}
 		}
 
