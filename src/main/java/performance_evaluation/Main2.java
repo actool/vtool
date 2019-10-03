@@ -36,7 +36,7 @@ public class Main2 {
 		states.add(new State_("q3"));
 		a.setFinalStates(states);
 		
-		//System.out.println(Operations.getWordsFromAutomaton(a));//true
+		System.out.println(Operations.getWordsFromAutomaton(a, false));//true
 		
 		
 		

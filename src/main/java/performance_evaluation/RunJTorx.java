@@ -43,10 +43,11 @@ public class RunJTorx {
 
 	
 			boolean stateVariation = true;// state or percentage
-			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\25-100\\25\\iut\\";
-			String pathAutSpec = "C:\\Users\\camil\\Desktop\\25-100\\25\\25states_spec.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\25-100\\25\\result\\";
-			String pathCsv = "C:\\Users\\camil\\Desktop\\25-100\\25\\result\\jtorx.csv";
+			int nState = 500;
+			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\iut\\";
+			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\result\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\250-3000\\jtorx-everest.csv";
 										
 
 			String errorFolder = rootPathIUTs + "\\error\\";
@@ -167,9 +168,10 @@ public class RunJTorx {
 		// check button
 		s.click(root_img + "btn-check.PNG");
 
-		double time_ini = System.nanoTime();
+		
 		//time_ini = System.currentTimeMillis();
 		double time_end = 0;
+		double time_ini = System.nanoTime();
 		// wait until verify
 		while (true) {
 			try {
@@ -346,6 +348,8 @@ public class RunJTorx {
 			row.add(unityMemory);
 			row.add(pathSaveTS);
 
+			
+			
 			FileWriter csvWriter;
 
 			File file = new File(pathCsv);

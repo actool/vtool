@@ -280,7 +280,7 @@ public class ConformanceView extends JFrame {
 							lbl_veredict_ioco.setText(Constants.MSG_CONFORM);
 						}
 					}
-					lbl_veredict_ioco.setVisible(true);
+					//lbl_veredict_ioco.setVisible(true);
 
 					//if (!failPath.equals("")) {
 						taTestCasesIoco.setText(failPath);
@@ -797,7 +797,9 @@ public class ConformanceView extends JFrame {
 				if (tab.equals(ViewConstants.tabIOCO)) {
 					ioco = true;
 
-					lbl_veredict_ioco.setVisible(false);
+					//lbl_veredict_ioco.setVisible(false);
+					lbl_veredict_ioco.setText("[Verdict]");
+					lbl_veredict_ioco.setForeground(SystemColor.windowBorder);
 					loading.setVisible(true);
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {

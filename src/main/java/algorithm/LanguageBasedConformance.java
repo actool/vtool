@@ -35,7 +35,8 @@ public class LanguageBasedConformance {
 	 *            regex of undesirable behaviors
 	 * @return
 	 */
-	public static Automaton_ verifyLanguageConformance(LTS S, LTS I, String D, String F) {
+	public static Automaton_ verifyLanguageConformance(LTS S, LTS I, String D, String F) {		
+		
 		//S = Operations.convertToDeterministicAutomaton();
 		List<String> alphabet = new ArrayList();
 		alphabet.addAll(I.getAlphabet());
@@ -47,8 +48,11 @@ public class LanguageBasedConformance {
 		Automaton_ at = faultModelLanguage(S, D, F);
 		// implementation automaton
 		Automaton_ ai = I.ltsToAutomaton();
+		
+		
+		
 		// intersection between the implementation and fault model to find fault
-		Automaton_ ab = Operations.intersection(ai,at);//at,ai   //*****************
+		Automaton_ ab = Operations.intersection(ai,at, Constants.MAX_TEST_CASES);//at,ai   //*****************
 
 		/*System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		System.out.println("<<<<<<<<<<<<<<<<<<<< verification conformance based on language >>>>>>>>>>>>>>>>>>>>>");
@@ -95,7 +99,7 @@ public class LanguageBasedConformance {
 			af = Operations.regexToAutomaton(F, "f", S.getAlphabet());
 
 			// Fault automaton that shows the undesirable behaviors present in the specification
-			falhaF = Operations.intersection(af, as);
+			falhaF = Operations.intersection(af, as, null);
 		}
 
 		if (!D.equals("")) {
@@ -133,7 +137,7 @@ public class LanguageBasedConformance {
 						
 			
 			// Fault automaton that shows desirable behaviors not in specification
-			falhaD = Operations.intersection(ad, aCompS);
+			falhaD = Operations.intersection(ad, aCompS, null);
 			
 		}
 

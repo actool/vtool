@@ -37,17 +37,20 @@ import performance_evaluation.RunJTorx.TimeOut;
 public class RunEverest {
 	public static void main(String[] args) throws Exception {
 		try {
+			
+			
 			String root_img = new File("src/main/java/performance_evaluation/everet-img").getCanonicalPath() + "\\";
 			String batchFileEverest = "C:\\Users\\camil\\Desktop\\everest.bat";
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });		
 
+			int nState = 500;
 			boolean stateVariation = true;// state or percentage
-			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\25-100\\25\\iut\\";
-			String pathAutSpec = "C:\\Users\\camil\\Desktop\\25-100\\25\\25states_spec.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\25-100\\25\\result\\";
-			String pathCsv = "C:\\Users\\camil\\Desktop\\25-100\\25\\result\\everest.csv";
+			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\iut\\";
+			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\result\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\250-3000\\jtorx-everest.csv";
 
 
 			String errorFolder = rootPathIUTs + "\\error\\";
@@ -156,7 +159,7 @@ public class RunEverest {
 		d.open(new File(batchFileEverest));
 
 		// wait for open
-		Thread.sleep(2000);
+		Thread.sleep(2500);
 
 		// type spec model
 
@@ -203,8 +206,9 @@ public class RunEverest {
 				s.find(new Pattern(root_img + "lbl-verdict.PNG").similar(0.8f));
 				//s.find(new Pattern(root_img + "img-processing.PNG").similar(1.0f));// 
 				time_end = System.nanoTime();
-				
+			
 			} catch (FindFailed e) {
+				
 				break;
 			}
 		}
@@ -324,6 +328,8 @@ public class RunEverest {
 			row.add(unityMemory);
 			row.add(pathSaveTS);
 
+			
+			
 			FileWriter csvWriter;
 
 			File file = new File(pathCsv);

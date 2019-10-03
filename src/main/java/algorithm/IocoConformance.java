@@ -54,16 +54,16 @@ public class IocoConformance {
 //		System.out.println("tamanho i: " + I.getTransitions().size());
 		// build the fault model, containing all fail behaviors based on specification		
 		Automaton_ at = faultModelIoco(S);
-//		System.out.println("tamanho at: " + at.getTransitions().size());
+		System.out.println("tamanho at: " + at.getTransitions().size());
 		
 		// automaton underlying the implementation
 		Automaton_ ai = I.ioltsToAutomaton();
-//		System.out.println("tamanho ai: " + ai.getTransitions().size());
+		System.out.println("tamanho ai: " + ai.getTransitions().size() + "  ++++++++++++++++++++++");
 		
 		
 		// intersection between the implementation and failure model to find fault
-		Automaton_ ab = Operations.intersection(at, ai);		
-		//System.out.println("tamanho ab: " + ab.getTransitions().size());
+		Automaton_ ab = Operations.intersection(at, ai, Constants.MAX_TEST_CASES);		
+		System.out.println("tamanho ab: " + ab.getFinalStates().size());
 		//System.out.println(new Date());
 		
 		
@@ -139,7 +139,7 @@ public class IocoConformance {
 
 		// intersection between the desirable behavior and the complement of the
 		// specification (which is not in the specification)
-		return Operations.intersection(ad, aCompS);
+		return Operations.intersection(ad, aCompS, null);
 	}
 
 	/***
