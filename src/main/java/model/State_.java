@@ -24,9 +24,22 @@ public class State_ {
 	private String info;
 	// to get path
 	private boolean visited;
+	
+	private List<Transition_> transitions;
 
 
 
+	public void addTransition(Transition_ t) {
+		transitions.add(t);
+	}
+	
+	public List<Transition_> getTransitions() {
+		return transitions;
+	}
+
+	public void setTransitions(List<Transition_> transitions) {
+		this.transitions = transitions;
+	}
 
 	/***
 	 * empty constructor
@@ -45,6 +58,7 @@ public class State_ {
 		this.id = state.id;
 		this.name = state.name;
 		this.info = state.info;
+		this.transitions = new ArrayList<>();
 		
 	}
 
@@ -55,7 +69,7 @@ public class State_ {
 	 */
 	public State_(String name) {
 		this.name = name;
-		
+		this.transitions = new ArrayList<>();
 	}
 
 	/***
@@ -66,6 +80,7 @@ public class State_ {
 	public State_(String name, String info) {
 		this.name = name;
 		this.info = info;
+		this.transitions = new ArrayList<>();
 	}
 
 	/***
@@ -79,6 +94,7 @@ public class State_ {
 	public State_(String name, int id) {
 		this.name = name;
 		this.setId(id);
+		this.transitions = new ArrayList<>();
 	}
 
 	/**

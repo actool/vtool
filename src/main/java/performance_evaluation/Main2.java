@@ -17,6 +17,7 @@ import algorithm.Operations;
 import model.Automaton_;
 import model.IOLTS;
 import model.State_;
+import model.Transition_;
 import parser.ImportAutFile;
 import parser.ImportGraphmlFile;
 import util.AutGenerator;
@@ -28,15 +29,26 @@ public class Main2 {
 		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-q.aut";
 		
 		IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
+		//iolts.addTransition(new Transition_(new State_("q0"), "a", new State_("q3")));
+		//iolts.getTransitions().remove(8);
 		
+		for (Transition_ t: iolts.getTransitions()) {
+			t.setIniState(iolts.getStates().stream().filter(x->x.equals(t.getIniState())).findFirst().orElse(null));
+			t.setEndState(iolts.getStates().stream().filter(x->x.equals(t.getEndState())).findFirst().orElse(null));
+			iolts.getStates().stream().filter(x->x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
+			
+		}
+		iolts.setInitialState(iolts.getStates().stream().filter(x -> x.equals(iolts.getInitialState())).findFirst().orElse(null));
 		
-		Automaton_ a = iolts.ioltsToAutomaton();
-		List<State_> states = new ArrayList<>();
-		states.add(new State_("q0"));
-		states.add(new State_("q3"));
-		a.setFinalStates(states);
+		System.out.println(Operations.statePath(iolts, "a -> b"));
 		
-		System.out.println(Operations.getWordsFromAutomaton(a, false));//true
+//		Automaton_ a = iolts.ioltsToAutomaton();
+//		List<State_> states = new ArrayList<>();
+//		states.add(new State_("q0"));
+//		states.add(new State_("q3"));
+//		a.setFinalStates(states);
+//		
+//		System.out.println(Operations.getWordsFromAutomaton(a, false));//true
 		
 		
 		

@@ -128,7 +128,7 @@ public class Transition_ {
 	 * @param endState
 	 * 
 	 */
-	public void serEndState(State_ endState) {
+	public void setEndState(State_ endState) {
 		this.endState = endState;
 	}
 

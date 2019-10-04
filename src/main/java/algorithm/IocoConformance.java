@@ -54,7 +54,7 @@ public class IocoConformance {
 //		System.out.println("tamanho i: " + I.getTransitions().size());
 		// build the fault model, containing all fail behaviors based on specification		
 		Automaton_ at = faultModelIoco(S);
-		System.out.println("tamanho at: " + at.getTransitions().size());
+		//System.out.println("tamanho at: " + at.getTransitions().size());
 		
 		// automaton underlying the implementation
 		Automaton_ ai = I.ioltsToAutomaton();
@@ -104,15 +104,15 @@ public class IocoConformance {
 		
 		// automaton underlying the specification IOLTS S
 		Automaton_ as = S.ioltsToAutomaton();
-		System.out.println("tamanho as: " + as.getTransitions().size());
+		//System.out.println("tamanho as: " + as.getTransitions().size());
 		
 		// automaton complement of specification
 		Automaton_ aCompS = Operations.complement(as);
-		System.out.println("tamanho acompS: " + aCompS.getTransitions().size());
+		//System.out.println("tamanho acompS: " + aCompS.getTransitions().size());
 		
 		// automaton D with the desired behaviors
 		Automaton_ ad = modelD(S);
-		System.out.println("tamanho ad: " + ad.getTransitions().size());
+		//System.out.println("tamanho ad: " + ad.getTransitions().size());
 
 		
 
