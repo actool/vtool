@@ -38,66 +38,67 @@ public class RunJTorx {
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });
+			String numTestCaseToGenerate = "10";	
 
 			
 
 	
-			boolean stateVariation = true;// state or percentage
-			int nState = 500;
-			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\iut\\";
-			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\result\\";
-			String pathCsv = "C:\\Users\\camil\\Desktop\\250-3000\\jtorx-everest.csv";
-										
+//			boolean stateVariation = true;// state or percentage
+//			int nState = 500;
+//			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\iut\\";
+//			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";
+//			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\result\\";
+//			String pathCsv = "C:\\Users\\camil\\Desktop\\250-3000\\jtorx-everest.csv";
+//									
+//
+//			String errorFolder = rootPathIUTs + "\\error\\";
+//			Path errorPath = Paths.get(errorFolder);
+//			String successFolder = rootPathIUTs + "\\success\\";
+//			Path successPath = Paths.get(successFolder);
+//			if (!Files.exists(errorPath)) {
+//				Files.createDirectory(errorPath);
+//			}
+//			if (!Files.exists(successPath)) {
+//				Files.createDirectory(successPath);
+//			}
+//
+//			File folder = new File(rootPathIUTs);
+//			File[] listOfFiles = folder.listFiles();
+//			String pathSaveTS;
+//
+//			String pathIUT;
+//			int count = 0;
+//			for (File file : listOfFiles) {
+//				if (file.getName().indexOf(".") != -1
+//						&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+//					pathIUT = rootPathIUTs + file.getName();
+//					pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut", "") + "\\";
+//					count++;
+//					Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(batchFileJTorx,
+//							root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV, pathCsv, stateVariation,numTestCaseToGenerate));
+//
+//					try {
+//						int limitTime = 3;
+//						control.get(limitTime, TimeUnit.MINUTES);
+//						Thread.sleep(500);
+//						Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
+//					} catch (Exception e) {// TimeoutException
+//						// mover arquivo para pasta de erro
+//						e.printStackTrace();
+//						Thread.sleep(500);
+//						Files.move(Paths.get(pathIUT), Paths.get(errorFolder + file.getName()));
+//					}
+//				}
+//			}
 
-			String errorFolder = rootPathIUTs + "\\error\\";
-			Path errorPath = Paths.get(errorFolder);
-			String successFolder = rootPathIUTs + "\\success\\";
-			Path successPath = Paths.get(successFolder);
-			if (!Files.exists(errorPath)) {
-				Files.createDirectory(errorPath);
-			}
-			if (!Files.exists(successPath)) {
-				Files.createDirectory(successPath);
-			}
 
-			File folder = new File(rootPathIUTs);
-			File[] listOfFiles = folder.listFiles();
-			String pathSaveTS;
-
-			String pathIUT;
-			int count = 0;
-			for (File file : listOfFiles) {
-				if (file.getName().indexOf(".") != -1
-						&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
-					pathIUT = rootPathIUTs + file.getName();
-					pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut", "") + "\\";
-					count++;
-					Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(batchFileJTorx,
-							root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV, pathCsv, stateVariation));
-
-					try {
-						int limitTime = 3;
-						control.get(limitTime, TimeUnit.MINUTES);
-						Thread.sleep(500);
-						Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
-					} catch (Exception e) {// TimeoutException
-						// mover arquivo para pasta de erro
-						e.printStackTrace();
-						Thread.sleep(500);
-						Files.move(Paths.get(pathIUT), Paths.get(errorFolder + file.getName()));
-					}
-				}
-			}
-
-
-// //run one test 
-//			String pathSaveTS = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\";
-//			String pathCsv = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\jtorx.csv";
-//			
-//			String path = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\ex-2\\";
-//			run( batchFileJTorx,  root_img,  path+"iolts-spec-n.aut",  path+"iolts-iut-p.aut",
-//					 pathSaveTS,  headerCSV,  pathCsv,  false);
+ //run one test 
+			String pathSaveTS = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\";
+			String pathCsv = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\jtorx.csv";
+			
+			String path = "C:\\Users\\camil\\Desktop\\25-100\\100\\";
+			run( batchFileJTorx,  root_img,  path+"100states_spec.aut",  path+"iut\\1pct_iut_0.aut",
+					 pathSaveTS,  headerCSV,  pathCsv,  false,numTestCaseToGenerate);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,12 +106,12 @@ public class RunJTorx {
 	}
 
 	public static class TimeOut implements Callable<String> {
-		String batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv;
+		String batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv,numTestCaseToGenerate;
 		boolean stateVariation;
 		List<String> headerCSV;
 
 		public TimeOut(String batchFileJTorx, String root_img, String pathIUT, String pathSpec, String pathSaveTS,
-				List<String> headerCSV, String pathCsv, boolean stateVariation) throws Exception {
+				List<String> headerCSV, String pathCsv, boolean stateVariation,String numTestCaseToGenerate) throws Exception {
 
 			this.batchFileJTorx = batchFileJTorx;
 			this.root_img = root_img;
@@ -120,11 +121,12 @@ public class RunJTorx {
 			this.headerCSV = headerCSV;
 			this.pathCsv = pathCsv;
 			this.stateVariation = stateVariation;
+			this.numTestCaseToGenerate = numTestCaseToGenerate;
 		}
 
 		@Override
 		public String call() throws Exception {
-			run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation);
+			run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation, numTestCaseToGenerate);
 			return "";
 		}
 	}
@@ -132,7 +134,7 @@ public class RunJTorx {
 	static String delimiterCSV = "*";
 
 	public static void run(String batchFileJTorx, String root_img, String pathAutSpec, String pathAutIUT,
-			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation) throws Exception {
+			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation, String numTestCaseToGenerate) throws Exception {
 
 		// run JTorx
 		Desktop d = Desktop.getDesktop();
@@ -164,7 +166,15 @@ public class RunJTorx {
 
 		// ioco menu click
 		s.click(root_img + "item-menu-ioco.PNG");
-
+		Thread.sleep(500);
+		
+		//set n test case to generate
+		s.type(Key.TAB);
+		s.type(Key.RIGHT);
+		s.type(Key.BACKSPACE);
+		s.type(numTestCaseToGenerate);
+		
+		
 		// check button
 		s.click(root_img + "btn-check.PNG");
 

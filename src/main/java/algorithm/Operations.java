@@ -957,6 +957,7 @@ public class Operations {
 		}
 	}
 
+	//return the state paths get a test case
 	public static List<List<State_>> statePath(IOLTS S, String tc) {
 		List<List<State_>> state_path = new ArrayList<>();
 		state_path.add(Arrays.asList(S.getInitialState()));
@@ -969,10 +970,13 @@ public class Operations {
 			aux = new ArrayList<>();
 			state_path_aux = new ArrayList<>();
 
+			//for each state reached by the word
 			for (List<State_> states : state_path) {
+				//get transitions reached
 				transitions_s = states.get(states.size() - 1).getTransitions().stream()
 						.filter(x -> x.getLabel().equals(word)).collect(Collectors.toList());
 
+				//if none transition reached, in case of conformance based on language, break
 				if (transitions_s.size() == 0) {
 					aux = new ArrayList<>(states);
 					aux.add(new State_("[" + Constants.NO_TRANSITION + states.get(states.size() - 1).getName()
@@ -980,7 +984,7 @@ public class Operations {
 					state_path_aux.add(aux);
 					state_path = state_path_aux;
 					break endWalkPath;
-				} else {
+				} else {//get all states reached by word
 					for (Transition_ t : transitions_s) {
 						aux = new ArrayList<>(states);
 						aux.add(t.getEndState());
@@ -993,146 +997,25 @@ public class Operations {
 
 		}
 
+		//return list of state paths
 		return state_path;
 	}
 
-	// public static Object[] path(IOLTS S, boolean ioco, String testCase, String
-	// model) {
-	//
-	// List<State_> end = new ArrayList<>();
-	// List<State_> stateList = new ArrayList<>();
-	// String path_aux = "";
-	// List<String> specOut;
-	// IOLTS S_ = null;
-	// List<State_> previous_states = new ArrayList<State_>();
-	// List<State_> current_states = new ArrayList<State_>();
-	//
-	// Map<State_, String> r_list = new HashMap<>();
-	// String r;
-	// Map<State_, String> up = new HashMap<>();
-	//
-	// try {
-	// S_ = (IOLTS) S.clone();
-	// getStateByName(S_,
-	// S_.getInitialState().getName()).setInfo(S_.getInitialState().getName() + " ->
-	// ");
-	// } catch (Exception e) {
-	// }
-	//
-	// Map<String, List<State_>> map = new HashMap<String, List<State_>>();
-	//
-	// List<String> alphabet = new ArrayList();
-	// alphabet.addAll(S.getOutputs());
-	// alphabet.addAll(S.getInputs());
-	// HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
-	// alphabet = new ArrayList<>(hashSet_s_);
-	// List<State_> reachedStates;
-	// for (State_ s : S_.getStates()) {
-	// for (String l : alphabet) {// S_.getAlphabet()
-	// reachedStates = S_.reachedStates(s.getName(), l);
-	// if (reachedStates.size() > 0) {
-	// map.put(s + Constants.SEPARATOR + l, reachedStates);
-	// }
-	//
-	// }
-	// }
-	//
-	// previous_states = new ArrayList<State_>();
-	//
-	// S_.getStates().stream().forEach(x -> x.setInfo(null));
-	// getStateByName(S_,
-	// S_.getInitialState().getName()).setInfo(S_.getInitialState().getName() + " ->
-	// ");
-	// previous_states.add(getStateByName(S_, S_.getInitialState().getName()));
-	//
-	// for (String p : testCase.split(" -> ")) {
-	//
-	// up = new HashMap<>();
-	//
-	// if (!r_list.containsKey(S_.getInitialState())) {
-	// r_list.put(S_.getInitialState(), S_.getInitialState().toString() + " -> ");
-	// }
-	//
-	// for (State_ state_ : previous_states) {
-	//
-	// current_states = map.get(state_ + Constants.SEPARATOR + p);
-	//
-	// if (current_states == null || current_states.size() == 0) {// current_states
-	// == null ||
-	//
-	// if (!r_list.get(state_).contains(Constants.NO_TRANSITION)) {
-	// r = r_list.get(state_) + "[" + Constants.NO_TRANSITION + state_.getName() + "
-	// with label " + p
-	// + " ] -> ";
-	// up.put(state_, r);
-	// } else {
-	// up.put(state_, r_list.get(state_));
-	// }
-	//
-	// } else {
-	//
-	// for (State_ s : current_states) {
-	// if (!r_list.get(state_).contains(Constants.NO_TRANSITION)) {
-	// stateList = new ArrayList<>();
-	// stateList.addAll(current_states);
-	// if (r_list.containsKey(state_)) {
-	// r = r_list.get(state_) + s.toString() + " ->";
-	// up.put(s, r);
-	// } else {
-	// r = s.toString() + " ->";
-	// up.put(s, r);
-	// }
-	//
-	// } else {
-	// up.put(state_, r_list.get(state_));
-	// }
-	// }
-	// }
-	// }
-	//
-	// end = new ArrayList<>();
-	// for (Map.Entry<State_, String> pair : up.entrySet()) {
-	// r_list.put(pair.getKey(), pair.getValue());
-	// end.add(pair.getKey());
-	// }
-	//
-	// previous_states = end;
-	//
-	// }
-	//
-	// String a = "";
-	// List<String> outputs = new ArrayList<>();
-	//
-	// for (State_ s : end) {
-	// a += "\n\t path:" + r_list.get(s);
-	// if (ioco && !r_list.get(s).contains(Constants.NO_TRANSITION)) {
-	// specOut = S_.outputsOfState(s);
-	// a += "\n\t output: " + specOut + "\n";
-	// outputs.addAll(specOut);
-	// System.err.println(s + " - " + specOut);
-	// } /*
-	// * else { if (r_list.get(s).contains("there are no transitions")) { a +=
-	// * "\n\t output: \n"; } }
-	// */
-	// }
-	//
-	// if (ioco) {
-	// hashSet_s_ = new LinkedHashSet<>(outputs);
-	// outputs = new ArrayList<>(hashSet_s_);
-	//
-	// path_aux += "\n" + model + " outputs: " + outputs + "\n";
-	// } else {
-	// path_aux += "\n" + model;
-	// }
-	// path_aux += a;
-	//
-	// return new Object[] { end, path_aux, outputs };// new Pair<>(end,
-	// path_aux);// path_aux;
-	// }
-
+	
 	public static String path(IOLTS S, IOLTS I, boolean ioco, List<String> testSuite) {
-
-		if (S.getInitialState().getTransitions().size() == 0) {			
+		int contTestCase = 0;
+		String path_s = "";
+		String path_i = "";
+		List<String> out_s;
+		List<String> out_i;
+		String path = "";
+		List<String> out_s_aux;
+		List<String> out_i_aux;
+		
+		
+		//INI: inserts transitions into states to improve the processing of the getWordsFromAutomaton
+		//verify if model has changed in the interface
+		if (S.getInitialState().getTransitions().size() == 0) {					
 			if (S.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
 				for (Transition_ t : S.getTransitions()) {
 					S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
@@ -1146,6 +1029,7 @@ public class Operations {
 			S.setInitialState(
 					S.getStates().stream().filter(x -> x.equals(S.getInitialState())).findFirst().orElse(null));
 		}
+		//verify if model has changed in the interface
 		if (I.getInitialState().getTransitions().size() == 0) {			
 			if (I.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
 				for (Transition_ t : I.getTransitions()) {
@@ -1160,35 +1044,30 @@ public class Operations {
 			I.setInitialState(
 					I.getStates().stream().filter(x -> x.equals(I.getInitialState())).findFirst().orElse(null));
 		}
-
-		int contTestCase = 0;
-		String path_s = "";
-		String path_i = "";
-		List<String> out_s;
-		List<String> out_i;
-		String path = "";
-		List<String> out_s_aux;
-		List<String> out_i_aux;
-		List<List<State_>> states_s = new ArrayList<>();
-		List<List<State_>> states_i = new ArrayList<>();
-
+		//END: inserts transitions into states to improve the processing of the getWordsFromAutomaton
+		
+		//tc, state path and outputs
+		//for each test case
 		for (String tc : testSuite) {
 			out_s = new ArrayList<>();
 			out_i = new ArrayList<>();
 			path_s = "";
 			path_i = "";
 
+			//get state paths from test case (specification)
 			for (List<State_> s : statePath(S, tc)) {
 				path_s += "\n\t path:" + StringUtils.join(s, " -> ");
+				//if ioco show outputs from last state
 				if (ioco) {
 					out_s_aux = S.outputsOfState(s.get(s.size() - 1));
 					path_s += "\n\t output: " + out_s_aux + "\n";
 					out_s.addAll(out_s_aux);
 				}
 			}
-
+			//get state paths from test case (implementation)
 			for (List<State_> i : statePath(I, tc)) {
 				path_i += "\n\t path:" + StringUtils.join(i, " -> ");
+				//if ioco show outputs from last state
 				if (ioco) {
 					out_i_aux = I.outputsOfState(i.get(i.size() - 1));
 					path_i += "\n\t output: " + out_i_aux + "\n";
@@ -1196,7 +1075,7 @@ public class Operations {
 				}
 			}
 
-			if (!ioco) {
+			if (!ioco) {//if not ioco dont show output
 				contTestCase++;
 				path += "Test case: \t" + tc + ""; // + "\n"
 				path += "\n\nModel: \n" + path_s;
@@ -1205,6 +1084,7 @@ public class Operations {
 			} else {
 				out_s = new ArrayList<>(new HashSet<>(out_s));
 				out_i = new ArrayList<>(new HashSet<>(out_i));
+				//verify output of implementation is specified by specification
 				if (!out_s.containsAll(out_i) && !(ioco && out_s.size() == 0)) {
 					contTestCase++;
 					path += "Test case: \t" + tc + ""; // + "\n"
@@ -1225,7 +1105,7 @@ public class Operations {
 	}
 
 	/***
-	 * 
+	 * Path on conformance based on language
 	 * @param S
 	 *            specification model
 	 * @param I
@@ -1245,29 +1125,9 @@ public class Operations {
 		iolts_i.setOutputs(new ArrayList<String>());
 
 		List<String> testCases;
-		// if (transitionCoverSpec) {
+		
 		testCases = getWordsFromAutomaton(faultModel, ioco);// transitionCoverSpec
-		// List<String> testCases = getTestCases(faultModel, ioco, iolts_s);
-		// } else {
-		// testCases = getOneWordPerFinalState(faultModel);
-		// }
-
-		// String result_s, result_i;
-		// String path = "";
-		// for (String t : testCases) {
-		// result_s = path(iolts_s, ioco, t, "\nModel")[1].toString();
-		// result_i = path(iolts_i, ioco, t, "\nImplementation")[1].toString();
-		// // if((!ioco && (result_s.contains(Constants.NO_TRANSITION) ||
-		// // result_i.contains(Constants.NO_TRANSITION))) || ioco) {
-		// path += "Test case: \t" + t;
-		// path += result_s;
-		// path += result_i;
-		// path += "\n##################################################################
-		// \n";
-		// // }
-		// }
-		//
-		// return path;
+		
 		return path(iolts_s, iolts_i, ioco, testCases);
 	}
 
@@ -1314,41 +1174,9 @@ public class Operations {
 
 			}
 
-		} else {
-			// if (transitionCoverSpec) {
-			testCases = getWordsFromAutomaton(faultModel, ioco);// transitionCoverSpec
-			// } else {
-			// testCases = getOneWordPerFinalState(faultModel);
-			// }
+		} else {			
+			testCases = getWordsFromAutomaton(faultModel, ioco);// transitionCoverSpec			
 		}
-
-		// for (String t : testCases) {
-		// Object[] result_s = path(S, ioco, t, "\nModel");
-		// Object[] result_i = path(I, ioco, t, "\nImplementation");
-		// ArrayList<String> out_s = (ArrayList<String>) result_s[2];
-		// ArrayList<String> out_i = (ArrayList<String>) result_i[2];
-		//
-		// // System.out.println("teste: " + t);
-		// // System.out.println("model state: " + result_s[0] + " saida: " + out_s);
-		// // System.out.println("iut state: " + result_i[0] + " saida: " + out_i);
-		// // System.out.println("-------------------------------------------------");
-		//
-		// if (!out_s.containsAll(out_i) && !(ioco && out_s.size() == 0)// IOCO
-		// // && (!ioco && (result_s[1].toString().contains(Constants.NO_TRANSITION) ||
-		// // result_i[1].toString().contains(Constants.NO_TRANSITION))) //LANG
-		// ) {
-		// contTestCase++;
-		// path += "Test case: \t" + t;
-		// path += result_s[1];
-		// path += result_i[1];
-		// path += "\n##################################################################
-		// \n";
-		// }
-		//
-		// if (contTestCase >= Constants.MAX_TEST_CASES_REAL) {
-		// break;
-		// }
-		// }
 
 		return path + path(S, I, ioco, testCases);
 		// return path;
