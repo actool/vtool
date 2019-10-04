@@ -53,6 +53,7 @@ public class LanguageBasedConformance {
 		
 		// intersection between the implementation and fault model to find fault
 		Automaton_ ab = Operations.intersection(ai,at, Constants.MAX_TEST_CASES);//at,ai   //*****************
+		//System.out.println("tamanho ab: " + ab.getFinalStates().size());
 
 		/*System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		System.out.println("<<<<<<<<<<<<<<<<<<<< verification conformance based on language >>>>>>>>>>>>>>>>>>>>>");

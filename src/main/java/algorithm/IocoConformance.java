@@ -63,7 +63,7 @@ public class IocoConformance {
 		
 		// intersection between the implementation and failure model to find fault
 		Automaton_ ab = Operations.intersection(at, ai, Constants.MAX_TEST_CASES);		
-		System.out.println("tamanho ab: " + ab.getFinalStates().size());
+		//System.out.println("tamanho ab: " + ab.getFinalStates().size());
 		//System.out.println(new Date());
 		
 		
