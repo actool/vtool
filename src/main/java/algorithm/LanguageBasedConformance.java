@@ -35,7 +35,7 @@ public class LanguageBasedConformance {
 	 *            regex of undesirable behaviors
 	 * @return
 	 */
-	public static Automaton_ verifyLanguageConformance(LTS S, LTS I, String D, String F) {		
+	public static Automaton_ verifyLanguageConformance(LTS S, LTS I, String D, String F, int nTestCases) {		
 		
 		//S = Operations.convertToDeterministicAutomaton();
 		List<String> alphabet = new ArrayList();
@@ -52,7 +52,7 @@ public class LanguageBasedConformance {
 		
 		
 		// intersection between the implementation and fault model to find fault
-		Automaton_ ab = Operations.intersection(ai,at, Constants.MAX_TEST_CASES);//at,ai   //*****************
+		Automaton_ ab = Operations.intersection(ai,at, nTestCases);//Constants.MAX_TEST_CASES
 		//System.out.println("tamanho ab: " + ab.getFinalStates().size());
 
 		/*System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");

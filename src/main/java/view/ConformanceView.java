@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -71,6 +72,7 @@ import javax.swing.JTextArea;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 public class ConformanceView extends JFrame {
 	private JComboBox cbModel;
@@ -800,11 +802,18 @@ public class ConformanceView extends JFrame {
 					//lbl_veredict_ioco.setVisible(false);
 					lbl_veredict_ioco.setText("[Verdict]");
 					lbl_veredict_ioco.setForeground(SystemColor.windowBorder);
+					if(tfNTestCasesIOCO.getText().isEmpty()) {
+						tfNTestCasesIOCO.setText(Objects.toString(Constants.MAX_TEST_CASES));
+					}
+					
 					loading.setVisible(true);
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {
 						ioco = false;
 
+						if(tfNTestCasesLang.getText().isEmpty()) {
+							tfNTestCasesLang.setText(Objects.toString(Constants.MAX_TEST_CASES));
+						}
 						loading.setVisible(true);
 					}
 				}
@@ -1073,6 +1082,18 @@ public class ConformanceView extends JFrame {
 		tabbedPane.addTab(ViewConstants.tabIOCO, null, panel_ioco, null);
 		panel_ioco.setLayout(null);
 
+		
+		tfNTestCasesIOCO = new JTextField();
+		tfNTestCasesIOCO.setForeground(SystemColor.controlShadow);
+		tfNTestCasesIOCO.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfNTestCasesIOCO.setBackground(UIManager.getColor("Button.background"));
+		tfNTestCasesIOCO.setBounds(20, 142, 111, 32);
+		tfNTestCasesIOCO.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		tfNTestCasesIOCO.setNextFocusableComponent(btnVerifyConf_ioco);
+		panel_ioco.add(tfNTestCasesIOCO);
+		tfNTestCasesIOCO.setColumns(10);
+		
+		
 		btnVerifyConf_ioco = new JButton("Verify");
 
 		btnVerifyConf_ioco.addMouseListener(new MouseAdapter() {
@@ -1081,15 +1102,22 @@ public class ConformanceView extends JFrame {
 				actionVerifyConformance(true);
 			}
 		});
-		btnVerifyConf_ioco.setBounds(10, 130, 167, 44);
+		btnVerifyConf_ioco.setBounds(141, 130, 167, 44);
 		btnVerifyConf_ioco.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnVerifyConf_ioco.setBackground(Color.LIGHT_GRAY);
+		btnVerifyConf_ioco.setNextFocusableComponent(taTestCasesIoco);
 		panel_ioco.add(btnVerifyConf_ioco);
+		
+		taTestCasesIoco = new JTextArea();
+		taTestCasesIoco.setBounds(10, 277, 231, 150);
+		JScrollPane scrolltxt = new JScrollPane(taTestCasesIoco);
+		scrolltxt.setBounds(10, 201, 405, 247);
+		panel_ioco.add(scrolltxt);
 
 		lbl_veredict_ioco = new JLabel("[Verdict]");
 		lbl_veredict_ioco.setForeground(SystemColor.windowBorder);
 		lbl_veredict_ioco.setFont(new Font("Dialog", Font.BOLD, 13));
-		lbl_veredict_ioco.setBounds(187, 142, 474, 20);
+		lbl_veredict_ioco.setBounds(318, 142, 474, 20);
 		panel_ioco.add(lbl_veredict_ioco);
 
 		JLabel lblModel = new JLabel("Model");
@@ -1136,11 +1164,7 @@ public class ConformanceView extends JFrame {
 		lblOutputIoco.setBounds(425, 88, 367, 26);
 		panel_ioco.add(lblOutputIoco);
 
-		taTestCasesIoco = new JTextArea();
-		taTestCasesIoco.setBounds(10, 277, 231, 150);
-		JScrollPane scrolltxt = new JScrollPane(taTestCasesIoco);
-		scrolltxt.setBounds(10, 201, 405, 247);
-		panel_ioco.add(scrolltxt);
+		
 
 		imgModelIoco = new JLabel("");
 		imgModelIoco.setVisible(false);
@@ -1188,6 +1212,7 @@ public class ConformanceView extends JFrame {
 
 		btnViewImplementationIoco = new JButton("view IUT");
 		btnViewImplementationIoco.setVerticalAlignment(SwingConstants.BOTTOM);
+		btnViewImplementationIoco.setNextFocusableComponent(tfNTestCasesIOCO);
 		btnViewImplementationIoco.setVisible(false);
 		btnViewImplementationIoco.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1230,6 +1255,14 @@ public class ConformanceView extends JFrame {
 		lblWarningIoco.setForeground(SystemColor.controlShadow);
 		lblWarningIoco.setBounds(425, 201, 367, 247);
 		panel_ioco.add(lblWarningIoco);
+		
+		
+		
+		JLabel lblTestCases = new JLabel("# Test cases");
+		lblTestCases.setForeground(SystemColor.windowBorder);
+		lblTestCases.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblTestCases.setBounds(10, 125, 99, 14);
+		panel_ioco.add(lblTestCases);
 
 		panel_language = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabLang, null, panel_language, null);
@@ -1281,6 +1314,7 @@ public class ConformanceView extends JFrame {
 		tfF.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfF.setBackground(SystemColor.menu);
 		tfF.setBounds(425, 152, 367, 26);
+		tfF.setNextFocusableComponent(tfNTestCasesLang);
 		panel_language.add(tfF);
 
 		lblRegexF = new JLabel("Regex example: (a|b)*c");
@@ -1292,7 +1326,7 @@ public class ConformanceView extends JFrame {
 		lbl_veredict_lang = new JLabel("");
 		lbl_veredict_lang.setForeground(SystemColor.windowBorder);
 		lbl_veredict_lang.setFont(new Font("Dialog", Font.BOLD, 13));
-		lbl_veredict_lang.setBounds(198, 235, 493, 20);
+		lbl_veredict_lang.setBounds(318, 234, 474, 20);
 		panel_language.add(lbl_veredict_lang);
 
 		btnVerifyConf_lang = new JButton("Verify");
@@ -1304,7 +1338,7 @@ public class ConformanceView extends JFrame {
 		});
 		btnVerifyConf_lang.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnVerifyConf_lang.setBackground(Color.LIGHT_GRAY);
-		btnVerifyConf_lang.setBounds(11, 227, 167, 44);
+		btnVerifyConf_lang.setBounds(147, 226, 167, 44);
 		panel_language.add(btnVerifyConf_lang);
 
 		label_1 = new JLabel("Model");
@@ -1448,6 +1482,22 @@ public class ConformanceView extends JFrame {
 		lblWarningLang.setForeground(SystemColor.controlShadow);
 		lblWarningLang.setBounds(426, 293, 366, 160);
 		panel_language.add(lblWarningLang);
+		
+		label_2 = new JLabel("# Test cases");
+		label_2.setForeground(SystemColor.windowBorder);
+		label_2.setFont(new Font("Dialog", Font.BOLD, 13));
+		label_2.setBounds(11, 226, 99, 14);
+		panel_language.add(label_2);
+		
+		tfNTestCasesLang = new JTextField();
+		tfNTestCasesLang.setForeground(SystemColor.controlShadow);
+		tfNTestCasesLang.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfNTestCasesLang.setColumns(10);
+		tfNTestCasesLang.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		tfNTestCasesLang.setBackground(SystemColor.menu);
+		tfNTestCasesLang.setBounds(21, 238, 111, 32);
+		tfNTestCasesLang.setNextFocusableComponent(btnVerifyConf_lang);
+		panel_language.add(tfNTestCasesLang);
 
 		cleanVeredict();
 
@@ -1653,8 +1703,8 @@ public class ConformanceView extends JFrame {
 
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			failPath = "";
-			conformidade = IocoConformance.verifyIOCOConformance(S, I);
-			failPath = Operations.path(S, I, conformidade, true, false);
+			conformidade = IocoConformance.verifyIOCOConformance(S, I, Integer.parseInt(tfNTestCasesIOCO.getText()));
+			failPath = Operations.path(S, I, conformidade, true, false,Integer.parseInt(tfNTestCasesIOCO.getText()));
 
 			// if ( conformidade.getFinalStates().size() > 0) {
 			// failPath = Operations.path(S, I, conformidade, true, true);
@@ -1734,9 +1784,9 @@ public class ConformanceView extends JFrame {
 				String F = tfF.getText();
 
 				if (regexIsValid(D) && regexIsValid(F)) {
-					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);
+					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F,Integer.parseInt(tfNTestCasesLang.getText()));
 					if (conformidade.getFinalStates().size() > 0) {
-						failPath = Operations.path(S_, I_, conformidade, false, false);
+						failPath = Operations.path(S_, I_, conformidade, false, false,Integer.parseInt(tfNTestCasesLang.getText()));
 					} else {
 						failPath = "";
 					}
@@ -1804,6 +1854,9 @@ public class ConformanceView extends JFrame {
 	private JLabel imgImplementationLang;
 	private JLabel lblLabelLang;
 	private JLabel lblLabel_;
+	private JTextField tfNTestCasesIOCO;
+	private JLabel label_2;
+	private JTextField tfNTestCasesLang;
 
 	public boolean isFormValid(boolean ioco) {
 		boolean defineInpOut = true;

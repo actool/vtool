@@ -43,7 +43,9 @@ public class RunEverest {
 			String batchFileEverest = "C:\\Users\\camil\\Desktop\\everest.bat";
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
-					"unity", "memory", "unit", "pathTSSaved" });		
+					"unity", "memory", "unit", "pathTSSaved" });	
+			String numTestCaseToGenerate = "5";	
+			String tool = "everest-"+numTestCaseToGenerate+"tc";
 
 			int nState = 500;
 			boolean stateVariation = true;// state or percentage
@@ -51,7 +53,9 @@ public class RunEverest {
 			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";
 			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\result\\";
 			String pathCsv = "C:\\Users\\camil\\Desktop\\250-3000\\jtorx-everest.csv";
-
+		
+			
+			
 
 			String errorFolder = rootPathIUTs + "\\error\\";
 			Path errorPath = Paths.get(errorFolder);
@@ -78,7 +82,7 @@ public class RunEverest {
 					pathSaveTS = rootPathSaveTS + "testSuite.csv";
 					count++;
 					Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(batchFileEverest,
-							root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV, pathCsv, stateVariation));
+							root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV, pathCsv, stateVariation, numTestCaseToGenerate, tool));
 
 					try {
 						int limitTime = 5;//40
@@ -109,12 +113,12 @@ public class RunEverest {
 
 			
 			// //run one test 			
-//			String pathSaveTS = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\ts.csv";
-//			String pathCsv = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\everest.csv";
+//			String pathSaveTS = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\ts.csv";
+//			String pathCsv = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\everest.csv";
 //			
-//			String path = "C:\\Users\\camil\\Desktop\\icsea-aut-models\\ex-2\\";
-//			run( batchFileEverest,  root_img,  path+"iolts-spec-n.aut",  path+"iolts-iut-p.aut",
-//					 pathSaveTS,  headerCSV,  pathCsv,  false);
+//			String path = "C:\\Users\\camil\\Desktop\\25-100\\100\\";
+//			run( batchFileEverest,  root_img,  path+"100states_spec.aut",  path+"iut\\1pct_iut_0.aut",
+//					 pathSaveTS,  headerCSV,  pathCsv,  true, numTestCaseToGenerate,tool);
 		} catch (Exception e) {
 			Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
 			// TODO Auto-generated catch block
@@ -124,12 +128,12 @@ public class RunEverest {
 	}
 
 	public static class TimeOut implements Callable<String> {
-		String batchFileEverest, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv;
+		String batchFileEverest, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv,tool,numTestCaseToGenerate;
 		boolean stateVariation;
 		List<String> headerCSV;
 
 		public TimeOut(String batchFileEverest, String root_img, String pathIUT, String pathSpec, String pathSaveTS,
-				List<String> headerCSV, String pathCsv, boolean stateVariation) throws Exception {
+				List<String> headerCSV, String pathCsv, boolean stateVariation, String numTestCaseToGenerate, String tool) throws Exception {
 
 			this.batchFileEverest = batchFileEverest;
 			this.root_img = root_img;
@@ -139,11 +143,13 @@ public class RunEverest {
 			this.headerCSV = headerCSV;
 			this.pathCsv = pathCsv;
 			this.stateVariation = stateVariation;
+			this.tool = tool;
+			this.numTestCaseToGenerate = numTestCaseToGenerate;
 		}
 
 		@Override
 		public String call() throws Exception {
-			run(batchFileEverest, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation);
+			run(batchFileEverest, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation,numTestCaseToGenerate,tool);
 			return "";
 		}
 
@@ -152,7 +158,7 @@ public class RunEverest {
 	static Screen s = new Screen();
 
 	public static void run(String batchFileEverest, String root_img, String pathAutSpec, String pathAutIUT,
-			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation) throws Exception {
+			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation, String numTestCaseToGenerate, String tool) throws Exception {
 
 		// open jar
 		Desktop d = Desktop.getDesktop();
@@ -193,6 +199,14 @@ public class RunEverest {
 			}
 		}
 
+		
+		//set n test case to generate
+		s.type(Key.TAB);
+		s.type(Key.RIGHT);
+		s.type(Key.BACKSPACE);
+		s.type(numTestCaseToGenerate);
+		
+		
 		// verify ioco
 		s.click(root_img + "btn-verify.PNG");
 
@@ -241,6 +255,7 @@ public class RunEverest {
 			System.err.println("IOCO DOESN'T CONFORM");
 			// get test suite
 			s.type(Key.TAB);
+			s.type(Key.TAB);
 			s.type("a", KeyModifier.CTRL);
 			s.type("c", KeyModifier.CTRL);
 			s.find(root_img + "btn-verify.PNG");
@@ -253,7 +268,7 @@ public class RunEverest {
 		}
 
 		saveOnCSVFile(pathCsv, pathAutSpec, pathAutIUT, conform, total_seconds, "milliseconds", memory, unityMemory,
-				stateVariation, headerCSV, pathSaveTS, testSuite);
+				stateVariation, headerCSV, pathSaveTS, testSuite, tool);
 
 		// close everest
 		s.click(root_img + "img-close.PNG");
@@ -264,7 +279,7 @@ public class RunEverest {
 
 	public static void saveOnCSVFile(String pathCsv, String pathModel, String pathIUT, boolean conform, double time,
 			String unitTime, String memory, String unityMemory, boolean stateVariation, List<String> headerCSV,
-			String pathSaveTS, String testSuite) {
+			String pathSaveTS, String testSuite, String tool) {
 
 		try {
 			String variationType = "";
@@ -311,7 +326,7 @@ public class RunEverest {
 			}
 
 			ArrayList<String> row = new ArrayList<String>();
-			row.add("everest");
+			row.add(tool);//"everest"
 			row.add(pathModel);
 			row.add(pathIUT);
 			row.add(Objects.toString(numStatesModel));

@@ -20,7 +20,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import parser.ImportAutFile_WithoutThread;
-import performance_evaluation.PerformanceTest.TimeOut;
 import util.Constants;
 
 import org.sikuli.script.*;
@@ -39,7 +38,7 @@ public class RunJTorx {
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });
 			String numTestCaseToGenerate = "10";	
-
+			String tool = "jtorx-"+numTestCaseToGenerate;
 			
 
 	
@@ -98,7 +97,7 @@ public class RunJTorx {
 			
 			String path = "C:\\Users\\camil\\Desktop\\25-100\\100\\";
 			run( batchFileJTorx,  root_img,  path+"100states_spec.aut",  path+"iut\\1pct_iut_0.aut",
-					 pathSaveTS,  headerCSV,  pathCsv,  false,numTestCaseToGenerate);
+					 pathSaveTS,  headerCSV,  pathCsv,  false,numTestCaseToGenerate, tool);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,12 +105,12 @@ public class RunJTorx {
 	}
 
 	public static class TimeOut implements Callable<String> {
-		String batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv,numTestCaseToGenerate;
+		String batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv,numTestCaseToGenerate, tool;
 		boolean stateVariation;
 		List<String> headerCSV;
 
 		public TimeOut(String batchFileJTorx, String root_img, String pathIUT, String pathSpec, String pathSaveTS,
-				List<String> headerCSV, String pathCsv, boolean stateVariation,String numTestCaseToGenerate) throws Exception {
+				List<String> headerCSV, String pathCsv, boolean stateVariation,String numTestCaseToGenerate, String tool) throws Exception {
 
 			this.batchFileJTorx = batchFileJTorx;
 			this.root_img = root_img;
@@ -122,11 +121,12 @@ public class RunJTorx {
 			this.pathCsv = pathCsv;
 			this.stateVariation = stateVariation;
 			this.numTestCaseToGenerate = numTestCaseToGenerate;
+			this.tool = tool;
 		}
 
 		@Override
 		public String call() throws Exception {
-			run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation, numTestCaseToGenerate);
+			run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation, numTestCaseToGenerate,tool);
 			return "";
 		}
 	}
@@ -134,7 +134,7 @@ public class RunJTorx {
 	static String delimiterCSV = "*";
 
 	public static void run(String batchFileJTorx, String root_img, String pathAutSpec, String pathAutIUT,
-			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation, String numTestCaseToGenerate) throws Exception {
+			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation, String numTestCaseToGenerate, String tool) throws Exception {
 
 		// run JTorx
 		Desktop d = Desktop.getDesktop();
@@ -297,7 +297,7 @@ public class RunJTorx {
 		}
 
 		saveOnCSVFile(pathCsv, pathAutSpec, pathAutIUT, conform, total_seconds, "milliseconds", memory, unityMemory,
-				stateVariation, headerCSV, count, pathSaveTS);
+				stateVariation, headerCSV, count, pathSaveTS,tool);
 
 		// close JTorx
 		s.click(root_img + "img-close.PNG");
@@ -305,7 +305,7 @@ public class RunJTorx {
 
 	public static void saveOnCSVFile(String pathCsv, String pathModel, String pathIUT, boolean conform, double time,
 			String unitTime, String memory, String unityMemory, boolean stateVariation, List<String> headerCSV,
-			int nTestCase, String pathSaveTS) {
+			int nTestCase, String pathSaveTS, String tool) {
 
 		try {
 			String variationType = "";
@@ -341,7 +341,7 @@ public class RunJTorx {
 			}
 
 			ArrayList<String> row = new ArrayList<String>();
-			row.add("jtorx");
+			row.add(tool);//"jtorx"
 			row.add(pathModel);
 			row.add(pathIUT);
 			row.add(Objects.toString(numStatesModel));
