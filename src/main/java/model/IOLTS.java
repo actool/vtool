@@ -25,6 +25,7 @@ public class IOLTS extends LTS implements Cloneable {
 	 * Empty constructor
 	 */
 	public IOLTS() {
+		
 		inputs = new ArrayList<>();
 		outputs = new ArrayList<>();
 	}
@@ -90,7 +91,7 @@ public class IOLTS extends LTS implements Cloneable {
 		// input and output labels are joined to form the alphabet
 		List<String> alphabet = ListUtils.union(this.inputs, this.outputs);
 		// Instances an LTS with IOLTS atributtes
-		LTS lts = new LTS(getStates(), this.getInitialState(), alphabet, this.getTransitions());
+		LTS lts = new LTS(this.getStates(), this.getInitialState(), alphabet, this.getTransitions());
 		return lts;
 	}
 

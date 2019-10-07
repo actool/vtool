@@ -26,35 +26,93 @@ public class Main2 {
 
 	public static void main(String[] args) throws Exception {
 
-		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-q.aut";
-		
-		IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
-		//iolts.addTransition(new Transition_(new State_("q0"), "a", new State_("q3")));
-		//iolts.getTransitions().remove(8);
-		
-		for (Transition_ t: iolts.getTransitions()) {
-			t.setIniState(iolts.getStates().stream().filter(x->x.equals(t.getIniState())).findFirst().orElse(null));
-			t.setEndState(iolts.getStates().stream().filter(x->x.equals(t.getEndState())).findFirst().orElse(null));
-			iolts.getStates().stream().filter(x->x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
-			
+		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-r.aut";
+
+		// IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
+		// iolts.addTransition(new Transition_(new State_("q0"), "a", new
+		// State_("q3")));
+		// iolts.getTransitions().remove(8);
+
+		// for (Transition_ t: iolts.getTransitions()) {
+		// t.setIniState(iolts.getStates().stream().filter(x->x.equals(t.getIniState())).findFirst().orElse(null));
+		// t.setEndState(iolts.getStates().stream().filter(x->x.equals(t.getEndState())).findFirst().orElse(null));
+		// iolts.getStates().stream().filter(x->x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
+		//
+		// }
+		// iolts.setInitialState(iolts.getStates().stream().filter(x ->
+		// x.equals(iolts.getInitialState())).findFirst().orElse(null));
+		//
+		// System.out.println(Operations.statePath(iolts, "a -> b"));
+
+		Automaton_ a = new Automaton_();
+		// IOLTS iolts = new IOLTS();
+		a.setInitialState(new State_("q0"));
+
+		a.addState(new State_("q0"));
+		a.addState(new State_("q1"));
+		a.addState(new State_("q2"));
+		a.addState(new State_("q3"));
+		a.addState(new State_("q4"));
+		a.addState(new State_("q5"));
+
+		a.addTransition(new Transition_(new State_("q0"), "a", new State_("q1")));
+		a.addTransition(new Transition_(new State_("q1"), "b", new State_("q2")));
+		a.addTransition(new Transition_(new State_("q1"), "a", new State_("q3")));
+		a.addTransition(new Transition_(new State_("q3"), "a", new State_("q4")));
+		a.addTransition(new Transition_(new State_("q3"), "b", new State_("q4")));
+		a.addTransition(new Transition_(new State_("q3"), "a", new State_("q5")));
+		a.addTransition(new Transition_(new State_("q4"), "a", new State_("q5")));
+
+		for (Transition_ t : a.getTransitions()) {
+			t.setIniState(a.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
+			t.setEndState(a.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
+			a.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
+
 		}
-		iolts.setInitialState(iolts.getStates().stream().filter(x -> x.equals(iolts.getInitialState())).findFirst().orElse(null));
+		a.setInitialState(a.getStates().stream().filter(x -> x.equals(a.getInitialState())).findFirst().orElse(null));
+
+		a.setFinalStates(new ArrayList<>());
+		a.addFinalStates(new State_("q5"));
+		a.addFinalStates(new State_("q4"));
+		a.addFinalStates(new State_("q2"));
+
+		IOLTS iolts = new IOLTS();
+		// IOLTS iolts = new IOLTS();
+		iolts.setInitialState(new State_("q0"));
+
+		iolts.addState(new State_("q0"));
+		iolts.addState(new State_("q1"));
+		iolts.addState(new State_("q2"));
+		iolts.addState(new State_("q3"));
+		iolts.addState(new State_("q4"));
+		iolts.addState(new State_("q5"));
+
+		iolts.addTransition(new Transition_(new State_("q0"), "a", new State_("q1")));
+		iolts.addTransition(new Transition_(new State_("q1"), "b", new State_("q2")));
+		iolts.addTransition(new Transition_(new State_("q1"), "a", new State_("q3")));
+		iolts.addTransition(new Transition_(new State_("q3"), "a", new State_("q4")));
+		iolts.addTransition(new Transition_(new State_("q3"), "b", new State_("q4")));
+		//iolts.addTransition(new Transition_(new State_("q3"), "a", new State_("q5")));
+		iolts.addTransition(new Transition_(new State_("q4"), "a", new State_("q5")));
 		
-		System.out.println(Operations.statePath(iolts, "a -> b"));
-		
-//		Automaton_ a = iolts.ioltsToAutomaton();
-//		List<State_> states = new ArrayList<>();
-//		states.add(new State_("q0"));
-//		states.add(new State_("q3"));
-//		a.setFinalStates(states);
-//		
-//		System.out.println(Operations.getWordsFromAutomaton(a, false));//true
-		
-		
-		
-		
-		
-		
+		for (Transition_ t : iolts.getTransitions()) {
+			t.setIniState(iolts.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
+			t.setEndState(iolts.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
+			iolts.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
+
+		}
+		iolts.setInitialState(
+				iolts.getStates().stream().filter(x -> x.equals(iolts.getInitialState())).findFirst().orElse(null));
+
+		// List<State_> states = new ArrayList<>();
+		// states.add(new State_("q2"));
+		// states.add(new State_("q3"));
+		// a.setFinalStates(states);
+
+		System.out.println(Operations.path(iolts, iolts, a, true, true, 10));
+
+		System.out.println(Operations.getWordsFromAutomaton(a, false, 10));// true
+
 		// // \iocoCheckerExamples
 		// //
 		// "C:\\Users\\camil\\Desktop\\modelos-jtorx\\iocoCheckerExamples\\VendingMachine\\r2.graphml"
