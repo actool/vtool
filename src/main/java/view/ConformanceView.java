@@ -762,7 +762,7 @@ public class ConformanceView extends JFrame {
 		int width = 350;
 		int height = 105;
 
-		jframe.setBounds(getX() + (getWidth() - width)/2, getY() + (getHeight() - height)/2, width, height);
+		jframe.setBounds(getX() + (getWidth() - width)/2, getY() + (getHeight() - height)/2 + 50, width, height);
 		return jframe;
 
 	}

@@ -47,7 +47,7 @@ public class RunEverest {
 			String numTestCaseToGenerate = "5";	
 			String tool = "everest-"+numTestCaseToGenerate+"tc";
 
-			int nState = 500;
+			int nState = 25;
 			boolean stateVariation = true;// state or percentage
 			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\iut\\";
 			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";
@@ -72,7 +72,7 @@ public class RunEverest {
 			File[] listOfFiles = folder.listFiles();
 			String pathSaveTS;
 
-			System.out.println(Arrays.asList(listOfFiles));
+			//System.out.println(Arrays.asList(listOfFiles));
 			String pathIUT;
 			int count = 0;
 			for (File file : listOfFiles) {
@@ -85,7 +85,7 @@ public class RunEverest {
 							root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV, pathCsv, stateVariation, numTestCaseToGenerate, tool));
 
 					try {
-						int limitTime = 5;//40
+						int limitTime = 1;//40
 						control.get(limitTime, TimeUnit.MINUTES);
 
 

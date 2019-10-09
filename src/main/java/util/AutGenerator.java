@@ -72,7 +72,7 @@ public class AutGenerator {
 		//// GENERATE <IN LOTE> - PERCENTAGE
 		
 		
-		int percentage = 20;
+		int percentage = 60;
 		long seed = System.currentTimeMillis();
 		boolean inputEnabled = true;
 		
