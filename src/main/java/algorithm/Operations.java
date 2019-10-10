@@ -283,7 +283,7 @@ public class Operations {
 	 */
 	public static Automaton_ intersection(Automaton_ Q, Automaton_ S, Integer nFinalState) {
 
-		// nFinalState=Integer.MAX_VALUE;
+		//nFinalState=Integer.MAX_VALUE;
 
 		// intersection automato
 		Automaton_ Ar = new Automaton_();
@@ -360,11 +360,14 @@ public class Operations {
 									&& Q.getFinalStates().contains(new State_(endStateQ.getName()))) {
 								Ar.addFinalStates(synchronized_);
 
+								
 								if (nFinalState != null && Ar.getFinalStates().size() == nFinalState
 										+ (nFinalState < 15 ? (nFinalState * 2) : (nFinalState / 4))) {
-									// System.err.println("break");
+									 System.out.println("total final state: " +Ar.getFinalStates().size());
 									break endIntersection;
 								}
+								
+								
 							}
 
 						}
@@ -373,24 +376,7 @@ public class Operations {
 			}
 		}
 
-		// part = null;
-		// s = "";
-		// q = "";
-		// List<State_> finalStateQ = new ArrayList<State_>(Q.getFinalStates());
-		// List<State_> finalStateS = new ArrayList<State_>(S.getFinalStates());
-		//
-		// // synchronized states to check which end states
-		// for (State_ state : Ar.getStates()) {
-		// // from the getInfo it is possible to separate the synchronized states
-		// part = state.getInfo().split(Constants.SEPARATOR);
-		// s = part[0];
-		// q = part[1];
-		// // verifies whether the synchronized states were final states in Q and S
-		// if (finalStateS.contains(new State_(s)) && finalStateQ.contains(new
-		// State_(q))) {
-		// Ar.addFinalStates(state);
-		// }
-		// }
+
 		return Ar;
 	}
 
@@ -807,7 +793,8 @@ public class Operations {
 						}
 					}
 
-					if (words.size() == nTestCases) {
+					if (words.size() == nTestCases
+							+ (nTestCases < 15 ? (nTestCases * 5) : (nTestCases / 4))) {
 						break endgetWord;
 					}
 				}
@@ -1189,6 +1176,8 @@ public class Operations {
 			automatonIOLTS.addQuiescentTransitions();
 			faultModel = automatonIOLTS.ltsToAutomaton();
 
+			System.out.println(" end: " + faultModel.getFinalStates());
+			
 			// for generate same test suite that JTorx to IOCO, set final states from fault
 			// model.
 			for (Transition_ t : faultModel.getTransitions()) {
@@ -1200,6 +1189,9 @@ public class Operations {
 
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
 
+			System.out.println("novo end: " + states);
+			System.out.println(testCases);
+			
 			State_ currentState_s;
 			State_ currentState_i;
 

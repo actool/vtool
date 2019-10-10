@@ -44,7 +44,7 @@ public class RunEverest {
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });	
-			String numTestCaseToGenerate = "5";	
+			String numTestCaseToGenerate = "1000";	
 			String tool = "everest-"+numTestCaseToGenerate+"tc";
 
 			int nState = 25;
