@@ -363,7 +363,7 @@ public class Operations {
 								
 								if (nFinalState != null && Ar.getFinalStates().size() == nFinalState
 										+ (nFinalState < 15 ? (nFinalState * 2) : (nFinalState / 4))) {
-									 System.out.println("total final state: " +Ar.getFinalStates().size());
+									 
 									break endIntersection;
 								}
 								
@@ -1176,7 +1176,7 @@ public class Operations {
 			automatonIOLTS.addQuiescentTransitions();
 			faultModel = automatonIOLTS.ltsToAutomaton();
 
-			System.out.println(" end: " + faultModel.getFinalStates());
+			
 			
 			// for generate same test suite that JTorx to IOCO, set final states from fault
 			// model.
@@ -1189,8 +1189,8 @@ public class Operations {
 
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
 
-			System.out.println("novo end: " + states);
-			System.out.println(testCases);
+			
+		
 			
 			State_ currentState_s;
 			State_ currentState_i;

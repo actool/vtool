@@ -351,6 +351,8 @@ public class ConformanceView extends JFrame {
 				}
 				loading.dispose();
 
+				System.gc();
+				
 				showVeredict(ioco);
 				// btnVerifyConf_ioco.setText("Verify");
 			}

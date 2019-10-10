@@ -37,18 +37,15 @@ public class RunJTorx {
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });
-			String numTestCaseToGenerate = "1000";	
-			String tool = "jtorx-"+numTestCaseToGenerate+"tc";
-			
+			String numTestCaseToGenerate = "1000";
+			String tool = "jtorx-" + numTestCaseToGenerate + "tc";
 
-	
 			boolean stateVariation = true;// state or percentage
 			int nState = 25;
-			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\iut\\";
-			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";
-			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\result\\";
+			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\" + nState + "\\iut\\";
+			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\" + nState + "\\" + nState + "states_spec.aut";
+			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\250-3000\\" + nState + "\\result\\";
 			String pathCsv = "C:\\Users\\camil\\Desktop\\250-3000\\jtorx-everest.csv";
-							
 
 			String errorFolder = rootPathIUTs + "\\error\\";
 			Path errorPath = Paths.get(errorFolder);
@@ -73,8 +70,9 @@ public class RunJTorx {
 					pathIUT = rootPathIUTs + file.getName();
 					pathSaveTS = rootPathSaveTS + count + "_" + file.getName().replace(".aut", "") + "\\";
 					count++;
-					Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(batchFileJTorx,
-							root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV, pathCsv, stateVariation,numTestCaseToGenerate, tool));
+					Future<String> control = Executors.newSingleThreadExecutor()
+							.submit(new TimeOut(batchFileJTorx, root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV,
+									pathCsv, stateVariation, numTestCaseToGenerate, tool));
 
 					try {
 						int limitTime = 3;
@@ -90,14 +88,14 @@ public class RunJTorx {
 				}
 			}
 
-
-// //run one test 
-//			String pathSaveTS = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\";
-//			String pathCsv = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\jtorx.csv";
-//			
-//			String path = "C:\\Users\\camil\\Desktop\\25-100\\100\\";
-//			run( batchFileJTorx,  root_img,  path+"100states_spec.aut",  path+"iut\\1pct_iut_0.aut",
-//					 pathSaveTS,  headerCSV,  pathCsv,  false,numTestCaseToGenerate, tool);
+			// //run one test
+			// String pathSaveTS = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\";
+			// String pathCsv = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\jtorx.csv";
+			//
+			// String path = "C:\\Users\\camil\\Desktop\\25-100\\100\\";
+			// run( batchFileJTorx, root_img, path+"100states_spec.aut",
+			// path+"iut\\1pct_iut_0.aut",
+			// pathSaveTS, headerCSV, pathCsv, false,numTestCaseToGenerate, tool);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,12 +103,13 @@ public class RunJTorx {
 	}
 
 	public static class TimeOut implements Callable<String> {
-		String batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv,numTestCaseToGenerate, tool;
+		String batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv, numTestCaseToGenerate, tool;
 		boolean stateVariation;
 		List<String> headerCSV;
 
 		public TimeOut(String batchFileJTorx, String root_img, String pathIUT, String pathSpec, String pathSaveTS,
-				List<String> headerCSV, String pathCsv, boolean stateVariation,String numTestCaseToGenerate, String tool) throws Exception {
+				List<String> headerCSV, String pathCsv, boolean stateVariation, String numTestCaseToGenerate,
+				String tool) throws Exception {
 
 			this.batchFileJTorx = batchFileJTorx;
 			this.root_img = root_img;
@@ -126,7 +125,8 @@ public class RunJTorx {
 
 		@Override
 		public String call() throws Exception {
-			run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation, numTestCaseToGenerate,tool);
+			run(batchFileJTorx, root_img, pathAutSpec, pathAutIUT, pathSaveTS, headerCSV, pathCsv, stateVariation,
+					numTestCaseToGenerate, tool);
 			return "";
 		}
 	}
@@ -134,7 +134,10 @@ public class RunJTorx {
 	static String delimiterCSV = "*";
 
 	public static void run(String batchFileJTorx, String root_img, String pathAutSpec, String pathAutIUT,
-			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation, String numTestCaseToGenerate, String tool) throws Exception {
+			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation,
+			String numTestCaseToGenerate, String tool) throws Exception {
+
+		//numTestCaseToGenerate = "21";
 
 		// run JTorx
 		Desktop d = Desktop.getDesktop();
@@ -167,37 +170,40 @@ public class RunJTorx {
 		// ioco menu click
 		s.click(root_img + "item-menu-ioco.PNG");
 		Thread.sleep(500);
-		
-		//set n test case to generate
+
+		// set n test case to generate
 		s.type(Key.TAB);
 		s.type(Key.RIGHT);
 		s.type(Key.BACKSPACE);
 		s.type(numTestCaseToGenerate);
-		
-		
+
 		// check button
 		s.click(root_img + "btn-check.PNG");
 
-		
-		//time_ini = System.currentTimeMillis();
+		// time_ini = System.currentTimeMillis();
 		double time_end = 0;
 		double time_ini = System.nanoTime();
+
 		// wait until verify
-		while (true) {
-			try {
-				time_end = System.nanoTime();
-				s.find(new Pattern(root_img + "btn-stop.PNG").similar(0.8f));//"lbl-result.PNG"
-				time_end = System.nanoTime();
-			} catch (FindFailed e) {
-				break;
+		if (Integer.parseInt(numTestCaseToGenerate) > 20) {
+			while (true) {
+				try {
+					time_end = System.nanoTime();
+					s.find(new Pattern(root_img + "btn-stop.PNG").similar(0.75f));// "lbl-result.PNG"
+					time_end = System.nanoTime();
+				} catch (FindFailed e) {
+					break;
+				}
 			}
+		} else {
+			s.wait(new Pattern(root_img + "btn-check2.PNG").similar(0.75f));
+			time_end = System.nanoTime();
 		}
-		
-		double total_seconds = (time_end - time_ini)/1e6;
-		
+
+		double total_seconds = (time_end - time_ini) / 1e6;
 
 		System.err.println("FINISHED: " + total_seconds + " milliseconds");
-		
+
 		// get memory consumption (cmd)
 		String s_ = "";
 		Process p = Runtime.getRuntime().exec("TASKLIST /FI \"IMAGENAME eq java.exe\"");
@@ -225,69 +231,70 @@ public class RunJTorx {
 
 				System.err.println("IOCO DOESN'T CONFORM");
 
-//				// save test cases
-//				String nameTestCaseAutFile = "";
-//				String nameTCFile = "";			
-//				// create folder to save
-//				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd__HH_mm_ss");
-//				if (!Files.exists(Paths.get(pathSaveTS))) {
-//					Files.createDirectory(Paths.get(pathSaveTS));
-//				}
-//				
-//				Thread.sleep(700);					
-//				
-//				// first line (testcases)
-//				for (int j = 0; j < 4; j++) {
-//					s.type(Key.TAB);
-//				}
-//				s.type(Key.DOWN);
-//				s.type(Key.UP);
-//				// save test case
-//				s.click(root_img + "btn-save.PNG");
-//				Thread.sleep(500);
-//				nameTestCaseAutFile = pathSaveTS + "1_" + dtf.format(LocalDateTime.now()) + ".aut";
-//				Thread.sleep(500);
-//				s.type(nameTestCaseAutFile);
-//				s.type(Key.ENTER);
-//
-//				// second line
-//				s.type(Key.TAB);
-//				s.type(Key.DOWN);
-//				Scanner scanner = null;
-//
-//				Thread.sleep(2000);
-//
-//				scanner = new Scanner(new File(nameTestCaseAutFile));
-//				String previous = scanner.useDelimiter("\\Z").next();
-//				scanner.close();
-//				String aux = "";
-//
-//				// other lines
-//				count = 1;
-//				while (true) {
-//					count++;
-//					nameTCFile = count + "_" + dtf.format(LocalDateTime.now()) + ".aut";
-//					nameTestCaseAutFile = pathSaveTS + nameTCFile;
-//
-//					s.click(root_img + "btn-save.PNG");
-//					Thread.sleep(500);
-//					s.type(nameTCFile);
-//					s.type(Key.ENTER);
-//					Thread.sleep(1500);
-//					scanner = new Scanner(new File(nameTestCaseAutFile));
-//					aux = scanner.useDelimiter("\\Z").next();
-//					scanner.close();
-//
-//					if (aux.equals(previous)) {
-//						Files.delete(Paths.get(nameTestCaseAutFile));
-//						count--;
-//						break;
-//					} else {
-//						previous = aux;
-//						s.type(Key.TAB);
-//						s.type(Key.DOWN);
-//					}
-//				}
+				// // save test cases
+				// String nameTestCaseAutFile = "";
+				// String nameTCFile = "";
+				// // create folder to save
+				// DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd__HH_mm_ss");
+				// if (!Files.exists(Paths.get(pathSaveTS))) {
+				// Files.createDirectory(Paths.get(pathSaveTS));
+				// }
+				//
+				// Thread.sleep(700);
+				//
+				// // first line (testcases)
+				// for (int j = 0; j < 4; j++) {
+				// s.type(Key.TAB);
+				// }
+				// s.type(Key.DOWN);
+				// s.type(Key.UP);
+				// // save test case
+				// s.click(root_img + "btn-save.PNG");
+				// Thread.sleep(500);
+				// nameTestCaseAutFile = pathSaveTS + "1_" + dtf.format(LocalDateTime.now()) +
+				// ".aut";
+				// Thread.sleep(500);
+				// s.type(nameTestCaseAutFile);
+				// s.type(Key.ENTER);
+				//
+				// // second line
+				// s.type(Key.TAB);
+				// s.type(Key.DOWN);
+				// Scanner scanner = null;
+				//
+				// Thread.sleep(2000);
+				//
+				// scanner = new Scanner(new File(nameTestCaseAutFile));
+				// String previous = scanner.useDelimiter("\\Z").next();
+				// scanner.close();
+				// String aux = "";
+				//
+				// // other lines
+				// count = 1;
+				// while (true) {
+				// count++;
+				// nameTCFile = count + "_" + dtf.format(LocalDateTime.now()) + ".aut";
+				// nameTestCaseAutFile = pathSaveTS + nameTCFile;
+				//
+				// s.click(root_img + "btn-save.PNG");
+				// Thread.sleep(500);
+				// s.type(nameTCFile);
+				// s.type(Key.ENTER);
+				// Thread.sleep(1500);
+				// scanner = new Scanner(new File(nameTestCaseAutFile));
+				// aux = scanner.useDelimiter("\\Z").next();
+				// scanner.close();
+				//
+				// if (aux.equals(previous)) {
+				// Files.delete(Paths.get(nameTestCaseAutFile));
+				// count--;
+				// break;
+				// } else {
+				// previous = aux;
+				// s.type(Key.TAB);
+				// s.type(Key.DOWN);
+				// }
+				// }
 
 			}
 		}
@@ -297,7 +304,7 @@ public class RunJTorx {
 		}
 
 		saveOnCSVFile(pathCsv, pathAutSpec, pathAutIUT, conform, total_seconds, "milliseconds", memory, unityMemory,
-				stateVariation, headerCSV, count, pathSaveTS,tool);
+				stateVariation, headerCSV, count, pathSaveTS, tool);
 
 		// close JTorx
 		s.click(root_img + "img-close.PNG");
@@ -341,7 +348,7 @@ public class RunJTorx {
 			}
 
 			ArrayList<String> row = new ArrayList<String>();
-			row.add(tool);//"jtorx"
+			row.add(tool);// "jtorx"
 			row.add(pathModel);
 			row.add(pathIUT);
 			row.add(Objects.toString(numStatesModel));
@@ -352,14 +359,12 @@ public class RunJTorx {
 			row.add(Objects.toString(conform));
 			row.add(variation);
 			row.add(variationType);
-			row.add(String.format("%.2f",time).replace(",", "."));
+			row.add(String.format("%.2f", time).replace(",", "."));
 			row.add(unitTime);
 			row.add(Objects.toString(memory));
 			row.add(unityMemory);
 			row.add(pathSaveTS);
 
-			
-			
 			FileWriter csvWriter;
 
 			File file = new File(pathCsv);
