@@ -25,9 +25,15 @@ public class IOLTS extends LTS implements Cloneable {
 	 * Empty constructor
 	 */
 	public IOLTS() {
-		
+
 		inputs = new ArrayList<>();
 		outputs = new ArrayList<>();
+	}
+
+	public IOLTS(List<State_> states, State_ initialState, List<String> alphabet, List<Transition_> transitions,List<String> inputs,List<String> outputs) {
+		super(states,  initialState,  alphabet,  transitions);
+		this.inputs = inputs;
+		this.outputs = outputs;
 	}
 
 	/***
@@ -209,57 +215,53 @@ public class IOLTS extends LTS implements Cloneable {
 
 		return alphabet_new;
 	}
-	
-	
+
 	public int numberDistinctTransitions(IOLTS param_iolts) {
 		int this_n_transition = new Integer(getTransitions().size());
-		int param_n_transition = new Integer(param_iolts.getTransitions().size());		
+		int param_n_transition = new Integer(param_iolts.getTransitions().size());
 		List<Transition_> transitions_max, transitions_min;
 		int n_distinct_transitions = 0;
 		if (this_n_transition <= param_n_transition) {
-			transitions_max = new ArrayList<>( param_iolts.getTransitions());
+			transitions_max = new ArrayList<>(param_iolts.getTransitions());
 			transitions_min = new ArrayList<>(getTransitions());
 		} else {
 			transitions_max = new ArrayList<>(getTransitions());
 			transitions_min = new ArrayList<>(param_iolts.getTransitions());
 		}
-		
+
 		for (Transition_ t : transitions_max) {
-			if(!transitions_min.contains(t)) {
+			if (!transitions_min.contains(t)) {
 				n_distinct_transitions++;
 			}
 		}
-		
+
 		return n_distinct_transitions;
 
 	}
 
 	public List<Transition_> equalsTransitions(IOLTS param_iolts) {
 		List<Transition_> transitions_ = new ArrayList<>();
-		
+
 		int this_n_transition = new Integer(getTransitions().size());
-		int param_n_transition = new Integer(param_iolts.getTransitions().size());		
+		int param_n_transition = new Integer(param_iolts.getTransitions().size());
 		List<Transition_> transitions_max, transitions_min;
 		int n_distinct_transitions = 0;
 		if (this_n_transition <= param_n_transition) {
-			transitions_max = new ArrayList<>( param_iolts.getTransitions());
-			transitions_min = new ArrayList<>( getTransitions());
+			transitions_max = new ArrayList<>(param_iolts.getTransitions());
+			transitions_min = new ArrayList<>(getTransitions());
 		} else {
-			transitions_max = new ArrayList<>( getTransitions());
-			transitions_min = new ArrayList<>( param_iolts.getTransitions());
+			transitions_max = new ArrayList<>(getTransitions());
+			transitions_min = new ArrayList<>(param_iolts.getTransitions());
 		}
-		
-		
+
 		for (Transition_ t : transitions_max) {
-			if(!transitions_min.contains(t)) {
+			if (!transitions_min.contains(t)) {
 				n_distinct_transitions++;
-			}else {
+			} else {
 				transitions_.add(t);
 			}
 		}
-		
-		
-		
+
 		return transitions_;
 
 	}

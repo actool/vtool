@@ -189,6 +189,10 @@ public class Automaton_ extends LTS {
 		}
 
 	}
+	
+	public IOLTS toIOLTS(List<String> inputs, List<String> outputs) {		
+		return new IOLTS(this.states, this.initialState, this.alphabet, this.transitions, inputs, outputs);
+	}
 
 	/***
 	 * Overwriting the automato's toString method to list the attributes contained
