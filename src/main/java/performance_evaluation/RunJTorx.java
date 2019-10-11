@@ -137,7 +137,7 @@ public class RunJTorx {
 			String pathSaveTS, List<String> headerCSV, String pathCsv, boolean stateVariation,
 			String numTestCaseToGenerate, String tool) throws Exception {
 
-		//numTestCaseToGenerate = "21";
+		// numTestCaseToGenerate = "21";
 
 		// run JTorx
 		Desktop d = Desktop.getDesktop();
@@ -231,70 +231,69 @@ public class RunJTorx {
 
 				System.err.println("IOCO DOESN'T CONFORM");
 
-				// // save test cases
-				// String nameTestCaseAutFile = "";
-				// String nameTCFile = "";
-				// // create folder to save
-				// DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd__HH_mm_ss");
-				// if (!Files.exists(Paths.get(pathSaveTS))) {
-				// Files.createDirectory(Paths.get(pathSaveTS));
-				// }
-				//
-				// Thread.sleep(700);
-				//
-				// // first line (testcases)
-				// for (int j = 0; j < 4; j++) {
-				// s.type(Key.TAB);
-				// }
-				// s.type(Key.DOWN);
-				// s.type(Key.UP);
-				// // save test case
-				// s.click(root_img + "btn-save.PNG");
-				// Thread.sleep(500);
-				// nameTestCaseAutFile = pathSaveTS + "1_" + dtf.format(LocalDateTime.now()) +
-				// ".aut";
-				// Thread.sleep(500);
-				// s.type(nameTestCaseAutFile);
-				// s.type(Key.ENTER);
-				//
-				// // second line
-				// s.type(Key.TAB);
-				// s.type(Key.DOWN);
-				// Scanner scanner = null;
-				//
-				// Thread.sleep(2000);
-				//
-				// scanner = new Scanner(new File(nameTestCaseAutFile));
-				// String previous = scanner.useDelimiter("\\Z").next();
-				// scanner.close();
-				// String aux = "";
-				//
-				// // other lines
-				// count = 1;
-				// while (true) {
-				// count++;
-				// nameTCFile = count + "_" + dtf.format(LocalDateTime.now()) + ".aut";
-				// nameTestCaseAutFile = pathSaveTS + nameTCFile;
-				//
-				// s.click(root_img + "btn-save.PNG");
-				// Thread.sleep(500);
-				// s.type(nameTCFile);
-				// s.type(Key.ENTER);
-				// Thread.sleep(1500);
-				// scanner = new Scanner(new File(nameTestCaseAutFile));
-				// aux = scanner.useDelimiter("\\Z").next();
-				// scanner.close();
-				//
-				// if (aux.equals(previous)) {
-				// Files.delete(Paths.get(nameTestCaseAutFile));
-				// count--;
-				// break;
-				// } else {
-				// previous = aux;
-				// s.type(Key.TAB);
-				// s.type(Key.DOWN);
-				// }
-				// }
+				// save test cases
+				String nameTestCaseAutFile = "";
+				String nameTCFile = "";
+				// create folder to save
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd__HH_mm_ss");
+				if (!Files.exists(Paths.get(pathSaveTS))) {
+					Files.createDirectory(Paths.get(pathSaveTS));
+				}
+
+				Thread.sleep(700);
+
+				// first line (testcases)
+				for (int j = 0; j < 4; j++) {
+					s.type(Key.TAB);
+				}
+				s.type(Key.DOWN);
+				s.type(Key.UP);
+				// save test case
+				s.click(root_img + "btn-save.PNG");
+				Thread.sleep(500);
+				nameTestCaseAutFile = pathSaveTS + "1_" + dtf.format(LocalDateTime.now()) + ".aut";
+				Thread.sleep(500);
+				s.type(nameTestCaseAutFile);
+				s.type(Key.ENTER);
+
+				// second line
+				s.type(Key.TAB);
+				s.type(Key.DOWN);
+				Scanner scanner = null;
+
+				Thread.sleep(2000);
+
+				scanner = new Scanner(new File(nameTestCaseAutFile));
+				String previous = scanner.useDelimiter("\\Z").next();
+				scanner.close();
+				String aux = "";
+
+				// other lines
+				count = 1;
+				while (true) {
+					count++;
+					nameTCFile = count + "_" + dtf.format(LocalDateTime.now()) + ".aut";
+					nameTestCaseAutFile = pathSaveTS + nameTCFile;
+
+					s.click(root_img + "btn-save.PNG");
+					Thread.sleep(500);
+					s.type(nameTCFile);
+					s.type(Key.ENTER);
+					Thread.sleep(1500);
+					scanner = new Scanner(new File(nameTestCaseAutFile));
+					aux = scanner.useDelimiter("\\Z").next();
+					scanner.close();
+
+					if (aux.equals(previous)) {
+						Files.delete(Paths.get(nameTestCaseAutFile));
+						count--;
+						break;
+					} else {
+						previous = aux;
+						s.type(Key.TAB);
+						s.type(Key.DOWN);
+					}
+				}
 
 			}
 		}

@@ -36,9 +36,7 @@ import performance_evaluation.RunJTorx.TimeOut;
 
 public class RunEverest {
 	public static void main(String[] args) throws Exception {
-		try {
-			
-			
+		try {					
 			String root_img = new File("src/main/java/performance_evaluation/everet-img").getCanonicalPath() + "\\";
 			String batchFileEverest = "C:\\Users\\camil\\Desktop\\everest.bat";
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
@@ -49,7 +47,7 @@ public class RunEverest {
 			String numTestCaseToGenerate = "5";	
 			String tool = "everest-"+numTestCaseToGenerate+"tc";
 
-			int nState = 100;
+			int nState = 750;
 			boolean stateVariation = true;// state or percentage
 			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\iut\\";
 			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";

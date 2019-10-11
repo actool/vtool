@@ -361,9 +361,8 @@ public class Operations {
 								Ar.addFinalStates(synchronized_);
 
 								
-								if (nFinalState != null && Ar.getFinalStates().size() == nFinalState
-										+ (nFinalState < 15 ? (nFinalState * 3) : (nFinalState / 4))) {
-									 
+								//if (nFinalState != null && Ar.getFinalStates().size() == nFinalState + (nFinalState < 15 ? (nFinalState * 3) : (nFinalState / 4))) {
+								if (nFinalState != null && Ar.getFinalStates().size() >= nFinalState) { 
 									break endIntersection;
 								}
 								
@@ -793,10 +792,10 @@ public class Operations {
 						}
 					}
 
-					if (words.size() == nTestCases
-							+ (nTestCases < 15 ? (nTestCases * 11) : (nTestCases / 3))) {
-						break endgetWord;
-					}
+//					if (words.size() == nTestCases
+//							+ (nTestCases < 15 ? (nTestCases * 11) : (nTestCases / 3))) {
+//						break endgetWord;
+//					}
 				}
 			}
 			}
