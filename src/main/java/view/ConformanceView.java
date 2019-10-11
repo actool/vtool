@@ -321,8 +321,7 @@ public class ConformanceView extends JFrame {
 
 	final JPanel panel = new JPanel();
 
-	public void actionVerifyConformance(boolean ioco) {
-
+	public void actionVerifyConformance(boolean ioco) {		
 		/*
 		 * lbl_veredict_ioco.setText("Processing...");
 		 * lbl_veredict_ioco.setVisible(true);

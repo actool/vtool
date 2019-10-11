@@ -44,10 +44,12 @@ public class RunEverest {
 			List<String> headerCSV = Arrays.asList(new String[] { "tool", "model", "iut", "statesModel", "statesIut",
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });	
+			
+			
 			String numTestCaseToGenerate = "5";	
 			String tool = "everest-"+numTestCaseToGenerate+"tc";
 
-			int nState = 25;
+			int nState = 100;
 			boolean stateVariation = true;// state or percentage
 			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\iut\\";
 			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\"+nState+"\\"+nState+"states_spec.aut";

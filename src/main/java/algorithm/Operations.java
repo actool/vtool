@@ -362,7 +362,7 @@ public class Operations {
 
 								
 								if (nFinalState != null && Ar.getFinalStates().size() == nFinalState
-										+ (nFinalState < 15 ? (nFinalState * 2) : (nFinalState / 4))) {
+										+ (nFinalState < 15 ? (nFinalState * 3) : (nFinalState / 4))) {
 									 
 									break endIntersection;
 								}
@@ -794,7 +794,7 @@ public class Operations {
 					}
 
 					if (words.size() == nTestCases
-							+ (nTestCases < 15 ? (nTestCases * 5) : (nTestCases / 4))) {
+							+ (nTestCases < 15 ? (nTestCases * 11) : (nTestCases / 3))) {
 						break endgetWord;
 					}
 				}
@@ -1030,6 +1030,36 @@ public class Operations {
 		List<String> out_s_aux;
 		List<String> out_i_aux;
 
+		State_ currentState_s;
+		State_ currentState_i;
+
+		List<String> implOut, specOut;
+
+		if(ioco) {
+			// verify if initial states results in non ioco, with test case ''
+			currentState_s = S.getInitialState();
+			currentState_i = I.getInitialState();
+			implOut = I.outputsOfState(currentState_i);
+			specOut = S.outputsOfState(currentState_s);
+
+			// verify if initial state is not conform
+			if (!specOut.containsAll(implOut) && !(ioco && specOut.size() == 0)) {// (ioco && specOut.size() == 0) ->
+																					// when the test case can not be run
+																					// completely
+				contTestCase++;
+				path = "Test case: \t" + ""; // + "\n"
+				path += "\n\nModel outputs: " + specOut + " \n\n\t path:" + currentState_s.getName() + "\n\t output: "
+						+ S.outputsOfState(currentState_s);
+				path += "\n\nImplementation outputs: " + implOut + " \n\n\t path: " + currentState_i.getName()
+						+ "\n\t output: " + I.outputsOfState(currentState_i);
+				path += "\n\n################################################################## \n";
+
+			}
+		}
+		
+
+		
+		
 		// tc, state path and outputs
 		// for each test case
 		for (String tc : testSuite) {
@@ -1132,7 +1162,7 @@ public class Operations {
 			int nTestCases) {
 		int contTestCase = 0;
 		List<String> testCases;
-		String path = "";
+		
 
 		// INI: inserts transitions into states to improve the processing of the
 		// getWordsFromAutomaton
@@ -1189,39 +1219,12 @@ public class Operations {
 
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
 
-			
-		
-			
-			State_ currentState_s;
-			State_ currentState_i;
-
-			List<String> implOut, specOut;
-
-			// verify if initial states results in non ioco, with test case ''
-			currentState_s = S.getInitialState();
-			currentState_i = I.getInitialState();
-			implOut = I.outputsOfState(currentState_i);
-			specOut = S.outputsOfState(currentState_s);
-
-			// verify if initial state is not conform
-			if (!specOut.containsAll(implOut) && !(ioco && specOut.size() == 0)) {// (ioco && specOut.size() == 0) ->
-																					// when the test case can not be run
-																					// completely
-				contTestCase++;
-				path = "Test case: \t" + ""; // + "\n"
-				path += "\n\nModel outputs: " + specOut + " \n\n\t path:" + currentState_s.getName() + "\n\t output: "
-						+ S.outputsOfState(currentState_s);
-				path += "\n\nImplementation outputs: " + implOut + " \n\n\t path: " + currentState_i.getName()
-						+ "\n\t output: " + I.outputsOfState(currentState_i);
-				path += "\n\n################################################################## \n";
-
-			}
-
+	
 		} else {
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);// transitionCoverSpec
 		}
 
-		return path + path(S, I, ioco, testCases, nTestCases);
+		return  path(S, I, ioco, testCases, nTestCases);
 		// return path;
 	}
 
