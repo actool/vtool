@@ -179,7 +179,7 @@ public class IOLTS extends LTS implements Cloneable {
 	public boolean isInputEnabled() {
 		for (String l : getInputs()) {
 			for (State_ s : getStates()) {
-				if (reachedStates(s.getName(), l).size() == 0) {
+				if (reachedStates(s.getName(), l).size() == 0) {				
 					return false;
 				}
 			}

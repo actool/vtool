@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,15 +34,14 @@ import parser.ImportAutFile_WithoutThread;
 public class AutGenerator {
 	public static void main(String[] args) throws Exception {
 		//// GENERATE <ONE> RANDOM MODEL
-		 int nState = 3;// 2000;
-//		 List<String> labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y", "!z", "!w", "!k");// , "?c"
-//		 boolean inputEnabled = true;
-//		 String tag = "g";
-//		 String path = "C:\\Users\\camil\\Desktop\\";
-//		 generate(nState, labels, inputEnabled, tag, path,
-//				 nState + "states_spec", System.currentTimeMillis());
-		 
-	
+		//int nState = 3;// 2000;
+		// List<String> labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y",
+		// "!z", "!w", "!k");// , "?c"
+		// boolean inputEnabled = true;
+		// String tag = "g";
+		// String path = "C:\\Users\\camil\\Desktop\\";
+		// generate(nState, labels, inputEnabled, tag, path,
+		// nState + "states_spec", System.currentTimeMillis());
 
 		// GENERATE <ONE> - PERCENTAGE MODEL
 		// generateByPercentage("C:\\Users\\camil\\Desktop\\model10states.aut",
@@ -70,38 +70,121 @@ public class AutGenerator {
 		// labels);
 
 		//// GENERATE <IN LOTE> - PERCENTAGE
+		// int percentage = 60;
+		// long seed = System.currentTimeMillis();
+		// boolean inputEnabled = true;
+		//
+		// for (int j = 0; j < 10; j++) {
+		// generateByPercentage("C:\\Users\\camil\\Desktop\\25-100\\3\\" + nState +
+		// "states_spec.aut",
+		// "C:\\Users\\camil\\Desktop\\25-100\\" + nState + "\\iut", percentage +
+		// "pct_iut_" + j, percentage,
+		// "g", seed, inputEnabled);
+		// }
+
+		//// GENERATE <IN LOTE> - PERCENTAGE (models ioco conf)
+//		String nState = "3000";
+//		String rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models25-3000states-ioco-perc-dif\\"+nState+"\\iut\\";
+//		String rootSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\aut\\spec\\";
+//		double percentage = 1;
+//		String tag = "g";
+//		File folder = new File(rootPathIUTs);
+//		File[] listOfFiles = folder.listFiles();
+//		boolean inputEnabled = true;
+//
+//		for (File file : listOfFiles) {
+//			if (file.getName().indexOf(".") != -1
+//					&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+//				generateByPercentageModelsIocoConf(rootPathIUTs + file.getName(), rootSpec,
+//						nState+"states"+file.getName().replace("iut", "spec").replace(".aut", ""), percentage, tag,
+//						System.currentTimeMillis(), inputEnabled);
+//
+//			}
+//			
+//		}
+
 		
-		
-		int percentage = 60;
-		long seed = System.currentTimeMillis();
-		boolean inputEnabled = true;
-		
+		// print feature models
+//		String pathIUT, rootPathIUTs = "C:\\Users\\camil\\Desktop\\aa\\" + nState + "\\iut\\";
+//		File folder = new File(rootPathIUTs);
+//		File[] listOfFiles = folder.listFiles();
+//
+//		for (File file : listOfFiles) {
+//			if (file.getName().indexOf(".") != -1
+//					&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+//				pathIUT = rootPathIUTs + file.getName();
+//
+//				IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(pathIUT, false, null, null);
+//				IOLTS iolts_ = ImportAutFile_WithoutThread.autToIOLTS(
+//						"C:\\Users\\camil\\Desktop\\aa\\" + nState + "\\" + nState + "states_spec.aut", false, null,
+//						null);
+//				iolts_.setAlphabet(ListUtils.union(iolts.getInputs(), iolts.getOutputs()));
+//				System.out.println("n-transicao: " + iolts.getTransitions().size() + " iguais: "
+//						+ iolts_.equalsTransitions(iolts).size() + " - diferentes: "
+//						+ iolts_.numberDistinctTransitions(iolts) + " - inp Enab: " + iolts.isInputEnabled()
+//						+ " - determin: " + iolts.ioltsToAutomaton().isDeterministic() + " > " + file);
+//			}
+//		}
 
-		for (int j = 0; j < 10; j++) {
-			generateByPercentage("C:\\Users\\camil\\Desktop\\25-100\\3\\"+nState+"states_spec.aut", 
-					"C:\\Users\\camil\\Desktop\\25-100\\"+nState+"\\iut",
-					percentage + "pct_iut_" + j, percentage, "g", seed, inputEnabled);
-		}
+	}
 
-		String pathIUT, rootPathIUTs = "C:\\Users\\camil\\Desktop\\aa\\"+nState+"\\iut\\";
-		File folder = new File(rootPathIUTs);
-		File[] listOfFiles = folder.listFiles();
+	// criar specs com base na iut
+	public static void generateByPercentageModelsIocoConf(String pathIUTlBase, String pathNewFile, String autFileName,
+			double percentage, String tag, long seed, boolean inputEnabled) {
+		try {
+			Random rand = new Random();
+			rand.setSeed(seed * System.currentTimeMillis());
+			IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(pathIUTlBase, false, null, null);
 
-		for (File file : listOfFiles) {
-			if (file.getName().indexOf(".") != -1
-					&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
-				pathIUT = rootPathIUTs + file.getName();
+			int numberTransitionsToAdd = (int) ((Math.ceil(iolts.getTransitions().size()) * percentage) / 100);
 
-				IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(pathIUT, false, null, null);
-				IOLTS iolts_ = ImportAutFile_WithoutThread.autToIOLTS("C:\\Users\\camil\\Desktop\\aa\\"+nState+"\\"+nState+"states_spec.aut",
-						false, null, null);
-				iolts_.setAlphabet(ListUtils.union(iolts.getInputs(), iolts.getOutputs()));
-				System.out.println("n-transicao: "+iolts.getTransitions().size()+" iguais: " + iolts_.equalsTransitions(iolts).size() + " - diferentes: "
-						+ iolts_.numberDistinctTransitions(iolts) + " - inp Enab: " + iolts.isInputEnabled()
-						+ " - determin: " + iolts.ioltsToAutomaton().isDeterministic() + " > " + file);
+			if (inputEnabled) {
+				numberTransitionsToAdd = (int) Math.ceil(numberTransitionsToAdd / iolts.getInputs().size());
+				numberTransitionsToAdd = numberTransitionsToAdd==0?iolts.getInputs().size():numberTransitionsToAdd;
 			}
-		}
+			
 
+			int contState = iolts.getStates().size();
+			State_ iniState, endState;
+			List<Transition_> transitions = new ArrayList<>();
+
+			for (int i = 0; i < numberTransitionsToAdd; i++) {
+				iniState = new State_(tag + Objects.toString(contState));
+				iolts.addState(iniState);
+
+				for (String l : iolts.getAlphabet()) {
+					endState = new State_(tag + Objects.toString(rand.nextInt(iolts.getStates().size() - 1)));
+					if (inputEnabled) {
+						if (iolts.getInputs().contains(l)) {
+							transitions.add(new Transition_(iniState, l, endState));
+						}
+					} else {
+
+						transitions.add(new Transition_(iniState, l, endState));
+
+					}
+
+				}
+				
+				if(numberTransitionsToAdd == transitions.size()) {
+					break;
+				}
+				contState++;
+			}
+
+			for (Transition_ transition : transitions) {
+				iolts.addTransition(transition);
+			}
+
+			File file = new File(pathNewFile, autFileName + ".aut");
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write(ioltsToAut(iolts));
+			writer.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void generateByPercentage(String pathModelBase, String pathNewFile, String autFileName,
@@ -118,7 +201,7 @@ public class AutGenerator {
 		IOLTS iolts = new IOLTS();
 		IOLTS iolts_base = new IOLTS();
 		try {
-			
+
 			int totalTransitions = 0;
 
 			iolts = ImportAutFile.autToIOLTS(pathModelBase, false, null, null);
@@ -127,7 +210,6 @@ public class AutGenerator {
 			iolts_base = ImportAutFile.autToIOLTS(pathModelBase, false, null, null);
 			iolts_base.setAlphabet(ListUtils.union(iolts.getInputs(), iolts.getOutputs()));
 
-			
 			totalTransitions = iolts.getTransitions().size();
 
 			// define max num transition to add,
@@ -160,8 +242,10 @@ public class AutGenerator {
 
 			// modify transitions
 			while (iolts.numberDistinctTransitions(iolts_base) < numberLinesToChange) {
-				//System.out.println("numberDistinctTransitions: " + iolts.numberDistinctTransitions(iolts_base) + " numberLinesToChange: "+numberLinesToChange);
-				
+				// System.out.println("numberDistinctTransitions: " +
+				// iolts.numberDistinctTransitions(iolts_base) + " numberLinesToChange:
+				// "+numberLinesToChange);
+
 				transitionsToRemove = new ArrayList<>();
 				lines = new ArrayList<>();
 				for (Transition_ t : iolts.equalsTransitions(iolts_base)) {
@@ -178,115 +262,116 @@ public class AutGenerator {
 
 				// 0)remove, 1)add or 2)alter transition
 				// randNum = rand.nextInt(2)+1;//without remove
-				//randNum = rand.nextInt(3);
+				// randNum = rand.nextInt(3);
 
-//				// remove transition
-//				if (randNum == 0) {
-//
-//					do {
-//
-//						sortedLine = rand.nextInt(lines.size() - 1);
-//
-//						transition = iolts.getTransitions().get(lines.get(sortedLine));
-//					} while (Integer
-//							.parseInt(transition.getEndState().toString().replace(tag,
-//									"")) == (Integer.parseInt(transition.getIniState().toString().replace(tag, "")) + 1)
-//							|| transitionsToRemove.contains(lines.get(sortedLine)));
-//
-//					transitionsToRemove.add(lines.get(sortedLine));
-//					lines.remove(sortedLine);
-//
-//				} else {
-//					// add transition
-//					if (randNum == 1) {
-//
-//						int count = 0;
-//						// dont add transition deterministic
-//						do {
-//							runAgain = false;
-//							s_aux = iolts.getStates().get(rand.nextInt(numberOfStates));
-//							l_aux = iolts.labelNotDefinedOnState(s_aux.getName());
-//
-//							if (l_aux.size() == 0) {
-//								runAgain = true;
-//								break;
-//							} else {
-//								for (Transition_ t : addTransitions) {
-//									if (t.getIniState().equals(s_aux)) {
-//										if (l_aux.contains(t.getLabel())) {
-//											l_aux.remove(t.getLabel());
-//											if (l_aux.size() == 0) {
-//												runAgain = true;
-//												break;
-//											}
-//										}
-//									}
-//								}
-//							}
-//
-//							count++;
-//
-//						} while (runAgain && count < 15);
-//
-//						if (!runAgain) {
-//							String label = l_aux.get(rand.nextInt(l_aux.size()));
-//							addTransitions.add(new Transition_(s_aux, label.substring(1, label.length()),
-//									iolts.getStates().get(rand.nextInt(numberOfStates))));
-//						}
+				// // remove transition
+				// if (randNum == 0) {
+				//
+				// do {
+				//
+				// sortedLine = rand.nextInt(lines.size() - 1);
+				//
+				// transition = iolts.getTransitions().get(lines.get(sortedLine));
+				// } while (Integer
+				// .parseInt(transition.getEndState().toString().replace(tag,
+				// "")) == (Integer.parseInt(transition.getIniState().toString().replace(tag,
+				// "")) + 1)
+				// || transitionsToRemove.contains(lines.get(sortedLine)));
+				//
+				// transitionsToRemove.add(lines.get(sortedLine));
+				// lines.remove(sortedLine);
+				//
+				// } else {
+				// // add transition
+				// if (randNum == 1) {
+				//
+				// int count = 0;
+				// // dont add transition deterministic
+				// do {
+				// runAgain = false;
+				// s_aux = iolts.getStates().get(rand.nextInt(numberOfStates));
+				// l_aux = iolts.labelNotDefinedOnState(s_aux.getName());
+				//
+				// if (l_aux.size() == 0) {
+				// runAgain = true;
+				// break;
+				// } else {
+				// for (Transition_ t : addTransitions) {
+				// if (t.getIniState().equals(s_aux)) {
+				// if (l_aux.contains(t.getLabel())) {
+				// l_aux.remove(t.getLabel());
+				// if (l_aux.size() == 0) {
+				// runAgain = true;
+				// break;
+				// }
+				// }
+				// }
+				// }
+				// }
+				//
+				// count++;
+				//
+				// } while (runAgain && count < 15);
+				//
+				// if (!runAgain) {
+				// String label = l_aux.get(rand.nextInt(l_aux.size()));
+				// addTransitions.add(new Transition_(s_aux, label.substring(1, label.length()),
+				// iolts.getStates().get(rand.nextInt(numberOfStates))));
+				// }
 
-					//} else {
-						// alter transition
-						// 0)souce state, 1)label or 2)target state
-						randNum = rand.nextInt(3);
+				// } else {
+				// alter transition
+				// 0)souce state, 1)label or 2)target state
+				randNum = rand.nextInt(3);
 
-						if(lines.size()-1 > 0) {
-							sortedLine = rand.nextInt(lines.size() - 1);
-						}else {
-							sortedLine = rand.nextInt(lines.size());
-						}
-						
-						
-						//System.out.println("n-transição: " + iolts.getTransitions().size() + " sorted-line: " + sortedLine + " n-lines: " + lines.size()  + " line-get: " + lines.get(sortedLine));
+				if (lines.size() - 1 > 0) {
+					sortedLine = rand.nextInt(lines.size() - 1);
+				} else {
+					sortedLine = rand.nextInt(lines.size());
+				}
+
+				// System.out.println("n-transição: " + iolts.getTransitions().size() + "
+				// sorted-line: " + sortedLine + " n-lines: " + lines.size() + " line-get: " +
+				// lines.get(sortedLine));
+				transition = iolts.getTransitions().get(lines.get(sortedLine));
+
+				if (randNum == 0) {// alter source state
+					do {
+						randState = iolts.getStates().get(rand.nextInt(numberOfStates));
+
+					} while (randState.equals(transition.getIniState()));
+
+					iolts.getTransitions().set(lines.get(sortedLine),
+							new Transition_(randState, transition.getLabel(), transition.getEndState()));
+					lines.remove(sortedLine);
+				} else {
+					// dont alter transition that keeps iolts initially connected
+					while (Integer.parseInt(transition.getEndState().toString().replace(tag,
+							"")) == (Integer.parseInt(transition.getIniState().toString().replace(tag, "")) + 1)) {
+
+						sortedLine = rand.nextInt(lines.size() - 1);
 						transition = iolts.getTransitions().get(lines.get(sortedLine));
+					}
+					do {
+						randState = iolts.getStates().get(rand.nextInt(numberOfStates));
 
-						if (randNum == 0) {// alter source state
-							do {
-								randState = iolts.getStates().get(rand.nextInt(numberOfStates));
+					} while (randState.equals(transition.getEndState()));
+					iolts.getTransitions().set(lines.get(sortedLine),
+							new Transition_(transition.getIniState(), transition.getLabel(), randState));
 
-							} while (randState.equals(transition.getIniState()));
+					lines.remove(sortedLine);
+				}
 
-							iolts.getTransitions().set(lines.get(sortedLine),
-									new Transition_(randState, transition.getLabel(), transition.getEndState()));
-							lines.remove(sortedLine);
-						} else {
-							// dont alter transition that keeps iolts initially connected
-							while (Integer.parseInt(transition.getEndState().toString().replace(tag,
-									"")) == (Integer.parseInt(transition.getIniState().toString().replace(tag, ""))
-											+ 1)) {
+				// }
+				// }
 
-								sortedLine = rand.nextInt(lines.size() - 1);
-								transition = iolts.getTransitions().get(lines.get(sortedLine));
-							}
-							do {
-								randState = iolts.getStates().get(rand.nextInt(numberOfStates));
-
-							} while (randState.equals(transition.getEndState()));
-							iolts.getTransitions().set(lines.get(sortedLine),
-									new Transition_(transition.getIniState(), transition.getLabel(), randState));
-
-							lines.remove(sortedLine);
-						}
-
-					//}
-				//}
-
-//				Collections.sort(transitionsToRemove, Collections.reverseOrder());
-//
-//				// remove sorted transitions
-//				for (Integer i : transitionsToRemove) {
-//					Transition_ t = iolts.getTransitions().get(i);// (i > 0 ? i - 1 : i);
-//					iolts.getTransitions().remove(t);
-//				}
+				// Collections.sort(transitionsToRemove, Collections.reverseOrder());
+				//
+				// // remove sorted transitions
+				// for (Integer i : transitionsToRemove) {
+				// Transition_ t = iolts.getTransitions().get(i);// (i > 0 ? i - 1 : i);
+				// iolts.getTransitions().remove(t);
+				// }
 
 				int addInp = 0;
 				if (inputEnabled) {
