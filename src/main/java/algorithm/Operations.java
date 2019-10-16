@@ -711,7 +711,7 @@ public class Operations {
 		Map<String, Integer> cost_state = new HashMap<>();// state-cost
 		Map<String, List<String>> label = new HashMap<>();
 		Map<String, Integer> cost_state_rm = new HashMap<>();// state-cost
-
+		Collection<String> aa, aaaa;
 		List<String> labels;
 		List<String> parents;
 
@@ -798,7 +798,7 @@ public class Operations {
 		String word_aux = "";
 
 		endgetWord: for (State_ s : a.getFinalStates()) {// final states
-			System.out.println(">>"+s);
+			
 			current = s.getName();
 			wordsMap = new MultiValueMap();
 			wordsMap.put(current, "");
@@ -808,10 +808,10 @@ public class Operations {
 			state_ = new ArrayList<>();
 
 			end: do {
-				System.out.println("A");
+				
 				
 				end2: for (Object key : wordsMap.keySet()) {
-					System.out.println("B");
+					
 					
 					if (key.equals(a.getInitialState().getName())) {
 						states.put(a.getInitialState().getName(),
@@ -835,16 +835,19 @@ public class Operations {
 						break end2;
 					}
 
-					 Collection<String> aaa =(Collection<String>)(wordsMap.get(key)); 
-					System.out.println(aaa.size());
+					 
+					
 					for (Object v : (Collection<String>) wordsMap.get(key)) {
-						//System.out.println("C");
+						
 						
 						// if (parent_state.get(current) != null) {
 						for (int i = 0; i < parent_state.get(current).size(); i++) {
-							//System.out.println("D");
-							Collection<String> aa = (Collection<String>)(wordsMap_aux.get(parent_state.get(current).get(i)));
-							if(aa== null || !aa.contains((v + label.get(current).get(i) + tagSeparator))) {//(v + label.get(current).get(i) + tagSeparator)
+							
+							 aa = (Collection<String>)(wordsMap_aux.get(parent_state.get(current).get(i)));
+							 aaaa = (Collection<String>)(wordsMap.get(parent_state.get(current).get(i)));
+							
+							
+							if((aaaa == null || !(aaaa.contains(v + label.get(current).get(i) + tagSeparator)) && (aa== null || !aa.contains((v + label.get(current).get(i) + tagSeparator))))) {//(v + label.get(current).get(i) + tagSeparator)
 								wordsMap_aux.put(parent_state.get(current).get(i),
 										v + label.get(current).get(i) + tagSeparator);
 								
@@ -858,22 +861,24 @@ public class Operations {
 					// }
 				}
 
-			
+				
 				wordsMap.remove(current);
+				wordsMap_aux.remove(current);
+				
 				wordsMap.putAll(wordsMap_aux);
 			} while (wordsMap.size() != 0);
 
 			
 			
 			for (String state : states.keySet()) {
-				System.out.println("E");
+			
 
 				Collection<String> collection = (Collection<String>) states.get(state);
 
 				if (collection != null) {
 
 					for (String word : collection) {
-						System.out.println("F");
+						
 
 						// invert word, to initi by initState
 						word_parts = word.split(tagSeparator);
@@ -890,7 +895,7 @@ public class Operations {
 						// has the path stored, already explored this state
 						if (!state.equals(a.getInitialState().getName())) {
 							for (String p : (Collection<String>) partial_path.get(state)) {
-								System.out.println("G");
+							
 								
 								word_aux = p + tagSeparator + word;
 								words.add(word_aux);
@@ -926,6 +931,8 @@ public class Operations {
 
 		}
 
+		
+		
 		return words;
 
 	}

@@ -37,8 +37,13 @@ public class TestGeneration {
 			multgraph.setFinalStates(states);
 
 			
+			List<String> words = Operations.getWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE);			
+			words = new ArrayList<>(new HashSet<>(words));
+			System.out.println("size:" + words.size());
+			for (String  s : words) {
+				System.out.println(s);
+			}
 			
-			System.out.println(Operations.getWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE));
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
