@@ -191,9 +191,6 @@ public class LTS {
 				.findFirst().orElse(null);
 		return result != null;
 	}
-	
-	
-	
 
 	/***
 	 * Checks whether there is a transition from the initial state and label
@@ -247,10 +244,45 @@ public class LTS {
 	 */
 	public Automaton_ ltsToAutomaton() {
 		// create automaton
-		Automaton_ as = new Automaton_(this.states,this.initialState,this.alphabet,this.states, this.transitions);
-		
+		Automaton_ as = new Automaton_(this.states, this.initialState, this.alphabet, this.states, this.transitions);
+
 		// convert to deterministic
 		return Operations.convertToDeterministicAutomaton(as);
+	}
+
+	public void makeInitiallyConnected() {
+		List<State_> toVisit = new ArrayList<>();
+		List<State_> visited = new ArrayList<>();
+
+		State_ current;
+		toVisit.add(this.initialState);
+
+		//find initially connected states
+		while (toVisit.size() != 0) {
+			current = toVisit.remove(0);
+			visited.add(current);
+			for (Transition_ t : transitionsByIniState(current)) {
+				if (!visited.contains(t.getEndState())) {
+					toVisit.add(t.getEndState());
+				}
+			}
+		}
+		
+
+		//find states not initially connected
+		List<State_> notInitiallyConected = new ArrayList<>(this.getStates());
+		notInitiallyConected.removeAll(visited);
+		
+		List<Transition_> transitionsToRemove = new ArrayList<>();
+		for (Transition_ t : this.getTransitions()) {
+			if(notInitiallyConected.contains(t.getIniState()) || notInitiallyConected.contains(t.getEndState()) ) {
+				transitionsToRemove.add(t);
+			}
+		}
+		
+		
+		this.getStates().removeAll(notInitiallyConected);
+		this.getTransitions().removeAll(transitionsToRemove);
 	}
 
 	/***

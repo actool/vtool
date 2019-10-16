@@ -23,34 +23,9 @@ public class TestGeneration {
 
 			List<State_> states = new ArrayList<>();
 			Automaton_ multgraph = MultiGraphD(iolts, 4);
-//			// remover estados inicialmente não conectados
-//			for (State_ s : multgraph.getStates()) {
-//				if (s.getName().contains("s0") && !s.getName().equals("s0,0")) {
-//					states.add(s);
-//				}
-//			}
-//			
-//			List<Transition_> transitions = new ArrayList<>();
-//			for (Transition_ t : multgraph.getTransitions()) {
-//				if(states.contains(t.getIniState()) || states.contains(t.getEndState())) {
-//					transitions.add(t);
-//				}				
-//			}
-//
-//			multgraph.getStates().removeAll(states);
-//			multgraph.getTransitions().removeAll(transitions);
-//			List<State_> alcancavel ;
-//			List<State_> toVisit ;
-//			
-//			for (State_	s  : multgraph.getStates()) {
-//				alcancavel = new ArrayList<>();
-//				toVisit= new ArrayList<>();
-//				do {
-//					toVisit = multgraph.transitionsByIniState(s);
-//					
-//				}while(alcancavel.contains(multgraph.getInitialState()));
-//			}
+			multgraph.makeInitiallyConnected();
 			
+
 			
 			states = new ArrayList<>();
 			for (Transition_ t : multgraph.getTransitions()) {
@@ -58,9 +33,10 @@ public class TestGeneration {
 					states.add(t.getIniState());
 				}
 			}
+					
 			multgraph.setFinalStates(states);
 
-			System.out.println(states.size());
+			
 			
 			System.out.println(Operations.getWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE));
 
@@ -163,6 +139,8 @@ public class TestGeneration {
 			}
 		}
 
+		
+		
 		Automaton_ a = D.ltsToAutomaton();
 		a.setFinalStates(Arrays.asList(new State_[] { fail }));
 
