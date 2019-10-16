@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.bridj.util.Pair;
 
@@ -21,34 +23,122 @@ public class TestGeneration {
 		try {
 			IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(path, false, null, null);
 
-			List<State_> states = new ArrayList<>();
-			Automaton_ multgraph = MultiGraphD(iolts, 4);
-			multgraph.makeInitiallyConnected();
-			
+			List<State_> endStates = new ArrayList<>();
+			List<Transition_> endTransitions = new ArrayList<>();
 
-			
-			states = new ArrayList<>();
+			Automaton_ multgraph = multiGraphD(iolts, 4);
+			multgraph.makeInitiallyConnected();
+
+			// final states are those that reach the final states (same ioco)
+			endStates = new ArrayList<>();
 			for (Transition_ t : multgraph.getTransitions()) {
 				if (multgraph.getFinalStates().contains(t.getEndState())) {
-					states.add(t.getIniState());
+					endStates.add(t.getIniState());
+					endTransitions.add(t);
 				}
 			}
-					
-			multgraph.setFinalStates(states);
+			multgraph.setFinalStates(endStates);
 
-			
-			List<String> words = Operations.getWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE);			
+			// get word from multgraph
+			List<String> words = Operations.getWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE);
 			words = new ArrayList<>(new HashSet<>(words));
-			System.out.println("size:" + words.size());
-			for (String  s : words) {
-				System.out.println(s);
+
+			// to decrease the performance of statePath
+			if (multgraph.getInitialState().getTransitions().size() == 0) {
+				if (multgraph.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
+					for (Transition_ t : multgraph.getTransitions()) {
+						multgraph.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+								.addTransition(t);
+						t.setIniState(multgraph.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst()
+								.orElse(null));
+						t.setEndState(multgraph.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst()
+								.orElse(null));
+					}
+				}
+				multgraph.setInitialState(multgraph.getStates().stream()
+						.filter(x -> x.equals(multgraph.getInitialState())).findFirst().orElse(null));
 			}
-			
+
+			List<String> testCases = new ArrayList<>();
+			// set words to reach final state, because of the modification of the final
+			// states
+			for (String w : words) {
+				for (List<State_> states_ : Operations.statePath(multgraph, w)) {
+
+					// endState = states_.get(states_.size()-1);//-1
+					for (Transition_ t : endTransitions.stream()
+							.filter(x -> x.getIniState().equals(states_.get(states_.size() - 1)))
+							.collect(Collectors.toList())) {
+						testCases.add(w + " -> " + t.getLabel());
+					}
+				}
+			}
+
+			// System.out.println(testCases);
+
+			for (String tc : testCases) {
+				System.out.println(testPurpose(multgraph, tc, iolts.getOutputs(), iolts.getInputs()));// "a -> x -> b ->
+																										// a -> a -> b
+																										// -> b -> x"
+			}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static IOLTS testPurpose(Automaton_ multgraph, String testCase, List<String> li, List<String> lu) {
+		IOLTS tp = new IOLTS();
+		tp.setInputs(li);
+		tp.setOutputs(lu);
+
+		State_ ini = new State_(multgraph.getInitialState().getName());
+		tp.setInitialState(ini);
+
+		State_ pass = new State_("pass");
+		tp.addState(ini);
+		tp.addState(pass);
+
+		State_ current = ini;
+
+		for (String w : testCase.split(" -> ")) {
+			for (State_ s : multgraph.reachedStates(current.getName(), w)) {
+				tp.addState(s);
+				tp.addTransition(new Transition_(current, w, s));
+				current = new State_(s.getName());
+			}
+		}
+
+		boolean existsLu;
+		for (State_ s : tp.getStates().stream().filter(x -> !x.getName().equals("pass") && !x.getName().equals("fail"))
+				.collect(Collectors.toList())) {
+			existsLu = false;
+
+			for (String l : li) {
+				if (!tp.transitionExists(s.getName(), l)) {
+					tp.addTransition(new Transition_(s, l, pass));
+				}
+			}
+
+			for (String l : lu) {
+				if (tp.transitionExists(s.getName(), l)) {
+					existsLu = true;
+				}
+			}
+
+			if (existsLu == false) {
+				tp.addTransition(new Transition_(s, lu.get(0), pass));
+			}
+		}
+
+		State_ fail = new State_("fail");
+		for (String l : li) {
+			tp.addTransition(new Transition_(pass, l, pass));
+			tp.addTransition(new Transition_(fail, l, fail));
+		}
+
+		return tp;
 	}
 
 	/***
@@ -59,7 +149,7 @@ public class TestGeneration {
 	 *            max states of specification
 	 * @return
 	 */
-	public static Automaton_ MultiGraphD(IOLTS S, int m) {
+	public static Automaton_ multiGraphD(IOLTS S, int m) {
 		int level = 0;
 		IOLTS D = new IOLTS();
 		State_ iniState = new State_(S.getInitialState() + Constants.COMMA + level);
@@ -74,7 +164,7 @@ public class TestGeneration {
 
 		int totalLevels = S.getStates().size() * m + 1;
 
-		List<String> L = S.getInputs();
+		List<String> L = new ArrayList<>(S.getInputs());
 		L.addAll(S.getOutputs());
 
 		D.setAlphabet(L);
@@ -144,8 +234,6 @@ public class TestGeneration {
 			}
 		}
 
-		
-		
 		Automaton_ a = D.ltsToAutomaton();
 		a.setFinalStates(Arrays.asList(new State_[] { fail }));
 
