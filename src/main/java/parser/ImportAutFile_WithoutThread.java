@@ -82,7 +82,9 @@ public class ImportAutFile_WithoutThread {
 			}
 			configs = append(configs, msg);
 			
-	
+			lineConfig=null;
+			file=null;
+			sc=null;			
 		} catch (FileNotFoundException e) {
 			System.err.println("Error reading file:");
 			System.err.println(e);

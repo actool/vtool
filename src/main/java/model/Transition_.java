@@ -57,9 +57,9 @@ public class Transition_ {
 	}
 	
 	public Transition_(Transition_  t) {
-		this.iniState = new State_(t.getIniState());
-		this.label = new String(t.getLabel());
-		this.endState = new State_(t.getEndState());
+		this.iniState = t.getIniState();
+		this.label = t.getLabel();
+		this.endState = t.getEndState();
 	}
 
 	/**

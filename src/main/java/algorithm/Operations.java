@@ -85,8 +85,6 @@ public class Operations {
 			}
 		}
 
-		List<State_> result;
-
 		// completes states that are not input / output complete
 		for (State_ e : new ArrayList<State_>(Q.getStates())) {
 			for (String l : acomp.getAlphabet()) {
@@ -94,10 +92,7 @@ public class Operations {
 				// if there are no transitions, you must complete by creating a new transition
 				// from state "e" to state "scomp" with the label "l"
 
-				if (!Q.transitionExists(e.getName(), l)) {
-					acomp.getStates().get(0).getTransitions()
-							.add(new Transition_(new State_("123"), "xx", new State_("123")));
-
+				if (!Q.transitionExists(e.getName(), l)) {					
 					acomp.addTransition(new Transition_(new State_(e), l, scomp));
 
 					// } else {
@@ -115,6 +110,8 @@ public class Operations {
 			}
 
 		}
+
+		scomp = null;
 
 		return acomp;
 	}
@@ -272,6 +269,16 @@ public class Operations {
 				deteministic.addFinalStates(new State_(nomeEstadoFinal));
 			}
 
+			stateName = null;
+			nullState= null;
+			aux= null;
+			auxCopy= null;
+			auxState= null;
+			stringState= null;
+			result= null;
+			state= null;
+			finalStates= null;
+			
 			return deteministic;
 		}
 
@@ -383,6 +390,14 @@ public class Operations {
 			}
 		}
 
+		nameSyncState = null;
+		r0 = null;
+		toSynchronizeStates = null;
+		s = null;
+		removed = null;
+		part = null;
+		sTransitions = null;
+		qTransitions = null;
 		return Ar;
 	}
 
@@ -436,6 +451,9 @@ public class Operations {
 		Ay.addTransition(new Transition_(estado, Constants.EPSILON, S.getInitialState()));
 		Ay.addTransition(new Transition_(estado, Constants.EPSILON, Q.getInitialState()));
 
+		transicoes=null;
+		estados=null;
+		estadosFinais=null;
 		return convertToDeterministicAutomaton(Ay);
 	}
 
@@ -484,6 +502,9 @@ public class Operations {
 		automatonBrics.setAlphabet(newAlphabet);
 		automatonBrics.setTransitions(newTransition);
 
+		map=null;
+		automaton=null;
+		regExp=null;
 		return automatonBrics;
 	}
 
@@ -931,6 +952,24 @@ public class Operations {
 
 		}
 
+		current = null;
+		word_parts = null;
+		wordsMap = null;
+		wordsMap_aux = null;
+		partial_path = null;
+		paths = null;
+		state_ = null;
+		states = null;
+		word_aux = null;
+		parent_state = null;
+		cost_state = null;
+		label = null;
+		cost_state_rm = null;
+		aa = null;
+		aaaa = null;
+		labels = null;
+		parents = null;
+
 		return words;
 
 	}
@@ -1150,6 +1189,10 @@ public class Operations {
 
 		}
 
+		aux = null;
+		state_path_aux = null;
+		transitions_s = null;
+
 		// return list of state paths
 		return state_path;
 	}
@@ -1247,6 +1290,17 @@ public class Operations {
 
 		}
 
+		contTestCase = 0;
+		path_s = null;
+		path_i = null;
+		out_s = null;
+		out_i = null;
+		out_s_aux = null;
+		out_i_aux = null;
+		currentState_s = null;
+		currentState_i = null;
+		implOut = null;
+		specOut = null;
 		return path;
 	}
 
@@ -1276,7 +1330,11 @@ public class Operations {
 
 		testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);// transitionCoverSpec
 
-		return path(iolts_s, iolts_i, ioco, testCases, nTestCases);
+		String path = path(iolts_s, iolts_i, ioco, testCases, nTestCases);
+		iolts_s = null;
+		iolts_i = null;
+		testCases = null;
+		return path;
 	}
 
 	public static void addTransitionToStates(LTS S, LTS I) {
@@ -1351,12 +1409,12 @@ public class Operations {
 
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
 
+			automatonIOLTS = null;
 		} else {
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);// transitionCoverSpec
 		}
 
 		return path(S, I, ioco, testCases, nTestCases);
-		// return path;
 	}
 
 	/***
@@ -1376,7 +1434,7 @@ public class Operations {
 		Automaton_ automaton = new Automaton_();
 
 		// states of brics Automaton
-		Set<State> states = a.getStates();
+		List<State> states = new ArrayList<>(a.getStates());
 
 		for (State state : states) {
 			// ini state
@@ -1401,6 +1459,7 @@ public class Operations {
 		// define the initial state
 		automaton.setInitialState(getBricsState(a.getInitialState(), tag));
 
+		states = null;
 		return automaton;
 
 	}
@@ -1426,6 +1485,9 @@ public class Operations {
 					new State_(tag + parts[1].replaceAll("\\s+", ""))));
 		}
 
+		string = null;
+		parts = null;
+		transicoes = null;
 		return listaTransicoes;
 	}
 

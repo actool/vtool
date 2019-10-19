@@ -48,12 +48,12 @@ public class RunEverest {
 
 			
 			//IOCO CONF TEST
-			int nState = 100;
+			int nState = 25;
 			boolean stateVariation = true;// state or percentage			
 			String rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models25-3000states-ioco-perc-dif\\" + nState + "\\iut\\";
 			String rootPathAutSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\aut\\spec\\";
 			String rootPathSaveTS = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\result\\";
-			String pathCsv = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\result\\jtorx-everest.csv";
+			String pathCsv = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\result\\novo.csv";//jtorx-everest
 
 			String errorFolder = rootPathIUTs + "\\error\\";
 			Path errorPath = Paths.get(errorFolder);

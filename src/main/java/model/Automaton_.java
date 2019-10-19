@@ -25,19 +25,19 @@ public class Automaton_ extends LTS {
 	private List<State_> finalStates;
 
 	public Automaton_(List<State_> states, State_ iniState, List<String> alphabet, List<State_> finalStates, List<Transition_> transitions) {
-		this.states = new ArrayList<>(states);
-		this.initialState = new State_(iniState);
-		this.alphabet = new ArrayList<>(alphabet);
-		this.finalStates = new ArrayList<>(finalStates);
-		this.transitions =  new ArrayList<>(transitions);//Operations.processTauTransition(transitions);
+		this.states = states;
+		this.initialState = iniState;
+		this.alphabet = alphabet;
+		this.finalStates = finalStates;
+		this.transitions =  transitions;
 	}
 	
 	public Automaton_(Automaton_ a) {
-		this.states = new ArrayList<>(a.getStates());
-		this.initialState = new State_(a.getInitialState());
-		this.alphabet = new ArrayList<>(a.getAlphabet());
-		this.finalStates = new ArrayList<>(a.getFinalStates());
-		this.transitions =  new ArrayList<>(a.getTransitions());//Operations.processTauTransition(transitions);
+		this.states = a.getStates();
+		this.initialState = a.getInitialState();
+		this.alphabet = a.getAlphabet();
+		this.finalStates = a.getFinalStates();
+		this.transitions =  a.getTransitions();
 	}
 	/***
 	 * Empty constructor initializes final state list
@@ -102,6 +102,7 @@ public class Automaton_ extends LTS {
 		List<State_> r;
 		// to explore list
 		State_ current;
+		ArrayList<State_> distinctStates;
 
 		// while there are states to be explored in the list
 		while (aux.size() > 0) {
@@ -123,7 +124,7 @@ public class Automaton_ extends LTS {
 				r = (new ArrayList<State_>(Arrays.asList(current)));
 			}
 			// in the list contains only the states that are not in "reachedStates"
-			ArrayList<State_> distinctStates = new ArrayList<State_>(r);
+			distinctStates = new ArrayList<State_>(r);
 			distinctStates.removeAll(reachedStates);
 
 			// add in the auxiliary list the states reached by the current state with
@@ -133,9 +134,15 @@ public class Automaton_ extends LTS {
 			// add in the reachedStates list the states reached by the current state with
 			// epsilon
 			reachedStates = Stream.concat(distinctStates.stream(), reachedStates.stream()).distinct()
-					.collect(Collectors.toList());
+					.collect(Collectors.toList());					
 		}
-
+		
+		distinctStates=null;
+		reachedStates = null;
+		aux = null;
+		r = null;
+		current = null;
+		
 		return reachedStates;
 	}
 

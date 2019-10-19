@@ -28,9 +28,6 @@ public class ModelImageGenerator {
 
 			// generate image from models with up to maxTransition transitions
 			if (model.getTransitions().size() <= maxTransition) {
-				File imgFile = File.createTempFile("model", ".png");
-				imgFile.createNewFile();
-
 				DirectedPseudograph<String, DefaultEdge> g = ioltsToGraph(model);
 
 				JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
@@ -53,9 +50,9 @@ public class ModelImageGenerator {
 					BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true,
 							null);
 
-					// System.out.println(imgFile.getAbsolutePath());
-					// ImageIO.write(image, "PNG", imgFile);
-					// return imgFile.getAbsolutePath();
+					g = null;
+					control= null;
+					graphAdapter=null;
 					return image;
 				} else {
 					return null;

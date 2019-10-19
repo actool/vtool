@@ -32,11 +32,11 @@ public class State_ {
 
 	public void addTransition(Transition_ t) {
 		if (!transitions.contains(t)) {
-			if(t.getLabel().contains(Objects.toString(Constants.INPUT_TAG)) || t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
-				transitions.add(new Transition_(t.getIniState(), t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "").replace(Objects.toString(Constants.OUTPUT_TAG), ""),t.getEndState()));
-			}else {
+			//if(t.getLabel().contains(Objects.toString(Constants.INPUT_TAG)) || t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
+				//transitions.add(new Transition_(t.getIniState(), t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "").replace(Objects.toString(Constants.OUTPUT_TAG), ""),t.getEndState()));
+			//}else {
 				transitions.add(t);
-			}			
+			//}			
 		}
 	}
 
@@ -62,15 +62,15 @@ public class State_ {
 	 * @param state
 	 */
 	public State_(State_ state) {
-		this.id = new Integer(state.id);
-		this.name = new String(state.name);
+		this.id = state.id;
+		this.name = state.name;
 		this.info = state.info;
-		this.transitions = new ArrayList<>();
+		this.transitions = new ArrayList<>(state.transitions);
 	}
 	
 	public State_(State_ state, boolean a) {
-		this.id = new Integer(state.id);
-		this.name = new String(state.name);
+		this.id = state.id;
+		this.name = state.name;
 		this.info = state.info;
 		this.transitions = new ArrayList<>(state.transitions);
 	}

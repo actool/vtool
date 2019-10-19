@@ -199,6 +199,7 @@ public class ConformanceView extends JFrame {
 			}
 
 		}
+		allFrames = null;
 	}
 
 	public void getSpecificationPath() {
@@ -226,10 +227,12 @@ public class ConformanceView extends JFrame {
 		try {
 			RegExp regExp = new RegExp(exp);
 			regExp.toAutomaton();
+			regExp = null;
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
+		
 	}
 
 	public void verifyModelFileChange(boolean ioco) {
@@ -454,13 +457,9 @@ public class ConformanceView extends JFrame {
 					tfInput.setText(StringUtils.join(I_.getAlphabet(), ","));
 				}
 
-				/*
-				 * if (S_.getStates().size() != 0 && I_.getStates().size() != 0) { List<String>
-				 * alphabet = new ArrayList(); alphabet.addAll(S_.getAlphabet());
-				 * alphabet.addAll(I_.getAlphabet()); HashSet hashSet_s_ = new
-				 * LinkedHashSet<>(alphabet); alphabet = new ArrayList<>(hashSet_s_);
-				 * S_.setAlphabet(alphabet); I_.setAlphabet(alphabet); }
-				 */
+				S_ = null;
+				I_= null;
+				
 
 			}
 
@@ -487,6 +486,8 @@ public class ConformanceView extends JFrame {
 					tfInput.setText("");
 				}
 
+				out = null;
+				inp = null;
 				// lblWarningIoco.setText("");
 				// lblWarningLang.setText("");
 			} else {// ?/!
@@ -494,16 +495,9 @@ public class ConformanceView extends JFrame {
 					S = ImportAutFile_WithoutThread.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
-					// System.out.println("---------------------MODEL--------------------------");
-					// System.out.println(S);
-					// System.out.println("-----------------------------------------------");
 				} else {
 					I = ImportAutFile_WithoutThread.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
 							new ArrayList<String>());
-
-					// System.out.println("-------------------IMPLEMENTATION----------------------------");
-					// System.out.println(I);
-					// System.out.println("-----------------------------------------------");
 
 				}
 
@@ -554,24 +548,7 @@ public class ConformanceView extends JFrame {
 				}
 			}
 
-			/*
-			 * if (S != null && I!= null) { List<String> alphabet = new ArrayList();
-			 * alphabet.addAll(S.getAlphabet()); alphabet.addAll(I.getAlphabet()); HashSet
-			 * hashSet_s_ = new LinkedHashSet<>(alphabet); alphabet = new
-			 * ArrayList<>(hashSet_s_); S.setAlphabet(alphabet); I.setAlphabet(alphabet);
-			 * 
-			 * alphabet = new ArrayList(); alphabet.addAll(S.getInputs());
-			 * alphabet.addAll(I.getInputs()); hashSet_s_ = new LinkedHashSet<>(alphabet);
-			 * alphabet = new ArrayList<>(hashSet_s_); S.setInputs(alphabet);
-			 * I.setInputs(alphabet);
-			 * 
-			 * alphabet = new ArrayList(); alphabet.addAll(S.getOutputs());
-			 * alphabet.addAll(I.getOutputs()); hashSet_s_ = new LinkedHashSet<>(alphabet);
-			 * alphabet = new ArrayList<>(hashSet_s_); S.setOutputs(alphabet);
-			 * I.setOutputs(alphabet);
-			 * 
-			 * standardizeLabelsIOLTS(implementation); }
-			 */
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -627,6 +604,7 @@ public class ConformanceView extends JFrame {
 			S.setOutputs(alphabet);
 		}
 
+		alphabet = null;
 	}
 
 	public void processModels(boolean implementation, boolean ioco) {
@@ -736,6 +714,8 @@ public class ConformanceView extends JFrame {
 			lblOutputIoco.setText(StringUtils.join(a, ","));
 			lblOutputLang.setText(StringUtils.join(a, ","));
 		}
+		
+		a = null;
 	}
 
 	boolean isModelProcess = false;
@@ -1510,7 +1490,6 @@ public class ConformanceView extends JFrame {
 	public void showModelImage(boolean implementation) {
 		int size = 550;
 
-		BufferedImage bimg;
 		int width;
 		int height;
 
@@ -1548,26 +1527,6 @@ public class ConformanceView extends JFrame {
 						Image.SCALE_DEFAULT)));
 				showSpecificationImage = false;
 			}
-
-			// if (implementation) {
-			// bimg = ImageIO.read(new File(pathImageImplementation));
-			// width = bimg.getWidth();
-			// height = bimg.getHeight();
-			// frame.setSize(width + 50, height + 50);
-			//
-			// jl.setIcon(new ImageIcon(new
-			// ImageIcon(pathImageImplementation).getImage().getScaledInstance(width,
-			// height, Image.SCALE_DEFAULT)));
-			// } else {
-			// bimg = ImageIO.read(new File(pathImageModel));
-			// width = bimg.getWidth();
-			// height = bimg.getHeight();
-			//
-			// frame.setSize(width + 50, height + 50);
-			// jl.setIcon(new ImageIcon(new
-			// ImageIcon(pathImageModel).getImage().getScaledInstance(width, height,
-			// Image.SCALE_DEFAULT)));
-			// }
 
 			panel.add(jl);
 			JScrollPane scrolltxt = new JScrollPane(panel);
@@ -1679,48 +1638,12 @@ public class ConformanceView extends JFrame {
 	public void iocoConformance() {
 		conformidade = null;
 
-		// try {
-		// if (cbLabel.getSelectedIndex() == 2) {// manual input/output
-		// S = ImportAutFile.autToIOLTS(pathSpecification, true,
-		// new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
-		// new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-		//
-		// I = ImportAutFile.autToIOLTS(pathImplementation, true,
-		// new ArrayList<String>(Arrays.asList(tfInput.getText().split(","))),
-		// new ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-		// } else {
-		// S = ImportAutFile.autToIOLTS(pathSpecification, false, new
-		// ArrayList<String>(),
-		// new ArrayList<String>());
-		//
-		// I = ImportAutFile.autToIOLTS(pathImplementation, false, new
-		// ArrayList<String>(),
-		// new ArrayList<String>());
-		// }
-
-		// System.out.println(S);
-		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		// System.out.println(I);
-
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			failPath = "";
 			conformidade = IocoConformance.verifyIOCOConformance(S, I, Integer.parseInt(tfNTestCasesIOCO.getText()));
 			failPath = Operations.path(S, I, conformidade, true, false,Integer.parseInt(tfNTestCasesIOCO.getText()));
-
-			// if ( conformidade.getFinalStates().size() > 0) {
-			// failPath = Operations.path(S, I, conformidade, true, true);
-			// } else {
-			// failPath = "";
-			// }
-
 		}
 
-		// }
-		/*
-		 * catch (Exception e_) { // JOptionPane.showMessageDialog(panel,
-		 * e_.getMessage(), "Warning", // JOptionPane.WARNING_MESSAGE);
-		 * lblWarningIoco.setText(ViewConstants.exceptionMessage); return; }
-		 */
 	}
 
 	public void languageBasedConformance() {
@@ -1741,22 +1664,6 @@ public class ConformanceView extends JFrame {
 			}
 
 			if (!lts) { // IOLTS
-
-				/*
-				 * if (cbLabel.getSelectedIndex() == 2) {// manual input/output S =
-				 * ImportAutFile.autToIOLTS(pathSpecification, true, new
-				 * ArrayList<String>(Arrays.asList(tfInput.getText().split(","))), new
-				 * ArrayList<String>(Arrays.asList(tfOutput.getText().split(","))));
-				 * 
-				 * I = ImportAutFile.autToIOLTS(pathImplementation, true, new
-				 * ArrayList<String>(Arrays.asList(tfInput.getText().split(","))), new
-				 * ArrayList<String>(Arrays.asList(tfOutput.getText().split(",")))); } else { S
-				 * = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
-				 * new ArrayList<String>());
-				 * 
-				 * I = ImportAutFile.autToIOLTS(pathImplementation, false, new
-				 * ArrayList<String>(), new ArrayList<String>()); }
-				 */
 
 				S_ = S.toLTS();
 				I_ = I.toLTS();
@@ -1816,21 +1723,6 @@ public class ConformanceView extends JFrame {
 		}
 	}
 
-	// public void imageShowHide(boolean show, boolean ioco) {
-	//
-	// if (!ioco) {
-	// imgModelLang.setVisible(show);
-	// imgModelLang.enable(show);
-	// imgImplementationLang.setVisible(show);
-	// imgImplementationLang.enable(show);
-	// } else {
-	// imgModelIoco.setVisible(show);
-	// imgModelIoco.enable(show);
-	// imgImplementationIoco.setVisible(show);
-	// imgImplementationIoco.enable(show);
-	// }
-	//
-	// }
 
 	private JPanel panel_language;
 	private JPanel panel_ioco;
@@ -1883,18 +1775,6 @@ public class ConformanceView extends JFrame {
 								|| (cbLabel.getSelectedItem() == ViewConstants.typeManualLabel
 										&& (!tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty()))
 										&& defineInpOut)));// model
-		// selected
-		// (IOLTS
-		// or
-		// LTS)
-
-		/*
-		 * return (!tfImplementation.getText().isEmpty() &&
-		 * !tfSpecification.getText().isEmpty()// implementation and // specification
-		 * field && ((cbLabel.getSelectedItem() == typeAutomaticLabel) ||
-		 * (cbLabel.getSelectedItem() == typeManualLabel && !tfInput.getText().isEmpty()
-		 * && !tfOutput.getText().isEmpty())));// model selected (IOLTS or // LTS)
-		 */
 	}
 
 	public boolean constainsMessage(boolean ioco, String msg) {
@@ -1917,18 +1797,10 @@ public class ConformanceView extends JFrame {
 		}
 	}
 
-	public void errorMessage(boolean ioco) {
-		// boolean langD = tfD.getText().isEmpty();
-		// boolean langF = tfF.getText().isEmpty();
-
-		// boolean typeOfConf = (!rbConfBasedLang.isSelected() && !rbIoco.isSelected());
-
+	public void errorMessage(boolean ioco) {		
 		boolean model = cbModel.getSelectedIndex() == 0;
-
 		String msg = "";
-		// msg += typeOfConf ? "Select the type of conformance [IOCO] or [Baseada em
-		// Linguagem] \n" : "";
-
+		
 		verifyModelsEmpty(ioco);
 
 		if (!constainsMessage(ioco, ViewConstants.selectModel) && model) {
@@ -1938,13 +1810,7 @@ public class ConformanceView extends JFrame {
 				removeMessage(ioco, ViewConstants.selectModel);
 			}
 		}
-		// msg += langD && langF ? "The Language D field or F language is required \n" :
-		// "";
-
-		/*
-		 * boolean ioltsLabel = cbLabel.getSelectedIndex() == 0; msg += ioltsLabel ?
-		 * "It is necessary how the IOLTS labels will be distinguished \n" : "";
-		 */
+		
 
 		if (ioco) {
 			boolean ioltsLabel = cbLabel.getSelectedIndex() == 0
@@ -1958,11 +1824,7 @@ public class ConformanceView extends JFrame {
 				}
 			}
 
-			/*
-			 * boolean defInpuOut = (cbLabel.getSelectedItem() == typeManualLabel &&
-			 * tfInput.getText().isEmpty() && tfOutput.getText().isEmpty());
-			 */
-			// msg += defInpuOut ? "The fields Input and Output is required \n": "";
+		
 
 			boolean lts = cbModel.getSelectedItem() == ViewConstants.LTS_CONST;
 
@@ -2007,8 +1869,6 @@ public class ConformanceView extends JFrame {
 			lblWarningLang.setText(lblWarningLang.getText() + msg);
 		}
 
-		// JOptionPane.showMessageDialog(panel, msg, "Warning",
-		// JOptionPane.WARNING_MESSAGE);
 	}
 
 	public void verifyModelsEmpty(boolean ioco) {

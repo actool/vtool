@@ -25,7 +25,6 @@ public class IOLTS extends LTS implements Cloneable {
 	 * Empty constructor
 	 */
 	public IOLTS() {
-
 		inputs = new ArrayList<>();
 		outputs = new ArrayList<>();
 	}
@@ -100,8 +99,7 @@ public class IOLTS extends LTS implements Cloneable {
 		// Instances an LTS with IOLTS atributtes
 		 LTS lts = new LTS(this.getStates(), this.getInitialState(), alphabet,
 		 this.getTransitions());
-//		LTS lts = new LTS(new ArrayList<>(this.getStates()), new State_(this.getInitialState().getName()),
-//				new ArrayList<>(alphabet), new ArrayList<>(this.getTransitions()));
+
 		return lts;
 	}
 
@@ -206,7 +204,7 @@ public class IOLTS extends LTS implements Cloneable {
 			alphab.remove(t.getLabel());
 
 		}
-
+				
 		List<String> alphabet_new = new ArrayList<>();
 		for (String a : alphab) {
 			if (this.getInputs().contains(a)) {
@@ -217,6 +215,8 @@ public class IOLTS extends LTS implements Cloneable {
 
 		}
 
+		alphab = null;
+		result = null;
 		return alphabet_new;
 	}
 
@@ -239,6 +239,7 @@ public class IOLTS extends LTS implements Cloneable {
 			}
 		}
 
+		transitions_max=null;
 		return n_distinct_transitions;
 
 	}
@@ -266,6 +267,7 @@ public class IOLTS extends LTS implements Cloneable {
 			}
 		}
 
+		transitions_max=null;
 		return transitions_;
 
 	}

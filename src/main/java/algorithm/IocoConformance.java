@@ -50,7 +50,6 @@ public class IocoConformance {
 		alphabet = new ArrayList<>(hashSet_s_);
 		S.setAlphabet(alphabet);
 		I.setAlphabet(alphabet);
-								
 
 		// build the fault model, containing all fail behaviors based on specification
 		Automaton_ at = faultModelIoco(S);
@@ -66,28 +65,30 @@ public class IocoConformance {
 		// System.out.println("tamanho ab: " + ab.getFinalStates().size());
 		// System.out.println(new Date());
 
-//		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//		System.out.println("<<<<<<<<<<<<<<<<<<<< verification IOCO conformance >>>>>>>>>>>>>>>>>>>>>");
-//		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//		System.out.println("Fault model");
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-//		System.out.println(at);
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//		System.out.println("implementation");
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-//		System.out.println(ai);
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//		System.out.println("Intersection [Fault model X Implementation]");
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-//		System.out.println(ab);
-
+		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		// System.out.println("<<<<<<<<<<<<<<<<<<<< verification IOCO conformance
+		// >>>>>>>>>>>>>>>>>>>>>");
+		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// System.out.println("Fault model");
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+		// System.out.println(at);
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// System.out.println("implementation");
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+		// System.out.println(ai);
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// System.out.println("Intersection [Fault model X Implementation]");
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
 		// System.out.println(ab);
 
-		// System.out.println(ab);
-		
 		Operations.addTransitionToStates(S, I);
-		
+
+		alphabet = null;
+		at = null;
+		ai = null;
+		System.gc();
+
 		return ab;
 	}
 
@@ -104,7 +105,6 @@ public class IocoConformance {
 		// automaton underlying the specification IOLTS S
 		Automaton_ as = S.ioltsToAutomaton();
 
-		
 		// System.out.println("tamanho as: " + as.getTransitions().size());
 
 		// automaton complement of specification
@@ -115,25 +115,31 @@ public class IocoConformance {
 		Automaton_ ad = modelD(S);
 		// System.out.println("tamanho ad: " + ad.getTransitions().size());
 
-//		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//		System.out.println("<<<<<<<<<<<<<<<<<<<< modeloDeFalha>>>>>>>>>>>>>>>>>>>>>");
-//		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//		System.out.println("Automato Especificação");
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-//		System.out.println(as);
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//		System.out.println("Automato Complemento Especificação");
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-//		System.out.println(aCompS);
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//		System.out.println("Automato D");
-//		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-//		System.out.println(ad);
+		Automaton_ faultModel = Operations.intersection(ad, aCompS, null);
 
+		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		// System.out.println("<<<<<<<<<<<<<<<<<<<<
+		// modeloDeFalha>>>>>>>>>>>>>>>>>>>>>");
+		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// System.out.println("Automato Especificação");
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+		// System.out.println(as);
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// System.out.println("Automato Complemento Especificação");
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+		// System.out.println(aCompS);
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// System.out.println("Automato D");
+		// System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+		// System.out.println(ad);
+
+		as = null;
+		ad = null;
+		aCompS = null;
 		// intersection between the desirable behavior and the complement of the
 		// specification (which is not in the specification)
-		return Operations.intersection(ad, aCompS, null);
+		return faultModel;
 	}
 
 	/***
@@ -174,9 +180,12 @@ public class IocoConformance {
 			}
 		}
 
+		Automaton_ modelD = Operations.convertToDeterministicAutomaton(as);
+		d = null;
+		as = null;
 		// add fault state in the list,
 		// added here for this state have no transitions
-		return Operations.convertToDeterministicAutomaton(as);
+		return modelD;
 	}
 
 }
