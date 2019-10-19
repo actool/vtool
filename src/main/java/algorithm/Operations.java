@@ -1120,7 +1120,7 @@ public class Operations {
 		List<Transition_> transitions_s = new ArrayList<>();
 		// words of test case
 		endWalkPath: for (String word : tc.split(" -> ")) {
-			System.out.println(word);
+			
 			aux = new ArrayList<>();
 			state_path_aux = new ArrayList<>();
 
@@ -1130,7 +1130,7 @@ public class Operations {
 				transitions_s = new ArrayList<>(states.get(states.size() - 1).getTransitions().stream()
 						.filter(x -> x.getLabel().equals(word)).collect(Collectors.toList()));
 
-				System.out.println(states.size() - 1+" - "+ states.get(states.size() - 1)+" - "+states.get(states.size() - 1).getTransitions());
+				
 				// if none transition reached, in case of conformance based on language, break
 				if (transitions_s.size() == 0) {
 					aux = new ArrayList<>(states);

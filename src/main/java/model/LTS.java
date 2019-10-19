@@ -285,13 +285,22 @@ public class LTS {
 	 */
 	public List<Transition_> transitionsByIniState(State_ state) {
 		List<Transition_> transitionsOfState = new ArrayList<Transition_>();
-		for (Transition_ t : transitions) {
-			// verifies that the transition starts from the parameter state
-			if (t.getIniState().getName().equals(state.getName())) {
-				// add transition to list
-				transitionsOfState.add(t);
+		
+		State_ state_ = states.stream().filter(x -> x.equals(state)).findFirst().orElse(null);
+		if (state_ != null) {			
+				List<Transition_> filtredTransitions = state_.getTransitions();
+				for (Transition_ t : filtredTransitions) {
+					transitionsOfState.add(t);
 			}
 		}
+		
+//		for (Transition_ t : transitions) {
+//			// verifies that the transition starts from the parameter state
+//			if (t.getIniState().getName().equals(state.getName())) {
+//				// add transition to list
+//				transitionsOfState.add(t);
+//			}
+//		}
 
 		return transitionsOfState;
 	}
