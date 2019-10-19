@@ -44,6 +44,10 @@ public class LanguageBasedConformance {
 		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
 		alphabet = new ArrayList<>(hashSet_s_);					
 		S.setAlphabet(alphabet);
+		I.setAlphabet(alphabet);
+		
+		//Operations.addTransitionToStates(S, I);
+		
 		// construct the fault model containing all behavior considered to be fault
 		Automaton_ at = faultModelLanguage(S, D, F);
 		// implementation automaton

@@ -55,6 +55,12 @@ public class Transition_ {
 		this.label = label;
 		this.endState = endState;
 	}
+	
+	public Transition_(Transition_  t) {
+		this.iniState = new State_(t.getIniState());
+		this.label = new String(t.getLabel());
+		this.endState = new State_(t.getEndState());
+	}
 
 	/**
 	 * Returns the transition label

@@ -30,8 +30,9 @@ public class IOLTS extends LTS implements Cloneable {
 		outputs = new ArrayList<>();
 	}
 
-	public IOLTS(List<State_> states, State_ initialState, List<String> alphabet, List<Transition_> transitions,List<String> inputs,List<String> outputs) {
-		super(states,  initialState,  alphabet,  transitions);
+	public IOLTS(List<State_> states, State_ initialState, List<String> alphabet, List<Transition_> transitions,
+			List<String> inputs, List<String> outputs) {
+		super(states, initialState, alphabet, transitions);
 		this.inputs = inputs;
 		this.outputs = outputs;
 	}
@@ -95,9 +96,12 @@ public class IOLTS extends LTS implements Cloneable {
 	public LTS toLTS() {
 		// in automato there is no distinction between input and output labels, so the
 		// input and output labels are joined to form the alphabet
-		List<String> alphabet = ListUtils.union(this.inputs, this.outputs);
+		List<String> alphabet = new ArrayList<>(ListUtils.union(this.inputs, this.outputs));
 		// Instances an LTS with IOLTS atributtes
-		LTS lts = new LTS(this.getStates(), this.getInitialState(), alphabet, this.getTransitions());
+		 LTS lts = new LTS(this.getStates(), this.getInitialState(), alphabet,
+		 this.getTransitions());
+//		LTS lts = new LTS(new ArrayList<>(this.getStates()), new State_(this.getInitialState().getName()),
+//				new ArrayList<>(alphabet), new ArrayList<>(this.getTransitions()));
 		return lts;
 	}
 
@@ -179,7 +183,7 @@ public class IOLTS extends LTS implements Cloneable {
 	public boolean isInputEnabled() {
 		for (String l : getInputs()) {
 			for (State_ s : getStates()) {
-				if (reachedStates(s.getName(), l).size() == 0) {				
+				if (reachedStates(s.getName(), l).size() == 0) {
 					return false;
 				}
 			}

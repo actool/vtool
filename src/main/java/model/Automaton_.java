@@ -25,19 +25,30 @@ public class Automaton_ extends LTS {
 	private List<State_> finalStates;
 
 	public Automaton_(List<State_> states, State_ iniState, List<String> alphabet, List<State_> finalStates, List<Transition_> transitions) {
-		this.states = states;
-		this.initialState = iniState;
-		this.alphabet = alphabet;
-		this.finalStates = finalStates;
-		this.transitions =  transitions;//Operations.processTauTransition(transitions);
+		this.states = new ArrayList<>(states);
+		this.initialState = new State_(iniState);
+		this.alphabet = new ArrayList<>(alphabet);
+		this.finalStates = new ArrayList<>(finalStates);
+		this.transitions =  new ArrayList<>(transitions);//Operations.processTauTransition(transitions);
 	}
 	
+	public Automaton_(Automaton_ a) {
+		this.states = new ArrayList<>(a.getStates());
+		this.initialState = new State_(a.getInitialState());
+		this.alphabet = new ArrayList<>(a.getAlphabet());
+		this.finalStates = new ArrayList<>(a.getFinalStates());
+		this.transitions =  new ArrayList<>(a.getTransitions());//Operations.processTauTransition(transitions);
+	}
 	/***
 	 * Empty constructor initializes final state list
 	 */
 	public Automaton_() {
 		finalStates = new ArrayList<State_>();
 	}
+
+
+
+	
 
 	/**
 	 * Returns the final states of the automaton

@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import util.Constants;
 
 /**
  * Class State_
@@ -24,21 +27,25 @@ public class State_ {
 	private String info;
 	// to get path
 	private boolean visited;
-	
+
 	private List<Transition_> transitions;
 
-
-
 	public void addTransition(Transition_ t) {
-		transitions.add(t);
+		if (!transitions.contains(t)) {
+			if(t.getLabel().contains(Objects.toString(Constants.INPUT_TAG)) || t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
+				transitions.add(new Transition_(t.getIniState(), t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "").replace(Objects.toString(Constants.OUTPUT_TAG), ""),t.getEndState()));
+			}else {
+				transitions.add(t);
+			}			
+		}
 	}
-	
+
 	public List<Transition_> getTransitions() {
 		return transitions;
 	}
 
-	public void setTransitions(List<Transition_> transitions) {
-		this.transitions = transitions;
+	public void setTransitions(List<Transition_> transitions) {		
+		this.transitions = new ArrayList<>(transitions);
 	}
 
 	/***
@@ -46,7 +53,7 @@ public class State_ {
 	 */
 	public State_() {
 		this.name = "";
-		
+		this.transitions = new ArrayList<>();
 	}
 
 	/***
@@ -55,11 +62,17 @@ public class State_ {
 	 * @param state
 	 */
 	public State_(State_ state) {
-		this.id = state.id;
-		this.name = state.name;
+		this.id = new Integer(state.id);
+		this.name = new String(state.name);
 		this.info = state.info;
 		this.transitions = new ArrayList<>();
-		
+	}
+	
+	public State_(State_ state, boolean a) {
+		this.id = new Integer(state.id);
+		this.name = new String(state.name);
+		this.info = state.info;
+		this.transitions = new ArrayList<>(state.transitions);
 	}
 
 	/***
@@ -75,7 +88,8 @@ public class State_ {
 	/***
 	 * Constructor receives the state name, info
 	 * 
-	 * @param name, info
+	 * @param name,
+	 *            info
 	 */
 	public State_(String name, String info) {
 		this.name = name;

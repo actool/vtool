@@ -56,21 +56,24 @@ public class Operations {
 	public static Automaton_ complement(Automaton_ Q) {
 		Automaton_ acomp = new Automaton_();
 		// define the initial state
-		acomp.setInitialState(Q.getInitialState());
+		acomp.setInitialState(new State_(Q.getInitialState()));
 		// define o alphabet
-		acomp.setAlphabet(Q.getAlphabet());
+		acomp.setAlphabet(new ArrayList<>(Q.getAlphabet()));
 		// completes the received automaton by parameter
 		State_ scomp = new State_("complement");
 		// add states to automato, gives "new" to not paste reference
-		acomp.setStates(new ArrayList<State_>(Q.getStates()));
-
-		// add self loop in scomp acceptance state, with all labels
-		for (String a : acomp.getAlphabet()) {
-			acomp.addTransition(new Transition_(scomp, a, scomp));
-		}
+		acomp.setStates(new ArrayList<>(Q.getStates()));
 
 		// add the state to be used to complete
 		acomp.addState(scomp);
+
+		acomp.setTransitions(new ArrayList<Transition_>(Q.getTransitions()));
+
+		// add self loop in scomp acceptance state, with all labels
+//		for (String a : acomp.getAlphabet()) {
+//			acomp.addTransition(new Transition_(scomp, a, scomp));
+//		}
+
 		acomp.addFinalStates(scomp);
 
 		// reverses who was final state cases to be, who was was not becomes final
@@ -84,29 +87,37 @@ public class Operations {
 
 		List<State_> result;
 
+		
+		
 		// completes states that are not input / output complete
-		for (State_ e : Q.getStates()) {
+		for (State_ e : new ArrayList<State_>(Q.getStates())) {
 			for (String l : acomp.getAlphabet()) {
 
 				// if there are no transitions, you must complete by creating a new transition
 				// from state "e" to state "scomp" with the label "l"
-				if (!Q.transitionExists(e.getName(), l)) {
-					acomp.addTransition(new Transition_(e, l, scomp));
-				} else {
-					// checks whether there is a transition from state "e" with the label "l"
-					result = Q.reachedStates(e.getName(), l);
 
-					// when no deterministic, so starting from "e" with "l" can
-					// reach more than one end state, so a transition for each found state must be
-					// created
-					for (State_ estadoFim : result) {
-						acomp.addTransition(new Transition_(e, l, estadoFim));
-					}
+				if (!Q.transitionExists(e.getName(), l)) {
+					acomp.getStates().get(0).getTransitions().add(new Transition_(new State_("123"),"xx",new State_("123")));
+					
+					acomp.addTransition(new Transition_(new State_(e), l, scomp));
+					
+					// } else {
+					// // checks whether there is a transition from state "e" with the label "l"
+					// result = Q.reachedStates(e.getName(), l);
+					//
+					// // when no deterministic, so starting from "e" with "l" can
+					// // reach more than one end state, so a transition for each found state must
+					// be
+					// // created
+					// for (State_ estadoFim : result) {
+					// acomp.addTransition(new Transition_(e, l, estadoFim));
+					// }
 				}
 			}
 
 		}
 
+		
 		return acomp;
 	}
 
@@ -142,9 +153,10 @@ public class Operations {
 	 * @return automato deterministico
 	 */
 	public static Automaton_ convertToDeterministicAutomaton(Automaton_ automaton) {
-
 		// verifies whether the automaton is already deterministic
 		if (!automaton.isDeterministic()) {
+			
+
 			// create new deterministic automaton
 			Automaton_ deteministic = new Automaton_();
 			// the initial state of the deterministic automaton are all states reached from
@@ -303,9 +315,9 @@ public class Operations {
 
 		// list of synchronized states that will be visited and removed while the
 		// algorithm runs
-		List<State_> synchronizedStates = new ArrayList<State_>();
+		List<State_> toSynchronizeStates = new ArrayList<State_>();
 		// add state r0 to list of states
-		synchronizedStates.add(r0);
+		toSynchronizeStates.add(r0);
 		// variables for synchronization of the states of S and Q
 		String s = null, q = null;
 		State_ removed = null, synchronized_ = null;
@@ -313,9 +325,9 @@ public class Operations {
 		List<State_> sTransitions, qTransitions;
 
 		// while there are states to be synchronized
-		endIntersection: while (synchronizedStates.size() > 0) {
+		endIntersection: while (toSynchronizeStates.size() > 0) {
 			// emoves the first element from the list of states to be synchronized
-			removed = synchronizedStates.remove(0);
+			removed = toSynchronizeStates.remove(0);
 
 			// as the state name is (s, q), splits the string to find the 's' and 'q'
 			part = removed.getInfo().split(Constants.SEPARATOR);
@@ -345,7 +357,7 @@ public class Operations {
 							// description of the state with the separator
 							synchronized_.setInfo(nameSyncState);
 							if (!Ar.getStates().contains(synchronized_)) {
-								synchronizedStates.add(new State_(synchronized_));
+								toSynchronizeStates.add(new State_(synchronized_));
 							}
 
 							// adds the created state to the automaton
@@ -478,101 +490,104 @@ public class Operations {
 		return automatonBrics;
 	}
 
-//	// cob transição dij
-//	static volatile String current = "";
-//
-//	public static List<String> getWordsFromAutomaton(Automaton_ a) {
-//		String tagSeparator = " -> ";
-//		List<String> words = new ArrayList<>();
-//
-//		List<Pair<String, String>> all_parent_label;// parent-label
-//		Map<String, List<Pair<String, String>>> all_state_parent = new HashMap<>();//
-//		// state-parent
-//
-//		// inverso
-//		List<Transition_> transitions;
-//		for (State_ s : a.getStates()) {
-//			transitions = a.transitionsByIniState(s);
-//			for (Transition_ t : transitions) {
-//				all_parent_label = new ArrayList<>();
-//				all_parent_label.add(new Pair(s.getName(), t.getLabel()));
-//				if (all_state_parent.get(t.getEndState().getName()) != null) {
-//					all_parent_label.addAll(all_state_parent.get(t.getEndState().getName()));
-//				}
-//				all_state_parent.put(t.getEndState().getName(), new ArrayList<>(new LinkedHashSet<>(all_parent_label)));
-//			}
-//		}
-//
-//		// get words
-//		String word = "";
-//		String[] word_parts;
-//		List<String> w_aux = new ArrayList<>();
-//		List<String> visited = new ArrayList<>();
-//
-//		Pair<String, String> entry_a = null;
-//
-//		for (State_ s : a.getFinalStates()) {
-//
-//			for (Pair<String, String> entry : all_state_parent.get(s.getName())) {
-//				current = entry.getKey();
-//				word = entry.getValue() + tagSeparator;
-//
-//				visited = new ArrayList<>();
-//				visited.add(entry.toString());
-//				entry_a = null;
-//
-//				if (current.equals(a.getInitialState().getName())) {
-//					// remove last tag
-//					if (word.lastIndexOf(tagSeparator) == word.length() - tagSeparator.length()) {
-//						word = word.substring(0, word.lastIndexOf(tagSeparator));
-//					}
-//
-//					words.add(word);
-//				}
-//
-//				while (!current.equals(a.getInitialState().getName())) {
-//					System.out.println(current);
-//					for (Pair<String, String> entry2 : all_state_parent.get(current)) {
-//						entry_a = entry2;
-//						if (!visited.contains(entry2.toString())) {
-//							visited.add(entry2.toString());
-//							break;
-//						}
-//					}
-//
-//					if (entry_a != null) {
-//						word += entry_a.getValue() + tagSeparator;
-//						current = entry_a.getKey();
-//
-//					} else {
-//						break;
-//					}
-//
-//				}
-//
-//				if (entry_a != null) {
-//
-//					// invert word, to init by initState
-//					word_parts = word.split(tagSeparator);
-//					word = "";
-//					for (int i = word_parts.length - 1; i >= 0; i--) {
-//						word += word_parts[i] + tagSeparator;
-//					}
-//
-//					// remove last tag
-//					if (word.lastIndexOf(tagSeparator) == word.length() - tagSeparator.length()) {
-//						word = word.substring(0, word.lastIndexOf(tagSeparator));
-//					}
-//
-//					words.add(word);
-//				}
-//
-//			}
-//		}
-//
-//		return words;
-//
-//	}
+	// // cob transição dij
+	// static volatile String current = "";
+	//
+	// public static List<String> getWordsFromAutomaton(Automaton_ a) {
+	// String tagSeparator = " -> ";
+	// List<String> words = new ArrayList<>();
+	//
+	// List<Pair<String, String>> all_parent_label;// parent-label
+	// Map<String, List<Pair<String, String>>> all_state_parent = new HashMap<>();//
+	// // state-parent
+	//
+	// // inverso
+	// List<Transition_> transitions;
+	// for (State_ s : a.getStates()) {
+	// transitions = a.transitionsByIniState(s);
+	// for (Transition_ t : transitions) {
+	// all_parent_label = new ArrayList<>();
+	// all_parent_label.add(new Pair(s.getName(), t.getLabel()));
+	// if (all_state_parent.get(t.getEndState().getName()) != null) {
+	// all_parent_label.addAll(all_state_parent.get(t.getEndState().getName()));
+	// }
+	// all_state_parent.put(t.getEndState().getName(), new ArrayList<>(new
+	// LinkedHashSet<>(all_parent_label)));
+	// }
+	// }
+	//
+	// // get words
+	// String word = "";
+	// String[] word_parts;
+	// List<String> w_aux = new ArrayList<>();
+	// List<String> visited = new ArrayList<>();
+	//
+	// Pair<String, String> entry_a = null;
+	//
+	// for (State_ s : a.getFinalStates()) {
+	//
+	// for (Pair<String, String> entry : all_state_parent.get(s.getName())) {
+	// current = entry.getKey();
+	// word = entry.getValue() + tagSeparator;
+	//
+	// visited = new ArrayList<>();
+	// visited.add(entry.toString());
+	// entry_a = null;
+	//
+	// if (current.equals(a.getInitialState().getName())) {
+	// // remove last tag
+	// if (word.lastIndexOf(tagSeparator) == word.length() - tagSeparator.length())
+	// {
+	// word = word.substring(0, word.lastIndexOf(tagSeparator));
+	// }
+	//
+	// words.add(word);
+	// }
+	//
+	// while (!current.equals(a.getInitialState().getName())) {
+	// System.out.println(current);
+	// for (Pair<String, String> entry2 : all_state_parent.get(current)) {
+	// entry_a = entry2;
+	// if (!visited.contains(entry2.toString())) {
+	// visited.add(entry2.toString());
+	// break;
+	// }
+	// }
+	//
+	// if (entry_a != null) {
+	// word += entry_a.getValue() + tagSeparator;
+	// current = entry_a.getKey();
+	//
+	// } else {
+	// break;
+	// }
+	//
+	// }
+	//
+	// if (entry_a != null) {
+	//
+	// // invert word, to init by initState
+	// word_parts = word.split(tagSeparator);
+	// word = "";
+	// for (int i = word_parts.length - 1; i >= 0; i--) {
+	// word += word_parts[i] + tagSeparator;
+	// }
+	//
+	// // remove last tag
+	// if (word.lastIndexOf(tagSeparator) == word.length() - tagSeparator.length())
+	// {
+	// word = word.substring(0, word.lastIndexOf(tagSeparator));
+	// }
+	//
+	// words.add(word);
+	// }
+	//
+	// }
+	// }
+	//
+	// return words;
+	//
+	// }
 
 	// // state coverage, dijkstra {ab, não pega ax}
 	// public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco,
@@ -1105,33 +1120,37 @@ public class Operations {
 		List<Transition_> transitions_s = new ArrayList<>();
 		// words of test case
 		endWalkPath: for (String word : tc.split(" -> ")) {
+			System.out.println(word);
 			aux = new ArrayList<>();
 			state_path_aux = new ArrayList<>();
 
 			// for each state reached by the word
 			for (List<State_> states : state_path) {
 				// get transitions reached
-				transitions_s = states.get(states.size() - 1).getTransitions().stream()
-						.filter(x -> x.getLabel().equals(word)).collect(Collectors.toList());
+				transitions_s = new ArrayList<>(states.get(states.size() - 1).getTransitions().stream()
+						.filter(x -> x.getLabel().equals(word)).collect(Collectors.toList()));
 
+				System.out.println(states.size() - 1+" - "+ states.get(states.size() - 1)+" - "+states.get(states.size() - 1).getTransitions());
 				// if none transition reached, in case of conformance based on language, break
 				if (transitions_s.size() == 0) {
 					aux = new ArrayList<>(states);
 					aux.add(new State_("[" + Constants.NO_TRANSITION + states.get(states.size() - 1).getName()
 							+ " with label " + word + " ]"));
 					state_path_aux.add(aux);
-					state_path = state_path_aux;
+					state_path = new ArrayList<>(state_path_aux);
 					break endWalkPath;
 				} else {// get all states reached by word
 					for (Transition_ t : transitions_s) {
 						aux = new ArrayList<>(states);
-						aux.add(t.getEndState());
+						//aux.add(t.getEndState());
+						//System.err.println(t.getEndState().getTransitions().size());
+						aux.add(S.getStates().stream().filter(x->x.equals(t.getEndState())).findFirst().orElse(null));
 						state_path_aux.add(aux);
 					}
 				}
 
 			}
-			state_path = state_path_aux;
+			state_path = new ArrayList<>(state_path_aux);
 
 		}
 
@@ -1140,6 +1159,7 @@ public class Operations {
 	}
 
 	public static String path(IOLTS S, IOLTS I, boolean ioco, List<String> testSuite, int nTestCases) {
+		
 		int contTestCase = 0;
 		String path_s = "";
 		String path_i = "";
@@ -1263,6 +1283,43 @@ public class Operations {
 		return path(iolts_s, iolts_i, ioco, testCases, nTestCases);
 	}
 
+	public static void addTransitionToStates(LTS S, LTS I) {
+		// INI: inserts transitions into states to improve the processing of the
+		// getWordsFromAutomaton
+		// verify if model has changed in the interface
+		if (S.getInitialState().getTransitions().size() == 0) {
+			//if (S.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
+				for (Transition_ t : S.getTransitions()) {
+					//S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+					//		.addTransition(t);
+					t.setIniState(
+							S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
+					t.setEndState(
+							S.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
+				}
+			//}
+			S.setInitialState(
+					S.getStates().stream().filter(x -> x.equals(S.getInitialState())).findFirst().orElse(null));
+		}
+		// verify if model has changed in the interface
+		if (I.getInitialState().getTransitions().size() == 0) {
+			//if (I.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
+				for (Transition_ t : I.getTransitions()) {
+//					I.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+//							.addTransition(t);
+					t.setIniState(
+							I.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
+					t.setEndState(
+							I.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
+				}
+			//}
+			I.setInitialState(
+					I.getStates().stream().filter(x -> x.equals(I.getInitialState())).findFirst().orElse(null));
+		}
+		// END: inserts transitions into states to improve the processing of the
+		// getWordsFromAutomaton
+	}
+
 	/***
 	 * 
 	 * @param S
@@ -1278,41 +1335,6 @@ public class Operations {
 			int nTestCases) {
 		int contTestCase = 0;
 		List<String> testCases;
-
-		// INI: inserts transitions into states to improve the processing of the
-		// getWordsFromAutomaton
-		// verify if model has changed in the interface
-		if (S.getInitialState().getTransitions().size() == 0) {
-			if (S.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
-				for (Transition_ t : S.getTransitions()) {
-					S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-							.addTransition(t);
-					t.setIniState(
-							S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
-					t.setEndState(
-							S.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
-				}
-			}
-			S.setInitialState(
-					S.getStates().stream().filter(x -> x.equals(S.getInitialState())).findFirst().orElse(null));
-		}
-		// verify if model has changed in the interface
-		if (I.getInitialState().getTransitions().size() == 0) {
-			if (I.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
-				for (Transition_ t : I.getTransitions()) {
-					I.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-							.addTransition(t);
-					t.setIniState(
-							I.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
-					t.setEndState(
-							I.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
-				}
-			}
-			I.setInitialState(
-					I.getStates().stream().filter(x -> x.equals(I.getInitialState())).findFirst().orElse(null));
-		}
-		// END: inserts transitions into states to improve the processing of the
-		// getWordsFromAutomaton
 
 		if (ioco) {
 			List<State_> states = new ArrayList<>();
@@ -1332,6 +1354,7 @@ public class Operations {
 
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
 
+			
 		} else {
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);// transitionCoverSpec
 		}

@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import algorithm.Operations;
+import util.Constants;
 
 /**
  * Class LTS
@@ -37,10 +39,12 @@ public class LTS {
 	 * @param transitions
 	 */
 	public LTS(List<State_> states, State_ initialState, List<String> alphabet, List<Transition_> transitions) {
-		this.states = states;
-		this.transitions = transitions;
+		this.states = new ArrayList<State_>(states);
+		this.transitions = new ArrayList<Transition_>(transitions);
+		// setTransitions(transitions);
 		this.alphabet = alphabet;
-		this.initialState = initialState;
+		// this.alphabet = new ArrayList<String>(alphabet);
+		this.initialState = new State_(initialState);
 	}
 
 	/***
@@ -59,7 +63,7 @@ public class LTS {
 	 * @return states set of state
 	 */
 	public List<State_> getStates() {
-		return states;
+		return this.states;
 	}
 
 	/**
@@ -70,7 +74,11 @@ public class LTS {
 	 * 
 	 */
 	public void setStates(List<State_> states) {
-		this.states = states;
+		this.states = new ArrayList<>();
+		for (State_ state_ : states) {
+			this.states.add(new State_(state_, true));
+		}
+		// this.states = states;
 	}
 
 	/**
@@ -110,7 +118,26 @@ public class LTS {
 	 * 
 	 */
 	public void setTransitions(List<Transition_> transitions) {
+		// String label = "";
 		this.transitions = transitions;
+
+		for (Transition_ t : this.transitions) {
+			if (!this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).getTransitions()
+					.contains(t)) {
+				if (t.getLabel().contains(Objects.toString(Constants.INPUT_TAG))
+						|| t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
+					this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+							.addTransition(new Transition_(t.getIniState(),
+									t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "")
+											.replace(Objects.toString(Constants.OUTPUT_TAG), ""),
+									t.getEndState()));
+				} else {
+					this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+							.addTransition(t);
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -154,14 +181,31 @@ public class LTS {
 	 * 
 	 * @param transition
 	 */
-	public void addTransition(Transition_ transition) {
+	public void addTransition(Transition_ t) {
+
 		// verifies that the transition already exists in the transition list
-		if (!this.transitions.contains(transition)) {
-			this.transitions.add(transition);
+		if (!this.transitions.contains(t)) {
+			this.transitions.add(t);
+
+			State_ s = states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null);
+			if (s != null) {
+
+				if (t.getLabel().contains(Objects.toString(Constants.INPUT_TAG))
+						|| t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
+					states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+							.addTransition(new Transition_(t.getIniState(),
+									t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "")
+											.replace(Objects.toString(Constants.OUTPUT_TAG), ""),
+									t.getEndState()));
+				} else {
+					states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
+				}
+			}
+
 		}
 
 		// add the label in the alphabet list
-		this.addToAlphabet(transition.getLabel());
+		this.addToAlphabet(t.getLabel());
 	}
 
 	/***
@@ -204,16 +248,31 @@ public class LTS {
 		// list of reached states
 		List<State_> endStates = new ArrayList<State_>();
 
-		for (Transition_ t : transitions) {
-			// verifies whether the transition contains the iniState of the transition and
-			// the
-			// label passed parameter
-			if (t.getIniState().getName().toString().equals(labelIniState.toString())
-					&& t.getLabel().toString().equals(labelTransition.toString())) {
-				// adds the status reached
-				endStates.add(t.getEndState());
+		State_ state = states.stream().filter(x -> x.getName().equals(labelIniState)).findFirst().orElse(null);
+		if (state != null) {
+			state = states.stream().filter(x -> x.getName().equals(labelIniState)).findFirst().orElse(null);
+			if (state != null) {
+				List<Transition_> filtredTransitions = state.getTransitions();
+
+				for (Transition_ t : filtredTransitions) {
+					if (t.getLabel().equals(labelTransition)) {
+						endStates.add(t.getEndState());
+
+					}
+				}
 			}
 		}
+
+		// for (Transition_ t : transitions) {
+		// // verifies whether the transition contains the iniState of the transition
+		// // and the label passed parameter
+		// if (t.getIniState().getName().toString().equals(labelIniState.toString())
+		// && t.getLabel().toString().equals(labelTransition.toString())) {
+		// // adds the status reached
+		// endStates.add(t.getEndState());
+		//
+		// }
+		// }
 
 		return endStates;
 	}
@@ -245,6 +304,9 @@ public class LTS {
 	public Automaton_ ltsToAutomaton() {
 		// create automaton
 		Automaton_ as = new Automaton_(this.states, this.initialState, this.alphabet, this.states, this.transitions);
+		// Automaton_ as = new Automaton_(new ArrayList<>(this.getStates()), new
+		// State_(this.getInitialState().getName()), new ArrayList<>(alphabet), new
+		// ArrayList<>(this.getStates()),new ArrayList<>(this.getTransitions()));
 
 		// convert to deterministic
 		return Operations.convertToDeterministicAutomaton(as);
@@ -257,7 +319,7 @@ public class LTS {
 		State_ current;
 		toVisit.add(this.initialState);
 
-		//find initially connected states
+		// find initially connected states
 		while (toVisit.size() != 0) {
 			current = toVisit.remove(0);
 			visited.add(current);
@@ -267,20 +329,18 @@ public class LTS {
 				}
 			}
 		}
-		
 
-		//find states not initially connected
+		// find states not initially connected
 		List<State_> notInitiallyConected = new ArrayList<>(this.getStates());
 		notInitiallyConected.removeAll(visited);
-		
+
 		List<Transition_> transitionsToRemove = new ArrayList<>();
 		for (Transition_ t : this.getTransitions()) {
-			if(notInitiallyConected.contains(t.getIniState()) || notInitiallyConected.contains(t.getEndState()) ) {
+			if (notInitiallyConected.contains(t.getIniState()) || notInitiallyConected.contains(t.getEndState())) {
 				transitionsToRemove.add(t);
 			}
 		}
-		
-		
+
 		this.getStates().removeAll(notInitiallyConected);
 		this.getTransitions().removeAll(transitionsToRemove);
 	}

@@ -39,6 +39,7 @@ public class TestGeneration {
 			}
 			multgraph.setFinalStates(endStates);
 
+			//*implementar 
 			// get word from multgraph
 			List<String> words = Operations.getWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE);
 			words = new ArrayList<>(new HashSet<>(words));
