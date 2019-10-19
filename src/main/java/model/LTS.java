@@ -121,22 +121,22 @@ public class LTS {
 		// String label = "";
 		this.transitions = transitions;
 
-		for (Transition_ t : this.transitions) {
-			if (!this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).getTransitions()
-					.contains(t)) {
-				if (t.getLabel().contains(Objects.toString(Constants.INPUT_TAG))
-						|| t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
-					this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-							.addTransition(new Transition_(t.getIniState(),
-									t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "")
-											.replace(Objects.toString(Constants.OUTPUT_TAG), ""),
-									t.getEndState()));
-				} else {
-					this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-							.addTransition(t);
-				}
-			}
-		}
+//		for (Transition_ t : this.transitions) {
+//			if (!this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).getTransitions()
+//					.contains(t)) {
+//				if (t.getLabel().contains(Objects.toString(Constants.INPUT_TAG))
+//						|| t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
+//					this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+//							.addTransition(new Transition_(t.getIniState(),
+//									t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "")
+//											.replace(Objects.toString(Constants.OUTPUT_TAG), ""),
+//									t.getEndState()));
+//				} else {
+//					this.states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+//							.addTransition(t);
+//				}
+//			}
+//		}
 
 	}
 
@@ -187,21 +187,21 @@ public class LTS {
 		if (!this.transitions.contains(t)) {
 			this.transitions.add(t);
 
-			State_ s = states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null);
-			if (s != null) {
-
-				if (t.getLabel().contains(Objects.toString(Constants.INPUT_TAG))
-						|| t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
-					states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-							.addTransition(new Transition_(t.getIniState(),
-									t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "")
-											.replace(Objects.toString(Constants.OUTPUT_TAG), ""),
-									t.getEndState()));
-				} else {
-					states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
-				}
-			}
-
+//			State_ s = states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null);
+//			if (s != null) {
+//
+//				if (t.getLabel().contains(Objects.toString(Constants.INPUT_TAG))
+//						|| t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
+//					states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+//							.addTransition(new Transition_(t.getIniState(),
+//									t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "")
+//											.replace(Objects.toString(Constants.OUTPUT_TAG), ""),
+//									t.getEndState()));
+//				} else {
+//					states.stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
+//				}
+//			}
+//
 		}
 
 		// add the label in the alphabet list
@@ -248,31 +248,31 @@ public class LTS {
 		// list of reached states
 		List<State_> endStates = new ArrayList<State_>();
 
-		State_ state = states.stream().filter(x -> x.getName().equals(labelIniState)).findFirst().orElse(null);
-		if (state != null) {
-			state = states.stream().filter(x -> x.getName().equals(labelIniState)).findFirst().orElse(null);
-			if (state != null) {
-				List<Transition_> filtredTransitions = state.getTransitions();
+//		State_ state = states.stream().filter(x -> x.getName().equals(labelIniState)).findFirst().orElse(null);
+//		if (state != null) {
+//			state = states.stream().filter(x -> x.getName().equals(labelIniState)).findFirst().orElse(null);
+//			if (state != null) {
+//				List<Transition_> filtredTransitions = state.getTransitions();
+//
+//				for (Transition_ t : filtredTransitions) {
+//					if (t.getLabel().equals(labelTransition)) {
+//						endStates.add(t.getEndState());
+//
+//					}
+//				}
+//			}
+//		}
 
-				for (Transition_ t : filtredTransitions) {
-					if (t.getLabel().equals(labelTransition)) {
-						endStates.add(t.getEndState());
-
-					}
-				}
-			}
-		}
-
-		// for (Transition_ t : transitions) {
-		// // verifies whether the transition contains the iniState of the transition
-		// // and the label passed parameter
-		// if (t.getIniState().getName().toString().equals(labelIniState.toString())
-		// && t.getLabel().toString().equals(labelTransition.toString())) {
-		// // adds the status reached
-		// endStates.add(t.getEndState());
-		//
-		// }
-		// }
+		 for (Transition_ t : transitions) {
+		 // verifies whether the transition contains the iniState of the transition
+		 // and the label passed parameter
+		 if (t.getIniState().getName().toString().equals(labelIniState.toString())
+		 && t.getLabel().toString().equals(labelTransition.toString())) {
+		 // adds the status reached
+		 endStates.add(t.getEndState());
+		
+		 }
+		 }
 
 		return endStates;
 	}
@@ -286,21 +286,21 @@ public class LTS {
 	public List<Transition_> transitionsByIniState(State_ state) {
 		List<Transition_> transitionsOfState = new ArrayList<Transition_>();
 		
-		State_ state_ = states.stream().filter(x -> x.equals(state)).findFirst().orElse(null);
-		if (state_ != null) {			
-				List<Transition_> filtredTransitions = state_.getTransitions();
-				for (Transition_ t : filtredTransitions) {
-					transitionsOfState.add(t);
-			}
-		}
-		
-//		for (Transition_ t : transitions) {
-//			// verifies that the transition starts from the parameter state
-//			if (t.getIniState().getName().equals(state.getName())) {
-//				// add transition to list
-//				transitionsOfState.add(t);
+//		State_ state_ = states.stream().filter(x -> x.equals(state)).findFirst().orElse(null);
+//		if (state_ != null) {			
+//				List<Transition_> filtredTransitions = state_.getTransitions();
+//				for (Transition_ t : filtredTransitions) {
+//					transitionsOfState.add(t);
 //			}
 //		}
+		
+		for (Transition_ t : transitions) {
+			// verifies that the transition starts from the parameter state
+			if (t.getIniState().getName().equals(state.getName())) {
+				// add transition to list
+				transitionsOfState.add(t);
+			}
+		}
 
 		return transitionsOfState;
 	}

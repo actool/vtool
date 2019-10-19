@@ -70,9 +70,9 @@ public class Operations {
 		acomp.setTransitions(new ArrayList<Transition_>(Q.getTransitions()));
 
 		// add self loop in scomp acceptance state, with all labels
-//		for (String a : acomp.getAlphabet()) {
-//			acomp.addTransition(new Transition_(scomp, a, scomp));
-//		}
+		// for (String a : acomp.getAlphabet()) {
+		// acomp.addTransition(new Transition_(scomp, a, scomp));
+		// }
 
 		acomp.addFinalStates(scomp);
 
@@ -87,8 +87,6 @@ public class Operations {
 
 		List<State_> result;
 
-		
-		
 		// completes states that are not input / output complete
 		for (State_ e : new ArrayList<State_>(Q.getStates())) {
 			for (String l : acomp.getAlphabet()) {
@@ -97,10 +95,11 @@ public class Operations {
 				// from state "e" to state "scomp" with the label "l"
 
 				if (!Q.transitionExists(e.getName(), l)) {
-					acomp.getStates().get(0).getTransitions().add(new Transition_(new State_("123"),"xx",new State_("123")));
-					
+					acomp.getStates().get(0).getTransitions()
+							.add(new Transition_(new State_("123"), "xx", new State_("123")));
+
 					acomp.addTransition(new Transition_(new State_(e), l, scomp));
-					
+
 					// } else {
 					// // checks whether there is a transition from state "e" with the label "l"
 					// result = Q.reachedStates(e.getName(), l);
@@ -117,7 +116,6 @@ public class Operations {
 
 		}
 
-		
 		return acomp;
 	}
 
@@ -155,7 +153,6 @@ public class Operations {
 	public static Automaton_ convertToDeterministicAutomaton(Automaton_ automaton) {
 		// verifies whether the automaton is already deterministic
 		if (!automaton.isDeterministic()) {
-			
 
 			// create new deterministic automaton
 			Automaton_ deteministic = new Automaton_();
@@ -1120,7 +1117,7 @@ public class Operations {
 		List<Transition_> transitions_s = new ArrayList<>();
 		// words of test case
 		endWalkPath: for (String word : tc.split(" -> ")) {
-			
+
 			aux = new ArrayList<>();
 			state_path_aux = new ArrayList<>();
 
@@ -1130,7 +1127,6 @@ public class Operations {
 				transitions_s = new ArrayList<>(states.get(states.size() - 1).getTransitions().stream()
 						.filter(x -> x.getLabel().equals(word)).collect(Collectors.toList()));
 
-				
 				// if none transition reached, in case of conformance based on language, break
 				if (transitions_s.size() == 0) {
 					aux = new ArrayList<>(states);
@@ -1142,9 +1138,9 @@ public class Operations {
 				} else {// get all states reached by word
 					for (Transition_ t : transitions_s) {
 						aux = new ArrayList<>(states);
-						//aux.add(t.getEndState());
-						//System.err.println(t.getEndState().getTransitions().size());
-						aux.add(S.getStates().stream().filter(x->x.equals(t.getEndState())).findFirst().orElse(null));
+						// aux.add(t.getEndState());
+						// System.err.println(t.getEndState().getTransitions().size());
+						aux.add(S.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
 						state_path_aux.add(aux);
 					}
 				}
@@ -1159,7 +1155,7 @@ public class Operations {
 	}
 
 	public static String path(IOLTS S, IOLTS I, boolean ioco, List<String> testSuite, int nTestCases) {
-		
+
 		int contTestCase = 0;
 		String path_s = "";
 		String path_i = "";
@@ -1288,31 +1284,32 @@ public class Operations {
 		// getWordsFromAutomaton
 		// verify if model has changed in the interface
 		if (S.getInitialState().getTransitions().size() == 0) {
-			//if (S.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
+			if (S.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
 				for (Transition_ t : S.getTransitions()) {
-					//S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-					//		.addTransition(t);
+					S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+							.addTransition(t);
 					t.setIniState(
 							S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
 					t.setEndState(
 							S.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
 				}
-			//}
+			}
 			S.setInitialState(
 					S.getStates().stream().filter(x -> x.equals(S.getInitialState())).findFirst().orElse(null));
 		}
 		// verify if model has changed in the interface
 		if (I.getInitialState().getTransitions().size() == 0) {
-			//if (I.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
+			if (I.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
 				for (Transition_ t : I.getTransitions()) {
-//					I.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-//							.addTransition(t);
+					I.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+
+							.addTransition(t);
 					t.setIniState(
 							I.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
 					t.setEndState(
 							I.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
 				}
-			//}
+			}
 			I.setInitialState(
 					I.getStates().stream().filter(x -> x.equals(I.getInitialState())).findFirst().orElse(null));
 		}
@@ -1354,7 +1351,6 @@ public class Operations {
 
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
 
-			
 		} else {
 			testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);// transitionCoverSpec
 		}
