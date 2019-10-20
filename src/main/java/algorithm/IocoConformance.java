@@ -43,32 +43,17 @@ public class IocoConformance {
 	 */
 	public static Automaton_ verifyIOCOConformance(IOLTS S, IOLTS I, int nTestCases) {
 		// set alphabet from models
-//		List<String> alphabet = new ArrayList();
-//		alphabet.addAll(I.getAlphabet());
-//		alphabet.addAll(S.getAlphabet());
-//		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
-//		alphabet = new ArrayList<>(hashSet_s_);
-//		S.setAlphabet(alphabet);
-//		I.setAlphabet(alphabet);
-		
-				
 		S.setAlphabet(new ArrayList<>(new LinkedHashSet<>(ListUtils.union(I.getAlphabet(),S.getAlphabet()))));
 		I.setAlphabet(new ArrayList<>(new LinkedHashSet<>(ListUtils.union(I.getAlphabet(),S.getAlphabet()))));
 		
-
 		// build the fault model, containing all fail behaviors based on specification
 		Automaton_ at = faultModelIoco(S);
-		// System.out.println("tamanho at: " + at.getTransitions().size());
-
+	
 		// automaton underlying the implementation
 		Automaton_ ai = I.ioltsToAutomaton();
-		// System.out.println("tamanho ai: " + ai.getTransitions().size() + "
-		// ++++++++++++++++++++++");
 
 		// intersection between the implementation and failure model to find fault
 		Automaton_ ab = Operations.intersection(at, ai, nTestCases);// Constants.MAX_TEST_CASES
-		// System.out.println("tamanho ab: " + ab.getFinalStates().size());
-		// System.out.println(new Date());
 
 		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		// System.out.println("<<<<<<<<<<<<<<<<<<<< verification IOCO conformance
@@ -89,11 +74,9 @@ public class IocoConformance {
 
 		Operations.addTransitionToStates(S, I);
 
-		//alphabet = null;
 		at = null;
 		ai = null;
 		System.gc();
-
 		return ab;
 	}
 
@@ -110,15 +93,11 @@ public class IocoConformance {
 		// automaton underlying the specification IOLTS S
 		Automaton_ as = S.ioltsToAutomaton();
 
-		// System.out.println("tamanho as: " + as.getTransitions().size());
-
 		// automaton complement of specification
 		Automaton_ aCompS = Operations.complement(new Automaton_(as));
-		// System.out.println("tamanho acompS: " + aCompS.getTransitions().size());
 
 		// automaton D with the desired behaviors
 		Automaton_ ad = modelD(S);
-		// System.out.println("tamanho ad: " + ad.getTransitions().size());
 
 		Automaton_ faultModel = Operations.intersection(ad, aCompS, null);
 

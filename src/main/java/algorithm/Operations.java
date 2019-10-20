@@ -85,8 +85,6 @@ public class Operations {
 				acomp.addFinalStates(e);
 			}
 		}
-
-		//acomp.getAlphabet().remove(Constants.DELTA);
 		
 		// completes states that are not input / output complete
 		for (State_ e : new ArrayList<State_>(Q.getStates())) {
@@ -94,54 +92,17 @@ public class Operations {
 
 				// if there are no transitions, you must complete by creating a new transition
 				// from state "e" to state "scomp" with the label "l"
-
 				if (!Q.transitionExists(e.getName(), l)) {
 					acomp.addTransition(new Transition_(new State_(e), l, scomp));
-
-					// } else {
-					// // checks whether there is a transition from state "e" with the label "l"
-					// result = Q.reachedStates(e.getName(), l);
-					//
-					// // when no deterministic, so starting from "e" with "l" can
-					// // reach more than one end state, so a transition for each found state must
-					// be
-					// // created
-					// for (State_ estadoFim : result) {
-					// acomp.addTransition(new Transition_(e, l, estadoFim));
-					// }
 				}
 			}
-
 		}
 		
-		//acomp.getAlphabet().add(Constants.DELTA);
-
 		scomp = null;
-
 		return acomp;
 	}
 
-	/***
-	 * Converts TAU transitions into EPSILON transition
-	 * 
-	 * @param transitions
-	 * 
-	 * @return as transitions without the TAU label
-	 */
-	// public static List<Transition_> processTauTransition(List<Transition_>
-	// transitions) {
-	// List<Transition_> newTransitions = new ArrayList<Transition_>();
-	// // treats transitions when TAU in LTS converts to EPSILON in automato
-	// for (Transition_ t : transitions) {
-	// if (t.getLabel().equals(Constants.TAU)) {
-	// newTransitions.add(new Transition_(t.getIniState(), Constants.EPSILON,
-	// t.getEndState()));
-	// } else {
-	// newTransitions.add(t);
-	// }
-	// }
-	// return newTransitions;
-	// }
+
 
 	/***
 	 * It transforms the nondeterministic automaton into deterministic, removing the
@@ -152,6 +113,7 @@ public class Operations {
 	 *            a ser determinizado
 	 * @return automato deterministico
 	 */
+	static volatile Set<String> set ;
 	public static Automaton_ convertToDeterministicAutomaton(Automaton_ automaton) {
 		// verifies whether the automaton is already deterministic
 		if (!automaton.isDeterministic()) {
@@ -168,8 +130,7 @@ public class Operations {
 
 			// define the initial state of deterministic automaton
 			deteministic.setInitialState(new State_(stateName.replace(Constants.SEPARATOR, "")));
-			// null state, used when no state is reached
-			State_ nullState = new State_(Constants.EMPTY + Constants.SEPARATOR);
+			
 			// list which defines the stop condition and serves to go through the states of
 			// the automato
 			List<String> aux = new ArrayList<String>(Arrays.asList(stateName));
@@ -181,18 +142,17 @@ public class Operations {
 			// used to know which states make each state:
 			// (state1@state2) a state composed of two synchronized states
 			String[] stringState;
-			List<State_> result;
 			State_ state;
-			List<String> finalStates = new ArrayList<String>();
+		
+			
 
 			// checks whether the initial state is final state
-			stringState = stateName.split(Constants.SEPARATOR);
-			for (String s : stringState) {
+			for (String s : stateName.split(Constants.SEPARATOR)) {
 				auxState.add(new State_(s));
 			}
 
 			if (!Collections.disjoint(automaton.getFinalStates(), auxState)) {
-				finalStates.add(stateName.replaceAll(Constants.SEPARATOR, ""));
+				deteministic.addFinalStates(new State_(stateName.replaceAll(Constants.SEPARATOR, "")));
 			}
 
 			// remove EPSILON from the alphabet
@@ -210,25 +170,27 @@ public class Operations {
 					// for each state that is composed the state. ex: (state1 @ state2) in this case
 					// there are two states
 					for (int i = 0; i < stringState.length; i++) {
-						if (automaton.transitionExists(stringState[i], alphabet)) {
+						
 							// check if the transition exists from the stringState[i] with the word
 							// "alphabet"
-							result = automaton.reachedStates(stringState[i], alphabet);
+							
 							// for each state reached by the transitions found
-							for (State_ estadosFim : result) {
+							for (State_ estadosFim : automaton.reachedStates(stringState[i], alphabet)) {//result
 								// add the reachable states with EPSILON from the states
 								// found (result.getFetStates ())
 								auxState.addAll(automaton.reachableStatesWithEpsilon(estadosFim));
 							}
-						}
+					
 
 					}
 
 					// if there are states reached from stateString with the label "alphabet"
 					if (auxState.size() > 0) {
 						// remove possible duplicate states
-						Set<String> set = new HashSet<>(auxState.size());
+						set = new HashSet<>(auxState.size());
 						auxState.removeIf(p -> !set.add(p.getName()));
+						//auxState.removeIf(p -> !new HashSet<>(auxState.size()).add(p.getName()));
+						
 						// orders the states reached so that there is no possibility of considering, for
 						// example,
 						// that the state "ab" is different from "ba"
@@ -241,8 +203,9 @@ public class Operations {
 						// verifies if the state reached is a final state, if one of the states
 						// reached is final state in the original automaton received by parameter
 						if (!Collections.disjoint(automaton.getFinalStates(), auxState)
-								&& !finalStates.contains(stateName.replaceAll(Constants.SEPARATOR, ""))) {
-							finalStates.add(stateName.replaceAll(Constants.SEPARATOR, ""));
+								&& !deteministic.getFinalStates().contains(new State_(stateName.replaceAll(Constants.SEPARATOR, "")))) {//&& !finalStates.contains(stateName.replaceAll(Constants.SEPARATOR, ""))
+							//finalStates.add(stateName.replaceAll(Constants.SEPARATOR, ""));
+							deteministic.addFinalStates(new State_(stateName.replaceAll(Constants.SEPARATOR, "")));
 						}
 						// } else {
 						// // if no state is reached from stateString with the label "alphabet"
@@ -269,20 +232,12 @@ public class Operations {
 				}
 			}
 
-			// adds the final states to the deterministic automaton
-			for (String nomeEstadoFinal : finalStates) {
-				deteministic.addFinalStates(new State_(nomeEstadoFinal));
-			}
-
-			stateName = null;
-			nullState = null;
+			stateName = null;			
 			aux = null;
 			auxCopy = null;
 			auxState = null;
 			stringState = null;
-			result = null;
 			state = null;
-			finalStates = null;
 
 			return deteministic;
 		}
@@ -523,9 +478,8 @@ public class Operations {
 			if (!s.equals(a.getInitialState())) {
 				cost_state.put(s.getName(), Integer.MAX_VALUE);
 			}
-
 		}
-
+		
 		List<State_> uniqueFinalStates = new ArrayList<>();
 		for (State_ s : a.getFinalStates()) {
 			if (!uniqueFinalStates.contains(s)) {
@@ -534,13 +488,14 @@ public class Operations {
 		}
 		a.setFinalStates(uniqueFinalStates);
 		
-		
 		cost_state_rm = cost_state.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+		Entry<String, Integer> min;
+		
 		int cont = 0;
 		// dijkstra
-		List<Transition_> transitions;
+		//List<Transition_> transitions;
 		while (cost_state_rm.size() != 0) {
 			// verify if all final states was explorated,
 			cont = 0;
@@ -554,14 +509,14 @@ public class Operations {
 			}
 
 			// lowest cost state
-			Entry<String, Integer> min = Collections.min(cost_state_rm.entrySet(),
+			min = Collections.min(cost_state_rm.entrySet(),
 					Comparator.comparing(Entry::getValue));
 			// close state
 			cost_state_rm.remove(min.getKey());
 
 			// adjacent transitions of min
-			transitions = a.transitionsByIniState(new State_(min.getKey()));
-			for (Transition_ t : transitions) {
+			//transitions = a.transitionsByIniState(new State_(min.getKey()));
+			for (Transition_ t : a.transitionsByIniState(new State_(min.getKey()))) {//transitions
 				// +1 because the cost of all transitions is 1
 				if (min.getValue() + 1 <= cost_state.get(t.getEndState().getName())) {
 					// update cust
@@ -597,6 +552,7 @@ public class Operations {
 		Map<String, List<String>> states;
 		// String state;
 		String word_aux = "";
+		Collection<String> collection;
 
 		endgetWord: for (State_ s : a.getFinalStates()) {// final states
 
@@ -605,19 +561,15 @@ public class Operations {
 			wordsMap.put(current, "");
 			wordsMap_aux = new MultiValueMap();
 			states = new HashMap<>();
-
 			state_ = new ArrayList<>();
 
 			end: do {
-
 				end2: for (Object key : wordsMap.keySet()) {
-
 					if (key.equals(a.getInitialState().getName())) {
 						states.put(a.getInitialState().getName(),
 								(List<String>) wordsMap_aux.get(a.getInitialState().getName()));
 						break end;
 					}
-
 					current = Objects.toString(key);
 
 					// has the path stored, already explored this state
@@ -635,7 +587,6 @@ public class Operations {
 					}
 
 					for (Object v : (Collection<String>) wordsMap.get(key)) {
-
 						// if (parent_state.get(current) != null) {
 						for (int i = 0; i < parent_state.get(current).size(); i++) {
 
@@ -667,7 +618,7 @@ public class Operations {
 
 			for (String state : states.keySet()) {
 
-				Collection<String> collection = (Collection<String>) states.get(state);
+				collection = (Collection<String>) states.get(state);
 
 				if (collection != null) {
 
