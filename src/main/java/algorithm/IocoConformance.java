@@ -50,6 +50,7 @@ public class IocoConformance {
 //		alphabet = new ArrayList<>(hashSet_s_);
 //		S.setAlphabet(alphabet);
 //		I.setAlphabet(alphabet);
+		
 				
 		S.setAlphabet(new ArrayList<>(new LinkedHashSet<>(ListUtils.union(I.getAlphabet(),S.getAlphabet()))));
 		I.setAlphabet(new ArrayList<>(new LinkedHashSet<>(ListUtils.union(I.getAlphabet(),S.getAlphabet()))));

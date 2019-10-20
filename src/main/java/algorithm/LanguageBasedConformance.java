@@ -74,6 +74,8 @@ public class LanguageBasedConformance {
 		System.out.println("Intersection [Fault model X implementation]");
 		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
 		System.out.println(ab);*/
+		
+		Operations.addTransitionToStates(S, I);
 		return ab;
 	}
 

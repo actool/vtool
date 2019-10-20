@@ -31,13 +31,13 @@ public class State_ {
 	private List<Transition_> transitions;
 
 	public void addTransition(Transition_ t) {
-		if (!transitions.contains(t)) {
+		//if (!transitions.contains(t)) {
 			//if(t.getLabel().contains(Objects.toString(Constants.INPUT_TAG)) || t.getLabel().contains(Objects.toString(Constants.OUTPUT_TAG))) {
 				//transitions.add(new Transition_(t.getIniState(), t.getLabel().replace(Objects.toString(Constants.INPUT_TAG), "").replace(Objects.toString(Constants.OUTPUT_TAG), ""),t.getEndState()));
 			//}else {
 				transitions.add(t);
 			//}			
-		}
+		//}
 	}
 
 	public List<Transition_> getTransitions() {
@@ -45,7 +45,8 @@ public class State_ {
 	}
 
 	public void setTransitions(List<Transition_> transitions) {		
-		this.transitions = new ArrayList<>(transitions);
+		//this.transitions = new ArrayList<>(transitions);
+		this.transitions =transitions;
 	}
 
 	/***
@@ -107,7 +108,7 @@ public class State_ {
 	 */
 	public State_(String name, int id) {
 		this.name = name;
-		this.setId(id);
+		this.id = id;
 		//this.transitions = new ArrayList<>();
 	}
 
@@ -190,14 +191,14 @@ public class State_ {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		boolean result;
+		//boolean result;
 		if (obj == null || obj.getClass() != getClass()) {
-			result = false;
+			return false;
 		} else {
 			State_ _state = (State_) obj;
-			result = this.name.equals(_state.name);
+			return this.name.equals(_state.name);
 		}
-		return result;
+		//return result;
 	}
 
 	/***

@@ -46,10 +46,6 @@ public class Automaton_ extends LTS {
 		finalStates = new ArrayList<State_>();
 	}
 
-
-
-	
-
 	/**
 	 * Returns the final states of the automaton
 	 * 
@@ -138,7 +134,7 @@ public class Automaton_ extends LTS {
 		}
 		
 		distinctStates=null;
-		reachedStates = null;
+		//reachedStates = null;
 		aux = null;
 		r = null;
 		current = null;

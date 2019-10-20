@@ -14,7 +14,7 @@ public class Transition_ {
 	// transition label
 	private String label;
 	// type of transition INPUT/OUTPUT
-	private TransitionType tType;
+	//private TransitionType tType;
 	// state from
 	private State_ iniState;
 	// state to
@@ -25,8 +25,8 @@ public class Transition_ {
 	/***
 	 * empty constructor
 	 */
-	public Transition_() {
-	}
+//	public Transition_() {
+//	}
 
 	/***
 	 * Contrast with all parameters
@@ -81,24 +81,24 @@ public class Transition_ {
 		this.label = label;
 	}
 
-	/**
-	 * Retorn type of transition
-	 * 
-	 * @return tType
-	 */
-	public TransitionType getType() {
-		return tType;
-	}
-
-	/**
-	 * Alter o type of transition
-	 * 
-	 * @param tType
-	 * 
-	 */
-	public void setType(TransitionType tType) {
-		this.tType = tType;
-	}
+//	/**
+//	 * Retorn type of transition
+//	 * 
+//	 * @return tType
+//	 */
+//	public TransitionType getType() {
+//		return tType;
+//	}
+//
+//	/**
+//	 * Alter o type of transition
+//	 * 
+//	 * @param tType
+//	 * 
+//	 */
+//	public void setType(TransitionType tType) {
+//		this.tType = tType;
+//	}
 
 	/**
 	 * Retorn the iniState
@@ -164,18 +164,18 @@ public class Transition_ {
 	@Override
 	public boolean equals(Object obj) {
 
-		boolean result;
+		//boolean result;
 		// if the transition is null, or of different class
 		if (obj == null || obj.getClass() != getClass()) {
 			// transition not is equal
-			result = false;
+			return false;
 		} else {
 			Transition_ t = (Transition_) obj;
 
 			// returns if the initial state, label, and final state are equal
-			result = t.iniState.equals(iniState) && t.endState.equals(endState) && label.equals(t.label);
+			return t.iniState.equals(iniState) && t.endState.equals(endState) && label.equals(t.label);
 		}
-		return result;
+		//return result;
 	}
 
 	/***
@@ -192,8 +192,8 @@ public class Transition_ {
 	 * @author camila
 	 *
 	 */
-	public enum TransitionType {
-		INPUT, OUTPUT
-	};
+//	public enum TransitionType {
+//		INPUT, OUTPUT
+//	};
 
 }

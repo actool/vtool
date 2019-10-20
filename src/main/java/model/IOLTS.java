@@ -35,7 +35,7 @@ public class IOLTS extends LTS implements Cloneable {
 		this.inputs = inputs;
 		this.outputs = outputs;
 	}
-	
+
 	/***
 	 * Constructor receives an LTS and changes the attributes of the IOLTS
 	 * 
@@ -43,10 +43,10 @@ public class IOLTS extends LTS implements Cloneable {
 	 */
 	public IOLTS(LTS lts) {
 		// calls super-class methods to initialize the parameters
-		this.setInitialState(lts.getInitialState());
-		this.setStates(lts.getStates());
-		this.setTransitions(lts.getTransitions());
-		this.setAlphabet(lts.getAlphabet());
+		this.initialState = lts.getInitialState();
+		this.states = lts.getStates();
+		this.transitions = (lts.getTransitions());
+		this.alphabet = (lts.getAlphabet());
 	}
 
 	/**
@@ -83,23 +83,22 @@ public class IOLTS extends LTS implements Cloneable {
 	 * @param outputs
 	 *            the set of output labels
 	 */
-	public void setOutputs(List<String> rotulosSaida) {
-		this.outputs = rotulosSaida;
+	public void setOutputs(List<String> out) {
+		this.outputs = out;
 	}
 
-	
 	public void addInput(String inp) {
-		if(!this.inputs.contains(inp)) {
+		if (!this.inputs.contains(inp)) {
 			this.inputs.add(inp);
 		}
 	}
-	
+
 	public void addOutput(String out) {
-		if(!this.outputs.contains(out)) {
+		if (!this.outputs.contains(out)) {
 			this.outputs.add(out);
 		}
 	}
-	
+
 	/***
 	 * builds the underlying LTS from IOLTS
 	 * 
@@ -108,10 +107,11 @@ public class IOLTS extends LTS implements Cloneable {
 	public LTS toLTS() {
 		// in automato there is no distinction between input and output labels, so the
 		// input and output labels are joined to form the alphabet
-		//List<String> alphabet = new ArrayList<>(ListUtils.union(this.inputs, this.outputs);
+		// List<String> alphabet = new ArrayList<>(ListUtils.union(this.inputs,
+		// this.outputs);
 		// Instances an LTS with IOLTS atributtes
-		 LTS lts = new LTS(this.states, this.initialState, new ArrayList<>(ListUtils.union(this.inputs, this.outputs)),
-		 this.transitions);
+		LTS lts = new LTS(this.states, this.initialState, new ArrayList<>(ListUtils.union(this.inputs, this.outputs)),
+				this.transitions);
 
 		return lts;
 	}
@@ -135,35 +135,25 @@ public class IOLTS extends LTS implements Cloneable {
 	public void addQuiescentTransitions() {// quiescent
 		this.addToAlphabet(Constants.DELTA);
 
-		for (State_ s : this.states) {
-			if (isQuiescent(s) && s != null) {
-				this.addTransition(new Transition_(s, Constants.DELTA, s));
-				this.outputs.add(Constants.DELTA);
-			}
+		for (State_ s : this.quiescentStates()) {
+			this.addTransition(new Transition_(s, Constants.DELTA, s));
+			this.outputs.add(Constants.DELTA);
 		}
 	}
 
-	/***
-	 * return list of output labels from state received per parameter
-	 * 
-	 * @param e
-	 *            state
-	 * @return list of string containing output labels
-	 */
-	public boolean isQuiescent(State_ e) { // quiescent
-		if (e != null) {
-			for (Transition_ t : transitions) {
-				// checks whether the transition contains the initial state of the transition
-				// and the
-				// output label
-				if (t.getIniState().getName().toString().equals(e.getName().toString())
-						&& outputs.contains(t.getLabel())) {
-					return false;
-				}
+	public List<State_> quiescentStates() { // quiescent
+		List<State_> notQuiescentStates = new ArrayList<>();
+		for (Transition_ t : transitions) {
+			// checks whether the transition contains the initial state of the transition
+			// and the
+			// output label
+			if (outputs.contains(t.getLabel())) {
+				notQuiescentStates.add(t.getIniState());
 			}
 		}
-
-		return true;
+		List<State_> quiescentStates = new ArrayList<>(this.getStates());
+		quiescentStates.removeAll(notQuiescentStates);
+		return quiescentStates;
 	}
 
 	/***
@@ -203,21 +193,9 @@ public class IOLTS extends LTS implements Cloneable {
 	}
 
 	public List<String> labelNotDefinedOnState(String labelIniState) {
-		List<Transition_> result = new ArrayList<>();
-
-		for (Transition_ t : getTransitions()) {
-			if (t.getIniState().getName().equals(labelIniState)) {
-				result.add(t);
-			}
-		}
-
 		List<String> alphab = new ArrayList(this.getAlphabet());
+		alphab.removeAll(transitionsByIniState(new State_(labelIniState)));
 
-		for (Transition_ t : result) {
-			alphab.remove(t.getLabel());
-
-		}
-				
 		List<String> alphabet_new = new ArrayList<>();
 		for (String a : alphab) {
 			if (this.getInputs().contains(a)) {
@@ -225,11 +203,9 @@ public class IOLTS extends LTS implements Cloneable {
 			} else {
 				alphabet_new.add(Constants.OUTPUT_TAG + a);
 			}
-
 		}
 
 		alphab = null;
-		result = null;
 		return alphabet_new;
 	}
 
@@ -252,7 +228,7 @@ public class IOLTS extends LTS implements Cloneable {
 			}
 		}
 
-		transitions_max=null;
+		transitions_max = null;
 		return n_distinct_transitions;
 
 	}
@@ -263,7 +239,7 @@ public class IOLTS extends LTS implements Cloneable {
 		int this_n_transition = new Integer(getTransitions().size());
 		int param_n_transition = new Integer(param_iolts.getTransitions().size());
 		List<Transition_> transitions_max, transitions_min;
-		int n_distinct_transitions = 0;
+		//int n_distinct_transitions = 0;
 		if (this_n_transition <= param_n_transition) {
 			transitions_max = new ArrayList<>(param_iolts.getTransitions());
 			transitions_min = new ArrayList<>(getTransitions());
@@ -274,13 +250,13 @@ public class IOLTS extends LTS implements Cloneable {
 
 		for (Transition_ t : transitions_max) {
 			if (!transitions_min.contains(t)) {
-				n_distinct_transitions++;
+			//	n_distinct_transitions++;
 			} else {
 				transitions_.add(t);
 			}
 		}
 
-		transitions_max=null;
+		transitions_max = null;
 		return transitions_;
 
 	}

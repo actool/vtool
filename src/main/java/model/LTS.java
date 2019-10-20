@@ -39,11 +39,6 @@ public class LTS {
 	 * @param transitions
 	 */
 	public LTS(List<State_> states, State_ initialState, List<String> alphabet, List<Transition_> transitions) {
-		// this.states = new ArrayList<State_>(states);
-		// this.transitions = new ArrayList<Transition_>(transitions);
-		// this.alphabet = alphabet;
-		// this.initialState = new State_(initialState);
-
 		this.states = states;
 		this.transitions = transitions;
 		this.alphabet = alphabet;
@@ -77,7 +72,7 @@ public class LTS {
 	 * 
 	 */
 	public void setStates(List<State_> states) {
-		this.states = new ArrayList<>();
+//this.states = new ArrayList<>();
 //		for (State_ state_ : states) {
 //			this.states.add(new State_(state_, true));
 //		}
@@ -162,10 +157,12 @@ public class LTS {
 	 * 
 	 */
 	public void setAlphabet(List<String> alphabet) {
-		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
-		alphabet = new ArrayList<>(hashSet_s_);
-		this.alphabet = alphabet;
-		hashSet_s_ = null;
+//		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+//		alphabet = new ArrayList<>(hashSet_s_);
+//		this.alphabet = alphabet;
+//		hashSet_s_ = null;
+		
+		this.alphabet = new ArrayList<>(new LinkedHashSet<>(alphabet));
 	}
 
 	/***
@@ -191,7 +188,7 @@ public class LTS {
 	public void addTransition(Transition_ t) {
 
 		// verifies that the transition already exists in the transition list
-		if (!this.transitions.contains(t)) {
+		//if (!this.transitions.contains(t)) {
 			this.transitions.add(t);
 
 			// State_ s = states.stream().filter(x ->
@@ -212,7 +209,7 @@ public class LTS {
 			// }
 			// }
 			//
-		}
+	//	}
 
 		// add the label in the alphabet list
 		this.addToAlphabet(t.getLabel());
@@ -240,10 +237,10 @@ public class LTS {
 	 * @return
 	 */
 	public boolean transitionExists(String labelIniState, String labelTransition) {
-		Transition_ result = this.getTransitions().stream().parallel()
+		return this.getTransitions().stream().parallel()
 				.filter(x -> x.getIniState().getName().equals(labelIniState) && x.getLabel().equals(labelTransition))
-				.findFirst().orElse(null);
-		return result != null;
+				.findFirst().orElse(null) != null;
+		//return result != null;
 	}
 
 	/***
