@@ -13,7 +13,7 @@ import model.Automaton_;
 import model.IOLTS;
 import model.State_;
 import model.Transition_;
-import parser.ImportAutFile_WithoutThread;
+import parser.ImportAutFile;
 import util.Constants;
 
 public class TestGeneration {
@@ -21,7 +21,7 @@ public class TestGeneration {
 	public static void main(String[] args) {
 		String path = "C:\\Users\\camil\\Documents\\aut-separados\\iolts-spec.aut";
 		try {
-			IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(path, false, null, null);
+			IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
 
 			List<State_> endStates = new ArrayList<>();
 			List<Transition_> endTransitions = new ArrayList<>();

@@ -35,7 +35,7 @@ public class IOLTS extends LTS implements Cloneable {
 		this.inputs = inputs;
 		this.outputs = outputs;
 	}
-
+	
 	/***
 	 * Constructor receives an LTS and changes the attributes of the IOLTS
 	 * 
@@ -87,6 +87,19 @@ public class IOLTS extends LTS implements Cloneable {
 		this.outputs = rotulosSaida;
 	}
 
+	
+	public void addInput(String inp) {
+		if(!this.inputs.contains(inp)) {
+			this.inputs.add(inp);
+		}
+	}
+	
+	public void addOutput(String out) {
+		if(!this.outputs.contains(out)) {
+			this.outputs.add(out);
+		}
+	}
+	
 	/***
 	 * builds the underlying LTS from IOLTS
 	 * 
@@ -95,10 +108,10 @@ public class IOLTS extends LTS implements Cloneable {
 	public LTS toLTS() {
 		// in automato there is no distinction between input and output labels, so the
 		// input and output labels are joined to form the alphabet
-		List<String> alphabet = new ArrayList<>(ListUtils.union(this.inputs, this.outputs));
+		//List<String> alphabet = new ArrayList<>(ListUtils.union(this.inputs, this.outputs);
 		// Instances an LTS with IOLTS atributtes
-		 LTS lts = new LTS(this.getStates(), this.getInitialState(), alphabet,
-		 this.getTransitions());
+		 LTS lts = new LTS(this.states, this.initialState, new ArrayList<>(ListUtils.union(this.inputs, this.outputs)),
+		 this.transitions);
 
 		return lts;
 	}

@@ -78,10 +78,10 @@ public class LTS {
 	 */
 	public void setStates(List<State_> states) {
 		this.states = new ArrayList<>();
-		for (State_ state_ : states) {
-			this.states.add(new State_(state_, true));
-		}
-		// this.states = states;
+//		for (State_ state_ : states) {
+//			this.states.add(new State_(state_, true));
+//		}
+		 this.states = states;
 	}
 
 	/**
@@ -325,11 +325,7 @@ public class LTS {
 	 */
 	public Automaton_ ltsToAutomaton() {
 		// create automaton
-		Automaton_ as = new Automaton_(this.states, this.initialState, this.alphabet, this.states, this.transitions);
-		// Automaton_ as = new Automaton_(new ArrayList<>(this.getStates()), new
-		// State_(this.getInitialState().getName()), new ArrayList<>(alphabet), new
-		// ArrayList<>(this.getStates()),new ArrayList<>(this.getTransitions()));
-
+		Automaton_ as = new Automaton_(this.states, this.initialState, this.alphabet, this.states, this.transitions);		
 		// convert to deterministic
 		return Operations.convertToDeterministicAutomaton(as);
 	}

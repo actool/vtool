@@ -53,7 +53,7 @@ public class State_ {
 	 */
 	public State_() {
 		this.name = "";
-		this.transitions = new ArrayList<>();
+		//this.transitions = new ArrayList<>();
 	}
 
 	/***
@@ -65,15 +65,15 @@ public class State_ {
 		this.id = state.id;
 		this.name = state.name;
 		this.info = state.info;
-		this.transitions = new ArrayList<>(state.transitions);
+		//this.transitions = new ArrayList<>();
 	}
 	
-	public State_(State_ state, boolean a) {
-		this.id = state.id;
-		this.name = state.name;
-		this.info = state.info;
-		this.transitions = new ArrayList<>(state.transitions);
-	}
+//	public State_(State_ state, boolean a) {
+//		this.id = state.id;
+//		this.name = state.name;
+//		this.info = state.info;
+//		//this.transitions = new ArrayList<>(state.transitions);
+//	}
 
 	/***
 	 * Constructor receives the state name
@@ -82,7 +82,7 @@ public class State_ {
 	 */
 	public State_(String name) {
 		this.name = name;
-		this.transitions = new ArrayList<>();
+		//this.transitions = new ArrayList<>();
 	}
 
 	/***
@@ -94,7 +94,7 @@ public class State_ {
 	public State_(String name, String info) {
 		this.name = name;
 		this.info = info;
-		this.transitions = new ArrayList<>();
+		//this.transitions = new ArrayList<>();
 	}
 
 	/***
@@ -108,7 +108,7 @@ public class State_ {
 	public State_(String name, int id) {
 		this.name = name;
 		this.setId(id);
-		this.transitions = new ArrayList<>();
+		//this.transitions = new ArrayList<>();
 	}
 
 	/**

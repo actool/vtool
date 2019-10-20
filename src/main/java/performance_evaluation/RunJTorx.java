@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import parser.ImportAutFile_WithoutThread;
+import parser.ImportAutFile;
 import performance_evaluation.RunEverest.TimeOut;
 import util.Constants;
 
@@ -406,11 +406,11 @@ public class RunJTorx {
 			int endSubstring;
 
 			int numStatesIut, numStatesModel, numTransitionsIut, numTransitionsModel;
-			IOLTS iolts_spec = ImportAutFile_WithoutThread.autToIOLTS(pathModel, false, null, null);
+			IOLTS iolts_spec = ImportAutFile.autToIOLTS(pathModel, false, null, null);
 			numStatesModel = iolts_spec.getStates().size();
 			numTransitionsModel = iolts_spec.getTransitions().size();
 
-			IOLTS iolts_iut = ImportAutFile_WithoutThread.autToIOLTS(pathIUT, false, null, null);
+			IOLTS iolts_iut = ImportAutFile.autToIOLTS(pathIUT, false, null, null);
 			numStatesIut = iolts_iut.getStates().size();
 			numTransitionsIut = iolts_iut.getTransitions().size();
 

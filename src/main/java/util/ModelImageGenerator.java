@@ -24,21 +24,25 @@ public class ModelImageGenerator {
 	public static BufferedImage generateImage(IOLTS model) throws IOException {
 
 		try {
-			int maxTransition = 30;
+			// int maxTransition = 30;
 
 			// generate image from models with up to maxTransition transitions
-			if (model.getTransitions().size() <= maxTransition) {
-				DirectedPseudograph<String, DefaultEdge> g = ioltsToGraph(model);
+			if (model.getTransitions().size() <= 30) {// maxTransition to generate image is 30
+				// DirectedPseudograph<String, DefaultEdge> g = ioltsToGraph(model);
+				// JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String,
+				// DefaultEdge>(g);
+				// Future<String> control = Executors.newSingleThreadExecutor().submit(new
+				// TimeOut(graphAdapter));
 
-				JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
-
+				JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(
+						ioltsToGraph(model));
 				Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(graphAdapter));
 
 				boolean imageGenerated = true;
-				int limitSecondToGenerateImage = 5;
+				// int limitSecondToGenerateImage = 5;
 
 				try {
-					control.get(limitSecondToGenerateImage, TimeUnit.SECONDS);
+					control.get(5, TimeUnit.SECONDS);// 5 is limit Second To Generate Image
 				} catch (Exception ex) {// TimeoutException
 					control.cancel(true);
 					imageGenerated = false;
@@ -47,12 +51,14 @@ public class ModelImageGenerator {
 				if (imageGenerated) {
 					layout.execute(graphAdapter.getDefaultParent());
 
-					BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true,
-							null);
+					 BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null,
+					 2, Color.WHITE, true,
+					 null);
 
-					g = null;
-					control= null;
-					graphAdapter=null;
+					// g = null;
+					control = null;
+					graphAdapter = null;
+					
 					return image;
 				} else {
 					return null;
@@ -60,7 +66,7 @@ public class ModelImageGenerator {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 
 		return null;

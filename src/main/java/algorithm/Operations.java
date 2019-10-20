@@ -1338,10 +1338,19 @@ public class Operations {
 	}
 
 	public static void addTransitionToStates(LTS S, LTS I) {
+//		S.getInitialState().setTransitions(new ArrayList<>());
+//		I.getInitialState().setTransitions(new ArrayList<>());
+		for (State_ s : S.getStates()) {
+			s.setTransitions(new ArrayList<>());
+		}
+		for (State_ s : I.getStates()) {
+			s.setTransitions(new ArrayList<>());
+		}
+		
 		// INI: inserts transitions into states to improve the processing of the
 		// getWordsFromAutomaton
 		// verify if model has changed in the interface
-		if (S.getInitialState().getTransitions().size() == 0) {
+		//if (S.getInitialState().getTransitions().size() == 0) {
 			if (S.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
 				for (Transition_ t : S.getTransitions()) {
 					S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
@@ -1354,9 +1363,9 @@ public class Operations {
 			}
 			S.setInitialState(
 					S.getStates().stream().filter(x -> x.equals(S.getInitialState())).findFirst().orElse(null));
-		}
+		//}
 		// verify if model has changed in the interface
-		if (I.getInitialState().getTransitions().size() == 0) {
+		//if (I.getInitialState().getTransitions().size() == 0) {
 			if (I.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
 				for (Transition_ t : I.getTransitions()) {
 					I.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
@@ -1370,7 +1379,7 @@ public class Operations {
 			}
 			I.setInitialState(
 					I.getStates().stream().filter(x -> x.equals(I.getInitialState())).findFirst().orElse(null));
-		}
+		//}
 		// END: inserts transitions into states to improve the processing of the
 		// getWordsFromAutomaton
 	}

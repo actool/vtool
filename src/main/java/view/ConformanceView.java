@@ -11,12 +11,12 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 
 import algorithm.*;
 import dk.brics.automaton.RegExp;
 import model.*;
-import parser.ImportAutFile_WithoutThread;
 import parser.ImportAutFile;
 import util.Constants;
 import util.ModelImageGenerator;
@@ -110,7 +110,7 @@ public class ConformanceView extends JFrame {
 	JFileChooser fc = new JFileChooser();
 	private JTextField tfInput;
 	private JTextField tfOutput;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	//private final ButtonGroup buttonGroup = new ButtonGroup();
 	JLabel lblInputIoco;
 	JLabel lblOutputIoco;
 	JTextArea taTestCasesIoco;
@@ -181,8 +181,8 @@ public class ConformanceView extends JFrame {
 	}
 
 	public void closeFrame(boolean implementation) {
-		Frame[] allFrames = Frame.getFrames();
-		for (Frame frame : allFrames) {
+		//Frame[] allFrames = Frame.getFrames();
+		for (Frame frame : Frame.getFrames()) {
 			if (implementation) {
 				if (frame.getTitle().startsWith(ViewConstants.titleFrameImgImplementation)) {
 					showImplementationImage = true;
@@ -199,7 +199,7 @@ public class ConformanceView extends JFrame {
 			}
 
 		}
-		allFrames = null;
+		//allFrames = null;
 	}
 
 	public void getSpecificationPath() {
@@ -225,9 +225,12 @@ public class ConformanceView extends JFrame {
 
 	public boolean regexIsValid(String exp) {
 		try {
-			RegExp regExp = new RegExp(exp);
-			regExp.toAutomaton();
-			regExp = null;
+//			RegExp regExp = new RegExp(exp);
+//			regExp.toAutomaton();
+//			regExp = null;
+			//RegExp regExp = new RegExp(exp);
+			new RegExp(exp).toAutomaton();
+			//regExp = null;
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -445,20 +448,24 @@ public class ConformanceView extends JFrame {
 	public void setModel(boolean lts, boolean implementation) {
 
 		try {
-			LTS S_ = new LTS(), I_ = new LTS();
+			//LTS S_ = new LTS(), I_ = new LTS();
 
 			if (lts) {
 				if (!implementation) {
-					S_ = ImportAutFile_WithoutThread.autToLTS(pathSpecification);
-					tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
+					//S_ = ImportAutFile_WithoutThread.autToLTS(pathSpecification);
+					//tfInput.setText(StringUtils.join(S_.getAlphabet(), ","));
+					
+					tfInput.setText(StringUtils.join(ImportAutFile.autToLTS(pathSpecification,false).getAlphabet(), ","));
 
 				} else {
-					I_ = ImportAutFile_WithoutThread.autToLTS(pathImplementation);
-					tfInput.setText(StringUtils.join(I_.getAlphabet(), ","));
+					//I_ = ImportAutFile_WithoutThread.autToLTS(pathImplementation);
+					//tfInput.setText(StringUtils.join(I_.getAlphabet(), ","));
+					
+					tfInput.setText(StringUtils.join(ImportAutFile.autToLTS(pathImplementation,false).getAlphabet(), ","));
 				}
 
-				S_ = null;
-				I_= null;
+				//S_ = null;
+				//I_= null;
 				
 
 			}
@@ -477,9 +484,9 @@ public class ConformanceView extends JFrame {
 				}
 
 				if (!implementation) {
-					S = ImportAutFile_WithoutThread.autToIOLTS(pathSpecification, true, inp, out);
+					S = ImportAutFile.autToIOLTS(pathSpecification, true, inp, out);
 				} else {
-					I = ImportAutFile_WithoutThread.autToIOLTS(pathImplementation, true, inp, out);
+					I = ImportAutFile.autToIOLTS(pathImplementation, true, inp, out);
 				}
 
 				if (lts) {
@@ -492,11 +499,11 @@ public class ConformanceView extends JFrame {
 				// lblWarningLang.setText("");
 			} else {// ?/!
 				if (!implementation) {
-					S = ImportAutFile_WithoutThread.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
+					S = ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
 				} else {
-					I = ImportAutFile_WithoutThread.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
+					I = ImportAutFile.autToIOLTS(pathImplementation, false, new ArrayList<String>(),
 							new ArrayList<String>());
 
 				}
@@ -565,46 +572,53 @@ public class ConformanceView extends JFrame {
 	}
 
 	public void standardizeLabelsIOLTS(boolean implementation) {
-		List<String> alphabet = new ArrayList();
-		HashSet hashSet_s_;
+		//List<String> alphabet = new ArrayList();
+		//HashSet hashSet_s_;
 		if (implementation) {
-			alphabet.addAll(I.getAlphabet());
-			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);
-			I.setAlphabet(alphabet);
+//			alphabet.addAll(I.getAlphabet());
+//			hashSet_s_ = new LinkedHashSet<>(alphabet);
+//			alphabet = new ArrayList<>(hashSet_s_);
+//			I.setAlphabet(alphabet);			
+			I.setAlphabet(new ArrayList<>(new LinkedHashSet<>(I.getAlphabet())));
+			
+//			alphabet = new ArrayList();
+//			alphabet.addAll(I.getInputs());
+//			hashSet_s_ = new LinkedHashSet<>(alphabet);
+//			alphabet = new ArrayList<>(hashSet_s_);			
+//			I.setInputs(alphabet);			
+			I.setInputs(new ArrayList<>(new LinkedHashSet<>(I.getInputs())));
 
-			alphabet = new ArrayList();
-			alphabet.addAll(I.getInputs());
-			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);
-			I.setInputs(alphabet);
-
-			alphabet = new ArrayList();
-			alphabet.addAll(I.getOutputs());
-			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);
-			I.setOutputs(alphabet);
+//			alphabet = new ArrayList();
+//			alphabet.addAll(I.getOutputs());
+//			hashSet_s_ = new LinkedHashSet<>(alphabet);
+//			alphabet = new ArrayList<>(hashSet_s_);
+//			I.setOutputs(alphabet);
+			I.setInputs(new ArrayList<>(new LinkedHashSet<>(I.getOutputs())));
 
 		} else {
-			alphabet.addAll(S.getAlphabet());
-			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);
-			S.setAlphabet(alphabet);
-
-			alphabet = new ArrayList();
-			alphabet.addAll(S.getInputs());
-			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);
-			S.setInputs(alphabet);
-
-			alphabet = new ArrayList();
-			alphabet.addAll(S.getOutputs());
-			hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);
-			S.setOutputs(alphabet);
+//			alphabet.addAll(S.getAlphabet());
+//			hashSet_s_ = new LinkedHashSet<>(alphabet);
+//			alphabet = new ArrayList<>(hashSet_s_);
+//			S.setAlphabet(alphabet);
+//
+//			alphabet = new ArrayList();
+//			alphabet.addAll(S.getInputs());
+//			hashSet_s_ = new LinkedHashSet<>(alphabet);
+//			alphabet = new ArrayList<>(hashSet_s_);
+//			S.setInputs(alphabet);
+//
+//			alphabet = new ArrayList();
+//			alphabet.addAll(S.getOutputs());
+//			hashSet_s_ = new LinkedHashSet<>(alphabet);
+//			alphabet = new ArrayList<>(hashSet_s_);
+//			S.setOutputs(alphabet);
+			
+			S.setAlphabet(new ArrayList<>(new LinkedHashSet<>(S.getAlphabet())));
+			S.setInputs(new ArrayList<>(new LinkedHashSet<>(S.getInputs())));
+			S.setInputs(new ArrayList<>(new LinkedHashSet<>(S.getOutputs())));
 		}
 
-		alphabet = null;
+		//alphabet = null;
 	}
 
 	public void processModels(boolean implementation, boolean ioco) {
@@ -669,7 +683,7 @@ public class ConformanceView extends JFrame {
 
 	public void showModelLabel_(boolean lts) {
 		List<String> a = new ArrayList<>();
-		LinkedHashSet hashSet_s;
+		//LinkedHashSet hashSet_s;
 
 		if (lts) {
 			showModelLabel(true);
@@ -682,8 +696,8 @@ public class ConformanceView extends JFrame {
 				a.addAll(I.getAlphabet());
 			}
 
-			hashSet_s = new LinkedHashSet<>(a);
-			a = new ArrayList<>(hashSet_s);
+			//hashSet_s = new LinkedHashSet<>(a);
+			a = new ArrayList<>( new LinkedHashSet<>(a));
 
 			lblLabelIoco.setText(StringUtils.join(a, ","));
 			lblLabelLang.setText(StringUtils.join(a, ","));
@@ -696,8 +710,8 @@ public class ConformanceView extends JFrame {
 				a.addAll(I.getInputs());
 			}
 
-			hashSet_s = new LinkedHashSet<>(a);
-			a = new ArrayList<>(hashSet_s);
+			//hashSet_s = new LinkedHashSet<>(a);
+			a = new ArrayList<>(new LinkedHashSet<>(a));
 			showModelLabel(false);
 			lblInputIoco.setText(StringUtils.join(a, ","));
 			lblInputLang.setText(StringUtils.join(a, ","));
@@ -709,8 +723,8 @@ public class ConformanceView extends JFrame {
 			if (I != null) {
 				a.addAll(I.getOutputs());
 			}
-			hashSet_s = new LinkedHashSet<>(a);
-			a = new ArrayList<>(hashSet_s);
+			//hashSet_s = new LinkedHashSet<>(a);
+			a = new ArrayList<>(new LinkedHashSet<>(a));
 			lblOutputIoco.setText(StringUtils.join(a, ","));
 			lblOutputLang.setText(StringUtils.join(a, ","));
 		}
@@ -1669,8 +1683,8 @@ public class ConformanceView extends JFrame {
 				I_ = I.toLTS();
 
 			} else {
-				S_ = ImportAutFile_WithoutThread.autToLTS(pathSpecification);
-				I_ = ImportAutFile_WithoutThread.autToLTS(pathImplementation);
+				S_ = ImportAutFile.autToLTS(pathSpecification,false);
+				I_ = ImportAutFile.autToLTS(pathImplementation,false);
 			}
 
 			if (S_.getAlphabet().size() != 0 || I_.getAlphabet().size() != 0) {
@@ -1853,6 +1867,9 @@ public class ConformanceView extends JFrame {
 				alphabet = new ArrayList<>(hashSet_s_);
 				alphabet.remove(Constants.DELTA);
 				defineInpOut = inpOut.containsAll(alphabet);
+				
+				
+	
 			}
 			if (!constainsMessage(ioco, ViewConstants.labelInpOut) && !defineInpOut) {
 				msg += ViewConstants.labelInpOut;

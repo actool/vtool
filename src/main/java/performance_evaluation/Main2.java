@@ -18,7 +18,6 @@ import model.Automaton_;
 import model.IOLTS;
 import model.State_;
 import model.Transition_;
-import parser.ImportAutFile;
 import parser.ImportGraphmlFile;
 import util.AutGenerator;
 

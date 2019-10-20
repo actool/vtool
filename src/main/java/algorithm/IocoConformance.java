@@ -43,13 +43,17 @@ public class IocoConformance {
 	 */
 	public static Automaton_ verifyIOCOConformance(IOLTS S, IOLTS I, int nTestCases) {
 		// set alphabet from models
-		List<String> alphabet = new ArrayList();
-		alphabet.addAll(I.getAlphabet());
-		alphabet.addAll(S.getAlphabet());
-		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
-		alphabet = new ArrayList<>(hashSet_s_);
-		S.setAlphabet(alphabet);
-		I.setAlphabet(alphabet);
+//		List<String> alphabet = new ArrayList();
+//		alphabet.addAll(I.getAlphabet());
+//		alphabet.addAll(S.getAlphabet());
+//		HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+//		alphabet = new ArrayList<>(hashSet_s_);
+//		S.setAlphabet(alphabet);
+//		I.setAlphabet(alphabet);
+				
+		S.setAlphabet(new ArrayList<>(new LinkedHashSet<>(ListUtils.union(I.getAlphabet(),S.getAlphabet()))));
+		I.setAlphabet(new ArrayList<>(new LinkedHashSet<>(ListUtils.union(I.getAlphabet(),S.getAlphabet()))));
+		
 
 		// build the fault model, containing all fail behaviors based on specification
 		Automaton_ at = faultModelIoco(S);
@@ -84,7 +88,7 @@ public class IocoConformance {
 
 		Operations.addTransitionToStates(S, I);
 
-		alphabet = null;
+		//alphabet = null;
 		at = null;
 		ai = null;
 		System.gc();

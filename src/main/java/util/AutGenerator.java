@@ -29,7 +29,6 @@ import model.IOLTS;
 import model.State_;
 import model.Transition_;
 import parser.ImportAutFile;
-import parser.ImportAutFile_WithoutThread;
 
 public class AutGenerator {
 	public static void main(String[] args) throws Exception {
@@ -134,7 +133,7 @@ public class AutGenerator {
 		try {
 			Random rand = new Random();
 			rand.setSeed(seed * System.currentTimeMillis());
-			IOLTS iolts = ImportAutFile_WithoutThread.autToIOLTS(pathIUTlBase, false, null, null);
+			IOLTS iolts = ImportAutFile.autToIOLTS(pathIUTlBase, false, null, null);
 
 			int numberTransitionsToAdd = (int) ((Math.ceil(iolts.getTransitions().size()) * percentage) / 100);
 

@@ -1,24 +1,13 @@
 package parser;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import org.apache.commons.collections.ListUtils;
 
 import model.State_;
 import model.IOLTS;
@@ -32,8 +21,8 @@ import util.Constants;
  * @author camil
  *
  */
-
 public class ImportAutFile {
+
 	/***
 	 * Reads and validates the first line of the .aut file, in the first line of the
 	 * file des(<initial-state>, <number-of-transitions>, <number-of-states>)
@@ -45,9 +34,10 @@ public class ImportAutFile {
 	public static String[] headerParameters(String path) {
 		String[] configs = new String[4];
 		String lineConfig = "";
+		Scanner sc = null;
 		try {
 			File file = new File(path);
-			Scanner sc = new Scanner(file);
+			sc = new Scanner(file);
 			// first line of file
 			// des (<initial-state>, <number-of-transitions>, <number-of-states>)
 			// String lineConfiguration = "des (1, 2, 3)";
@@ -93,9 +83,17 @@ public class ImportAutFile {
 				}
 			}
 			configs = append(configs, msg);
+
+			lineConfig = null;
+			file = null;
+			sc = null;
 		} catch (FileNotFoundException e) {
 			System.err.println("Error reading file:");
 			System.err.println(e);
+		} finally {
+			if (sc != null) {
+				sc.close();
+			}
 		}
 
 		return configs;
@@ -136,37 +134,38 @@ public class ImportAutFile {
 			ArrayList<String> outputs) throws Exception {
 
 		try {
-			// converts .aut to LTS
-			IOLTS iolts = createModelFromFile(path);
-
+			// creates a new LTS-based IOLTS
+			IOLTS iolts = autToLTS(path, hasLabelList);
+			
+			// changes the set of inputs and outputs
 			if (hasLabelList) {
+				// if the symbols !/? do not differentiate
 				// the set of input and output are those passed by parameter
 				iolts.setInputs(inputs);
 				iolts.setOutputs(outputs);
 			}
 
-			/*List<String> alphabet = new ArrayList();
-			alphabet.addAll(iolts.getInputs());
-			alphabet.addAll(iolts.getOutputs());
-			HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
-			alphabet = new ArrayList<>(hashSet_s_);
-			iolts.setAlphabet(alphabet);*/
-			// System.out.println(iolts);
 			return iolts;
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 
-	public static IOLTS createModelFromFile(String path) throws Exception {
+	/***
+	 * Converts the lts from the .aut file to the LTS object
+	 * 
+	 * @param path
+	 * @return LTS underlying the .aut
+	 */
+	public static IOLTS autToLTS(String path, boolean hasLabelList) throws Exception {
 		// reads the configuration parameters from the first line of the file
-		String[] configs = ImportAutFile_WithoutThread.headerParameters(path);
+		String[] configs = ImportAutFile.headerParameters(path);
 
 		// message if there was an error / inconsistency in reading the first line
 		String msg = configs[3];
 
 		int msg_cont = 0;
-		
+
 		// if there is inconsistency in the first line of the file
 		if (msg != "") {
 			msg += ("expected format:" + "\n");
@@ -197,104 +196,113 @@ public class ImportAutFile {
 			// line counter starts from line 2 because line 1 is the line of
 			// configuration
 			int count = 2;
+			Scanner sc = null;
+			try {
+				File file = new File(path);
+				sc = new Scanner(file);
+				// skip the first line of configuration
+				sc.nextLine();
+				// if there is line of the file to be read
+				while (sc.hasNextLine()) {
+					inconsistentLine = false;
+					// reads the line with the transition
+					// each transition is configured as follows: (<from-state>, <label>,
+					// <to-state>)
+					line = sc.nextLine();
 
-			// read file with Thread
-			// try {
-			long startTime = System.nanoTime();
+					if (!line.isEmpty()) {
+						// checks for '(' on the read line
+						int ini = line.indexOf("(");
+						if (ini < 0) {
+							msg += ("line [" + count + "] is invalid absence of '(' " + "\n");
+							inconsistentLine = true;
+							msg_cont += 1;
+						}
 
-			// count line of file (number of transitions)
-			BufferedReader reader = new BufferedReader(new FileReader(path));
-			int totalLines = 0;
-			String linee = "";
-			while ( linee != null) {
-				linee = reader.readLine();
-				if(linee!= null && !linee.isEmpty()) {
-					totalLines++;
-				}				
-			}
-				
-			reader.close();
+						// checks for ')' on the read line
+						line = line.replaceAll("\\s+$", "");
+						int fim = line.length() - 1;
+						if (fim < 0 || line.charAt(fim) != ')') {
+							msg += ("line [" + count + "] is invalid absence of ')' " + "\n");
+							inconsistentLine = true;
+							msg_cont += 1;
+						}
 
-			totalLines -= 1;// remove header line from count
+						// checks to see if there are 3 parameters (<from-state>, <label>, <to-state>)
+						line = line.substring(ini + 1, fim);
+						String[] val = line.split(",");
+						if (val.length != 3) {
+							msg += ("line [" + count + "] should have been passed 3 parameters separated by commas"
+									+ "\n");
+							inconsistentLine = true;
+							msg_cont += 1;
+						}
 
-			int lineForThread = totalLines;
-			int constLinesThread = 500;// 500
+						// if the transition line is complete, without inconsistency
+						if (!inconsistentLine) {
+							// creates states and transitions
+							iniState = new State_(val[0].trim());
+							endState = new State_(val[2].trim());
 
-			if (lineForThread > constLinesThread) {// if have more than 500 transitions use thread
-				lineForThread = constLinesThread;
-			}
+							if (val[1].trim().equals(Constants.TAU)) {// process tau
+								transition = new Transition_(iniState, Constants.EPSILON, endState);
+							} else {
+								transition = new Transition_(iniState,
+										val[1].trim().substring(1, val[1].trim().length()), endState);
 
-			ReadFile r1 = new ReadFile();
+								if (!hasLabelList) {
+									// if it starts with ! so it's an output symbol
+									if (val[1].trim().charAt(0) == Constants.OUTPUT_TAG) {
+										iolts.addOutput(val[1].trim().substring(1, val[1].trim().length()));
+									}
 
-			List<State_> states;
-			List<Transition_> transitions;
-			List<Transition_> transitions_;
-			List<ReadFile> list = new ArrayList<>();
+									// if it starts with ? so it's an input symbol
+									if (val[1].trim().charAt(0) == Constants.INPUT_TAG) {
+										iolts.addInput(val[1].trim().substring(1, val[1].trim().length()));
+									}
+								} else {
+									iolts.addToAlphabet(val[1].trim());
+									transition = new Transition_(iniState, val[1].trim(), endState);
+								}
 
-			r1.initIolts();
-			while (r1.getIolts().getTransitions().size() != (totalLines)) {
-				r1.initIolts();
-				list = new ArrayList<>();
-				iolts = new IOLTS();
-				
-				try {
+							}
 
-					int ini = 0;
-					// create threads
-					for (int i = 0; i < (int) totalLines / lineForThread; i++) {
-						r1 = new ReadFile();
-						r1.init(ini, ini + lineForThread, path);
-						ini += lineForThread;
-						r1.start();
-						list.add(r1);
+							// assigns the attributes to the LTS
+							iolts.addState(iniState);
+							iolts.addState(endState);
+							iolts.addTransition(transition);
+						}
+						// number of transitions
+						count++;
+
 					}
-
-					// if has rest of division or if will has just one thread
-					if ((totalLines) % lineForThread != 0) {
-						r1 = new ReadFile();
-						r1.init(ini, ini + (totalLines % lineForThread), path);
-						ini += lineForThread;
-						r1.start();
-						list.add(r1);
-					}
-
-					// to thread run parallel
-					for (ReadFile readFile : list) {
-						readFile.join();
-					}
-
-					
-					iolts = r1.getIolts();
-					iolts.setInitialState(new State_(configs[0]));
-					
-
-				} catch (InterruptedException e) {
-					// if exception occur run again, initialize static variables
-					r1.initIolts();
-					e.printStackTrace();
 				}
 
-			}
+				if (msg.equals("")) {
+					// if there is not the amount of transitions that is defined in the first
+					// line
+					if (nTransitions != iolts.getTransitions().size()) {
+						msg += "Amount of transitions divergent from the value passed in the 1st row \n";
+					}
 
-			msg = r1.getMsg();
-
-			if (msg.equals("")) {
-				// if there is not the amount of transitions that is defined in the first
-				// line
-				if (nTransitions != iolts.getTransitions().size()) {
-					msg += "Amount of transitions divergent from the value passed in the 1st row \n";
+					// if there is not the amount of states that is defined in the first line
+					if (nStates != iolts.getStates().size()) {
+						msg += "Number of states divergent from the value passed in the 1st line \n";
+					}
 				}
 
-				// if there is not the amount of states that is defined in the first line
-				if (nStates != iolts.getStates().size()) {
-					msg += "Number of states divergent from the value passed in the 1st line \n";
+			} catch (Exception e) {
+				throw e;
+				// throw new Exception("Error converting file to LTS");
+			} finally {
+				if (sc != null) {
+					sc.close();
 				}
 			}
 
 			// if there is no inconsistency in reading the transitions, you do not need
 			// validate if qt of transitions and states beat with configuration (JTorx)
-			if (msg_cont == 0) {// if (msg.equals("")) {	
-				
+			if (msg_cont == 0) {// if (msg.equals("")) {
 				return iolts;
 			} else {
 				msg = ("inconsistencies in reading the .aut file! \n" + "Path: " + path + "\n" + "Message: \n" + msg);
@@ -303,18 +311,6 @@ public class ImportAutFile {
 			}
 
 		}
-
 	}
-
-	/***
-	 * Converts the lts from the .aut file to the LTS object
-	 * 
-	 * @param path
-	 * @return LTS underlying the .aut
-	 */
-	public static LTS autToLTS(String path) throws Exception {
-		return createModelFromFile(path).toLTS();
-	}
-
 
 }

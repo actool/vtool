@@ -31,7 +31,7 @@ import org.sikuli.script.SikuliException;
 import com.sikulix.tigervnc.Sikulix;
 
 import model.IOLTS;
-import parser.ImportAutFile_WithoutThread;
+import parser.ImportAutFile;
 import performance_evaluation.RunJTorx.TimeOut;
 
 public class RunEverest {
@@ -48,7 +48,7 @@ public class RunEverest {
 
 			
 			//IOCO CONF TEST
-			int nState = 25;
+			int nState = 100;
 			boolean stateVariation = true;// state or percentage			
 			String rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models25-3000states-ioco-perc-dif\\" + nState + "\\iut\\";
 			String rootPathAutSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\aut\\spec\\";
@@ -363,11 +363,11 @@ public class RunEverest {
 
 			
 			int numStatesIut, numStatesModel, numTransitionsIut, numTransitionsModel;
-			IOLTS iolts_spec = ImportAutFile_WithoutThread.autToIOLTS(pathModel, false, null, null);
+			IOLTS iolts_spec = ImportAutFile.autToIOLTS(pathModel, false, null, null);
 			numStatesModel = iolts_spec.getStates().size();
 			numTransitionsModel = iolts_spec.getTransitions().size();
 
-			IOLTS iolts_iut = ImportAutFile_WithoutThread.autToIOLTS(pathIUT, false, null, null);
+			IOLTS iolts_iut = ImportAutFile.autToIOLTS(pathIUT, false, null, null);
 			numStatesIut = iolts_iut.getStates().size();
 			numTransitionsIut = iolts_iut.getTransitions().size();
 
