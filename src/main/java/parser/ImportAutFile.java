@@ -86,7 +86,7 @@ public class ImportAutFile {
 
 			lineConfig = null;
 			file = null;
-			sc = null;
+//			sc = null;
 		} catch (FileNotFoundException e) {
 			System.err.println("Error reading file:");
 			System.err.println(e);
@@ -196,9 +196,10 @@ public class ImportAutFile {
 			// line counter starts from line 2 because line 1 is the line of
 			// configuration
 			int count = 2;
+			File file = null;
 			Scanner sc = null;
 			try {
-				File file = new File(path);
+				file = new File(path);
 				sc = new Scanner(file);
 				// skip the first line of configuration
 				sc.nextLine();

@@ -43,136 +43,265 @@ public class RunEverest {
 					"transitionsModel", "transitionsIut", "ntestCases", "conform", "variation", "variationType", "time",
 					"unity", "memory", "unit", "pathTSSaved" });
 
-			String numTestCaseToGenerate = "5";//Integer.MAX_VALUE + "";// "5";
+			String numTestCaseToGenerate = Integer.MAX_VALUE + "";// Integer.MAX_VALUE + "";// "5";
 			String tool = "everest-" + numTestCaseToGenerate + "tc";
 
+			// IOCO CONF TEST
+			// int nState = 100;
+			// boolean stateVariation = true;// state or percentage
+			// String rootPathIUTs = "C:\\Users\\camil\\Google
+			// Drive\\UEL\\svn\\ferramenta\\teste
+			// desempenho\\models25-3000states-ioco-perc-dif\\" + nState + "\\iut\\";
+			// String rootPathAutSpec = "C:\\Users\\camil\\Google
+			// Drive\\UEL\\svn\\ferramenta\\teste
+			// desempenho\\models250-3000states-ioco-conf\\aut\\spec\\";
+			// String rootPathSaveTS = "C:\\Users\\camil\\Google
+			// Drive\\UEL\\svn\\ferramenta\\teste
+			// desempenho\\models250-3000states-ioco-conf\\result\\";
+			// String pathCsv = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
+			// desempenho\\models250-3000states-ioco-conf\\result\\novo.csv";//jtorx-everest
+			//
+			// String errorFolder = rootPathIUTs + "\\error\\";
+			// Path errorPath = Paths.get(errorFolder);
+			// String successFolder = rootPathIUTs + "\\success\\";
+			// Path successPath = Paths.get(successFolder);
+			// if (!Files.exists(errorPath)) {
+			// Files.createDirectory(errorPath);
+			// }
+			// if (!Files.exists(successPath)) {
+			// Files.createDirectory(successPath);
+			// }
+			//
+			// File folder = new File(rootPathIUTs);
+			// File[] listOfFiles = folder.listFiles();
+			// String pathSaveTS;
+			//
+			//
+			// // System.out.println(Arrays.asList(listOfFiles));
+			// String pathIUT;
+			// int count = 0;
+			// for (File file : listOfFiles) {
+			// if (file.getName().indexOf(".") != -1
+			// && file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+			// pathIUT = rootPathIUTs + file.getName();
+			// pathSaveTS = rootPathSaveTS + "testSuite.csv";
+			// count++;
+			// Future<String> control = Executors.newSingleThreadExecutor()
+			// .submit(new TimeOut(batchFileEverest, root_img, pathIUT,
+			// rootPathAutSpec+nState+"states"+file.getName().replace("iut", "spec"),
+			// pathSaveTS, headerCSV,
+			// pathCsv, stateVariation, numTestCaseToGenerate, tool));
+			//
+			// try {
+			// int limitTime = 30;// 40
+			// control.get(limitTime, TimeUnit.MINUTES);
+			//
+			// Thread.sleep(500);
+			// //Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
+			// } catch (Exception e) {// TimeoutException
+			//
+			// Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
+			// Thread.sleep(500);
+			// // mover arquivo para pasta de erro
+			// //Files.move(Paths.get(pathIUT), Paths.get(errorFolder + file.getName()));
+			//
+			// control.cancel(true);
+			//
+			// System.exit(0);// arranjar um jeito de parar a execução do sikuli (os
+			// comandos continuam mesmo
+			// // depois da exception)
+			//
+			// e.printStackTrace();
+			//
+			// }
+			//
+			// }
+			//
+			// }
 			
-			//IOCO CONF TEST
-			int nState = 100;
-			boolean stateVariation = true;// state or percentage			
-			String rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models25-3000states-ioco-perc-dif\\" + nState + "\\iut\\";
-			String rootPathAutSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\aut\\spec\\";
-			String rootPathSaveTS = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\result\\";
-			String pathCsv = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models250-3000states-ioco-conf\\result\\novo.csv";//jtorx-everest
-
-			String errorFolder = rootPathIUTs + "\\error\\";
-			Path errorPath = Paths.get(errorFolder);
-			String successFolder = rootPathIUTs + "\\success\\";
-			Path successPath = Paths.get(successFolder);
-			if (!Files.exists(errorPath)) {
-				Files.createDirectory(errorPath);
-			}
-			if (!Files.exists(successPath)) {
-				Files.createDirectory(successPath);
-			}
-
-			File folder = new File(rootPathIUTs);
-			File[] listOfFiles = folder.listFiles();
+			
+			//IOCO NOT CONF
+			String root = "C:\\";
+			int nState = 100;// 50,100,150,200,250
+			boolean stateVariation = true;// state or percentage
+			//List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
+			List<Integer> tamAlfabeto = Arrays.asList(4, 12, 20);
+			String rootPathIUTs, pathAutSpec;
+			File folder;
+			File[] listOfFiles;
 			String pathSaveTS;
-
-			
-			// System.out.println(Arrays.asList(listOfFiles));
 			String pathIUT;
 			int count = 0;
-			for (File file : listOfFiles) {
-				if (file.getName().indexOf(".") != -1
-						&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
-					pathIUT = rootPathIUTs + file.getName();
-					pathSaveTS = rootPathSaveTS + "testSuite.csv";
-					count++;
-					Future<String> control = Executors.newSingleThreadExecutor()
-							.submit(new TimeOut(batchFileEverest, root_img, pathIUT, rootPathAutSpec+nState+"states"+file.getName().replace("iut", "spec"), pathSaveTS, headerCSV,
-									pathCsv, stateVariation, numTestCaseToGenerate, tool));
+			String rootPathSaveTS;
+			String ioco = "ioco-nao-conf";//ioco-nao-conf
+			String pathCsv = root+ioco+"\\everest.csv";
+			
+			for (Integer alfabeto : tamAlfabeto) {
+				System.out.println("#######################################");
+				System.out.println(alfabeto);
+				System.out.println("#######################################");
 
-					try {
-						int limitTime = 30;// 40
-						control.get(limitTime, TimeUnit.MINUTES);
+				for (int i = 1; i < 6; i++) {
+					count = 0;
+					System.out.println("experimento: " + i);
 
-						Thread.sleep(500);
-						//Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
-					} catch (Exception e) {// TimeoutException
+					rootPathIUTs = root+ioco+"\\"
+							+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\iut\\";
+					
+					
+					pathAutSpec = root+ioco+"\\"
+							+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\" + nState
+							+ "states_spec.aut";
+//					rootPathSaveTS = root+ioco+"\\"
+//							+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\";
+					rootPathSaveTS = root+ioco+"\\"
+							+ nState + "states\\";
+					String errorFolder = rootPathIUTs + "\\error\\";
+					Path errorPath = Paths.get(errorFolder);
+					String successFolder = rootPathIUTs + "\\success\\";
+					Path successPath = Paths.get(successFolder);
+					if (!Files.exists(errorPath)) {
+						Files.createDirectory(errorPath);
+					}
+					if (!Files.exists(successPath)) {
+						Files.createDirectory(successPath);
+					}
+					
+					folder = new File(rootPathIUTs);
+					listOfFiles = folder.listFiles();
+				
+					//each file on experimento folder
+					for (File file : listOfFiles) {
+						if (file.getName().indexOf(".") != -1
+								&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+							pathIUT = rootPathIUTs + file.getName();
+							aux = "iut\\"+file.getName();
+							pathSaveTS = rootPathSaveTS + "testSuite.csv";
+							count++;
+							Future<String> control = Executors.newSingleThreadExecutor()
+									.submit(new TimeOut(batchFileEverest, root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV,
+											pathCsv, stateVariation, numTestCaseToGenerate, tool));
 
-						Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
-						Thread.sleep(500);
-						// mover arquivo para pasta de erro
-						//Files.move(Paths.get(pathIUT), Paths.get(errorFolder + file.getName()));
+							try {
+								int limitTime = 30;// 40
+								control.get(limitTime, TimeUnit.MINUTES);
 
-						control.cancel(true);
+								Thread.sleep(500);
+								Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
+							} catch (Exception e) {// TimeoutException
 
-						System.exit(0);// arranjar um jeito de parar a execução do sikuli (os comandos continuam mesmo
-										// depois da exception)
+								Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
+								Thread.sleep(500);
+								// mover arquivo para pasta de erro
+								Files.move(Paths.get(pathIUT), Paths.get(errorFolder + file.getName()));
 
-						e.printStackTrace();
+								control.cancel(true);
+
+								System.exit(0);// arranjar um jeito de parar a execução do sikuli (os comandos continuam mesmo
+												// depois da exception)
+
+								e.printStackTrace();
+
+							}
+
+						}
 
 					}
+					
 
 				}
-
 			}
 
-					
-			
-			//NOT IOCO CONF
-//			int nState = 25;
+			// IOCO CONF
+//			String root = "C:\\";
+//			int nState = 250;// 50,100,150,200,250
 //			boolean stateVariation = true;// state or percentage
-//			String rootPathIUTs = "C:\\Users\\camil\\Desktop\\250-3000\\" + nState + "\\iut\\";
-//			String pathAutSpec = "C:\\Users\\camil\\Desktop\\250-3000\\" + nState + "\\" + nState + "states_spec.aut";
-//			String rootPathSaveTS = "C:\\Users\\camil\\Desktop\\250-3000\\" + nState + "\\result\\maxtc\\";
-//			String pathCsv = "C:\\Users\\camil\\Desktop\\250-3000\\jtorx-everest-maxtc.csv";
-//
-//			String errorFolder = rootPathIUTs + "\\error\\";
-//			Path errorPath = Paths.get(errorFolder);
-//			String successFolder = rootPathIUTs + "\\success\\";
-//			Path successPath = Paths.get(successFolder);
-//			if (!Files.exists(errorPath)) {
-//				Files.createDirectory(errorPath);
-//			}
-//			if (!Files.exists(successPath)) {
-//				Files.createDirectory(successPath);
-//			}
-//
-//			File folder = new File(rootPathIUTs);
-//			File[] listOfFiles = folder.listFiles();
+//			List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
+//			String rootPathIUTs, pathAutSpec;
+//			File folder;
+//			File[] listOfFiles;
 //			String pathSaveTS;
-//
-//			// System.out.println(Arrays.asList(listOfFiles));
 //			String pathIUT;
 //			int count = 0;
-//			for (File file : listOfFiles) {
-//				if (file.getName().indexOf(".") != -1
-//						&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
-//					pathIUT = rootPathIUTs + file.getName();
-//					pathSaveTS = rootPathSaveTS + "testSuite.csv";
-//					count++;
-//					Future<String> control = Executors.newSingleThreadExecutor()
-//							.submit(new TimeOut(batchFileEverest, root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV,
-//									pathCsv, stateVariation, numTestCaseToGenerate, tool));
+//			String rootPathSaveTS;
+//			String ioco = "ioco-conf";//ioco-nao-conf
+//			String pathCsv = root+ioco+"\\everest.csv";
+//			
+//			for (Integer alfabeto : tamAlfabeto) {
+//				System.out.println("#######################################");
+//				System.out.println(alfabeto);
+//				System.out.println("#######################################");
 //
-//					try {
-//						int limitTime = 30;// 40
-//						control.get(limitTime, TimeUnit.MINUTES);
+//				for (int i = 1; i < 6; i++) {
+//					count = 0;
+//					System.out.println("experimento: " + i);
 //
-//						Thread.sleep(500);
-//						Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
-//					} catch (Exception e) {// TimeoutException
+//					rootPathIUTs = root+ioco+"\\"
+//							+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\iut\\";
+//					
+//					
+//					pathAutSpec = root+ioco+"\\"
+//							+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\" + nState
+//							+ "states_spec.aut";
+//					rootPathSaveTS = root+ioco+"\\"
+//							+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\";
+//					String errorFolder = rootPathIUTs + "\\error\\";
+//					Path errorPath = Paths.get(errorFolder);
+//					String successFolder = rootPathIUTs + "\\success\\";
+//					Path successPath = Paths.get(successFolder);
+//					if (!Files.exists(errorPath)) {
+//						Files.createDirectory(errorPath);
+//					}
+//					if (!Files.exists(successPath)) {
+//						Files.createDirectory(successPath);
+//					}
+//					
+//					folder = new File(rootPathIUTs);
+//					listOfFiles = folder.listFiles();
+//				
+//					//each file on experimento folder
+//					for (File file : listOfFiles) {
+//						if (file.getName().indexOf(".") != -1
+//								&& file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
+//							pathIUT = rootPathIUTs + file.getName();
+//							aux = "iut\\"+file.getName();
+//							pathSaveTS = rootPathSaveTS + "testSuite.csv";
+//							count++;
+//							Future<String> control = Executors.newSingleThreadExecutor()
+//									.submit(new TimeOut(batchFileEverest, root_img, pathIUT, pathAutSpec, pathSaveTS, headerCSV,
+//											pathCsv, stateVariation, numTestCaseToGenerate, tool));
 //
-//						Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
-//						Thread.sleep(500);
-//						// mover arquivo para pasta de erro
-//						Files.move(Paths.get(pathIUT), Paths.get(errorFolder + file.getName()));
+//							try {
+//								int limitTime = 30;// 40
+//								control.get(limitTime, TimeUnit.MINUTES);
 //
-//						control.cancel(true);
+//								Thread.sleep(500);
+//								Files.move(Paths.get(pathIUT), Paths.get(successFolder + file.getName()));
+//							} catch (Exception e) {// TimeoutException
 //
-//						System.exit(0);// arranjar um jeito de parar a execução do sikuli (os comandos continuam mesmo
-//										// depois da exception)
+//								Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
+//								Thread.sleep(500);
+//								// mover arquivo para pasta de erro
+//								Files.move(Paths.get(pathIUT), Paths.get(errorFolder + file.getName()));
 //
-//						e.printStackTrace();
+//								control.cancel(true);
+//
+//								System.exit(0);// arranjar um jeito de parar a execução do sikuli (os comandos continuam mesmo
+//												// depois da exception)
+//
+//								e.printStackTrace();
+//
+//							}
+//
+//						}
 //
 //					}
+//					
 //
 //				}
-//
 //			}
+
+			
 
 			// //run one test
 			// String pathSaveTS = "C:\\Users\\camil\\Desktop\\25-100\\100\\result\\ts.csv";
@@ -191,6 +320,8 @@ public class RunEverest {
 
 	}
 
+	static String aux="";
+	
 	public static class TimeOut implements Callable<String> {
 		String batchFileEverest, root_img, pathAutSpec, pathAutIUT, pathSaveTS, pathCsv, tool, numTestCaseToGenerate;
 		boolean stateVariation;
@@ -232,7 +363,7 @@ public class RunEverest {
 		d.open(new File(batchFileEverest));
 
 		// wait for open
-		Thread.sleep(2500);
+		Thread.sleep(2500);//2500
 
 		// type spec model
 
@@ -240,7 +371,7 @@ public class RunEverest {
 		s.type(Key.ENTER);
 
 		// type iut model
-		s.type(root_img + "inp-iut.PNG", pathAutIUT);
+		s.type(root_img + "inp-iut.PNG", aux);// s.type(root_img + "inp-iut.PNG", pathAutIUT) ***********
 		s.type(Key.ENTER);
 
 		// model type (IOLTS)
@@ -275,25 +406,26 @@ public class RunEverest {
 		// verify ioco
 		s.click(root_img + "btn-verify.PNG");
 
-		double time_ini, time_end = 0, total_seconds;
+		double time_ini, time_end = 0, total_seconds,time2=0;
 		time_ini = System.nanoTime();
 
 		// wait until finish verification
 		while (true) {
 			try {
+				//System.out.println("while");
+				time_end = System.nanoTime();				
+				s.find(new Pattern(root_img + "lbl-verdict.PNG").similar(0.75f));
+				// s.find(new Pattern(root_img + "img-processing.PNG").similar(0.5f));//				
 				time_end = System.nanoTime();
-				s.find(new Pattern(root_img + "lbl-verdict.PNG").similar(0.8f));
-				// s.find(new Pattern(root_img + "img-processing.PNG").similar(1.0f));//
-				time_end = System.nanoTime();
-
+				
 			} catch (FindFailed e) {
-
+				//time_end = System.nanoTime();
 				break;
 			}
 		}
 
-		total_seconds = (time_end - time_ini) / 1e6; // nano to milli
-
+		total_seconds = (time_end-time_ini);
+		total_seconds= total_seconds/ 1e6;
 		System.err.println("FINISHED: " + total_seconds + " milliseconds");
 
 		// get memory consumption (cmd)
@@ -322,11 +454,11 @@ public class RunEverest {
 			s.type("a", KeyModifier.CTRL);
 			s.type("c", KeyModifier.CTRL);
 			// s.find(root_img + "btn-verify.PNG");
-			Thread.sleep(1000);
-			
+			Thread.sleep(500);//1000
+
 			try {
 				testSuite = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -338,10 +470,9 @@ public class RunEverest {
 			}
 		}
 
-		
 		saveOnCSVFile(pathCsv, pathAutSpec, pathAutIUT, conform, total_seconds, "milliseconds", memory, unityMemory,
 				stateVariation, headerCSV, pathSaveTS, testSuite, tool);
-		
+
 		// close everest
 		s.click(root_img + "img-close.PNG");
 		Runtime.getRuntime().exec("TASKKILL /F /IM java.exe");
@@ -361,7 +492,6 @@ public class RunEverest {
 			int iniSubstring = pathIUT.lastIndexOf("\\") + 1;
 			int endSubstring;
 
-			
 			int numStatesIut, numStatesModel, numTransitionsIut, numTransitionsModel;
 			IOLTS iolts_spec = ImportAutFile.autToIOLTS(pathModel, false, null, null);
 			numStatesModel = iolts_spec.getStates().size();
@@ -371,7 +501,6 @@ public class RunEverest {
 			numStatesIut = iolts_iut.getStates().size();
 			numTransitionsIut = iolts_iut.getTransitions().size();
 
-			
 			if (stateVariation) {
 				endSubstring = pathIUT.indexOf("states_iut");
 				variationType = "numStates";
@@ -388,7 +517,6 @@ public class RunEverest {
 
 			}
 
-			
 			List<String> testCases = new ArrayList<>();
 			if (!testSuite.isEmpty()) {
 				String[] lines = testSuite.split("\n\n");
@@ -400,7 +528,6 @@ public class RunEverest {
 				}
 			}
 
-			
 			ArrayList<String> row = new ArrayList<String>();
 			row.add(tool);// "everest"
 			row.add(pathModel);
@@ -427,7 +554,6 @@ public class RunEverest {
 
 			}
 
-			
 			// first record
 			if (new File(pathCsv).length() == 0) {
 				csvWriter = new FileWriter(pathCsv);
@@ -452,7 +578,6 @@ public class RunEverest {
 				file.createNewFile();
 			}
 
-			
 			// TEST CASE CSV
 			if (new File(pathSaveTS).length() == 0) {
 				csvWriter = new FileWriter(pathSaveTS);
@@ -482,7 +607,7 @@ public class RunEverest {
 
 			csvWriter.flush();
 			csvWriter.close();
-			
+
 		} catch (Exception e)
 
 		{
