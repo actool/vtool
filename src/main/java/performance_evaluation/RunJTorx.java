@@ -43,11 +43,11 @@ public class RunJTorx {
 
 			//IOCO NOT CONF
 			String aux;
-			String root = "C:\\";
-			int nState = 50;// 50,100,150,200,250
+			String root = "C:\\models10-x";
+			int nState = 100;// 50,100,150,200,250
 			boolean stateVariation = true;// state or percentage
 			//List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
-			List<Integer> tamAlfabeto = Arrays.asList(4, 12, 20);
+			List<Integer> tamAlfabeto = Arrays.asList(10);
 			String rootPathIUTs, pathAutSpec;
 			File folder;
 			File[] listOfFiles;
@@ -55,15 +55,15 @@ public class RunJTorx {
 			String pathIUT;
 			int count = 0;
 			String rootPathSaveTS;
-			String ioco = "ioco-nao-conf";//ioco-nao-conf
+			String ioco = "";//ioco-nao-conf
 			String pathCsv = root+ioco+"\\jtorx.csv";
-			
+											
 			for (Integer alfabeto : tamAlfabeto) {
 				System.out.println("#######################################");
 				System.out.println(alfabeto);
 				System.out.println("#######################################");
 
-				for (int i = 1; i < 6; i++) {
+				for (int i = 1; i <= 10; i++) {
 					count = 0;
 					System.out.println("experimento: " + i);
 

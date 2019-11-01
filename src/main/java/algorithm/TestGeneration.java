@@ -27,61 +27,54 @@ public class TestGeneration {
 			List<Transition_> endTransitions = new ArrayList<>();
 
 			Automaton_ multgraph = multiGraphD(iolts, 4);
-			multgraph.makeInitiallyConnected();
 
-			// final states are those that reach the final states (same ioco)
-			endStates = new ArrayList<>();
-			for (Transition_ t : multgraph.getTransitions()) {
-				if (multgraph.getFinalStates().contains(t.getEndState())) {
-					endStates.add(t.getIniState());
-					endTransitions.add(t);
-				}
-			}
-			multgraph.setFinalStates(endStates);
+			//System.out.println(multgraph);//201 transições
 
 			//*implementar 
 			// get word from multgraph
-			List<String> words = Operations.getWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE);
-			words = new ArrayList<>(new HashSet<>(words));
-
-			// to decrease the performance of statePath
-			if (multgraph.getInitialState().getTransitions().size() == 0) {
-				if (multgraph.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
-					for (Transition_ t : multgraph.getTransitions()) {
-						multgraph.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-								.addTransition(t);
-						t.setIniState(multgraph.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst()
-								.orElse(null));
-						t.setEndState(multgraph.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst()
-								.orElse(null));
-					}
-				}
-				multgraph.setInitialState(multgraph.getStates().stream()
-						.filter(x -> x.equals(multgraph.getInitialState())).findFirst().orElse(null));
-			}
-
-			List<String> testCases = new ArrayList<>();
-			// set words to reach final state, because of the modification of the final
-			// states
-			for (String w : words) {
-				for (List<State_> states_ : Operations.statePath(multgraph, w)) {
-
-					// endState = states_.get(states_.size()-1);//-1
-					for (Transition_ t : endTransitions.stream()
-							.filter(x -> x.getIniState().equals(states_.get(states_.size() - 1)))
-							.collect(Collectors.toList())) {
-						testCases.add(w + " -> " + t.getLabel());
-					}
-				}
-			}
-
-			// System.out.println(testCases);
-
-			for (String tc : testCases) {
-				System.out.println(testPurpose(multgraph, tc, iolts.getOutputs(), iolts.getInputs()));// "a -> x -> b ->
-																										// a -> a -> b
-																										// -> b -> x"
-			}
+			List<String> words = Operations.getAllWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE);
+//			words = new ArrayList<>(new HashSet<>(words));
+//
+			System.out.println(words);
+			
+//			// to decrease the performance of statePath
+//			if (multgraph.getInitialState().getTransitions().size() == 0) {
+//				if (multgraph.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
+//					for (Transition_ t : multgraph.getTransitions()) {
+//						multgraph.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
+//								.addTransition(t);
+//						t.setIniState(multgraph.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst()
+//								.orElse(null));
+//						t.setEndState(multgraph.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst()
+//								.orElse(null));
+//					}
+//				}
+//				multgraph.setInitialState(multgraph.getStates().stream()
+//						.filter(x -> x.equals(multgraph.getInitialState())).findFirst().orElse(null));
+//			}
+//
+//			List<String> testCases = new ArrayList<>();
+//			// set words to reach final state, because of the modification of the final
+//			// states
+//			for (String w : words) {
+//				for (List<State_> states_ : Operations.statePath(multgraph, w)) {
+//
+//					// endState = states_.get(states_.size()-1);//-1
+//					for (Transition_ t : endTransitions.stream()
+//							.filter(x -> x.getIniState().equals(states_.get(states_.size() - 1)))
+//							.collect(Collectors.toList())) {
+//						testCases.add(w + " -> " + t.getLabel());
+//					}
+//				}
+//			}
+//
+//			// System.out.println(testCases);
+//
+//			for (String tc : testCases) {
+//				System.out.println(testPurpose(multgraph, tc, iolts.getOutputs(), iolts.getInputs()));// "a -> x -> b ->
+//																										// a -> a -> b
+//																										// -> b -> x"
+//			}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

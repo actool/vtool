@@ -128,6 +128,8 @@ public class LanguageBasedConformance {
 				}				
 				ad.setAlphabet(alphabet);
 
+				
+				
 				List<Transition_> transitions = new ArrayList<Transition_>();
 				for (Transition_ t : ad.getTransitions()) {
 					//if(t != null) {

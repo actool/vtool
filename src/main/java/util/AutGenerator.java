@@ -33,67 +33,74 @@ import parser.ImportAutFile;
 public class AutGenerator {
 	public static void main(String[] args) throws Exception {
 		// GENERATE <ONE> RANDOM MODEL
-		// int nState = 250;
-		// List<String> labels = new ArrayList<>();
-		// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
-		//
-		// for (Integer alfabeto : tamAlfabeto) {
-		// for (int i = 1; i < 6; i++) {
-		// if (alfabeto == 4) {
-		// labels = Arrays.asList("?a", "?b", "!x", "!y");// 4
-		// }
-		//
-		// if (alfabeto == 6) {
-		// labels = Arrays.asList("?a", "?b", "?c", "!x", "!y", "!z");
-		// }
-		//
-		// if (alfabeto == 8) {
-		// labels = Arrays.asList("?a", "?b", "?c", "?d", "!x", "!y", "!z", "!w");
-		// }
-		//
-		// if (alfabeto == 10) {
-		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y", "!z", "!w",
-		// "!k");
-		// }
-		//
-		// if (alfabeto == 12) {
-		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "!x", "!y", "!z",
-		// "!w", "!k", "!l");
-		// }
-		//
-		// if (alfabeto == 14) {
-		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "!x", "!y",
-		// "!z", "!w", "!k", "!l",
-		// "!m");
-		// }
-		//
-		// if (alfabeto == 16) {
-		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "!x",
-		// "!y", "!z", "!w", "!k",
-		// "!l", "!m", "!n");
-		// }
-		//
-		// if (alfabeto == 18) {
-		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "?i",
-		// "!x", "!y", "!z", "!w",
-		// "!k", "!l", "!m", "!n", "!o");
-		// }
-		//
-		// if (alfabeto == 20) {
-		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "?i",
-		// "?j", "!x", "!y", "!z",
-		// "!w", "!k", "!l", "!m", "!n", "!o", "!p");
-		// }
-		//
-		// boolean inputEnabled = true;
-		// String tag = "g";
-		// String path = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
-		// desempenho\\novos-modelos\\"+nState+"states\\alfabeto"
-		// + alfabeto + "\\experimento" + i + "\\";
-		// generate(nState, labels, inputEnabled, tag, path, nState + "states_spec",
-		// System.currentTimeMillis());
-		// }
-		// }
+//		 int nState = 100;
+//		 List<String> labels = new ArrayList<>();
+//		 // List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18,20);
+//		 List<Integer> tamAlfabeto = Arrays.asList(10);
+//		
+//		 for (Integer alfabeto : tamAlfabeto) {
+//		 for (int i = 1; i <= 10; i++) {
+//		 if (alfabeto == 4) {
+//		 labels = Arrays.asList("?a", "?b", "!x", "!y");// 4
+//		 }
+//		
+//		 if (alfabeto == 6) {
+//		 labels = Arrays.asList("?a", "?b", "?c", "!x", "!y", "!z");
+//		 }
+//		
+//		 if (alfabeto == 8) {
+//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "!x", "!y", "!z", "!w");
+//		 }
+//		
+//		 if (alfabeto == 10) {
+//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y", "!z", "!w",
+//		 "!k");
+//		 
+//			 //8inp 2out
+////		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "!w",
+////				 "!k");
+//			 //2inp 8out
+////			 labels = Arrays.asList("?a", "?b", "!x", "!y", "!z", "!w",
+////					 "!k", "!l", "!m", "!n");
+//		 }
+//		
+//		 if (alfabeto == 12) {
+//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "!x", "!y", "!z",
+//		 "!w", "!k", "!l");
+//		 }
+//		
+//		 if (alfabeto == 14) {
+//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "!x", "!y",
+//		 "!z", "!w", "!k", "!l",
+//		 "!m");
+//		 }
+//		
+//		 if (alfabeto == 16) {
+//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "!x",
+//		 "!y", "!z", "!w", "!k",
+//		 "!l", "!m", "!n");
+//		 }
+//		
+//		 if (alfabeto == 18) {
+//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "?i",
+//		 "!x", "!y", "!z", "!w",
+//		 "!k", "!l", "!m", "!n", "!o");
+//		 }
+//		
+//		 if (alfabeto == 20) {
+//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "?i",
+//		 "?j", "!x", "!y", "!z",
+//		 "!w", "!k", "!l", "!m", "!n", "!o", "!p");
+//		 }
+//		
+//		 boolean inputEnabled = true;
+//		 String tag = "g";
+//		 String path = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models10-x\\8out-2inp\\"
+//		 + nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\";
+//		 generate(nState, labels, inputEnabled, tag, path, nState + "states_spec",
+//		 System.currentTimeMillis());
+//		 }
+//		 }
 
 		// GENERATE <ONE> - PERCENTAGE MODEL
 		// generateByPercentage("C:\\Users\\camil\\Desktop\\model10states.aut",
@@ -121,40 +128,46 @@ public class AutGenerator {
 		// inputEnabled, tag, rootPath,
 		// labels);
 
-		//// GENERATE <IN LOTE> - PERCENTAGE
-		String nState = "250";
-		int percentage = 1;
+		// **************************
+
+		// GENERATE <IN LOTE> - PERCENTAGE
+		String nState = "100";
+		int percentage = 5;
 		long seed = System.currentTimeMillis();
 		boolean inputEnabled = true;
 		String rootPathIUTs, rootSpec;
-		int qtdadeModelos = 60;
+		int qtdadeModelos = 15;
 		String tag = "g";
 
-		List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
+		// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
+		List<Integer> tamAlfabeto = Arrays.asList(10);
 
 		for (Integer alfabeto : tamAlfabeto) {
 			System.out.println("#######################################");
 			System.out.println(alfabeto);
 			System.out.println("#######################################");
-			
-			for (int i = 1; i < 6; i++) {
+
+			for (int i = 1; i <= 10; i++) {
 				System.out.println("experimento: " + i);
-				
-				rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\novos-modelos\\ioco-nao-conf\\"
+
+				rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models10-x\\8out-2inp\\"
 						+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\iut\\";
-				rootSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\novos-modelos\\ioco-nao-conf\\"
+				rootSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models10-x\\8out-2inp\\"
 						+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\" + nState
 						+ "states_spec.aut";
 
 				for (int j = 0; j < qtdadeModelos; j++) {
-					System.out.println(">>" + j);
-					
+					//System.out.println(">>" + j);
+
 					generateByPercentage(rootSpec, rootPathIUTs, (int) percentage + "pct_iut_" + j, percentage, tag,
 							System.currentTimeMillis(), inputEnabled);
 				}
 			}
 
 		}
+
+		// **************************
+
 		// for (int j = 0; j < 10; j++) {
 		// generateByPercentage("C:\\Users\\camil\\Desktop\\25-100\\3\\" + nState +
 		// "states_spec.aut",
@@ -331,6 +344,11 @@ public class AutGenerator {
 			// define number of transitions to modify
 			List<Integer> lines = new ArrayList<>();
 			int numberLinesToChange = (int) (((totalTransitions) * percentage) / 100);
+			if(numberLinesToChange==0) {
+				numberLinesToChange=1;
+			}
+			
+			//System.err.println(numberLinesToChange);
 			int line = 0;
 
 			Random rand = new Random();
@@ -359,7 +377,7 @@ public class AutGenerator {
 				// iolts.numberDistinctTransitions(iolts_base) + " numberLinesToChange:
 				// "+numberLinesToChange);
 
-				transitionsToRemove = new ArrayList<>();
+				//transitionsToRemove = new ArrayList<>();
 				lines = new ArrayList<>();
 				for (Transition_ t : iolts.equalsTransitions(iolts_base)) {
 					for (int i = 0; i < iolts.getTransitions().size(); i++) {
@@ -448,16 +466,16 @@ public class AutGenerator {
 				// lines.get(sortedLine));
 				transition = iolts.getTransitions().get(lines.get(sortedLine));
 
-				if (randNum == 0) {// alter source state
-					do {
-						randState = iolts.getStates().get(rand.nextInt(numberOfStates));
-
-					} while (randState.equals(transition.getIniState()));
-
-					iolts.getTransitions().set(lines.get(sortedLine),
-							new Transition_(randState, transition.getLabel(), transition.getEndState()));
-					lines.remove(sortedLine);
-				} else {
+//				if (randNum == 0) {// alter source state
+//					do {
+//						randState = iolts.getStates().get(rand.nextInt(numberOfStates));
+//
+//					} while (randState.equals(transition.getIniState()));
+//
+//					iolts.getTransitions().set(lines.get(sortedLine),
+//							new Transition_(randState, transition.getLabel(), transition.getEndState()));
+//					lines.remove(sortedLine);
+//				} else {
 					// dont alter transition that keeps iolts initially connected
 					while (Integer.parseInt(transition.getEndState().toString().replace(tag,
 							"")) == (Integer.parseInt(transition.getIniState().toString().replace(tag, "")) + 1)) {
@@ -473,7 +491,7 @@ public class AutGenerator {
 							new Transition_(transition.getIniState(), transition.getLabel(), randState));
 
 					lines.remove(sortedLine);
-				}
+//				}
 
 				// }
 				// }
