@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.bridj.util.Pair;
 
 import model.Automaton_;
+import model.Graph;
 import model.IOLTS;
 import model.State_;
 import model.Transition_;
@@ -26,16 +27,21 @@ public class TestGeneration {
 			List<State_> endStates = new ArrayList<>();
 			List<Transition_> endTransitions = new ArrayList<>();
 
-			Automaton_ multgraph = multiGraphD(iolts, 4);
+			Automaton_ multgraph = multiGraphD(iolts, 1);
 
-			//System.out.println(multgraph);//201 transições
+			System.out.println(multgraph);//201 transições
 
 			//*implementar 
 			// get word from multgraph
-			List<String> words = Operations.getAllWordsFromAutomaton(multgraph, false, Integer.MAX_VALUE);
+			List<String> words = Graph.getWords(multgraph);
 //			words = new ArrayList<>(new HashSet<>(words));
-//
-			System.out.println(words);
+
+			System.out.println(words.size());
+			
+//			for (String w : words) {
+//				System.out.println(w);
+//			}
+			
 			
 //			// to decrease the performance of statePath
 //			if (multgraph.getInitialState().getTransitions().size() == 0) {

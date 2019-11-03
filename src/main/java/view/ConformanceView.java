@@ -1655,7 +1655,9 @@ public class ConformanceView extends JFrame {
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			failPath = "";
 			conformidade = IocoConformance.verifyIOCOConformance(S, I, Integer.parseInt(tfNTestCasesIOCO.getText()));
+			if(conformidade.getFinalStates().size() > 0) {
 			failPath = Operations.path(S, I, conformidade, true, false,Integer.parseInt(tfNTestCasesIOCO.getText()));
+			}
 		}
 
 	}
