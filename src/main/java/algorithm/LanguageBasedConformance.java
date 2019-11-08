@@ -102,7 +102,7 @@ public class LanguageBasedConformance {
 		Automaton_ ad = null;
 
 		if (!F.equals("")) {
-			// construct automato that accepts the language F with states with name started with "f"
+			// construct automata that accepts the language F with states with name started with "f"
 			af = Operations.regexToAutomaton(F, "f", S.getAlphabet());
 
 			// Fault automaton that shows the undesirable behaviors present in the specification
@@ -128,17 +128,18 @@ public class LanguageBasedConformance {
 				}				
 				ad.setAlphabet(alphabet);
 
-				
+				//System.out.println(ad);
 				
 				List<Transition_> transitions = new ArrayList<Transition_>();
 				for (Transition_ t : ad.getTransitions()) {
-					//if(t != null) {
+					//System.out.println(t);
+					if(t.getLabel() != null) {
 						if(t.getLabel().contains(Constants.DELTA_UNICODE_n)) {
 							transitions.add(new Transition_(t.getIniState(), Constants.DELTA, t.getEndState()));
 						}else {
 							transitions.add(new Transition_(t.getIniState(), t.getLabel(), t.getEndState()));
 						}
-				//	}
+					}
 					
 				}
 				ad.setTransitions(transitions);

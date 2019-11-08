@@ -41,10 +41,11 @@ import dk.brics.automaton.RegExp;
 import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
 import model.Automaton_;
+import model.Graph;
 import model.State_;
 import model.IOLTS;
 import model.LTS;
- 
+
 import model.Transition_;
 import util.AutGenerator;
 import util.Constants;
@@ -426,7 +427,7 @@ public class Operations {
 			@Override
 			public int compare(String o1, String o2) {
 				if (o1.length() != o2.length()) {
-					return o2.length() - o1.length(); // overflow impossible since lengths are non-negative
+					return o1.length()-o2.length(); // overflow impossible since lengths are non-negative
 				}
 				return o1.compareTo(o2);
 			}
@@ -434,8 +435,13 @@ public class Operations {
 
 		Map<String, String> map = new HashMap<String, String>();
 		for (int i = 0; i < alphabet.size(); i++) {
-			map.put(Character.toString(Constants.ALPHABET[i]), alphabet.get(i));
-			regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET[i]));
+			map.put(Character.toString(Constants.ALPHABET_[i]), alphabet.get(i));
+			
+		}
+		
+		
+		for (int i = 0; i < alphabet.size(); i++) {
+			regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET_[i]));
 		}
 
 		// regex to automaton
@@ -615,103 +621,105 @@ public class Operations {
 	// return words;
 	// }
 
-	public static List<String> getAllWordsFromAutomaton(Automaton_ a, boolean ioco, int nTestCases) {
+	// transition coverage, dijkstra, menores caminhos {ab e bx}
+	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco, int nTestCases) {
 
-		// try {
-		// IOLTS iolts = new IOLTS();
-		// iolts.setAlphabet(a.getAlphabet());
-		// iolts.setInitialState(a.getInitialState());
-		// iolts.setStates(a.getStates());
-		// iolts.setTransitions(a.getTransitions());
-		// iolts.setInputs(a.getAlphabet());
-		// iolts.setOutputs(new ArrayList<String>());
-		// System.out.println(iolts);
-		// String aut = AutGenerator.ioltsToAut(iolts);
-		// File file = new File("C:\\Users\\Seu'Suelio\\Desktop\\", "ab.aut");
-		// BufferedWriter writer;
-		// writer = new BufferedWriter(new FileWriter(file));
-		// writer.write(aut);
-		// writer.close();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		//
 		String tagSeparator = " -> ";
 		List<String> words = new ArrayList<>();
 
 		Map<String, List<String>> parent_state = new HashMap<>();// state-parent
-
+		Map<String, Integer> cost_state = new HashMap<>();// state-cost
 		Map<String, List<String>> label = new HashMap<>();
-		List<State_> toVisit = new ArrayList();// state-cost
-		List<State_> toVisit_aux = new ArrayList();// state-cost
+		Map<String, Integer> cost_state_rm = new HashMap<>();// state-cost
 		Collection<String> aa, aaaa;
 		List<String> labels;
 		List<String> parents;
 
-		toVisit.add(a.getInitialState());
-		toVisit_aux.add(a.getInitialState());
+		// initialize cust of ini state as 0
+		cost_state.put(a.getInitialState().getName(), 0);
 
-		State_ currentState;
-
-		while (toVisit.size() != 0) {
-			currentState = toVisit.get(0);
-			toVisit.remove(currentState);
-
-			for (Transition_ t : a.transitionsByIniState(currentState)) {// transitions
-
-				if (!toVisit_aux.contains(t.getEndState())) {
-					toVisit.add(t.getEndState());
-					toVisit_aux.add(t.getEndState());
-				}
-
-				// paths with same size and has this key on map
-				if (label.get(t.getEndState().getName()) != null) {
-					labels = new ArrayList<String>(label.get(t.getEndState().getName()));
-					labels.add(t.getLabel());
-					parents = new ArrayList<String>(parent_state.get(t.getEndState().getName()));
-					parents.add(currentState.getName());
-				} else {
-					labels = Arrays.asList(new String[] { t.getLabel() });
-					parents = Arrays.asList(new String[] { currentState.getName() });
-				}
-
-				parent_state.put(t.getEndState().getName(), parents);
-				label.put(t.getEndState().getName(), labels);
-
+		// initialize cost of state as infinity
+		for (State_ s : a.getStates()) {
+			if (!s.equals(a.getInitialState())) {
+				cost_state.put(s.getName(), Integer.MAX_VALUE);
 			}
 		}
 
-		// System.out.println("parent_state: " + parent_state);
-		// System.out.println("label: " + label);
+		List<State_> uniqueFinalStates = new ArrayList<>();
+		for (State_ s : a.getFinalStates()) {
+			if (!uniqueFinalStates.contains(s)) {
+				uniqueFinalStates.add(s);
+			}
+		}
+		a.setFinalStates(uniqueFinalStates);
+
+		cost_state_rm = cost_state.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+		Entry<String, Integer> min;
+
+		int cont = 0;
+		// dijkstra
+		// List<Transition_> transitions;
+		while (cost_state_rm.size() != 0) {
+			// verify if all final states was explorated,
+			cont = 0;
+			for (State_ s : a.getFinalStates()) {
+				if (cost_state_rm.containsKey(s.getName())) {
+					cont++;
+				}
+			}
+			if (cont == 0) {
+				break;
+			}
+
+			// lowest cost state
+			min = Collections.min(cost_state_rm.entrySet(), Comparator.comparing(Entry::getValue));
+			// close state
+			cost_state_rm.remove(min.getKey());
+
+			// adjacent transitions of min
+			// transitions = a.transitionsByIniState(new State_(min.getKey()));
+			for (Transition_ t : a.transitionsByIniState(new State_(min.getKey()))) {//
+				// transitions
+				// +1 because the cost of all transitions is 1
+				if (min.getValue() + 1 <= cost_state.get(t.getEndState().getName())) {
+					// update cust
+					cost_state_rm.put(t.getEndState().getName(), min.getValue() + 1);
+					cost_state.put(t.getEndState().getName(), min.getValue() + 1);
+
+					// paths with same size and has this key on map
+					if (min.getValue() + 1 == cost_state.get(t.getEndState().getName())
+							&& label.get(t.getEndState().getName()) != null) {
+						labels = new ArrayList<String>(label.get(t.getEndState().getName()));
+						labels.add(t.getLabel());
+						parents = new ArrayList<String>(parent_state.get(t.getEndState().getName()));
+						parents.add(min.getKey());
+					} else {
+						labels = Arrays.asList(new String[] { t.getLabel() });
+						parents = Arrays.asList(new String[] { min.getKey() });
+					}
+
+					parent_state.put(t.getEndState().getName(), parents);
+					label.put(t.getEndState().getName(), labels);
+				}
+			}
+		}
 
 		// get words
 		String current = "";
 		String[] word_parts;
 		MultiValueMap wordsMap = new MultiValueMap();
-		MultiValueMap wordsMap_ = new MultiValueMap();
 		MultiValueMap wordsMap_aux = new MultiValueMap();
-		// Map<String, List<String>> partial_path = new HashMap<>();
+		Map<String, List<String>> partial_path = new HashMap<>();
 		List<String> paths;
 		List<String> state_;
 		Map<String, List<String>> states;
 		// String state;
 		String word_aux = "";
 		Collection<String> collection;
-		Object ini = null;
-		int size = 0;
-		List keys = null;
-		boolean contains = false;
-		State_ previous = null;
-		List<State_> selfLoops = new ArrayList<>();
-		List<String> selfloopsPath = new ArrayList<>();
-		Object k = null;
-		 
 
 		endgetWord: for (State_ s : a.getFinalStates()) {// final states
-
-			// System.out.println(">> " + s);
 
 			current = s.getName();
 			wordsMap = new MultiValueMap();
@@ -719,155 +727,58 @@ public class Operations {
 			wordsMap_aux = new MultiValueMap();
 			states = new HashMap<>();
 			state_ = new ArrayList<>();
-			selfLoops = new ArrayList<>();
-			selfloopsPath = new ArrayList<>();
-			 
 
 			end: do {
-				 System.out.println(wordsMap);
-
-				size = wordsMap.size();
-
-				keys = new ArrayList<String>();
-				for (Object object : wordsMap.keySet()) {
-					keys.add(object);
-				}
-
-				end2: for (Object key : keys) {
-					k = key;
-
-					// System.out.println(key + " - " + parent_state.get(current));
-
-					if (key.equals(a.getInitialState().getName()) && size == 1) {// && wordsMap.size() == 1
+				end2: for (Object key : wordsMap.keySet()) {
+					if (key.equals(a.getInitialState().getName())) {
 						states.put(a.getInitialState().getName(),
 								(List<String>) wordsMap_aux.get(a.getInitialState().getName()));
 						break end;
 					}
+					current = Objects.toString(key);
 
-					//if (!key.equals(a.getInitialState().getName())) {
-						current = Objects.toString(key);
-
-						wordsMap_ = wordsMap;
-						wordsMap_.putAll(wordsMap_aux);
-						for (Object v : (Collection<String>) wordsMap_.get(key)) {// wordsMap wordsMap_
-							if (parent_state.get(current) != null) {
-								// System.out.println(current + " - " + parent_state.get(current));
-								for (int i = 0; i < parent_state.get(current).size(); i++) {
-
-									aa = (Collection<String>) (wordsMap_aux.get(parent_state.get(current).get(i)));
-									aaaa = (Collection<String>) (wordsMap.get(parent_state.get(current).get(i)));
-
-									if ((aaaa == null || !(aaaa.contains(v + label.get(current).get(i) + tagSeparator))
-											&& (aa == null
-													|| !aa.contains((v + label.get(current).get(i) + tagSeparator))))) {// (v
-																														// +
-																														// label.get(current).get(i)
-																														// +
-																														// tagSeparator)
-
-										contains = false;
-										if (wordsMap_aux != null && wordsMap_aux.size() != 0
-												&& wordsMap_aux.get(parent_state.get(current).get(i)) != null) {
-											for (String c : wordsMap_aux.get(parent_state.get(current).get(i))
-													.toString().split(",")) {
-												if (c.contains(v + label.get(current).get(i) + tagSeparator)) {
-													contains = true;
-												}
-											}
-										}
-
-										boolean add = true;
-										if (!contains) {
-
-											if (current.equals(parent_state.get(current).get(i))) {
-												int idx = selfLoops.indexOf(new State_(current));
-												if (idx >= 0) {
-													Object find = selfloopsPath.get(idx);
-													if (find != null) {
-														add = false;
-													}
-												}
-
-												selfLoops.add(new State_(current));
-												selfloopsPath.add(v + label.get(current).get(i) + tagSeparator);
-
-											}
-
-											if (add) {
-//												System.out.println(current + " - [" + v + label.get(current).get(i)
-//														+ "] - " + parent_state.get(current).get(i));
-
-												String wrd = v + label.get(current).get(i) + tagSeparator;
-
-												// visitados.add(new
-												// ObjetoQualquer(parent_state.get(current).get(i).toString(), wrd,
-												// Arrays.asList(new String[] { "" })));
-
-												wordsMap_aux.put(parent_state.get(current).get(i), wrd);
-											}
-										}
-
-									}
-								}
-							}
+					// has the path stored, already explored this state
+					if (partial_path.get(current) != null) {
+						if (states.get(current) != null) {
+							state_ = states.get(current);
+							state_.addAll((Collection<String>) wordsMap.get(current));
+							states.put(current, state_);
+						} else {
+							states.put(current, (List<String>) wordsMap.get(current));
 						}
-
-					//}
-
-				}
-
-				List<String> wm = new ArrayList<String>();
-				for (Object string : (List) wordsMap.get(current)) {
-					wm.add(string.toString());
-				}
-				wm = new ArrayList<String>(new HashSet<>(wm));
-
-				List<String> wm_aux = new ArrayList<String>();
-				if (wordsMap_aux.get(current) != null) {
-					for (Object string : (List) wordsMap_aux.get(current)) {
-						wm_aux.add(string.toString());
+						// state.add(current);
+						wordsMap_aux = new MultiValueMap();
+						break end2;
 					}
-					wm_aux = new ArrayList<String>(new HashSet<>(wm_aux));
-				}
-				
 
-				if (wm_aux.containsAll(wm)) {
-					// System.out.println("removeu aux: " +current + " - " +
-					// wordsMap_aux.get(current));
-					wordsMap_aux.remove(current);
+					for (Object v : (Collection<String>) wordsMap.get(key)) {
+						// if (parent_state.get(current) != null) {
+						for (int i = 0; i < parent_state.get(current).size(); i++) {
+
+							aa = (Collection<String>) (wordsMap_aux.get(parent_state.get(current).get(i)));
+							aaaa = (Collection<String>) (wordsMap.get(parent_state.get(current).get(i)));
+
+							if ((aaaa == null || !(aaaa.contains(v + label.get(current).get(i) + tagSeparator))
+									&& (aa == null || !aa.contains((v + label.get(current).get(i) + tagSeparator))))) {// (v
+								// +
+								// label.get(current).get(i)
+								// +
+								// tagSeparator)
+								wordsMap_aux.put(parent_state.get(current).get(i),
+										v + label.get(current).get(i) + tagSeparator);
+
+							}
+
+						}
+					}
+
+					// }
 				}
 
-				if (!k.equals(a.getInitialState().getName())) {
-					wordsMap.remove(current);
-					// System.out.println("removeu: " +current + " - " + wordsMap.get(current));
-				}
-
-				// if (selfLoops.contains(new State_(current)) ) {//previous != null &&
-				// previous.equals(current)
-				// wordsMap_aux.remove(current);
-				// }
-				// previous = new State_(current);
+				wordsMap.remove(current);
+				wordsMap_aux.remove(current);
 
 				wordsMap.putAll(wordsMap_aux);
-
-				// if (wordsMap.containsKey(a.getInitialState().getName())) {
-				// wordsMap_ = new MultiValueMap();
-				// ini = wordsMap.get(a.getInitialState().getName());
-				// wordsMap.remove(a.getInitialState().getName());
-				//
-				//
-				//
-				// SortedSet<String> keys = new TreeSet<>(wordsMap.keySet());
-				// for (String key : keys) {
-				// if (!key.equals(a.getInitialState().getName())) {
-				// wordsMap_.put(key, wordsMap.get(key));
-				// }
-				// }
-				//
-				// wordsMap = wordsMap_;
-				// wordsMap.put(a.getInitialState().getName(), ini);
-				// }
-
 			} while (wordsMap.size() != 0);
 
 			for (String state : states.keySet()) {
@@ -891,32 +802,32 @@ public class Operations {
 						}
 
 						// has the path stored, already explored this state
-						// if (!state.equals(a.getInitialState().getName())) {
-						// for (String p : (Collection<String>) partial_path.get(state)) {
-						//
-						// word_aux = p + tagSeparator + word;
-						// words.add(word_aux);
-						// if (partial_path.get(s.getName()) != null) {
-						// paths = new ArrayList<String>(partial_path.get(s.getName()));
-						// paths.add(word_aux);
-						// partial_path.put(s.getName(), paths);
-						// } else {
-						// partial_path.put(s.getName(), Arrays.asList(new String[] { word_aux }));
-						// }
-						// }
-						//
-						// } else {
-						// if (!words.contains(word)) {
-						words.add(word);
-						// }
-						// if (partial_path.get(s.getName()) != null) {
-						// paths = new ArrayList<String>(partial_path.get(s.getName()));
-						// paths.add(word);
-						// partial_path.put(s.getName(), paths);
-						// } else {
-						// partial_path.put(s.getName(), Arrays.asList(new String[] { word }));
-						// }
-						// }
+						if (!state.equals(a.getInitialState().getName())) {
+							for (String p : (Collection<String>) partial_path.get(state)) {
+
+								word_aux = p + tagSeparator + word;
+								words.add(word_aux);
+								if (partial_path.get(s.getName()) != null) {
+									paths = new ArrayList<String>(partial_path.get(s.getName()));
+									paths.add(word_aux);
+									partial_path.put(s.getName(), paths);
+								} else {
+									partial_path.put(s.getName(), Arrays.asList(new String[] { word_aux }));
+								}
+							}
+
+						} else {
+							// if (!words.contains(word)) {
+							words.add(word);
+							// }
+							if (partial_path.get(s.getName()) != null) {
+								paths = new ArrayList<String>(partial_path.get(s.getName()));
+								paths.add(word);
+								partial_path.put(s.getName(), paths);
+							} else {
+								partial_path.put(s.getName(), Arrays.asList(new String[] { word }));
+							}
+						}
 
 						// if (words.size() == nTestCases
 						// + (nTestCases < 15 ? (nTestCases * 11) : (nTestCases / 3))) {
@@ -932,563 +843,21 @@ public class Operations {
 		word_parts = null;
 		wordsMap = null;
 		wordsMap_aux = null;
-		// partial_path = null;
+		partial_path = null;
 		paths = null;
 		state_ = null;
 		states = null;
 		word_aux = null;
 		parent_state = null;
+		cost_state = null;
 		label = null;
-		toVisit = null;
+		cost_state_rm = null;
 		aa = null;
 		aaaa = null;
 		labels = null;
 		parents = null;
 
-		return new ArrayList<>(new HashSet<>(words));
-
-	}
-
-	// public static List<String> getAllWordsFromAutomaton(Automaton_ a, boolean
-	// ioco, int nTestCases) {
-	//
-	//// try {
-	//// IOLTS iolts = new IOLTS();
-	//// iolts.setAlphabet(a.getAlphabet());
-	//// iolts.setInitialState(a.getInitialState());
-	//// iolts.setStates(a.getStates());
-	//// iolts.setTransitions(a.getTransitions());
-	//// iolts.setInputs(a.getAlphabet());
-	//// iolts.setOutputs(new ArrayList<String>());
-	//// System.out.println(iolts);
-	//// String aut = AutGenerator.ioltsToAut(iolts);
-	//// File file = new File("C:\\Users\\camil\\Desktop\\", "ab.aut");
-	//// BufferedWriter writer;
-	//// writer = new BufferedWriter(new FileWriter(file));
-	//// writer.write(aut);
-	//// writer.close();
-	//// } catch (IOException e) {
-	//// // TODO Auto-generated catch block
-	//// e.printStackTrace();
-	//// }
-	//
-	//
-	// String tagSeparator = " -> ";
-	// List<String> words = new ArrayList<>();
-	//
-	// Map<String, List<String>> parent_state = new HashMap<>();// state-parent
-	//
-	// Map<String, List<String>> label = new HashMap<>();
-	// List<State_> toVisit = new ArrayList();// state-cost
-	// List<State_> toVisit_aux = new ArrayList();// state-cost
-	// Collection<String> aa, aaaa;
-	// List<String> labels;
-	// List<String> parents;
-	//
-	// toVisit.add(a.getInitialState());
-	// toVisit_aux.add(a.getInitialState());
-	//
-	// State_ currentState;
-	//
-	// while (toVisit.size() != 0) {
-	// currentState = toVisit.get(0);
-	// toVisit.remove(currentState);
-	//
-	// for (Transition_ t : a.transitionsByIniState(currentState)) {// transitions
-	//
-	// if (!toVisit_aux.contains(t.getEndState())) {
-	// toVisit.add(t.getEndState());
-	// toVisit_aux.add(t.getEndState());
-	// }
-	//
-	// // paths with same size and has this key on map
-	// if (label.get(t.getEndState().getName()) != null) {
-	// labels = new ArrayList<String>(label.get(t.getEndState().getName()));
-	// labels.add(t.getLabel());
-	// parents = new ArrayList<String>(parent_state.get(t.getEndState().getName()));
-	// parents.add(currentState.getName());
-	// } else {
-	// labels = Arrays.asList(new String[] { t.getLabel() });
-	// parents = Arrays.asList(new String[] { currentState.getName() });
-	// }
-	//
-	// parent_state.put(t.getEndState().getName(), parents);
-	// label.put(t.getEndState().getName(), labels);
-	//
-	// }
-	// }
-	//
-	// //System.out.println("parent_state: " + parent_state);
-	// // System.out.println("label: " + label);
-	//
-	// // get words
-	// String current = "";
-	// String[] word_parts;
-	// MultiValueMap wordsMap = new MultiValueMap();
-	// MultiValueMap wordsMap_ = new MultiValueMap();
-	// MultiValueMap wordsMap_aux = new MultiValueMap();
-	// MultiValueMap visitedStates = new MultiValueMap();
-	// // Map<String, List<String>> partial_path = new HashMap<>();
-	// List<String> paths;
-	// List<String> state_;
-	// Map<String, List<String>> states;
-	// // String state;
-	// String word_aux = "";
-	// Collection<String> collection;
-	// Object ini = null;
-	// int size = 0;
-	// List keys = null;
-	// boolean contains = false;
-	// State_ previous = null;
-	// List<State_> selfLoops = new ArrayList<>();
-	// List<String> selfloopsPath = new ArrayList<>();
-	// Object k = null;
-	//
-	// //each end states
-	// endgetWord: for (State_ s : a.getFinalStates()) {// final states
-	//
-	// // System.out.println(">> " + s);
-	//
-	// current = s.getName();
-	// wordsMap = new MultiValueMap();
-	// wordsMap.put(current, "");
-	// wordsMap_aux = new MultiValueMap();
-	// visitedStates = new MultiValueMap();
-	// states = new HashMap<>();
-	// state_ = new ArrayList<>();
-	// selfLoops = new ArrayList<>();
-	// selfloopsPath = new ArrayList<>();
-	//
-	// //have states to visit
-	// end: do {
-	// System.out.println(wordsMap);
-	//
-	// size = wordsMap.size();
-	//
-	// keys = new ArrayList<String>();
-	// for (Object object : wordsMap.keySet()) {
-	// keys.add(object);
-	// }
-	//
-	// //states to visit
-	// end2: for (Object key : keys) {
-	// k = key;
-	//
-	// // System.out.println(key + " - " + parent_state.get(current));
-	//
-	// //if visited all states
-	// if (key.equals(a.getInitialState().getName()) && size == 1) {// &&
-	// wordsMap.size() == 1
-	// states.put(a.getInitialState().getName(),
-	// (List<String>) wordsMap_aux.get(a.getInitialState().getName()));
-	// break end;
-	// }
-	//
-	// //initial state to process last
-	// if (!key.equals(a.getInitialState().getName())) {
-	// current = Objects.toString(key);
-	//
-	// wordsMap_ = wordsMap;
-	// wordsMap_.putAll(wordsMap_aux);
-	//
-	// //palavras que levam ao estado key
-	// for (Object v : (Collection<String>) wordsMap_.get(key)) {// wordsMap
-	// wordsMap_
-	// if (parent_state.get(current) != null) {
-	//
-	// //cada estado que leva ao estado atual
-	// for (int i = 0; i < parent_state.get(current).size(); i++) {
-	//
-	// aa = (Collection<String>)
-	// (wordsMap_aux.get(parent_state.get(current).get(i)));
-	// aaaa = (Collection<String>) (wordsMap.get(parent_state.get(current).get(i)));
-	//
-	// if ((aaaa == null || !(aaaa.contains(v + label.get(current).get(i) +
-	// tagSeparator))
-	// && (aa == null
-	// || !aa.contains((v + label.get(current).get(i) + tagSeparator))))) {
-	//
-	//
-	// System.out.println(current + " - [" + v + label.get(current).get(i) + "] - "
-	// + parent_state.get(current).get(i));
-	// contains = false;
-	// if (wordsMap_aux != null && wordsMap_aux.size() != 0
-	// && wordsMap_aux.get(parent_state.get(current).get(i)) != null) {
-	// for (String c : wordsMap_aux.get(parent_state.get(current).get(i))
-	// .toString().split(",")) {
-	// if (c.contains(v + label.get(current).get(i) + tagSeparator)) {
-	// contains = true;
-	// }
-	// }
-	// }
-	//
-	// boolean add = true;
-	// if (!contains) {
-	//
-	// if (current.equals(parent_state.get(current).get(i))) {
-	// int idx = selfLoops.indexOf(new State_(current));
-	// if (idx >= 0) {
-	// Object find = selfloopsPath.get(idx);
-	// if (find != null) {
-	// add = false;
-	// }
-	// }
-	//
-	// selfLoops.add(new State_(current));
-	// selfloopsPath.add(v + label.get(current).get(i) + tagSeparator);
-	//
-	// }
-	//
-	//
-	//
-	// if (add) {
-	// //System.out.println(current);
-	// System.out.println(parent_state.get(current).get(i));
-	// System.out.println(v + label.get(current).get(i) + tagSeparator);
-	// //visitedStates.put(parent_state.get(current).get(i), value)
-	// wordsMap_aux.put(parent_state.get(current).get(i),
-	// v + label.get(current).get(i) + tagSeparator);
-	//
-	//
-	// }
-	// }
-	//
-	// }
-	// }
-	// }
-	// }
-	//
-	// }
-	//
-	// }
-	//
-	// List<String> wm = new ArrayList<String>();
-	// for (Object string : (List) wordsMap.get(current)) {
-	// wm.add(string.toString());
-	// }
-	// wm = new ArrayList<String>(new HashSet<>(wm));
-	//
-	// List<String> wm_aux = new ArrayList<String>();
-	//
-	// if (wordsMap_aux != null && (List) wordsMap_aux.get(current) != null) {
-	// for (Object string : (List) wordsMap_aux.get(current)) {
-	// wm_aux.add(string.toString());
-	// }
-	// wm_aux = new ArrayList<String>(new HashSet<>(wm_aux));
-	// }
-	//
-	//
-	////// if (wm_aux.containsAll(wm)) {
-	////// wordsMap_aux.remove(current);
-	////// }else {
-	//// List<String> xx = (List)wordsMap_aux.get(current);
-	//// List<String> xx_ = new ArrayList<>();
-	//// if(xx!= null) {
-	//// for (String string : xx) {
-	//// if(!wm.contains(string)) {
-	//// xx_.add(string);
-	//// }
-	//// }
-	//// wordsMap_aux.remove(current);
-	//// wordsMap_aux.put(current, xx_);
-	//// }
-	////
-	//// //}
-	//
-	// if (!k.equals(a.getInitialState().getName())) {
-	// wordsMap.remove(current);
-	// }
-	//
-	//
-	//
-	// wordsMap.putAll(wordsMap_aux);
-	//
-	//
-	//
-	// } while (wordsMap.size() != 0);
-	//
-	//
-	//
-	// for (String state : states.keySet()) {
-	//
-	// collection = (Collection<String>) states.get(state);
-	//
-	// if (collection != null) {
-	//
-	// for (String word : collection) {
-	//
-	// // invert word, to initi by initState
-	// word_parts = word.split(tagSeparator);
-	// word = "";
-	// for (int j = word_parts.length - 1; j >= 0; j--) {
-	// word += word_parts[j] + tagSeparator;
-	// }
-	//
-	// // remove last tag
-	// if (word.lastIndexOf(tagSeparator) == word.length() - tagSeparator.length())
-	// {
-	// word = word.substring(0, word.lastIndexOf(tagSeparator));
-	// }
-	//
-	//
-	// words.add(word);
-	//
-	// }
-	// }
-	// }
-	//
-	// }
-	//
-	//
-	//
-	// return new ArrayList<>(new HashSet<>(words));
-	//
-	// }
-
-	// transition coverage, dijkstra, menores caminhos {ab e bx}
-	public static List<String> getWordsFromAutomaton(Automaton_ a, boolean ioco, int nTestCases) {
-
-		return getAllWordsFromAutomaton(a, ioco, nTestCases);
-
-		// String tagSeparator = " -> ";
-		// List<String> words = new ArrayList<>();
-		//
-		// Map<String, List<String>> parent_state = new HashMap<>();// state-parent
-		// Map<String, Integer> cost_state = new HashMap<>();// state-cost
-		// Map<String, List<String>> label = new HashMap<>();
-		// Map<String, Integer> cost_state_rm = new HashMap<>();// state-cost
-		// Collection<String> aa, aaaa;
-		// List<String> labels;
-		// List<String> parents;
-		//
-		// // initialize cust of ini state as 0
-		// cost_state.put(a.getInitialState().getName(), 0);
-		//
-		// // initialize cost of state as infinity
-		// for (State_ s : a.getStates()) {
-		// if (!s.equals(a.getInitialState())) {
-		// cost_state.put(s.getName(), Integer.MAX_VALUE);
-		// }
-		// }
-		//
-		// List<State_> uniqueFinalStates = new ArrayList<>();
-		// for (State_ s : a.getFinalStates()) {
-		// if (!uniqueFinalStates.contains(s)) {
-		// uniqueFinalStates.add(s);
-		// }
-		// }
-		// a.setFinalStates(uniqueFinalStates);
-		//
-		// cost_state_rm = cost_state.entrySet().stream()
-		// .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		//
-		// Entry<String, Integer> min;
-		//
-		// int cont = 0;
-		// // dijkstra
-		// // List<Transition_> transitions;
-		// while (cost_state_rm.size() != 0) {
-		// // verify if all final states was explorated,
-		// cont = 0;
-		// for (State_ s : a.getFinalStates()) {
-		// if (cost_state_rm.containsKey(s.getName())) {
-		// cont++;
-		// }
-		// }
-		// if (cont == 0) {
-		// break;
-		// }
-		//
-		// // lowest cost state
-		// min = Collections.min(cost_state_rm.entrySet(),
-		// Comparator.comparing(Entry::getValue));
-		// // close state
-		// cost_state_rm.remove(min.getKey());
-		//
-		// // adjacent transitions of min
-		// // transitions = a.transitionsByIniState(new State_(min.getKey()));
-		// for (Transition_ t : a.transitionsByIniState(new State_(min.getKey()))) {//
-		// //transitions
-		// // +1 because the cost of all transitions is 1
-		// if (min.getValue() + 1 <= cost_state.get(t.getEndState().getName())) {
-		// // update cust
-		// cost_state_rm.put(t.getEndState().getName(), min.getValue() + 1);
-		// cost_state.put(t.getEndState().getName(), min.getValue() + 1);
-		//
-		// // paths with same size and has this key on map
-		// if (min.getValue() + 1 == cost_state.get(t.getEndState().getName())
-		// && label.get(t.getEndState().getName()) != null) {
-		// labels = new ArrayList<String>(label.get(t.getEndState().getName()));
-		// labels.add(t.getLabel());
-		// parents = new ArrayList<String>(parent_state.get(t.getEndState().getName()));
-		// parents.add(min.getKey());
-		// } else {
-		// labels = Arrays.asList(new String[] { t.getLabel() });
-		// parents = Arrays.asList(new String[] { min.getKey() });
-		// }
-		//
-		// parent_state.put(t.getEndState().getName(), parents);
-		// label.put(t.getEndState().getName(), labels);
-		// }
-		// }
-		// }
-		//
-		// // get words
-		// String current = "";
-		// String[] word_parts;
-		// MultiValueMap wordsMap = new MultiValueMap();
-		// MultiValueMap wordsMap_aux = new MultiValueMap();
-		// Map<String, List<String>> partial_path = new HashMap<>();
-		// List<String> paths;
-		// List<String> state_;
-		// Map<String, List<String>> states;
-		// // String state;
-		// String word_aux = "";
-		// Collection<String> collection;
-		//
-		// endgetWord: for (State_ s : a.getFinalStates()) {// final states
-		//
-		// current = s.getName();
-		// wordsMap = new MultiValueMap();
-		// wordsMap.put(current, "");
-		// wordsMap_aux = new MultiValueMap();
-		// states = new HashMap<>();
-		// state_ = new ArrayList<>();
-		//
-		// end: do {
-		// end2: for (Object key : wordsMap.keySet()) {
-		// if (key.equals(a.getInitialState().getName())) {
-		// states.put(a.getInitialState().getName(),
-		// (List<String>) wordsMap_aux.get(a.getInitialState().getName()));
-		// break end;
-		// }
-		// current = Objects.toString(key);
-		//
-		// // has the path stored, already explored this state
-		// if (partial_path.get(current) != null) {
-		// if (states.get(current) != null) {
-		// state_ = states.get(current);
-		// state_.addAll((Collection<String>) wordsMap.get(current));
-		// states.put(current, state_);
-		// } else {
-		// states.put(current, (List<String>) wordsMap.get(current));
-		// }
-		// // state.add(current);
-		// wordsMap_aux = new MultiValueMap();
-		// break end2;
-		// }
-		//
-		// for (Object v : (Collection<String>) wordsMap.get(key)) {
-		// // if (parent_state.get(current) != null) {
-		// for (int i = 0; i < parent_state.get(current).size(); i++) {
-		//
-		// aa = (Collection<String>)
-		// (wordsMap_aux.get(parent_state.get(current).get(i)));
-		// aaaa = (Collection<String>) (wordsMap.get(parent_state.get(current).get(i)));
-		//
-		// if ((aaaa == null || !(aaaa.contains(v + label.get(current).get(i) +
-		// tagSeparator))
-		// && (aa == null || !aa.contains((v + label.get(current).get(i) +
-		// tagSeparator))))) {// (v
-		// // +
-		// // label.get(current).get(i)
-		// // +
-		// // tagSeparator)
-		// wordsMap_aux.put(parent_state.get(current).get(i),
-		// v + label.get(current).get(i) + tagSeparator);
-		//
-		// }
-		//
-		// }
-		// }
-		//
-		// // }
-		// }
-		//
-		// wordsMap.remove(current);
-		// wordsMap_aux.remove(current);
-		//
-		// wordsMap.putAll(wordsMap_aux);
-		// } while (wordsMap.size() != 0);
-		//
-		// for (String state : states.keySet()) {
-		//
-		// collection = (Collection<String>) states.get(state);
-		//
-		// if (collection != null) {
-		//
-		// for (String word : collection) {
-		//
-		// // invert word, to initi by initState
-		// word_parts = word.split(tagSeparator);
-		// word = "";
-		// for (int j = word_parts.length - 1; j >= 0; j--) {
-		// word += word_parts[j] + tagSeparator;
-		// }
-		//
-		// // remove last tag
-		// if (word.lastIndexOf(tagSeparator) == word.length() - tagSeparator.length())
-		// {
-		// word = word.substring(0, word.lastIndexOf(tagSeparator));
-		// }
-		//
-		// // has the path stored, already explored this state
-		// if (!state.equals(a.getInitialState().getName())) {
-		// for (String p : (Collection<String>) partial_path.get(state)) {
-		//
-		// word_aux = p + tagSeparator + word;
-		// words.add(word_aux);
-		// if (partial_path.get(s.getName()) != null) {
-		// paths = new ArrayList<String>(partial_path.get(s.getName()));
-		// paths.add(word_aux);
-		// partial_path.put(s.getName(), paths);
-		// } else {
-		// partial_path.put(s.getName(), Arrays.asList(new String[] { word_aux }));
-		// }
-		// }
-		//
-		// } else {
-		// // if (!words.contains(word)) {
-		// words.add(word);
-		// // }
-		// if (partial_path.get(s.getName()) != null) {
-		// paths = new ArrayList<String>(partial_path.get(s.getName()));
-		// paths.add(word);
-		// partial_path.put(s.getName(), paths);
-		// } else {
-		// partial_path.put(s.getName(), Arrays.asList(new String[] { word }));
-		// }
-		// }
-		//
-		// // if (words.size() == nTestCases
-		// // + (nTestCases < 15 ? (nTestCases * 11) : (nTestCases / 3))) {
-		// // break endgetWord;
-		// // }
-		// }
-		// }
-		// }
-		//
-		// }
-		//
-		// current = null;
-		// word_parts = null;
-		// wordsMap = null;
-		// wordsMap_aux = null;
-		// partial_path = null;
-		// paths = null;
-		// state_ = null;
-		// states = null;
-		// word_aux = null;
-		// parent_state = null;
-		// cost_state = null;
-		// label = null;
-		// cost_state_rm = null;
-		// aa = null;
-		// aaaa = null;
-		// labels = null;
-		// parents = null;
-		//
-		// return words;
+		return words;
 
 	}
 

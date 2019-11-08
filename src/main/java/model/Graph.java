@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -139,8 +140,11 @@ public class Graph {
 		}
 
 		// get state paths
-		g.getStatePaths(stateNames.get(a.getInitialState().getName()),
-				stateNames.get(a.getFinalStates().get(0).getName()));
+		for (State_ finalState : a.getFinalStates()) {
+			g.getStatePaths(stateNames.get(a.getInitialState().getName()),
+					stateNames.get(finalState.getName()));
+		}
+		
 
 		int cont = 0;
 		Integer previous = 0;
@@ -179,86 +183,86 @@ public class Graph {
 			 words.addAll(new ArrayList<>(words_aux));
 		}
 
-		return words;
+		return new ArrayList<>(new HashSet<>(words));
 	}
 
-	// Driver program
-	public static void main(String[] args) {
-		// Create a sample graph
-		// Graph g = new Graph(9);
-		// g.addEdge(0,1);
-		// g.addEdge(0,3);
-		// g.addEdge(1,3);
-		// g.addEdge(1,2);
-		// g.addEdge(1,5);
-		// g.addEdge(2,5);
-		// g.addEdge(2,3);
-		// g.addEdge(2,8);
-		// g.addEdge(6,8);
-		// g.addEdge(5,6);
-		// g.addEdge(5,7);
-		// g.addEdge(3,6);
-		// g.addEdge(3,7);
-		// g.addEdge(6,7);
-		// g.addEdge(7,8);
-		// g.addEdge(3,8);
-		// g.addEdge(8,8);
-		// g.addEdge(0,8);
-		//
-		// // arbitrary source
-		// int s = 0;
-		//
-		// // arbitrary destination
-		// int d = 8;
-		//
-		// System.out.println("Following are all different paths from "+s+" to "+d);
-		// g.getStatePaths(s, d);
-
-		Automaton_ a = new Automaton_();
-		State_ s0 = new State_("s0");
-		State_ s1 = new State_("s1");
-		State_ s2 = new State_("s2");
-		State_ s3 = new State_("s3");
-		State_ s4 = new State_("s4");
-		State_ s5 = new State_("s5");
-		State_ s6 = new State_("s6");
-		State_ s7 = new State_("s7");
-		State_ s8 = new State_("s8");
-
-		a.setInitialState(s0);
-		a.addFinalStates(s8);
-		a.addState(s0);
-		a.addState(s1);
-		a.addState(s2);
-		a.addState(s3);
-		a.addState(s4);
-		a.addState(s5);
-		a.addState(s6);
-		a.addState(s7);
-		a.addState(s8);
-		a.addTransition(new Transition_(s0, "a", s1));
-		a.addTransition(new Transition_(s0, "b", s3));
-		a.addTransition(new Transition_(s0, "x", s8));
-		a.addTransition(new Transition_(s1, "a", s5));
-		a.addTransition(new Transition_(s1, "x", s2));
-		a.addTransition(new Transition_(s1, "b", s3));
-		a.addTransition(new Transition_(s2, "a", s5));
-		a.addTransition(new Transition_(s2, "b", s3));
-		a.addTransition(new Transition_(s2, "x", s8));
-		a.addTransition(new Transition_(s3, "b", s6));
-		a.addTransition(new Transition_(s3, "a", s7));
-		a.addTransition(new Transition_(s3, "x", s8));
-		a.addTransition(new Transition_(s5, "x", s6));
-		a.addTransition(new Transition_(s5, "b", s7));
-		a.addTransition(new Transition_(s6, "b", s7));
-		a.addTransition(new Transition_(s6, "x", s8));
-		a.addTransition(new Transition_(s7, "x", s8));
-		// a.addTransition(new Transition_(s0,"a",s1));
-		a.addTransition(new Transition_(s8, "x", s8));
-
-		for (String w : getWords(a)) {
-			System.out.println(w);
-		}
-
-	}
+//	// Driver program
+//	public static void main(String[] args) {
+//		// Create a sample graph
+//		// Graph g = new Graph(9);
+//		// g.addEdge(0,1);
+//		// g.addEdge(0,3);
+//		// g.addEdge(1,3);
+//		// g.addEdge(1,2);
+//		// g.addEdge(1,5);
+//		// g.addEdge(2,5);
+//		// g.addEdge(2,3);
+//		// g.addEdge(2,8);
+//		// g.addEdge(6,8);
+//		// g.addEdge(5,6);
+//		// g.addEdge(5,7);
+//		// g.addEdge(3,6);
+//		// g.addEdge(3,7);
+//		// g.addEdge(6,7);
+//		// g.addEdge(7,8);
+//		// g.addEdge(3,8);
+//		// g.addEdge(8,8);
+//		// g.addEdge(0,8);
+//		//
+//		// // arbitrary source
+//		// int s = 0;
+//		//
+//		// // arbitrary destination
+//		// int d = 8;
+//		//
+//		// System.out.println("Following are all different paths from "+s+" to "+d);
+//		// g.getStatePaths(s, d);
+//
+//		Automaton_ a = new Automaton_();
+//		State_ s0 = new State_("s0");
+//		State_ s1 = new State_("s1");
+//		State_ s2 = new State_("s2");
+//		State_ s3 = new State_("s3");
+//		State_ s4 = new State_("s4");
+//		State_ s5 = new State_("s5");
+//		State_ s6 = new State_("s6");
+//		State_ s7 = new State_("s7");
+//		State_ s8 = new State_("s8");
+//
+//		a.setInitialState(s0);
+//		a.addFinalStates(s8);
+//		a.addState(s0);
+//		a.addState(s1);
+//		a.addState(s2);
+//		a.addState(s3);
+//		a.addState(s4);
+//		a.addState(s5);
+//		a.addState(s6);
+//		a.addState(s7);
+//		a.addState(s8);
+//		a.addTransition(new Transition_(s0, "a", s1));
+//		a.addTransition(new Transition_(s0, "b", s3));
+//		a.addTransition(new Transition_(s0, "x", s8));
+//		a.addTransition(new Transition_(s1, "a", s5));
+//		a.addTransition(new Transition_(s1, "x", s2));
+//		a.addTransition(new Transition_(s1, "b", s3));
+//		a.addTransition(new Transition_(s2, "a", s5));
+//		a.addTransition(new Transition_(s2, "b", s3));
+//		a.addTransition(new Transition_(s2, "x", s8));
+//		a.addTransition(new Transition_(s3, "b", s6));
+//		a.addTransition(new Transition_(s3, "a", s7));
+//		a.addTransition(new Transition_(s3, "x", s8));
+//		a.addTransition(new Transition_(s5, "x", s6));
+//		a.addTransition(new Transition_(s5, "b", s7));
+//		a.addTransition(new Transition_(s6, "b", s7));
+//		a.addTransition(new Transition_(s6, "x", s8));
+//		a.addTransition(new Transition_(s7, "x", s8));
+//		// a.addTransition(new Transition_(s0,"a",s1));
+//		a.addTransition(new Transition_(s8, "x", s8));
+//
+//		for (String w : getWords(a)) {
+//			System.out.println(w);
+//		}
+//
+//	}
 }

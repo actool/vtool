@@ -32,79 +32,82 @@ import parser.ImportAutFile;
 
 public class AutGenerator {
 	public static void main(String[] args) throws Exception {
-		// GENERATE <ONE> RANDOM MODEL
-//		 int nState = 100;
-//		 List<String> labels = new ArrayList<>();
-//		 // List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18,20);
-//		 List<Integer> tamAlfabeto = Arrays.asList(10);
-//		
-//		 for (Integer alfabeto : tamAlfabeto) {
-//		 for (int i = 1; i <= 10; i++) {
-//		 if (alfabeto == 4) {
-//		 labels = Arrays.asList("?a", "?b", "!x", "!y");// 4
-//		 }
-//		
-//		 if (alfabeto == 6) {
-//		 labels = Arrays.asList("?a", "?b", "?c", "!x", "!y", "!z");
-//		 }
-//		
-//		 if (alfabeto == 8) {
-//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "!x", "!y", "!z", "!w");
-//		 }
-//		
-//		 if (alfabeto == 10) {
-//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y", "!z", "!w",
-//		 "!k");
-//		 
-//			 //8inp 2out
-////		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "!w",
-////				 "!k");
-//			 //2inp 8out
-////			 labels = Arrays.asList("?a", "?b", "!x", "!y", "!z", "!w",
-////					 "!k", "!l", "!m", "!n");
-//		 }
-//		
-//		 if (alfabeto == 12) {
-//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "!x", "!y", "!z",
-//		 "!w", "!k", "!l");
-//		 }
-//		
-//		 if (alfabeto == 14) {
-//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "!x", "!y",
-//		 "!z", "!w", "!k", "!l",
-//		 "!m");
-//		 }
-//		
-//		 if (alfabeto == 16) {
-//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "!x",
-//		 "!y", "!z", "!w", "!k",
-//		 "!l", "!m", "!n");
-//		 }
-//		
-//		 if (alfabeto == 18) {
-//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "?i",
-//		 "!x", "!y", "!z", "!w",
-//		 "!k", "!l", "!m", "!n", "!o");
-//		 }
-//		
-//		 if (alfabeto == 20) {
-//		 labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "?i",
-//		 "?j", "!x", "!y", "!z",
-//		 "!w", "!k", "!l", "!m", "!n", "!o", "!p");
-//		 }
-//		
-//		 boolean inputEnabled = true;
-//		 String tag = "g";
-//		 String path = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models10-x\\8out-2inp\\"
-//		 + nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\";
-//		 generate(nState, labels, inputEnabled, tag, path, nState + "states_spec",
-//		 System.currentTimeMillis());
-//		 }
-//		 }
+		// // GENERATE <ONE> RANDOM MODEL
+		// int nState = 120;
+		// List<String> labels = new ArrayList<>();
+		// // List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18,20);
+		// List<Integer> tamAlfabeto = Arrays.asList(10);
+		//
+		// for (Integer alfabeto : tamAlfabeto) {
+		// for (int i = 1; i <= 10; i++) {
+		// if (alfabeto == 4) {
+		// labels = Arrays.asList("?a", "?b", "!x", "!y");// 4
+		// }
+		//
+		// if (alfabeto == 6) {
+		// labels = Arrays.asList("?a", "?b", "?c", "!x", "!y", "!z");
+		// }
+		//
+		// if (alfabeto == 8) {
+		// labels = Arrays.asList("?a", "?b", "?c", "?d", "!x", "!y", "!z", "!w");
+		// }
+		//
+		// if (alfabeto == 10) {
+		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y", "!z", "!w",
+		// "!k");
+		//
+		// // 8inp 2out
+		// // labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h",
+		// // "!w",
+		// // "!k");
+		// // 2inp 8out
+		// // labels = Arrays.asList("?a", "?b", "!x", "!y", "!z", "!w",
+		// // "!k", "!l", "!m", "!n");
+		// }
+		//
+		// if (alfabeto == 12) {
+		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "!x", "!y", "!z",
+		// "!w", "!k", "!l");
+		// }
+		//
+		// if (alfabeto == 14) {
+		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "!x", "!y",
+		// "!z", "!w", "!k", "!l",
+		// "!m");
+		// }
+		//
+		// if (alfabeto == 16) {
+		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "!x",
+		// "!y", "!z", "!w", "!k",
+		// "!l", "!m", "!n");
+		// }
+		//
+		// if (alfabeto == 18) {
+		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "?i",
+		// "!x", "!y", "!z", "!w",
+		// "!k", "!l", "!m", "!n", "!o");
+		// }
+		//
+		// if (alfabeto == 20) {
+		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g", "?h", "?i",
+		// "?j", "!x", "!y", "!z",
+		// "!w", "!k", "!l", "!m", "!n", "!o", "!p");
+		// }
+		//
+		// boolean inputEnabled = true;
+		// String tag = "g";
+		// String path = "C:\\Users\\camil\\Desktop\\10-100states\\spec-models\\" +
+		// nState + "states\\alfabeto" + alfabeto
+		// + "\\experimento" + i + "\\";
+		// generate(nState, labels, inputEnabled, tag, path, nState + "states_spec",
+		// System.currentTimeMillis());
+		// }
+		// }
 
 		// GENERATE <ONE> - PERCENTAGE MODEL
-		// generateByPercentage("C:\\Users\\camil\\Desktop\\model10states.aut",
-		// "C:\\Users\\camil\\Desktop\\", "impl10",10);
+		// generateByPercentage("C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\10states\\alfabeto10\\experimento1\\10states_spec.aut",
+		// "C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\10states\\alfabeto10\\experimento1\\iut\\",
+		// "impl10",100,"g",System.currentTimeMillis(), true);
 
 		// GENERATE <IN LOTE> - NUM State
 		// int totalModels = 50;// 500;
@@ -130,43 +133,77 @@ public class AutGenerator {
 
 		// **************************
 
-		// GENERATE <IN LOTE> - PERCENTAGE
-		String nState = "100";
-		int percentage = 5;
-		long seed = System.currentTimeMillis();
-		boolean inputEnabled = true;
-		String rootPathIUTs, rootSpec;
-		int qtdadeModelos = 15;
-		String tag = "g";
-
-		// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
-		List<Integer> tamAlfabeto = Arrays.asList(10);
-
-		for (Integer alfabeto : tamAlfabeto) {
-			System.out.println("#######################################");
-			System.out.println(alfabeto);
-			System.out.println("#######################################");
-
-			for (int i = 1; i <= 10; i++) {
-				System.out.println("experimento: " + i);
-
-				rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models10-x\\8out-2inp\\"
-						+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\iut\\";
-				rootSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models10-x\\8out-2inp\\"
-						+ nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\" + nState
-						+ "states_spec.aut";
-
-				for (int j = 0; j < qtdadeModelos; j++) {
-					//System.out.println(">>" + j);
-
-					generateByPercentage(rootSpec, rootPathIUTs, (int) percentage + "pct_iut_" + j, percentage, tag,
-							System.currentTimeMillis(), inputEnabled);
-				}
-			}
-
-		}
+		// // GENERATE <IN LOTE> - PERCENTAGE
+		// String nState = "100";
+		// int percentage = 2;
+		// long seed = System.currentTimeMillis();
+		// boolean inputEnabled = true;
+		// String rootPathIUTs, rootSpec;
+		// int qtdadeModelos = 10;
+		// String tag = "g";
+		//
+		// // List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18,
+		// 20);
+		// List<Integer> tamAlfabeto = Arrays.asList(10);
+		//
+		// for (Integer alfabeto : tamAlfabeto) {
+		//// System.out.println("#######################################");
+		//// System.out.println(alfabeto);
+		//// System.out.println("#######################################");
+		//
+		// for (int i = 1; i <= 10; i++) {
+		// //System.out.println("experimento: " + i);
+		//
+		// rootPathIUTs = "C:\\Users\\camil\\Desktop\\10-100states\\2pct\\" + nState +
+		// "states\\alfabeto"
+		// + alfabeto + "\\experimento" + i + "\\iut\\";
+		// rootSpec = "C:\\Users\\camil\\Desktop\\10-100states\\2pct\\" + nState +
+		// "states\\alfabeto" + alfabeto
+		// + "\\experimento" + i + "\\" + nState + "states_spec.aut";
+		//
+		// for (int j = 0; j < qtdadeModelos; j++) {
+		// // System.out.println(">>" + j);
+		//
+		// generateByPercentage(rootSpec, rootPathIUTs, (int) percentage + "pct_iut_" +
+		// j, percentage, tag,
+		// System.currentTimeMillis(), inputEnabled);
+		// }
+		//
+		// }
+		//
+		// }
 
 		// **************************
+
+		int nStateSpec = 100;//10,50,100
+		int alfabeto = 10;
+//		List<Integer> nStateIUT = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170,
+//				180, 190, 200);
+//		List<Integer> nStateIUT = Arrays.asList(60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170,
+//				180, 190, 200);
+		
+		List<Integer> nStateIUT = Arrays.asList( 110, 120,130, 140, 150, 160, 170,
+				180, 190, 200);
+		int nExperimentos = 10;
+		int iutPorExperimento = 10;
+
+		boolean inputEnabled = true;
+
+		for (Integer k: nStateIUT) {
+			for (int j = 1; j <= nExperimentos; j++) {
+				for (int i = 0; i < iutPorExperimento; i++) {
+
+					generateByNumStatesIocoConf(
+							"C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\" + nStateSpec + "states\\alfabeto"
+									+ alfabeto +"\\iut"+k+ "\\experimento" + j + "\\" + nStateSpec + "states_spec.aut",
+							"C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\" + nStateSpec + "states\\alfabeto"
+									+ alfabeto + "\\iut"+k+"\\experimento" + j + "\\iut\\",
+							k+"states_iut_" + i, k, "g", System.currentTimeMillis(), inputEnabled);
+					
+				
+				}
+			}
+		}
 
 		// for (int j = 0; j < 10; j++) {
 		// generateByPercentage("C:\\Users\\camil\\Desktop\\25-100\\3\\" + nState +
@@ -177,8 +214,9 @@ public class AutGenerator {
 		// }
 
 		// GENERATE <IN LOTE> - PERCENTAGE (models ioco conf)
-		// String nState = "250";
-		// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
+		// String nState = "100";
+		// List<Integer> tamAlfabeto = Arrays.asList(10);// Arrays.asList(4, 6, 8, 10,
+		// 12, 14, 16, 18, 20);
 		// double percentage = 1;
 		// String tag = "g";
 		// String rootPathIUTs;
@@ -186,15 +224,13 @@ public class AutGenerator {
 		// File folder;
 		// boolean inputEnabled = true;
 		// File[] listOfFiles;
-		// int qtdadeModelos = 50;
+		// int qtdadeModelos = 10;
 		//
 		// for (Integer alfabeto : tamAlfabeto) {
-		// for (int i = 1; i < 6; i++) {
-		// rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
-		// desempenho\\novos-modelos\\ioco-conf\\"
+		// for (int i = 1; i <= 10; i++) {
+		// rootPathIUTs = "C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\"
 		// + nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\iut\\";
-		// rootSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
-		// desempenho\\novos-modelos\\ioco-conf\\"
+		// rootSpec = "C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\"
 		// + nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\" +
 		// nState
 		// + "states_spec.aut";
@@ -205,14 +241,13 @@ public class AutGenerator {
 		// percentage, tag, System.currentTimeMillis(), inputEnabled);
 		// }
 		//
-		//
 		// // folder = new File(rootPathIUTs);
 		// // listOfFiles = folder.listFiles();
 		// // for (File file : listOfFiles) {
 		// // if (file.getName().indexOf(".") != -1
 		// // && file.getName().substring(file.getName().indexOf(".")).equals(".aut")) {
 		// // generateByPercentageModelsIocoConf(rootPathIUTs + file.getName(),
-		// rootSpec,
+		// // rootSpec,
 		// // nState + "states" + file.getName().replace("iut", "spec").replace(".aut",
 		// // ""),
 		// // percentage, tag, System.currentTimeMillis(), inputEnabled);
@@ -255,6 +290,55 @@ public class AutGenerator {
 	}
 
 	// criar specs com base na iut
+	public static void generateByNumStatesIocoConf(String pathSpecBase, String pathNewFile, String autFileName,
+			int nState, String tag, long seed, boolean inputEnabled) {
+		try {
+			Random rand = new Random();
+			rand.setSeed(seed * System.currentTimeMillis());
+			IOLTS iolts = ImportAutFile.autToIOLTS(pathSpecBase, false, null, null);
+
+			int contState = iolts.getStates().size();
+
+			State_ iniState, endState;
+			List<Transition_> transitions = new ArrayList<>();
+
+			do {
+				iniState = new State_(tag + Objects.toString(contState));
+				iolts.addState(iniState);
+
+				for (String l : iolts.getAlphabet()) {
+					endState = new State_(tag + Objects.toString(rand.nextInt(iolts.getStates().size() - 1)));
+					if (inputEnabled) {
+						if (iolts.getInputs().contains(l)) {
+							transitions.add(new Transition_(iniState, l, endState));
+						}
+					} else {
+
+						transitions.add(new Transition_(iniState, l, endState));
+
+					}
+
+				}
+				contState++;
+			} while (iolts.getStates().size() != nState);
+
+			for (Transition_ transition : transitions) {
+				iolts.addTransition(transition);
+			}
+
+			System.out.println("estados: " + iolts.getStates().size());
+			File file = new File(pathNewFile, autFileName + ".aut");
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write(ioltsToAut(iolts));
+			writer.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// criar specs com base na iut
 	public static void generateByPercentageModelsIocoConf(String pathSpecBase, String pathNewFile, String autFileName,
 			double percentage, String tag, long seed, boolean inputEnabled) {
 		try {
@@ -264,11 +348,19 @@ public class AutGenerator {
 
 			int numberTransitionsToAdd = (int) ((Math.ceil(iolts.getTransitions().size()) * percentage) / 100);
 
+			if (numberTransitionsToAdd == 0) {
+				numberTransitionsToAdd = 1;
+			}
+
 			if (inputEnabled) {
 				numberTransitionsToAdd = (int) Math.ceil(numberTransitionsToAdd / iolts.getInputs().size());
 				numberTransitionsToAdd = numberTransitionsToAdd == 0 ? iolts.getInputs().size()
 						: numberTransitionsToAdd;
 			}
+
+			// System.out.println(pathSpecBase + "," + pathNewFile + autFileName + "," +
+			// iolts.getTransitions().size()
+			// + "," + numberTransitionsToAdd + "," + percentage);
 
 			int contState = iolts.getStates().size();
 			State_ iniState, endState;
@@ -302,6 +394,7 @@ public class AutGenerator {
 				iolts.addTransition(transition);
 			}
 
+			System.out.println("estados: " + iolts.getStates().size());
 			File file = new File(pathNewFile, autFileName + ".aut");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(ioltsToAut(iolts));
@@ -344,11 +437,15 @@ public class AutGenerator {
 			// define number of transitions to modify
 			List<Integer> lines = new ArrayList<>();
 			int numberLinesToChange = (int) (((totalTransitions) * percentage) / 100);
-			if(numberLinesToChange==0) {
-				numberLinesToChange=1;
+			if (numberLinesToChange == 0) {
+				numberLinesToChange = 1;
 			}
-			
-			//System.err.println(numberLinesToChange);
+
+			// System.out.println(pathModelBase + "," + pathNewFile + autFileName + "," +
+			// totalTransitions + ","
+			// + numberLinesToChange + "," + percentage);
+
+			// System.err.println(numberLinesToChange);
 			int line = 0;
 
 			Random rand = new Random();
@@ -377,7 +474,7 @@ public class AutGenerator {
 				// iolts.numberDistinctTransitions(iolts_base) + " numberLinesToChange:
 				// "+numberLinesToChange);
 
-				//transitionsToRemove = new ArrayList<>();
+				// transitionsToRemove = new ArrayList<>();
 				lines = new ArrayList<>();
 				for (Transition_ t : iolts.equalsTransitions(iolts_base)) {
 					for (int i = 0; i < iolts.getTransitions().size(); i++) {
@@ -466,32 +563,32 @@ public class AutGenerator {
 				// lines.get(sortedLine));
 				transition = iolts.getTransitions().get(lines.get(sortedLine));
 
-//				if (randNum == 0) {// alter source state
-//					do {
-//						randState = iolts.getStates().get(rand.nextInt(numberOfStates));
-//
-//					} while (randState.equals(transition.getIniState()));
-//
-//					iolts.getTransitions().set(lines.get(sortedLine),
-//							new Transition_(randState, transition.getLabel(), transition.getEndState()));
-//					lines.remove(sortedLine);
-//				} else {
-					// dont alter transition that keeps iolts initially connected
-					while (Integer.parseInt(transition.getEndState().toString().replace(tag,
-							"")) == (Integer.parseInt(transition.getIniState().toString().replace(tag, "")) + 1)) {
+				// if (randNum == 0) {// alter source state
+				// do {
+				// randState = iolts.getStates().get(rand.nextInt(numberOfStates));
+				//
+				// } while (randState.equals(transition.getIniState()));
+				//
+				// iolts.getTransitions().set(lines.get(sortedLine),
+				// new Transition_(randState, transition.getLabel(), transition.getEndState()));
+				// lines.remove(sortedLine);
+				// } else {
+				// dont alter transition that keeps iolts initially connected
+				while (Integer.parseInt(transition.getEndState().toString().replace(tag,
+						"")) == (Integer.parseInt(transition.getIniState().toString().replace(tag, "")) + 1)) {
 
-						sortedLine = rand.nextInt(lines.size() - 1);
-						transition = iolts.getTransitions().get(lines.get(sortedLine));
-					}
-					do {
-						randState = iolts.getStates().get(rand.nextInt(numberOfStates));
+					sortedLine = rand.nextInt(lines.size() - 1);
+					transition = iolts.getTransitions().get(lines.get(sortedLine));
+				}
+				do {
+					randState = iolts.getStates().get(rand.nextInt(numberOfStates));
 
-					} while (randState.equals(transition.getEndState()));
-					iolts.getTransitions().set(lines.get(sortedLine),
-							new Transition_(transition.getIniState(), transition.getLabel(), randState));
+				} while (randState.equals(transition.getEndState()));
+				iolts.getTransitions().set(lines.get(sortedLine),
+						new Transition_(transition.getIniState(), transition.getLabel(), randState));
 
-					lines.remove(sortedLine);
-//				}
+				lines.remove(sortedLine);
+				// }
 
 				// }
 				// }
@@ -534,7 +631,6 @@ public class AutGenerator {
 
 			}
 
-			// System.out.println(iolts.getTransitions());
 			File file = new File(pathNewFile, autFileName + ".aut");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(ioltsToAut(iolts));

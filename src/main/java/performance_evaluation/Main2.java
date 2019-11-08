@@ -27,64 +27,65 @@ import util.AutGenerator;
 public class Main2 {
 
 	public static void main(String[] args) throws Exception {
-//		String path = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models10-x\\100states\\everest.csv";
-//		String COMMA_DELIMITER = ",";
-//		boolean states;
-//		String alfabeto, experimento;
-//		List<String> values;
-//		String header = "";
-//
-//		List<List<String>> records = new ArrayList<>();
-//		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-//			String line;
-//			header = br.readLine();// pula cabeçalho
-//			header += "alphabet" + COMMA_DELIMITER + "experiment";
-//			records.add(Arrays.asList(header.split(COMMA_DELIMITER)));
-//			while ((line = br.readLine()) != null) {
-//				alfabeto = "";
-//				experimento = "";
-//				values = new ArrayList<String>();
-//				values.addAll(Arrays.asList(line.split(COMMA_DELIMITER)));
-//
-//				//values.add("");//jtorx ioco
-//				for (String l : Arrays.asList(values.get(1).replace("\\", "@").split("@"))) {
-//					if (l.contains("alfabeto")) {
-//						String s = (l.replace("alfabeto", ""));
-//						values.add(s);
-//					}
-//
-//					if (l.contains("experimento")) {
-//						values.add(l.replace("experimento", ""));
-//					}
-//				}
-//				records.add(values);
-//
-//			}
-//		}
-//
-//		FileWriter csvWriter = new FileWriter("C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\models10-x\\100states\\new-everest.csv");
-//		for (List<String> rowData : records) {
-//			csvWriter.append(String.join(COMMA_DELIMITER, rowData));
-//			csvWriter.append("\n");
-//		}
-//
-//		csvWriter.flush();
-//		csvWriter.close();
+		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\2pct\\";
+		String path = rootPath+"jtorx.csv";
+		String COMMA_DELIMITER = ",";
+		boolean states;
+		String alfabeto, experimento;
+		List<String> values;
+		String header = "";
+
+		List<List<String>> records = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+			String line;
+			header = br.readLine();// pula cabeçalho
+			header += "alphabet" + COMMA_DELIMITER + "experiment";
+			records.add(Arrays.asList(header.split(COMMA_DELIMITER)));
+			while ((line = br.readLine()) != null) {
+				alfabeto = "";
+				experimento = "";
+				values = new ArrayList<String>();
+				values.addAll(Arrays.asList(line.split(COMMA_DELIMITER)));
+
+				//values.add("");//jtorx ioco
+				for (String l : Arrays.asList(values.get(1).replace("\\", "@").split("@"))) {
+					if (l.contains("alfabeto")) {
+						String s = (l.replace("alfabeto", ""));
+						values.add(s);
+					}
+
+					if (l.contains("experimento")) {
+						values.add(l.replace("experimento", ""));
+					}
+				}
+				records.add(values);
+
+			}
+		}
+
+		FileWriter csvWriter = new FileWriter(rootPath+"new-jtorx.csv");
+		for (List<String> rowData : records) {
+			csvWriter.append(String.join(COMMA_DELIMITER, rowData));
+			csvWriter.append("\n");
+		}
+
+		csvWriter.flush();
+		csvWriter.close();
 		
 		
-		String path = "C:\\Users\\camil\\Desktop\\ab.aut";
-		//String path = "C:\\Users\\camil\\Desktop\\ab1.aut";
-		IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
-		Automaton_ a = new Automaton_();
-		a.setAlphabet(iolts.getAlphabet());
-		a.addFinalStates(new State_("s2s2s2"));
-		//a.addFinalStates(new State_("q2s2s2"));
-		//a.addFinalStates(new State_("q2complementfail"));
-		a.setInitialState(iolts.getInitialState());
-		a.setStates(iolts.getStates());
-		a.setTransitions(iolts.getTransitions());
-		
-		System.out.println(Operations.getAllWordsFromAutomaton(a, true, 999));
+//		String path = "C:\\Users\\camil\\Desktop\\ab.aut";
+//		//String path = "C:\\Users\\camil\\Desktop\\ab1.aut";
+//		IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
+//		Automaton_ a = new Automaton_();
+//		a.setAlphabet(iolts.getAlphabet());
+//		a.addFinalStates(new State_("s2s2s2"));
+//		//a.addFinalStates(new State_("q2s2s2"));
+//		//a.addFinalStates(new State_("q2complementfail"));
+//		a.setInitialState(iolts.getInitialState());
+//		a.setStates(iolts.getStates());
+//		a.setTransitions(iolts.getTransitions());
+//		
+//		System.out.println(Operations.getAllWordsFromAutomaton(a, true, 999));
 		
 		
 //		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-r.aut";

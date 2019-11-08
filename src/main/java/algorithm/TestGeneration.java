@@ -2,6 +2,7 @@ package algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collector;
@@ -27,13 +28,16 @@ public class TestGeneration {
 			List<State_> endStates = new ArrayList<>();
 			List<Transition_> endTransitions = new ArrayList<>();
 
-			Automaton_ multgraph = multiGraphD(iolts, 1);
+			Automaton_ multgraph = multiGraphD(iolts, 3);
 
 			System.out.println(multgraph);//201 transições
 
 			//*implementar 
 			// get word from multgraph
+			
+			System.out.println(new Date());
 			List<String> words = Graph.getWords(multgraph);
+			System.out.println(new Date());
 //			words = new ArrayList<>(new HashSet<>(words));
 
 			System.out.println(words.size());

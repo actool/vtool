@@ -13,6 +13,7 @@ public class Constants {
 	public static final String DELTA_UNICODE_n = "u03b4";
 	public static final String EPSILON = "epsilon";
 	public static char[] ALPHABET = "abcdefghijklmnopqrstuvwxyz123456789!#$%&*()/".toCharArray();
+	public static char[] ALPHABET_ = "PQOWIEURYTALSKDJFGMZNXBCV".toCharArray();
 	public static final String SEPARATOR = "@";
 	public static final char INPUT_TAG = '?';
 	public static final char OUTPUT_TAG = '!';
