@@ -27,8 +27,9 @@ import util.AutGenerator;
 public class Main2 {
 
 	public static void main(String[] args) throws Exception {
-		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\2pct\\";
-		String path = rootPath+"jtorx.csv";
+		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\ioco-conf\\";
+		String tool = "everest";
+		String path = rootPath+tool+".csv";
 		String COMMA_DELIMITER = ",";
 		boolean states;
 		String alfabeto, experimento;
@@ -63,7 +64,7 @@ public class Main2 {
 			}
 		}
 
-		FileWriter csvWriter = new FileWriter(rootPath+"new-jtorx.csv");
+		FileWriter csvWriter = new FileWriter(rootPath+"new-"+tool+".csv");
 		for (List<String> rowData : records) {
 			csvWriter.append(String.join(COMMA_DELIMITER, rowData));
 			csvWriter.append("\n");

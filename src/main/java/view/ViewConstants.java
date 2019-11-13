@@ -9,6 +9,7 @@ public class ViewConstants {
 	public static final String IOLTS_CONST = "IOLTS";
 	public static final String tabIOCO = "IOCO Conformance";
 	public static final String tabLang = "Language Based Conformance";
+	public static final String tabTSGeneration = "Test Suite Generation";
 	public static final String toolName = "Everest";
 	public static final String[] models = new String[] { "", "IOLTS", "LTS" };
 	public static final String folderIconPath = "/img/folder.png";
@@ -33,4 +34,5 @@ public class ViewConstants {
 	public static final String selectInpOut = "Define the input and output labels \n";//"The fields Input and Output is required \n";
 	public static final String selectIolts = "IOCO relation is defined over IOLTS models \n";//"The informed model must be IOLTS \n";
 	public static final String labelInpOut="There labels that were not set as input/output \n";
+	public static final String mInteger="The parameter max IUT states must be integer \n";
 }

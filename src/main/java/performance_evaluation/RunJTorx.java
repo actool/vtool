@@ -158,10 +158,13 @@ public class RunJTorx {
 			String rootPathSaveTS;
 			String ioco = "";// ioco-nao-conf
 		
-			List<Integer> tamIUTs = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,
+//			List<Integer> tamIUTs = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,
+//					170, 180, 190, 200);
+											
+			List<Integer> tamIUTs = Arrays.asList( 110, 120, 130, 140, 150, 160,
 					170, 180, 190, 200);
 
-			List<Integer> states = Arrays.asList(10);// 50,100
+			List<Integer> states = Arrays.asList(100);// 50,100
 			// List<Integer> states = Arrays.asList(10,50,100);
 			for (Integer nState : states) {
 				String pathCsv = root + nState + "states\\jtorx.csv";
@@ -583,19 +586,19 @@ public class RunJTorx {
 
 		double total_seconds = (time_end - time_ini) / 1e6;
 
-		 double total_seconds2;
-		 // try get time mode 2
-		 // if(total_seconds < 200) {
-		 // check button
-		 s.click(root_img + "btn-check.PNG");
-		 time_ini = System.nanoTime();
-		 s.wait(new Pattern(root_img + "btn-check2.PNG").similar(0.75f));
-		 time_end = System.nanoTime();
-		 total_seconds2 = (time_end - time_ini) / 1e6;
-		 // }
-		 if (total_seconds2 > total_seconds) {
-		 total_seconds = total_seconds2;
-		 }
+//		 double total_seconds2;
+//		 // try get time mode 2
+//		 // if(total_seconds < 200) {
+//		 // check button
+//		 s.click(root_img + "btn-check.PNG");
+//		 time_ini = System.nanoTime();
+//		 s.wait(new Pattern(root_img + "btn-check2.PNG").similar(0.75f));
+//		 time_end = System.nanoTime();
+//		 total_seconds2 = (time_end - time_ini) / 1e6;
+//		 // }
+//		 if (total_seconds2 > total_seconds) {
+//		 total_seconds = total_seconds2;
+//		 }
 
 		System.err.println("FINISHED: " + total_seconds + " milliseconds");
 

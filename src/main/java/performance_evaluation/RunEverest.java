@@ -219,10 +219,12 @@ public class RunEverest {
 
 			// IOCO Conf submaquina
 			String root = "C:\\ioco-conf\\";
-			List<Integer> states = Arrays.asList(10);// 50,100
+			List<Integer> states = Arrays.asList(100);// 50,100
 			// List<Integer> states = Arrays.asList(10,50,100);
-			List<Integer> tamIUTs = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,
+			List<Integer> tamIUTs = Arrays.asList(110, 120, 130, 140, 150, 160,
 					170, 180, 190, 200);
+//			List<Integer> tamIUTs = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,
+//					170, 180, 190, 200);
 			// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
 			List<Integer> tamAlfabeto = Arrays.asList(10);
 			String rootPathIUTs, pathAutSpec;
@@ -519,8 +521,8 @@ public class RunEverest {
 		while (true) {
 			time_end = System.nanoTime();
 			try {
-				//s.find(new Pattern(root_img + "lbl-verdict.PNG").similar(0.75f));
-				 s.find(new Pattern(root_img + "img-processing.PNG").similar(0.5f));//
+				s.find(new Pattern(root_img + "lbl-verdict.PNG").similar(0.75f));
+				 //s.find(new Pattern(root_img + "img-processing.PNG").similar(0.5f));//
 				time_end = System.nanoTime();
 				//System.out.println("while");
 

@@ -27,10 +27,11 @@ public class TestGeneration {
 
 			List<State_> endStates = new ArrayList<>();
 			List<Transition_> endTransitions = new ArrayList<>();
+			iolts.addQuiescentTransitions();
+			
+			Automaton_ multgraph = multiGraphD(iolts, 1);
 
-			Automaton_ multgraph = multiGraphD(iolts, 3);
-
-			System.out.println(multgraph);//201 transições
+			//System.out.println(multgraph);//201 transições
 
 			//*implementar 
 			// get word from multgraph
@@ -40,11 +41,11 @@ public class TestGeneration {
 			System.out.println(new Date());
 //			words = new ArrayList<>(new HashSet<>(words));
 
-			System.out.println(words.size());
+		//	System.out.println(words.size());
 			
-//			for (String w : words) {
-//				System.out.println(w);
-//			}
+			for (String w : words) {
+				System.out.println(w);
+			}
 			
 			
 //			// to decrease the performance of statePath
