@@ -131,10 +131,10 @@ public class AutGenerator {
 		// inputEnabled, tag, rootPath,
 		// labels);
 
-		// **************************
-
+		// // **************************
+		// //ioco-n-conf\2pct\10states\alfabeto10\iut20\experimento1
 		// // GENERATE <IN LOTE> - PERCENTAGE
-		// String nState = "100";
+		// String nState = "100";//10,50,100
 		// int percentage = 2;
 		// long seed = System.currentTimeMillis();
 		// boolean inputEnabled = true;
@@ -146,20 +146,29 @@ public class AutGenerator {
 		// 20);
 		// List<Integer> tamAlfabeto = Arrays.asList(10);
 		//
+		//// List<Integer> tamIUT = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90,100,
+		// 110, 120, 130, 140, 150, 160, 170,180, 190, 200);
+		//// List<Integer> tamIUT = Arrays.asList( 60, 70, 80, 90,100, 110, 120, 130,
+		// 140, 150, 160, 170,180, 190, 200);
+		// List<Integer> tamIUT = Arrays.asList( 110, 120, 130, 140, 150, 160, 170,180,
+		// 190, 200);
+		//
 		// for (Integer alfabeto : tamAlfabeto) {
-		//// System.out.println("#######################################");
-		//// System.out.println(alfabeto);
-		//// System.out.println("#######################################");
-		//
+		// System.out.println("#######################################");
+		// System.out.println(alfabeto);
+		// System.out.println("#######################################");
+		// for (Integer tIut : tamIUT) {
+		// System.out.println(">> IUT: " + tIut);
 		// for (int i = 1; i <= 10; i++) {
-		// //System.out.println("experimento: " + i);
+		// System.out.println("experimento: " + i);
 		//
-		// rootPathIUTs = "C:\\Users\\camil\\Desktop\\10-100states\\2pct\\" + nState +
-		// "states\\alfabeto"
-		// + alfabeto + "\\experimento" + i + "\\iut\\";
-		// rootSpec = "C:\\Users\\camil\\Desktop\\10-100states\\2pct\\" + nState +
-		// "states\\alfabeto" + alfabeto
-		// + "\\experimento" + i + "\\" + nState + "states_spec.aut";
+		// rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
+		// desempenho\\10-100states\\ioco-n-conf\\2pct\\" + nState + "states\\alfabeto"
+		// + alfabeto + "\\iut"+tIut+"\\experimento" + i + "\\";
+		// rootSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
+		// desempenho\\10-100states\\ioco-n-conf\\2pct\\" + nState + "states\\alfabeto"
+		// + alfabeto + "\\iut"+tIut+"\\experimento" + i + "\\" + nState +
+		// "states_spec.aut";
 		//
 		// for (int j = 0; j < qtdadeModelos; j++) {
 		// // System.out.println(">>" + j);
@@ -170,41 +179,82 @@ public class AutGenerator {
 		// }
 		//
 		// }
-		//
+		// }
 		// }
 
 		// **************************
 
-		int nStateSpec = 100;//10,50,100
-		int alfabeto = 10;
-//		List<Integer> nStateIUT = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170,
-//				180, 190, 200);
-//		List<Integer> nStateIUT = Arrays.asList(60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170,
-//				180, 190, 200);
+//		// geração de modelos ioco conformes, definindo numero de estados da iut
+//		int nStateSpec = 100;// 10,50,100
+//		int alfabeto = 10;
+//		// List<Integer> nStateIUT = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90,
+//		// 100, 110, 120, 130, 140, 150, 160, 170,
+//		// 180, 190, 200);
+//		// List<Integer> nStateIUT = Arrays.asList(60, 70, 80, 90, 100, 110, 120, 130,
+//		// 140, 150, 160, 170,
+//		// 180, 190, 200);
+//
+//		List<Integer> nStateIUT = Arrays.asList(110, 120, 130, 140, 150, 160, 170, 180, 190, 200);
+//		int nExperimentos = 10;
+//		int iutPorExperimento = 10;
+//
+//		boolean inputEnabled = true;
+//
+//		for (Integer k : nStateIUT) {
+//			for (int j = 1; j <= nExperimentos; j++) {
+//				for (int i = 0; i < iutPorExperimento; i++) {
+//
+//					generateByNumStatesIocoConf(
+//							"C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\" + nStateSpec + "states\\alfabeto"
+//									+ alfabeto + "\\iut" + k + "\\experimento" + j + "\\" + nStateSpec
+//									+ "states_spec.aut",
+//							"C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\" + nStateSpec + "states\\alfabeto"
+//									+ alfabeto + "\\iut" + k + "\\experimento" + j + "\\iut\\",
+//							k + "states_iut_" + i, k, "g", System.currentTimeMillis(), inputEnabled);
+//
+//				}
+//			}
+//		}
 		
-		List<Integer> nStateIUT = Arrays.asList( 110, 120,130, 140, 150, 160, 170,
-				180, 190, 200);
-		int nExperimentos = 10;
-		int iutPorExperimento = 10;
-
-		boolean inputEnabled = true;
-
-		for (Integer k: nStateIUT) {
-			for (int j = 1; j <= nExperimentos; j++) {
-				for (int i = 0; i < iutPorExperimento; i++) {
-
-					generateByNumStatesIocoConf(
-							"C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\" + nStateSpec + "states\\alfabeto"
-									+ alfabeto +"\\iut"+k+ "\\experimento" + j + "\\" + nStateSpec + "states_spec.aut",
-							"C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\" + nStateSpec + "states\\alfabeto"
-									+ alfabeto + "\\iut"+k+"\\experimento" + j + "\\iut\\",
-							k+"states_iut_" + i, k, "g", System.currentTimeMillis(), inputEnabled);
-					
+			// alterando modelos da iut adicionando estados, submodelos + estados, alterar o mesmo arquivo da iut
+				int nStateSpec = 100;// 10,50,100
+				int alfabeto = 10;
+//				 List<Integer> nStateIUT = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90,
+//				 100, 110, 120, 130, 140, 150, 160, 170,
+//				 180, 190, 200);
 				
-				}
-			}
-		}
+//				 List<Integer> nStateIUT = Arrays.asList(60, 70, 80, 90, 100, 110, 120, 130,
+//				 140, 150, 160, 170,
+//				 180, 190, 200);
 
+				List<Integer> nStateIUT = Arrays.asList(110, 120, 130, 140, 150, 160, 170, 180, 190, 200);
+				
+				int nExperimentos = 10;
+				int iutPorExperimento = 10;
+				int percentage = 2;
+
+				boolean inputEnabled = true;
+
+				for (Integer k : nStateIUT) {
+					System.out.println(">>>>>>>>>>>>> iut: " + k);
+					for (int j = 1; j <= nExperimentos; j++) {
+						System.out.println(">>>> experimento: " + j);
+						for (int i = 0; i < iutPorExperimento; i++) {
+							//System.out.println("> modelo: " + i);
+							generateByNumStatesIocoConf(
+									"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\ioco-n-conf\\2pct\\" + nStateSpec + "states\\alfabeto"
+											+ alfabeto + "\\iut" + k + "\\experimento" + j + "\\iut\\" + percentage
+											+ "pct_iut_"+i+".aut",
+											"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\ioco-n-conf\\2pct\\" + nStateSpec + "states\\alfabeto"
+													+ alfabeto + "\\iut" + k + "\\experimento" + j + "\\iut\\",
+													percentage
+													+ "pct_iut_"+i+"", k, "g", System.currentTimeMillis(), inputEnabled);
+						}
+					}
+				}
+
+		
+		
 		// for (int j = 0; j < 10; j++) {
 		// generateByPercentage("C:\\Users\\camil\\Desktop\\25-100\\3\\" + nState +
 		// "states_spec.aut",
@@ -215,8 +265,8 @@ public class AutGenerator {
 
 		// GENERATE <IN LOTE> - PERCENTAGE (models ioco conf)
 		// String nState = "100";
-		// List<Integer> tamAlfabeto = Arrays.asList(10);// Arrays.asList(4, 6, 8, 10,
-		// 12, 14, 16, 18, 20);
+		// List<Integer> tamAlfabeto = Arrays.asList(10);// Arrays.asList(4, 6, 8,
+		// 10,12, 14, 16, 18, 20);
 		// double percentage = 1;
 		// String tag = "g";
 		// String rootPathIUTs;
@@ -228,12 +278,12 @@ public class AutGenerator {
 		//
 		// for (Integer alfabeto : tamAlfabeto) {
 		// for (int i = 1; i <= 10; i++) {
-		// rootPathIUTs = "C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\"
-		// + nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\iut\\";
-		// rootSpec = "C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\"
-		// + nState + "states\\alfabeto" + alfabeto + "\\experimento" + i + "\\" +
-		// nState
-		// + "states_spec.aut";
+		// rootPathIUTs = "C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\" +
+		// nState + "states\\alfabeto"
+		// + alfabeto + "\\experimento" + i + "\\iut\\";
+		// rootSpec = "C:\\Users\\camil\\Desktop\\10-100states\\ioco-conf\\" + nState +
+		// "states\\alfabeto"
+		// + alfabeto + "\\experimento" + i + "\\" + nState + "states_spec.aut";
 		//
 		// for (int j = 0; j < qtdadeModelos; j++) {
 		// generateByPercentageModelsIocoConf(rootSpec, rootPathIUTs, (int) percentage +
@@ -326,7 +376,7 @@ public class AutGenerator {
 				iolts.addTransition(transition);
 			}
 
-			System.out.println("estados: " + iolts.getStates().size());
+			//System.out.println("estados: " + iolts.getStates().size());
 			File file = new File(pathNewFile, autFileName + ".aut");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(ioltsToAut(iolts));
@@ -408,6 +458,13 @@ public class AutGenerator {
 
 	public static void generateByPercentage(String pathModelBase, String pathNewFile, String autFileName,
 			double percentage, String tag, long seed, boolean inputEnabled) {
+
+		File dir = new File(pathNewFile + "/iut");
+		if (!dir.exists())
+			dir.mkdirs();
+		new File(pathNewFile + "/iut");
+		pathNewFile += "//iut";
+
 		// BufferedReader reader;
 		String thisLine = null;
 		String[] split;

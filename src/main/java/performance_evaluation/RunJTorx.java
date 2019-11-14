@@ -586,19 +586,19 @@ public class RunJTorx {
 
 		double total_seconds = (time_end - time_ini) / 1e6;
 
-//		 double total_seconds2;
-//		 // try get time mode 2
-//		 // if(total_seconds < 200) {
-//		 // check button
-//		 s.click(root_img + "btn-check.PNG");
-//		 time_ini = System.nanoTime();
-//		 s.wait(new Pattern(root_img + "btn-check2.PNG").similar(0.75f));
-//		 time_end = System.nanoTime();
-//		 total_seconds2 = (time_end - time_ini) / 1e6;
-//		 // }
-//		 if (total_seconds2 > total_seconds) {
-//		 total_seconds = total_seconds2;
-//		 }
+		 double total_seconds2;
+		 // try get time mode 2
+		 // if(total_seconds < 200) {
+		 // check button
+		 s.click(root_img + "btn-check.PNG");
+		 time_ini = System.nanoTime();
+		 s.wait(new Pattern(root_img + "btn-check2.PNG").similar(0.75f));
+		 time_end = System.nanoTime();
+		 total_seconds2 = (time_end - time_ini) / 1e6;
+		 // }
+		 if (total_seconds2 > total_seconds) {
+		 total_seconds = total_seconds2;
+		 }
 
 		System.err.println("FINISHED: " + total_seconds + " milliseconds");
 

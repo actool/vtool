@@ -1531,26 +1531,26 @@ public class ConformanceView extends JFrame {
 		btnGenerate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				
-				if(isFormValidGeneration()) {
-				JFrame loading = null;
-				try {
-					loading = loadingDialog();
-					loading.setVisible(true);
-					// System.out.println(S);
-					removeMessageGen(ViewConstants.mInteger);
-					Automaton_ multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-					// System.out.println(multgraph);
-					List<String> words = Graph.getWords(multgraph);
-					// System.out.println(StringUtils.join(words, ","));
-					taTestCases_gen.setText(StringUtils.join(words, "\n"));
 
-				} catch (NumberFormatException e) {
-					taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
-				} finally {
-					if (loading != null)
-						loading.dispose();
-				}
+				if (isFormValidGeneration()) {
+					JFrame loading = null;
+					try {
+						loading = loadingDialog();
+						loading.setVisible(true);
+						// System.out.println(S);
+						removeMessageGen(ViewConstants.mInteger);
+						Automaton_ multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+						// System.out.println(multgraph);
+						List<String> words = Graph.getWords(multgraph);
+						// System.out.println(StringUtils.join(words, ","));
+						taTestCases_gen.setText(StringUtils.join(words, "\n"));
+
+					} catch (NumberFormatException e) {
+						taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
+					} finally {
+						if (loading != null)
+							loading.dispose();
+					}
 				}
 			}
 		});
@@ -2142,7 +2142,6 @@ public class ConformanceView extends JFrame {
 			}
 		}
 
-		
 		boolean lts = cbModel.getSelectedItem() == ViewConstants.LTS_CONST;
 
 		if (ioco) {
@@ -2182,7 +2181,7 @@ public class ConformanceView extends JFrame {
 				removeMessage(ioco, ViewConstants.labelInpOut);
 			}
 		}
-		
+
 		boolean ioltsLabel = cbLabel.getSelectedIndex() == 0 && cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST;
 
 		if (!constainsMessage(ioco, ViewConstants.selectIoltsLabel) && ioltsLabel) {
@@ -2263,7 +2262,7 @@ public class ConformanceView extends JFrame {
 					removeMessage(ioco, ViewConstants.selectInpOut);
 				}
 			}
-			
+
 			taWarning_gen.setText(taWarning_gen.getText() + msg);
 		}
 
