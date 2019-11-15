@@ -215,46 +215,45 @@ public class AutGenerator {
 //				}
 //			}
 //		}
-		
-			// alterando modelos da iut adicionando estados, submodelos + estados, alterar o mesmo arquivo da iut
-				int nStateSpec = 100;// 10,50,100
-				int alfabeto = 10;
+
+		// alterando modelos da iut adicionando estados, submodelos + estados, alterar o
+		// mesmo arquivo da iut
+		int nStateSpec = 100;// 10,50,100
+		int alfabeto = 10;
 //				 List<Integer> nStateIUT = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90,
 //				 100, 110, 120, 130, 140, 150, 160, 170,
 //				 180, 190, 200);
-				
+
 //				 List<Integer> nStateIUT = Arrays.asList(60, 70, 80, 90, 100, 110, 120, 130,
 //				 140, 150, 160, 170,
 //				 180, 190, 200);
 
-				List<Integer> nStateIUT = Arrays.asList(110, 120, 130, 140, 150, 160, 170, 180, 190, 200);
-				
-				int nExperimentos = 10;
-				int iutPorExperimento = 10;
-				int percentage = 2;
+		List<Integer> nStateIUT = Arrays.asList(110, 120, 130, 140, 150, 160, 170, 180, 190, 200);
 
-				boolean inputEnabled = true;
+		int nExperimentos = 10;
+		int iutPorExperimento = 10;
+		int percentage = 2;
 
-				for (Integer k : nStateIUT) {
-					System.out.println(">>>>>>>>>>>>> iut: " + k);
-					for (int j = 1; j <= nExperimentos; j++) {
-						System.out.println(">>>> experimento: " + j);
-						for (int i = 0; i < iutPorExperimento; i++) {
-							//System.out.println("> modelo: " + i);
-							generateByNumStatesIocoConf(
-									"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\ioco-n-conf\\2pct\\" + nStateSpec + "states\\alfabeto"
-											+ alfabeto + "\\iut" + k + "\\experimento" + j + "\\iut\\" + percentage
-											+ "pct_iut_"+i+".aut",
-											"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\ioco-n-conf\\2pct\\" + nStateSpec + "states\\alfabeto"
-													+ alfabeto + "\\iut" + k + "\\experimento" + j + "\\iut\\",
-													percentage
-													+ "pct_iut_"+i+"", k, "g", System.currentTimeMillis(), inputEnabled);
-						}
-					}
+		boolean inputEnabled = true;
+
+		for (Integer k : nStateIUT) {
+			System.out.println(">>>>>>>>>>>>> iut: " + k);
+			for (int j = 1; j <= nExperimentos; j++) {
+				System.out.println(">>>> experimento: " + j);
+				for (int i = 0; i < iutPorExperimento; i++) {
+					// System.out.println("> modelo: " + i);
+					generateByNumStatesIocoConf(
+							"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\ioco-n-conf\\2pct\\"
+									+ nStateSpec + "states\\alfabeto" + alfabeto + "\\iut" + k + "\\experimento" + j
+									+ "\\iut\\" + percentage + "pct_iut_" + i + ".aut",
+							"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\ioco-n-conf\\2pct\\"
+									+ nStateSpec + "states\\alfabeto" + alfabeto + "\\iut" + k + "\\experimento" + j
+									+ "\\iut\\",
+							percentage + "pct_iut_" + i + "", k, "g", System.currentTimeMillis(), inputEnabled);
 				}
+			}
+		}
 
-		
-		
 		// for (int j = 0; j < 10; j++) {
 		// generateByPercentage("C:\\Users\\camil\\Desktop\\25-100\\3\\" + nState +
 		// "states_spec.aut",
@@ -376,7 +375,7 @@ public class AutGenerator {
 				iolts.addTransition(transition);
 			}
 
-			//System.out.println("estados: " + iolts.getStates().size());
+			// System.out.println("estados: " + iolts.getStates().size());
 			File file = new File(pathNewFile, autFileName + ".aut");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(ioltsToAut(iolts));
@@ -904,13 +903,21 @@ public class AutGenerator {
 
 		for (Transition_ t : iolts.getTransitions()) {
 			if (iolts.getInputs().contains(t.getLabel())) {
-				aut += "(" + t.getIniState() + "," + Constants.INPUT_TAG + t.getLabel() + "," + t.getEndState() + ")"
-						+ newline;
+				
+					aut += "(" + t.getIniState() + "," + Constants.INPUT_TAG + t.getLabel() + "," + t.getEndState()
+							+ ")" + newline;
+				
 			}
 
 			if (iolts.getOutputs().contains(t.getLabel())) {
-				aut += "(" + t.getIniState() + "," + Constants.OUTPUT_TAG + t.getLabel() + "," + t.getEndState() + ")"
-						+ newline;
+				
+				if (t.getLabel().equals(Constants.DELTA)) {
+					aut += "(" + t.getIniState() + "," + t.getLabel() + "," + t.getEndState() + ")" + newline;
+				} else {
+					aut += "(" + t.getIniState() + "," + Constants.OUTPUT_TAG + t.getLabel() + "," + t.getEndState()
+							+ ")" + newline;
+				}
+
 			}
 
 		}

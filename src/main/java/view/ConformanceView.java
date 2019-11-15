@@ -18,6 +18,7 @@ import algorithm.*;
 import dk.brics.automaton.RegExp;
 import model.*;
 import parser.ImportAutFile;
+import util.AutGenerator;
 import util.Constants;
 import util.ModelImageGenerator;
 
@@ -31,11 +32,18 @@ import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -113,6 +121,8 @@ public class ConformanceView extends JFrame {
 	JLabel lblmodel_gen, lblLabel_gen, lblLabel_g;
 	JLabel lblIut, lblimplementation_gen, lblOutput_gen, lblLabelOutput, imgModel_gen, imgImplementation_gen;
 	JTextArea taTestCases_gen, taWarning_gen;
+	JButton btnSaveTp;
+	JLabel lblNumTC;
 
 	private String pathImplementation = null;
 	private String pathSpecification = null;
@@ -136,6 +146,8 @@ public class ConformanceView extends JFrame {
 
 	private Long lastModifiedSpec;
 	private Long lastModifiedImp;
+	List<String> words;
+	Automaton_ multgraph;
 
 	/**
 	 * Launch the application.
@@ -166,6 +178,9 @@ public class ConformanceView extends JFrame {
 
 		taTestCasesIoco.setText("");
 		taTestCasesLang.setText("");
+
+		lblNumTC.setVisible(false);
+		btnSaveTp.setVisible(false);
 	}
 
 	public void getImplementationPath() {
@@ -1539,11 +1554,19 @@ public class ConformanceView extends JFrame {
 						loading.setVisible(true);
 						// System.out.println(S);
 						removeMessageGen(ViewConstants.mInteger);
-						Automaton_ multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+						multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
 						// System.out.println(multgraph);
-						List<String> words = Graph.getWords(multgraph);
+						words = Graph.getWords(multgraph);
+						
+						words.sort(Comparator.comparing(String::length));
+						
+						
 						// System.out.println(StringUtils.join(words, ","));
 						taTestCases_gen.setText(StringUtils.join(words, "\n"));
+
+						lblNumTC.setVisible(true);
+						lblNumTC.setText("# Test cases: " + words.size());
+						btnSaveTp.setVisible(true);
 
 					} catch (NumberFormatException e) {
 						taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
@@ -1709,6 +1732,57 @@ public class ConformanceView extends JFrame {
 		tfM.setBounds(20, 142, 111, 32);
 		tfM.setText("1");
 		panel_test_generation.add(tfM);
+
+		lblNumTC = new JLabel("# Test cases: ");
+		lblNumTC.setForeground(SystemColor.windowBorder);
+		lblNumTC.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblNumTC.setBounds(318, 146, 287, 14);
+		lblNumTC.setVisible(false);
+		panel_test_generation.add(lblNumTC);
+
+		btnSaveTp = new JButton("Save test purposes");
+		btnSaveTp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFileChooser f = new JFileChooser();
+				f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				f.showSaveDialog(null);
+				IOLTS iolts;
+				File file;
+				int contTp = 0;
+				BufferedWriter writer;
+
+				if (Files.exists(Paths.get(f.getSelectedFile().toString()))) {
+					JFrame loading = loadingDialog();
+					loading.setVisible(true);
+					for (String tc : words) {
+						try {
+							iolts = (TestGeneration.testPurpose(multgraph, tc, S.getOutputs(), S.getInputs()));
+							System.out.println(iolts);
+							
+							
+							
+							file = new File(f.getSelectedFile(), "tp_" + contTp + ".aut");
+							writer = new BufferedWriter(new FileWriter(file));
+							writer.write(AutGenerator.ioltsToAut(iolts));
+							writer.close();
+							contTp++;
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+
+						break;
+					}
+					loading.dispose();
+				}
+			}
+		});
+		btnSaveTp.setFont(new Font("Dialog", Font.BOLD, 13));
+		btnSaveTp.setBackground(Color.LIGHT_GRAY);
+		btnSaveTp.setBounds(625, 130, 167, 44);
+		// btnSaveTp.setVisible(false);
+		panel_test_generation.add(btnSaveTp);
 
 	}
 

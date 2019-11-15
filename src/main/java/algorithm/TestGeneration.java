@@ -96,6 +96,8 @@ public class TestGeneration {
 	}
 
 	public static IOLTS testPurpose(Automaton_ multgraph, String testCase, List<String> li, List<String> lu) {
+		li = new ArrayList<String>(new HashSet(new ArrayList<String>(li)));
+		lu = new ArrayList<String>(new HashSet(new ArrayList<String>(lu)));
 		IOLTS tp = new IOLTS();
 		tp.setInputs(li);
 		tp.setOutputs(lu);
@@ -145,6 +147,11 @@ public class TestGeneration {
 			tp.addTransition(new Transition_(fail, l, fail));
 		}
 
+		//invert inp/out to generate tp
+		List<String> inp = tp.getInputs();
+		tp.setInputs(tp.getOutputs());
+		tp.setOutputs(inp);
+		
 		return tp;
 	}
 
