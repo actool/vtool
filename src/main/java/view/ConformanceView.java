@@ -82,6 +82,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.JRadioButton;
 
 public class ConformanceView extends JFrame {
 	private JComboBox cbModel;
@@ -136,6 +137,7 @@ public class ConformanceView extends JFrame {
 	JTextArea taTestCasesIoco;
 	JPanel panel_conf;
 	JPanel panel_test_generation;
+	JPanel panel_test_execution;
 
 	private SystemColor backgroundColor = SystemColor.menu;
 	private SystemColor labelColor = SystemColor.windowBorder;
@@ -1557,10 +1559,9 @@ public class ConformanceView extends JFrame {
 						multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
 						// System.out.println(multgraph);
 						words = Graph.getWords(multgraph);
-						
+
 						words.sort(Comparator.comparing(String::length));
-						
-						
+
 						// System.out.println(StringUtils.join(words, ","));
 						taTestCases_gen.setText(StringUtils.join(words, "\n"));
 
@@ -1759,9 +1760,7 @@ public class ConformanceView extends JFrame {
 						try {
 							iolts = (TestGeneration.testPurpose(multgraph, tc, S.getOutputs(), S.getInputs()));
 							System.out.println(iolts);
-							
-							
-							
+
 							file = new File(f.getSelectedFile(), "tp_" + contTp + ".aut");
 							writer = new BufferedWriter(new FileWriter(file));
 							writer.write(AutGenerator.ioltsToAut(iolts));
@@ -1784,6 +1783,97 @@ public class ConformanceView extends JFrame {
 		// btnSaveTp.setVisible(false);
 		panel_test_generation.add(btnSaveTp);
 
+		// Panel run test
+		panel_test_execution = new JPanel();
+		tabbedPane.addTab(ViewConstants.tabTestRun, null, panel_test_execution, null);
+		panel_test_execution.setLayout(null);
+		
+		JLabel lblSelectFolderContaining = new JLabel("Folder containing the test purposes");
+		lblSelectFolderContaining.setForeground(SystemColor.windowBorder);
+		lblSelectFolderContaining.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblSelectFolderContaining.setBounds(37, 11, 231, 14);
+		panel_test_execution.add(lblSelectFolderContaining);
+		
+		JRadioButton rdbtnOneIut = new JRadioButton("An implementation");
+		rdbtnOneIut.setBounds(37, 95, 155, 23);
+		rdbtnOneIut.setForeground(SystemColor.windowBorder);
+		rdbtnOneIut.setFont(new Font("Dialog", Font.BOLD, 13));
+		panel_test_execution.add(rdbtnOneIut);
+		
+		JLabel lblImplementation_2 = new JLabel("Run mode");
+		lblImplementation_2.setForeground(SystemColor.windowBorder);
+		lblImplementation_2.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblImplementation_2.setBounds(37, 66, 157, 22);
+		panel_test_execution.add(lblImplementation_2);
+		
+		JRadioButton rdbtnInBatch = new JRadioButton("Implementations in batch");
+		rdbtnInBatch.setForeground(SystemColor.windowBorder);
+		rdbtnInBatch.setFont(new Font("Dialog", Font.BOLD, 13));
+		rdbtnInBatch.setBounds(194, 95, 194, 23);
+		panel_test_execution.add(rdbtnInBatch);
+		
+		textField = new JTextField();
+		textField.setToolTipText("accepts only .aut files");
+		textField.setForeground(SystemColor.controlShadow);
+		textField.setFont(new Font("Dialog", Font.BOLD, 13));
+		textField.setColumns(10);
+		textField.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		textField.setBackground(SystemColor.menu);
+		textField.setBounds(37, 29, 700, 26);
+		panel_test_execution.add(textField);
+		
+		JButton button = new JButton("");
+		button.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
+		button.setOpaque(true);
+		button.setBackground(SystemColor.activeCaptionBorder);
+		button.setBounds(736, 29, 39, 28);
+		panel_test_execution.add(button);
+		
+		lblImplementation_3 = new JLabel("Implementation");
+		lblImplementation_3.setForeground(SystemColor.windowBorder);
+		lblImplementation_3.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblImplementation_3.setBounds(37, 134, 231, 14);
+		panel_test_execution.add(lblImplementation_3);
+		
+		lblImplementationsFolder = new JLabel("Implementations folder");
+		lblImplementationsFolder.setForeground(SystemColor.windowBorder);
+		lblImplementationsFolder.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblImplementationsFolder.setBounds(37, 201, 231, 14);
+		panel_test_execution.add(lblImplementationsFolder);
+		
+		textField_1 = new JTextField();
+		textField_1.setToolTipText("accepts only .aut files");
+		textField_1.setForeground(SystemColor.controlShadow);
+		textField_1.setFont(new Font("Dialog", Font.BOLD, 13));
+		textField_1.setColumns(10);
+		textField_1.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		textField_1.setBackground(SystemColor.menu);
+		textField_1.setBounds(37, 154, 700, 26);
+		panel_test_execution.add(textField_1);
+		
+		textField_2 = new JTextField();
+		textField_2.setToolTipText("accepts only .aut files");
+		textField_2.setForeground(SystemColor.controlShadow);
+		textField_2.setFont(new Font("Dialog", Font.BOLD, 13));
+		textField_2.setColumns(10);
+		textField_2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		textField_2.setBackground(SystemColor.menu);
+		textField_2.setBounds(37, 216, 700, 26);
+		panel_test_execution.add(textField_2);
+		
+		button_1 = new JButton("");
+		button_1.setOpaque(true);
+		button_1.setBackground(SystemColor.activeCaptionBorder);
+		button_1.setBounds(736, 154, 39, 28);
+		button_1.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
+		panel_test_execution.add(button_1);
+		
+		button_2 = new JButton("");
+		button_2.setOpaque(true);
+		button_2.setBackground(SystemColor.activeCaptionBorder);
+		button_2.setBounds(736, 218, 39, 28);
+		button_2.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
+		panel_test_execution.add(button_2);
 	}
 
 	boolean showImplementationImage = true;
@@ -2057,6 +2147,13 @@ public class ConformanceView extends JFrame {
 	private JLabel label_2;
 	private JTextField tfNTestCasesLang;
 	private JTextField tfM;
+	private JTextField textField;
+	private JLabel lblImplementation_3;
+	private JLabel lblImplementationsFolder;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JButton button_1;
+	private JButton button_2;
 
 	public boolean isFormValid(boolean ioco) {
 		boolean defineInpOut = true;
