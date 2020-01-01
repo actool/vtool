@@ -142,9 +142,9 @@ public class RunJTorx {
 			//
 			// }
 
-			// IOCO conf submaquina
+			// IOCO conf submaquina e IOCO not conf com sub maquina
 			String aux;
-			String root = "C:\\ioco-conf\\";
+			String root = "C:\\4pct\\";
 			// int nState = 100;// 50,100,150,200,250
 			boolean stateVariation = true;// state or percentage
 			// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
@@ -158,14 +158,16 @@ public class RunJTorx {
 			String rootPathSaveTS;
 			String ioco = "";// ioco-nao-conf
 		
-//			List<Integer> tamIUTs = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,
-//					170, 180, 190, 200);
-											
-			List<Integer> tamIUTs = Arrays.asList( 110, 120, 130, 140, 150, 160,
-					170, 180, 190, 200);
-
-			List<Integer> states = Arrays.asList(100);// 50,100
+			List<Integer> states = Arrays.asList(30);// 50,100
 			// List<Integer> states = Arrays.asList(10,50,100);
+			
+			List<Integer> tamIUTs = Arrays.asList(30,40,50);
+			//List<Integer> tamIUTs = Arrays.asList( 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,170, 180, 190, 200);	
+											
+//			List<Integer> tamIUTs = Arrays.asList( 110, 120, 130, 140, 150, 160,
+//					170, 180, 190, 200);
+
+			
 			for (Integer nState : states) {
 				String pathCsv = root + nState + "states\\jtorx.csv";
 

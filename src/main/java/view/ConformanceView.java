@@ -16,8 +16,10 @@ import org.apache.commons.lang.StringUtils;
 
 import algorithm.*;
 import dk.brics.automaton.RegExp;
+import javafx.stage.FileChooser;
 import model.*;
 import parser.ImportAutFile;
+import util.AutGenerator;
 import util.Constants;
 import util.ModelImageGenerator;
 
@@ -31,9 +33,13 @@ import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -113,6 +119,9 @@ public class ConformanceView extends JFrame {
 	JLabel lblmodel_gen, lblLabel_gen, lblLabel_g;
 	JLabel lblIut, lblimplementation_gen, lblOutput_gen, lblLabelOutput, imgModel_gen, imgImplementation_gen;
 	JTextArea taTestCases_gen, taWarning_gen;
+	JButton btnSaveTP;
+	List<String> testSuite;
+	Automaton_ multigraph;
 
 	private String pathImplementation = null;
 	private String pathSpecification = null;
@@ -166,6 +175,9 @@ public class ConformanceView extends JFrame {
 
 		taTestCasesIoco.setText("");
 		taTestCasesLang.setText("");
+		
+		btnSaveTP.setVisible(false);
+		taTestCases_gen.setText("");
 	}
 
 	public void getImplementationPath() {
@@ -1213,7 +1225,7 @@ public class ConformanceView extends JFrame {
 
 		panel_ioco.add(imgImplementationIoco);
 
-		btnViewModelIoco = new JButton("view model");
+		btnViewModelIoco = new JButton("View model");
 		btnViewModelIoco.setVisible(false);
 		btnViewModelIoco.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1233,7 +1245,7 @@ public class ConformanceView extends JFrame {
 		btnViewModelIoco.setBounds(113, 5, 154, 26);
 		panel_ioco.add(btnViewModelIoco);
 
-		btnViewImplementationIoco = new JButton("view IUT");
+		btnViewImplementationIoco = new JButton("View IUT");
 		btnViewImplementationIoco.setVerticalAlignment(SwingConstants.BOTTOM);
 		btnViewImplementationIoco.setNextFocusableComponent(tfNTestCasesIOCO);
 		btnViewImplementationIoco.setVisible(false);
@@ -1445,7 +1457,7 @@ public class ConformanceView extends JFrame {
 		imgImplementationLang.setBounds(660, 235, 44, 36);
 		panel_language.add(imgImplementationLang);
 
-		btnViewModelLang = new JButton("view model");
+		btnViewModelLang = new JButton("View model");
 		btnViewModelLang.setVisible(false);
 		btnViewModelLang.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1464,7 +1476,7 @@ public class ConformanceView extends JFrame {
 		btnViewModelLang.setBounds(113, 5, 154, 26);
 		panel_language.add(btnViewModelLang);
 
-		btnViewImplementationLang = new JButton("view IUT");
+		btnViewImplementationLang = new JButton("View IUT");
 		btnViewImplementationLang.setVisible(false);
 		btnViewImplementationLang.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1539,11 +1551,13 @@ public class ConformanceView extends JFrame {
 						loading.setVisible(true);
 						// System.out.println(S);
 						removeMessageGen(ViewConstants.mInteger);
-						Automaton_ multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+						multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
 						// System.out.println(multgraph);
-						List<String> words = Graph.getWords(multgraph);
+						testSuite = Graph.getWords(multigraph);
 						// System.out.println(StringUtils.join(words, ","));
-						taTestCases_gen.setText(StringUtils.join(words, "\n"));
+						taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
+
+						btnSaveTP.setVisible(true);
 
 					} catch (NumberFormatException e) {
 						taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
@@ -1606,7 +1620,7 @@ public class ConformanceView extends JFrame {
 		taTestCases_gen = new JTextArea();
 		taTestCases_gen.setBounds(10, 277, 231, 150);
 		JScrollPane scrolltxt3 = new JScrollPane(taTestCases_gen);
-		scrolltxt3.setBounds(10, 201, 405, 247);
+		scrolltxt3.setBounds(10, 201, 405, 196);
 		panel_test_generation.add(scrolltxt3);
 
 		imgModel_gen = new JLabel("");
@@ -1632,7 +1646,7 @@ public class ConformanceView extends JFrame {
 		imgImplementation_gen.setBounds(660, 235, 44, 36);
 		panel_test_generation.add(imgImplementation_gen);
 
-		btnViewModel_gen = new JButton("view model");
+		btnViewModel_gen = new JButton("View model");
 		btnViewModel_gen.setVisible(false);
 		btnViewModel_gen.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1709,6 +1723,53 @@ public class ConformanceView extends JFrame {
 		tfM.setBounds(20, 142, 111, 32);
 		tfM.setText("1");
 		panel_test_generation.add(tfM);
+
+		btnSaveTP = new JButton("Save test purpose");
+		btnSaveTP.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+
+					JFileChooser fc = new JFileChooser();
+					fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					fc.setAcceptAllFileFilterUsed(false);
+					fc.showOpenDialog(ConformanceView.this);
+
+					// fc.getSelectedFile().getName()
+					String path = fc.getSelectedFile().getAbsolutePath();
+
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+
+					new File(path + "/Tp " + dateFormat.format(new Date())).mkdirs();
+					path = path + "/Tp " + dateFormat.format(new Date());
+					File file;
+					BufferedWriter writer;
+					int count = 0;
+					for (String tc : testSuite) {
+						file = new File(path, "tp" + count + ".aut");
+						writer = new BufferedWriter(new FileWriter(file));
+						writer.write(AutGenerator
+								.ioltsToAut(TestGeneration.testPurpose(multigraph, tc, S.getOutputs(), S.getInputs())));
+						writer.close();
+						System.out.println(TestGeneration.testPurpose(multigraph, tc, S.getOutputs(), S.getInputs()));
+						count++;
+
+						if (count == 4) {
+							break;
+						}
+
+					}
+
+				} catch (Exception e) {
+
+				}
+			}
+		});
+		btnSaveTP.setFont(new Font("Dialog", Font.BOLD, 13));
+		btnSaveTP.setBackground(Color.LIGHT_GRAY);
+		btnSaveTP.setBounds(248, 404, 167, 44);
+		btnSaveTP.setVisible(false);
+		panel_test_generation.add(btnSaveTP);
 
 	}
 

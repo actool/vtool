@@ -97,6 +97,8 @@ public class TestGeneration {
 
 	public static IOLTS testPurpose(Automaton_ multgraph, String testCase, List<String> li, List<String> lu) {
 		IOLTS tp = new IOLTS();
+		li = new ArrayList<>(new HashSet<>(li));
+		lu = new ArrayList<>(new HashSet<>(lu));
 		tp.setInputs(li);
 		tp.setOutputs(lu);
 

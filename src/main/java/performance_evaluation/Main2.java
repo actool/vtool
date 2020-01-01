@@ -27,7 +27,7 @@ import util.AutGenerator;
 public class Main2 {
 
 	public static void main(String[] args) throws Exception {
-		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-100states\\ioco-conf\\";
+		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-50states\\result\\ioco-n-conf\\4pct\\30states\\";
 		String tool = "everest";
 		String path = rootPath+tool+".csv";
 		String COMMA_DELIMITER = ",";
@@ -48,6 +48,8 @@ public class Main2 {
 				values = new ArrayList<String>();
 				values.addAll(Arrays.asList(line.split(COMMA_DELIMITER)));
 
+				
+				
 				//values.add("");//jtorx ioco
 				for (String l : Arrays.asList(values.get(1).replace("\\", "@").split("@"))) {
 					if (l.contains("alfabeto")) {
