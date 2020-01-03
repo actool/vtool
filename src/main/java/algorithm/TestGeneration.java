@@ -1,10 +1,13 @@
 package algorithm;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -17,6 +20,7 @@ import model.State_;
 import model.Transition_;
 import parser.ImportAutFile;
 import util.Constants;
+import view.ConformanceView;
 
 public class TestGeneration {
 
@@ -28,66 +32,71 @@ public class TestGeneration {
 			List<State_> endStates = new ArrayList<>();
 			List<Transition_> endTransitions = new ArrayList<>();
 			iolts.addQuiescentTransitions();
-			//System.out.println(iolts);
-			
-			
+			// System.out.println(iolts);
+
 			Automaton_ multgraph = multiGraphD(iolts, 1);
 
-			//System.out.println(multgraph);//201 transições
+			// System.out.println(multgraph);//201 transições
 
-			//*implementar 
+			// *implementar
 			// get word from multgraph
-			
-//			System.out.println(new Date());
-//			List<String> words = Graph.getWords(multgraph);
-//			System.out.println(new Date());
-////			words = new ArrayList<>(new HashSet<>(words));
-//
-//		//	System.out.println(words.size());
-//			
-//			for (String w : words) {
-//				System.out.println(w);
-//			}
-			
-			
-//			// to decrease the performance of statePath
-//			if (multgraph.getInitialState().getTransitions().size() == 0) {
-//				if (multgraph.getStates().stream().findAny().orElse(null).getTransitions().size() == 0) {
-//					for (Transition_ t : multgraph.getTransitions()) {
-//						multgraph.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null)
-//								.addTransition(t);
-//						t.setIniState(multgraph.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst()
-//								.orElse(null));
-//						t.setEndState(multgraph.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst()
-//								.orElse(null));
-//					}
-//				}
-//				multgraph.setInitialState(multgraph.getStates().stream()
-//						.filter(x -> x.equals(multgraph.getInitialState())).findFirst().orElse(null));
-//			}
-//
-//			List<String> testCases = new ArrayList<>();
-//			// set words to reach final state, because of the modification of the final
-//			// states
-//			for (String w : words) {
-//				for (List<State_> states_ : Operations.statePath(multgraph, w)) {
-//
-//					// endState = states_.get(states_.size()-1);//-1
-//					for (Transition_ t : endTransitions.stream()
-//							.filter(x -> x.getIniState().equals(states_.get(states_.size() - 1)))
-//							.collect(Collectors.toList())) {
-//						testCases.add(w + " -> " + t.getLabel());
-//					}
-//				}
-//			}
-//
-//			// System.out.println(testCases);
-//
-//			for (String tc : testCases) {
-//				System.out.println(testPurpose(multgraph, tc, iolts.getOutputs(), iolts.getInputs()));// "a -> x -> b ->
-//																										// a -> a -> b
-//																										// -> b -> x"
-//			}
+
+			// System.out.println(new Date());
+			// List<String> words = Graph.getWords(multgraph);
+			// System.out.println(new Date());
+			//// words = new ArrayList<>(new HashSet<>(words));
+			//
+			// // System.out.println(words.size());
+			//
+			// for (String w : words) {
+			// System.out.println(w);
+			// }
+
+			// // to decrease the performance of statePath
+			// if (multgraph.getInitialState().getTransitions().size() == 0) {
+			// if
+			// (multgraph.getStates().stream().findAny().orElse(null).getTransitions().size()
+			// == 0) {
+			// for (Transition_ t : multgraph.getTransitions()) {
+			// multgraph.getStates().stream().filter(x ->
+			// x.equals(t.getIniState())).findFirst().orElse(null)
+			// .addTransition(t);
+			// t.setIniState(multgraph.getStates().stream().filter(x ->
+			// x.equals(t.getIniState())).findFirst()
+			// .orElse(null));
+			// t.setEndState(multgraph.getStates().stream().filter(x ->
+			// x.equals(t.getEndState())).findFirst()
+			// .orElse(null));
+			// }
+			// }
+			// multgraph.setInitialState(multgraph.getStates().stream()
+			// .filter(x ->
+			// x.equals(multgraph.getInitialState())).findFirst().orElse(null));
+			// }
+			//
+			// List<String> testCases = new ArrayList<>();
+			// // set words to reach final state, because of the modification of the final
+			// // states
+			// for (String w : words) {
+			// for (List<State_> states_ : Operations.statePath(multgraph, w)) {
+			//
+			// // endState = states_.get(states_.size()-1);//-1
+			// for (Transition_ t : endTransitions.stream()
+			// .filter(x -> x.getIniState().equals(states_.get(states_.size() - 1)))
+			// .collect(Collectors.toList())) {
+			// testCases.add(w + " -> " + t.getLabel());
+			// }
+			// }
+			// }
+			//
+			// // System.out.println(testCases);
+			//
+			// for (String tc : testCases) {
+			// System.out.println(testPurpose(multgraph, tc, iolts.getOutputs(),
+			// iolts.getInputs()));// "a -> x -> b ->
+			// // a -> a -> b
+			// // -> b -> x"
+			// }
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -149,11 +158,11 @@ public class TestGeneration {
 			tp.addTransition(new Transition_(fail, l, fail));
 		}
 
-		//invert inp/out to generate tp
+		// invert inp/out to generate tp
 		List<String> inp = tp.getInputs();
 		tp.setInputs(tp.getOutputs());
 		tp.setOutputs(inp);
-		
+
 		return tp;
 	}
 
@@ -254,5 +263,142 @@ public class TestGeneration {
 		a.setFinalStates(Arrays.asList(new State_[] { fail }));
 
 		return a;
+	}
+
+	public static void runTestWithTP(String tpFolder, boolean oneIut, String pathImplementation, String iutFolder,String pathCsv) {
+		File tpFolderF = new File(tpFolder);
+		File[] listOfTpFiles = tpFolderF.listFiles();
+
+		File iutFolderF;
+		File[] listOfIutFiles;
+		IOLTS tp;
+
+		Automaton_ tpAutomaton;
+		List<String> wordsTp;
+
+		List<List<String>> toSave = new ArrayList<>();
+
+		try {
+			// each tp
+			for (File fileTp : listOfTpFiles) {
+				if (ConformanceView.isAutFile(fileTp)) {
+					tp = ImportAutFile.autToIOLTS(tpFolder + "//" + fileTp.getName(), true, null, null);
+					tpAutomaton = tp.ioltsToAutomaton();
+					tpAutomaton.addFinalStates(new State_("fail"));
+					wordsTp = Graph.getWords(tpAutomaton);
+
+					for (String word : wordsTp) {
+
+						// one iut
+						if (oneIut) {
+							toSave = runIutTp(pathImplementation, word, tpFolder, fileTp);
+
+							saveOnCSVFile(toSave,  pathCsv);
+						} else {
+							// iut in batch
+							if (!oneIut) {
+								iutFolderF = new File(iutFolder);
+								listOfIutFiles = iutFolderF.listFiles();
+
+								// for each iut
+								for (File fileIut : listOfTpFiles) {
+									if (ConformanceView.isAutFile(fileIut)) {
+										toSave = runIutTp(iutFolder + "//" + fileIut.getName(), word, tpFolder, fileTp);
+
+									}
+								}
+
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+
+		}
+	}
+
+	public static List<List<String>> runIutTp(String pathImplementation, String word, String tpFolder, File fileTp) {
+		List<List<String>> toSave = new ArrayList<>();
+		try {
+			IOLTS iut;
+			iut = ImportAutFile.autToIOLTS(pathImplementation, true, null, null);
+			iut.addQuiescentTransitions();
+
+			List<String> partialResult = new ArrayList<>();
+			List<List<State_>> statesPath;
+			statesPath = Operations.statePath(iut, word);
+			for (List<State_> statePath : statesPath) {
+				partialResult = new ArrayList<>();
+				partialResult.add(pathImplementation);
+				partialResult.add(tpFolder + "//" + fileTp.getName());
+				partialResult.add(word);
+				partialResult.add(statePath.toString());
+
+				if (statePath.get(statePath.size() - 1).getName().contains(Constants.NO_TRANSITION)) {
+					// inconclusive
+					partialResult.add(Constants.RUN_VERDICT_INCONCLUSIVE);
+
+				} else {
+					// not conform
+					partialResult.add(Constants.RUN_VERDICT_NON_CONFORM);
+
+				}
+
+				toSave.add(partialResult);
+				
+			}
+		} catch (Exception e) {
+
+		}
+
+		return toSave;
+	}
+
+	public static void saveOnCSVFile(List<List<String>> toSave, String pathCsv) {
+
+		try {
+			pathCsv += "run-result.csv";
+			String delimiterCSV = ",";
+
+			ArrayList<String> headerCSV = new ArrayList<String>();
+			headerCSV.add("iut file");
+			headerCSV.add("tp file");
+			headerCSV.add("test case");
+			headerCSV.add("state path");
+			headerCSV.add("verdict");
+
+			FileWriter csvWriter;
+
+			File file = new File(pathCsv);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			if (new File(pathCsv).length() == 0) {
+				csvWriter = new FileWriter(pathCsv);
+
+				for (String header : headerCSV) {
+					csvWriter.append(header);
+					csvWriter.append(delimiterCSV);
+				}
+				csvWriter.append("\n");
+			} else {
+				csvWriter = new FileWriter(pathCsv, true);
+			}
+
+			for (List<String> row : toSave) {
+				csvWriter.append(String.join(delimiterCSV, row));
+			}
+
+			csvWriter.append("\n");
+			csvWriter.flush();
+			csvWriter.close();
+
+		} catch (Exception e)
+
+		{
+			e.printStackTrace();
+		}
 	}
 }

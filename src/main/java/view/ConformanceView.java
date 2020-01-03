@@ -131,8 +131,6 @@ public class ConformanceView extends JFrame {
 	JButton btnSaveTP;
 	List<String> testSuite;
 	Automaton_ multigraph;
-
-	JButton btnSaveTp;
 	JLabel lblNumTC;
 
 	private String pathImplementation = null;
@@ -195,7 +193,7 @@ public class ConformanceView extends JFrame {
 		taTestCases_gen.setText("");
 
 		lblNumTC.setVisible(false);
-		btnSaveTp.setVisible(false);
+		
 
 	}
 
@@ -1589,8 +1587,7 @@ public class ConformanceView extends JFrame {
 
 						lblNumTC.setVisible(true);
 						lblNumTC.setText("# Test cases: " + words.size());
-						btnSaveTp.setVisible(true);
-
+						
 					} catch (NumberFormatException e) {
 						taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
 					} finally {
@@ -1815,48 +1812,6 @@ public class ConformanceView extends JFrame {
 		lblNumTC.setVisible(false);
 		panel_test_generation.add(lblNumTC);
 
-		btnSaveTp = new JButton("Save test purposes");
-		btnSaveTp.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				JFileChooser f = new JFileChooser();
-				f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				f.showSaveDialog(null);
-				IOLTS iolts;
-				File file;
-				int contTp = 0;
-				BufferedWriter writer;
-
-				if (Files.exists(Paths.get(f.getSelectedFile().toString()))) {
-					JFrame loading = loadingDialog();
-					loading.setVisible(true);
-					for (String tc : words) {
-						try {
-							iolts = (TestGeneration.testPurpose(multgraph, tc, S.getOutputs(), S.getInputs()));
-							System.out.println(iolts);
-
-							file = new File(f.getSelectedFile(), "tp_" + contTp + ".aut");
-							writer = new BufferedWriter(new FileWriter(file));
-							writer.write(AutGenerator.ioltsToAut(iolts));
-							writer.close();
-							contTp++;
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-
-						break;
-					}
-					loading.dispose();
-				}
-			}
-		});
-		btnSaveTp.setFont(new Font("Dialog", Font.BOLD, 13));
-		btnSaveTp.setBackground(Color.LIGHT_GRAY);
-		btnSaveTp.setBounds(625, 130, 167, 44);
-		// btnSaveTp.setVisible(false);
-		panel_test_generation.add(btnSaveTp);
-
 		// Panel run test
 		panel_test_execution = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabTestRun, null, panel_test_execution, null);
@@ -1973,7 +1928,7 @@ public class ConformanceView extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				getIutFolder();
-				
+
 			}
 		});
 		tfFolderIut.setToolTipText("accepts only .aut files");
@@ -2013,30 +1968,37 @@ public class ConformanceView extends JFrame {
 		btnFolderIut.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
 		btnFolderIut.setVisible(false);
 		panel_test_execution.add(btnFolderIut);
-		
+
 		btnRun = new JButton("Run");
+		btnRun.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				TestGeneration.runTestWithTP(tpFolder, rdbtnOneIut.isSelected(), pathImplementation, iutFolder,
+						saveFolderRun);
+			}
+		});
 		btnRun.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnRun.setBackground(Color.LIGHT_GRAY);
 		btnRun.setBounds(232, 347, 167, 44);
 		panel_test_execution.add(btnRun);
-		
+
 		JLabel label_3 = new JLabel("Warnings");
 		label_3.setForeground(SystemColor.windowBorder);
 		label_3.setFont(new Font("Dialog", Font.BOLD, 13));
 		label_3.setBounds(408, 268, 93, 23);
 		panel_test_execution.add(label_3);
-		
+
 		JTextArea textArea = new JTextArea("");
 		textArea.setForeground(SystemColor.controlShadow);
 		textArea.setBounds(409, 291, 366, 157);
 		panel_test_execution.add(textArea);
-		
+
 		lblPathToSave = new JLabel("Save verdicts on");
 		lblPathToSave.setForeground(SystemColor.windowBorder);
 		lblPathToSave.setFont(new Font("Dialog", Font.BOLD, 13));
 		lblPathToSave.setBounds(37, 268, 167, 14);
 		panel_test_execution.add(lblPathToSave);
-		
+
 		tfVerdictSavePath = new JTextField();
 		tfVerdictSavePath.addMouseListener(new MouseAdapter() {
 			@Override
@@ -2052,7 +2014,7 @@ public class ConformanceView extends JFrame {
 		tfVerdictSavePath.setBackground(SystemColor.menu);
 		tfVerdictSavePath.setBounds(37, 291, 322, 26);
 		panel_test_execution.add(tfVerdictSavePath);
-		
+
 		JButton button_1 = new JButton("");
 		button_1.addMouseListener(new MouseAdapter() {
 			@Override
@@ -2065,37 +2027,43 @@ public class ConformanceView extends JFrame {
 		button_1.setBounds(359, 289, 39, 28);
 		button_1.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
 		panel_test_execution.add(button_1);
-		
+
 		clearRadioButtonIut();
 
 	}
 
+	public static boolean isAutFile(File f) {
+		return (f.getName().indexOf(".") != -1 && f.getName().substring(f.getName().indexOf(".")).equals(".aut"));
+	}
+
 	String iutFolder;
+
 	public void getIutFolder() {
 		JFileChooser fc = directoryChooser();
 		fc.showOpenDialog(ConformanceView.this);
 		iutFolder = fc.getSelectedFile().getAbsolutePath();
 		tfFolderIut.setText(fc.getSelectedFile().getName());
 	}
-	
+
 	String saveFolderRun;
+
 	public void getSaveVerdictRun() {
 		JFileChooser fc = directoryChooser();
 		fc.showOpenDialog(ConformanceView.this);
 		saveFolderRun = fc.getSelectedFile().getAbsolutePath();
 		tfVerdictSavePath.setText(fc.getSelectedFile().getName());
 	}
-	
+
 	public void getOneIutPath() {
-		
+
 		try {
 			configFilterFile();
 			fc.showOpenDialog(ConformanceView.this);
-			
+
 			tfOneIut.setText(fc.getSelectedFile().getName());
 			pathImplementation = fc.getSelectedFile().getAbsolutePath();
 			fc.setCurrentDirectory(fc.getSelectedFile().getParentFile());
-			
+
 			lastModifiedImp = new File(pathImplementation).lastModified();
 
 			closeFrame(true);
@@ -2104,18 +2072,18 @@ public class ConformanceView extends JFrame {
 
 		}
 	}
-	
+
 	public void clearRadioButtonIut() {
-		//if (all || (oneIut != null && !oneIut)) {
-			tfFolderIut.setVisible(false);
-			lblFolderIut.setVisible(false);
-			btnFolderIut.setVisible(false);
-		//}
-		//if (all || (oneIut != null && oneIut)) {
-			tfOneIut.setVisible(false);
-			lblOneIut.setVisible(false);
-			btnOneIut.setVisible(false);
-		//}
+		// if (all || (oneIut != null && !oneIut)) {
+		tfFolderIut.setVisible(false);
+		lblFolderIut.setVisible(false);
+		btnFolderIut.setVisible(false);
+		// }
+		// if (all || (oneIut != null && oneIut)) {
+		tfOneIut.setVisible(false);
+		lblOneIut.setVisible(false);
+		btnOneIut.setVisible(false);
+		// }
 	}
 
 	String tpFolder;

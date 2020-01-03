@@ -20,6 +20,9 @@ public class Constants {
 	public static final String EMPTY = "Ø";
 	public static final String COMMA = ",";
 	
+	public static final String RUN_VERDICT_NON_CONFORM = "non conformance";
+	public static final String RUN_VERDICT_INCONCLUSIVE = "inconclusive";
+	
 	public static final String MSG_CONFORM = "IUT conforms to the specification.";
 	public static final String MSG_NOT_CONFORM = "IUT does not conforms to the specification.";
 	
