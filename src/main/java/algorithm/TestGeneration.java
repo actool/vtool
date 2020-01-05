@@ -266,11 +266,35 @@ public class TestGeneration {
 		return a;
 	}
 
-	public static void runTestWithTP(String tpFolder, boolean oneIut, String pathImplementation, String iutFolder,
+	public static void runTestWithTP(String pathTp, boolean oneIut, boolean oneTP, String pathImplementation,
 			String pathCsv) {
-		File tpFolderF = new File(tpFolder);
-		File[] listOfTpFiles = tpFolderF.listFiles();
 
+		if (oneTP) {
+
+			run(new File(pathTp), oneIut, pathImplementation, pathCsv);
+		} else {
+			File tpFolderF = new File(pathTp);
+			File[] listOfTpFiles = tpFolderF.listFiles();
+
+			// each tp
+			for (File fileTp : listOfTpFiles) {
+				if (ConformanceView.isAutFile(fileTp)) {
+					// run( pathTp + "//" + fileTp.getName(), fileTp, oneIut, pathImplementation,
+					// pathCsv);
+					run(fileTp, oneIut, pathImplementation, pathCsv);
+				}
+			}
+
+		}
+
+	}
+
+	public static void run(File fileTp, boolean oneIut, String pathImplementation, String pathCsv) {// String pathTp,
+																									// File fileTp,
+																									// boolean oneIut,
+																									// String
+																									// pathImplementation,
+																									// String pathCsv
 		File iutFolderF;
 		File[] listOfIutFiles;
 		IOLTS tp;
@@ -279,39 +303,50 @@ public class TestGeneration {
 		List<String> wordsTp;
 
 		List<List<String>> toSave = new ArrayList<>();
-
+		List<String> wordsTp_aux = new ArrayList<>();
 		try {
-			// each tp
-			for (File fileTp : listOfTpFiles) {
-				if (ConformanceView.isAutFile(fileTp)) {
-					tp = ImportAutFile.autToIOLTS(tpFolder + "//" + fileTp.getName(), false, new ArrayList<>(), new ArrayList<>());
-					tpAutomaton = tp.ioltsToAutomaton();
-					tpAutomaton.addFinalStates(new State_("fail"));
-					wordsTp = Graph.getWords(tpAutomaton);
 
-					for (String word : wordsTp) {
+			tp = ImportAutFile.autToIOLTS(fileTp.getAbsolutePath(), false, new ArrayList<>(), // pathTp
+					new ArrayList<>());
+			tpAutomaton = tp.ioltsToAutomaton();
+			tpAutomaton.setFinalStates(new ArrayList<>());
+			tpAutomaton.addFinalStates(new State_("fail"));
+			wordsTp = Graph.getWords(tpAutomaton);
+			wordsTp_aux = new ArrayList<>();
 
-						// one iut
-						if (oneIut) {
-							toSave = runIutTp(pathImplementation, word, tpFolder, fileTp);
+			// word selfloop on final states
+			for (Transition_ t : tpAutomaton.transitionsByIniState(new State_("fail"))) {
+				if (t.getIniState().equals(t.getEndState())) {
+					for (String w : wordsTp) {
+						wordsTp_aux.add(w + t.getLabel());
+					}
+				}
+			}
 
-							saveOnCSVFile(toSave, pathCsv);
-						} else {
-							// iut in batch
-							if (!oneIut) {
-								iutFolderF = new File(iutFolder);
-								listOfIutFiles = iutFolderF.listFiles();
+			wordsTp.addAll(wordsTp_aux);
 
-								// for each iut
-								for (File fileIut : listOfTpFiles) {
-									if (ConformanceView.isAutFile(fileIut)) {
-										toSave = runIutTp(iutFolder + "//" + fileIut.getName(), word, tpFolder, fileTp);
+			for (String word : wordsTp) {
 
-									}
-								}
+				// one iut
+				if (oneIut) {
+					toSave = runIutTp(pathImplementation, word, fileTp);// pathTp
+
+					saveOnCSVFile(toSave, pathCsv);
+				} else {
+					// iut in batch
+					if (!oneIut) {
+						iutFolderF = new File(pathImplementation);
+						listOfIutFiles = iutFolderF.listFiles();
+
+						// for each iut
+						for (File fileIut : listOfIutFiles) {
+							if (ConformanceView.isAutFile(fileIut)) {
+								toSave = runIutTp(pathImplementation + "//" + fileIut.getName(), word, fileTp);
+								saveOnCSVFile(toSave, pathCsv);
 
 							}
 						}
+
 					}
 				}
 			}
@@ -320,7 +355,7 @@ public class TestGeneration {
 		}
 	}
 
-	public static List<List<String>> runIutTp(String pathImplementation, String word, String tpFolder, File fileTp) {
+	public static List<List<String>> runIutTp(String pathImplementation, String word, File fileTp) {
 		List<List<String>> toSave = new ArrayList<>();
 		try {
 			IOLTS iut;
@@ -329,15 +364,15 @@ public class TestGeneration {
 
 			List<String> partialResult = new ArrayList<>();
 			List<List<State_>> statesPath;
-			//System.out.println(word);
+			// System.out.println(word);
 			Operations.addTransitionToStates(iut);
 			statesPath = Operations.statePath(iut, word);
 			for (List<State_> statePath : statesPath) {
 				partialResult = new ArrayList<>();
 				partialResult.add(pathImplementation);
-				partialResult.add(tpFolder + "//" + fileTp.getName());
+				partialResult.add(fileTp.getAbsolutePath());
 				partialResult.add(word);
-				partialResult.add(statePath.toString());
+				partialResult.add(statePath.toString().replaceAll(Constants.COMMA, " -> "));
 
 				if (statePath.get(statePath.size() - 1).getName().contains(Constants.NO_TRANSITION)) {
 					// inconclusive
