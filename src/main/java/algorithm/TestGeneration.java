@@ -16,6 +16,7 @@ import org.bridj.util.Pair;
 import model.Automaton_;
 import model.Graph;
 import model.IOLTS;
+import model.LTS;
 import model.State_;
 import model.Transition_;
 import parser.ImportAutFile;
@@ -265,7 +266,8 @@ public class TestGeneration {
 		return a;
 	}
 
-	public static void runTestWithTP(String tpFolder, boolean oneIut, String pathImplementation, String iutFolder,String pathCsv) {
+	public static void runTestWithTP(String tpFolder, boolean oneIut, String pathImplementation, String iutFolder,
+			String pathCsv) {
 		File tpFolderF = new File(tpFolder);
 		File[] listOfTpFiles = tpFolderF.listFiles();
 
@@ -282,7 +284,7 @@ public class TestGeneration {
 			// each tp
 			for (File fileTp : listOfTpFiles) {
 				if (ConformanceView.isAutFile(fileTp)) {
-					tp = ImportAutFile.autToIOLTS(tpFolder + "//" + fileTp.getName(), true, null, null);
+					tp = ImportAutFile.autToIOLTS(tpFolder + "//" + fileTp.getName(), false, new ArrayList<>(), new ArrayList<>());
 					tpAutomaton = tp.ioltsToAutomaton();
 					tpAutomaton.addFinalStates(new State_("fail"));
 					wordsTp = Graph.getWords(tpAutomaton);
@@ -293,7 +295,7 @@ public class TestGeneration {
 						if (oneIut) {
 							toSave = runIutTp(pathImplementation, word, tpFolder, fileTp);
 
-							saveOnCSVFile(toSave,  pathCsv);
+							saveOnCSVFile(toSave, pathCsv);
 						} else {
 							// iut in batch
 							if (!oneIut) {
@@ -314,7 +316,7 @@ public class TestGeneration {
 				}
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 
@@ -322,11 +324,13 @@ public class TestGeneration {
 		List<List<String>> toSave = new ArrayList<>();
 		try {
 			IOLTS iut;
-			iut = ImportAutFile.autToIOLTS(pathImplementation, true, null, null);
+			iut = ImportAutFile.autToIOLTS(pathImplementation, false, null, null);
 			iut.addQuiescentTransitions();
 
 			List<String> partialResult = new ArrayList<>();
 			List<List<State_>> statesPath;
+			//System.out.println(word);
+			Operations.addTransitionToStates(iut);
 			statesPath = Operations.statePath(iut, word);
 			for (List<State_> statePath : statesPath) {
 				partialResult = new ArrayList<>();
@@ -346,10 +350,10 @@ public class TestGeneration {
 				}
 
 				toSave.add(partialResult);
-				
+
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 
 		return toSave;
@@ -358,7 +362,7 @@ public class TestGeneration {
 	public static void saveOnCSVFile(List<List<String>> toSave, String pathCsv) {
 
 		try {
-			pathCsv += "run-result.csv";
+			pathCsv += "\\run-result.csv";
 			String delimiterCSV = ",";
 
 			ArrayList<String> headerCSV = new ArrayList<String>();

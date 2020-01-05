@@ -894,10 +894,11 @@ public class Operations {
 
 			// for each state reached by the word
 			for (List<State_> states : state_path) {
+				
 				// get transitions reached
 				transitions_s = new ArrayList<>(states.get(states.size() - 1).getTransitions().stream()
 						.filter(x -> x.getLabel().equals(word)).collect(Collectors.toList()));
-
+				
 				// if none transition reached, in case of conformance based on language, break
 				if (transitions_s.size() == 0) {
 					aux = new ArrayList<>(states);
@@ -1094,6 +1095,24 @@ public class Operations {
 		}
 
 		I.setInitialState(I.getStates().stream().filter(x -> x.equals(I.getInitialState())).findFirst().orElse(null));
+
+	}
+	
+	public static void addTransitionToStates(LTS S) {
+		// initialize transitions list of each state
+		for (State_ s : S.getStates()) {
+			s.setTransitions(new ArrayList<>());
+		}
+		
+
+		// INI: inserts transitions into states to improve the processing of the
+		// get path from test case
+		for (Transition_ t : S.getTransitions()) {
+			S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null).addTransition(t);
+			t.setIniState(S.getStates().stream().filter(x -> x.equals(t.getIniState())).findFirst().orElse(null));
+			t.setEndState(S.getStates().stream().filter(x -> x.equals(t.getEndState())).findFirst().orElse(null));
+		}
+		S.setInitialState(S.getStates().stream().filter(x -> x.equals(S.getInitialState())).findFirst().orElse(null));
 
 	}
 

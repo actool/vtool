@@ -1036,12 +1036,16 @@ public class AutGenerator {
 
 	public static String ioltsToAut(IOLTS iolts) {
 		String newline = System.getProperty("line.separator");
-		String aut = "des(" + iolts.getInitialState() + "," + iolts.getTransitions().size() + ","
+		String aut = "des(" + iolts.getInitialState().getName().replace(",", "_") + "," + iolts.getTransitions().size() + ","
 				+ iolts.getStates().size() + ")" + newline;
 
 		for (Transition_ t : iolts.getTransitions()) {
+			//if name of states contains COMMA replace to _
+			t.setIniState(new State_(t.getIniState().getName().replace(",", "_")));
+			t.setEndState(new State_(t.getEndState().getName().replace(",", "_")));
+			
 			if (t.getLabel().equals(Constants.DELTA)) {
-				aut += "(" + t.getIniState() + "," + t.getLabel() + "," + t.getEndState() + ")" + newline;
+				aut += "(" + t.getIniState() + "," + Constants.DELTA_TXT + "," + t.getEndState() + ")" + newline;//t.getLabel()
 			} else {
 				if (iolts.getInputs().contains(t.getLabel())) {
 					aut += "(" + t.getIniState() + "," + Constants.INPUT_TAG + t.getLabel() + "," + t.getEndState()

@@ -248,8 +248,13 @@ public class ImportAutFile {
 							if (val[1].trim().equals(Constants.TAU)) {// process tau
 								transition = new Transition_(iniState, Constants.EPSILON, endState);
 							} else {
-								transition = new Transition_(iniState,
-										val[1].trim().substring(1, val[1].trim().length()), endState);
+								if (val[1].trim().equals(Constants.DELTA_TXT)) {
+									transition = new Transition_(iniState, Constants.DELTA, endState);
+								}else {
+									transition = new Transition_(iniState,
+											val[1].trim().substring(1, val[1].trim().length()), endState);
+								}
+								
 
 								if (!hasLabelList) {
 									// if it starts with ! so it's an output symbol
