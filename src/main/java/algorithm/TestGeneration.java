@@ -2,6 +2,7 @@ package algorithm;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -397,7 +398,8 @@ public class TestGeneration {
 	public static void saveOnCSVFile(List<List<String>> toSave, String pathCsv) {
 
 		try {
-			pathCsv += "\\run-result.csv";
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+			pathCsv += "\\run-everest-result "+dateFormat.format(new Date())+".csv";
 			String delimiterCSV = ",";
 
 			ArrayList<String> headerCSV = new ArrayList<String>();

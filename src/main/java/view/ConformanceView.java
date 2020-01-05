@@ -134,6 +134,10 @@ public class ConformanceView extends JFrame {
 	JButton btnSelectTp;
 	JButton btnSelectFolderTP;
 	JRadioButton rdbtnOneTP;
+	JRadioButton rdbtnTPbatch;
+	JTextArea taWarningRun;
+	JRadioButton rdbtnOneIut;
+	JRadioButton rdbtnInBatch;
 
 	JButton btnSaveTP;
 	List<String> testSuite;
@@ -1826,10 +1830,10 @@ public class ConformanceView extends JFrame {
 		lblSelectFolderContaining = new JLabel("Test purposes folder");
 		lblSelectFolderContaining.setForeground(SystemColor.windowBorder);
 		lblSelectFolderContaining.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblSelectFolderContaining.setBounds(426, 70, 231, 14);
+		lblSelectFolderContaining.setBounds(413, 44, 231, 14);
 		panel_test_execution.add(lblSelectFolderContaining);
 
-		JRadioButton rdbtnOneIut = new JRadioButton("An implementation");
+		rdbtnOneIut = new JRadioButton("An implementation");
 		rdbtnOneIut.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -1839,18 +1843,18 @@ public class ConformanceView extends JFrame {
 				btnOneIut.setVisible(true);
 			}
 		});
-		rdbtnOneIut.setBounds(126, 120, 155, 23);
+		rdbtnOneIut.setBounds(243, 120, 155, 23);
 		rdbtnOneIut.setForeground(SystemColor.windowBorder);
 		rdbtnOneIut.setFont(new Font("Dialog", Font.BOLD, 13));
 		panel_test_execution.add(rdbtnOneIut);
 
-		JLabel lblImplementation_2 = new JLabel("Run mode");
+		JLabel lblImplementation_2 = new JLabel("Run mode implementation");
 		lblImplementation_2.setForeground(SystemColor.windowBorder);
 		lblImplementation_2.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblImplementation_2.setBounds(35, 120, 93, 22);
+		lblImplementation_2.setBounds(35, 120, 188, 22);
 		panel_test_execution.add(lblImplementation_2);
 
-		JRadioButton rdbtnInBatch = new JRadioButton("Implementations in batch");
+		rdbtnInBatch = new JRadioButton("Implementations in batch");
 		rdbtnInBatch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -1862,7 +1866,7 @@ public class ConformanceView extends JFrame {
 		});
 		rdbtnInBatch.setForeground(SystemColor.windowBorder);
 		rdbtnInBatch.setFont(new Font("Dialog", Font.BOLD, 13));
-		rdbtnInBatch.setBounds(279, 120, 194, 23);
+		rdbtnInBatch.setBounds(413, 120, 194, 23);
 		panel_test_execution.add(rdbtnInBatch);
 
 		ButtonGroup groupIut = new ButtonGroup();
@@ -1882,7 +1886,7 @@ public class ConformanceView extends JFrame {
 		tfTpFolder.setColumns(10);
 		tfTpFolder.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfTpFolder.setBackground(SystemColor.menu);
-		tfTpFolder.setBounds(426, 83, 311, 26);
+		tfTpFolder.setBounds(413, 69, 324, 26);
 		panel_test_execution.add(tfTpFolder);
 
 		btnSelectFolderTP = new JButton("");
@@ -1895,20 +1899,20 @@ public class ConformanceView extends JFrame {
 		btnSelectFolderTP.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
 		btnSelectFolderTP.setOpaque(true);
 		btnSelectFolderTP.setBackground(SystemColor.activeCaptionBorder);
-		btnSelectFolderTP.setBounds(736, 83, 39, 28);
+		btnSelectFolderTP.setBounds(736, 69, 39, 28);
 		panel_test_execution.add(btnSelectFolderTP);
 
 		lblOneIut = new JLabel("Implementation");
 		lblOneIut.setForeground(SystemColor.windowBorder);
 		lblOneIut.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblOneIut.setBounds(35, 179, 231, 14);
+		lblOneIut.setBounds(35, 163, 231, 14);
 		lblOneIut.setVisible(false);
 		panel_test_execution.add(lblOneIut);
 
 		lblFolderIut = new JLabel("Implementations folder");
 		lblFolderIut.setForeground(SystemColor.windowBorder);
 		lblFolderIut.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblFolderIut.setBounds(426, 179, 231, 14);
+		lblFolderIut.setBounds(413, 163, 231, 14);
 		lblFolderIut.setVisible(false);
 		panel_test_execution.add(lblFolderIut);
 
@@ -1925,7 +1929,7 @@ public class ConformanceView extends JFrame {
 		tfOneIut.setColumns(10);
 		tfOneIut.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfOneIut.setBackground(SystemColor.menu);
-		tfOneIut.setBounds(35, 192, 322, 26);
+		tfOneIut.setBounds(35, 192, 324, 26);
 		tfOneIut.setVisible(false);
 		panel_test_execution.add(tfOneIut);
 
@@ -1943,7 +1947,7 @@ public class ConformanceView extends JFrame {
 		tfFolderIut.setColumns(10);
 		tfFolderIut.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfFolderIut.setBackground(SystemColor.menu);
-		tfFolderIut.setBounds(426, 192, 311, 26);
+		tfFolderIut.setBounds(413, 192, 324, 26);
 		tfFolderIut.setVisible(false);
 		panel_test_execution.add(tfFolderIut);
 
@@ -1979,31 +1983,33 @@ public class ConformanceView extends JFrame {
 		btnRun.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				JFrame loading = loadingDialog();
-				loading.setVisible(true);
+				if (formRunIsValid()) {
+					JFrame loading = loadingDialog();
+					loading.setVisible(true);
 
-				TestGeneration.runTestWithTP(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
-						rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder,
-						saveFolderRun);
+					TestGeneration.runTestWithTP(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
+							rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder,
+							saveFolderRun);
 
-				loading.dispose();
+					loading.dispose();
+				}
 			}
 		});
 		btnRun.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnRun.setBackground(Color.LIGHT_GRAY);
-		btnRun.setBounds(425, 244, 167, 44);
+		btnRun.setBounds(426, 240, 167, 44);
 		panel_test_execution.add(btnRun);
 
 		JLabel label_3 = new JLabel("Warnings");
 		label_3.setForeground(SystemColor.windowBorder);
 		label_3.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_3.setBounds(35, 291, 93, 23);
+		label_3.setBounds(35, 301, 93, 23);
 		panel_test_execution.add(label_3);
 
-		JTextArea textArea = new JTextArea("");
-		textArea.setForeground(SystemColor.controlShadow);
-		textArea.setBounds(31, 313, 375, 135);
-		panel_test_execution.add(textArea);
+		taWarningRun = new JTextArea("");
+		taWarningRun.setForeground(SystemColor.controlShadow);
+		taWarningRun.setBounds(31, 325, 375, 123);
+		panel_test_execution.add(taWarningRun);
 
 		lblPathToSave = new JLabel("Save verdicts on");
 		lblPathToSave.setForeground(SystemColor.windowBorder);
@@ -2024,7 +2030,7 @@ public class ConformanceView extends JFrame {
 		tfVerdictSavePath.setColumns(10);
 		tfVerdictSavePath.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfVerdictSavePath.setBackground(SystemColor.menu);
-		tfVerdictSavePath.setBounds(35, 254, 322, 26);
+		tfVerdictSavePath.setBounds(35, 254, 324, 26);
 		panel_test_execution.add(tfVerdictSavePath);
 
 		JButton button_1 = new JButton("");
@@ -2060,7 +2066,7 @@ public class ConformanceView extends JFrame {
 		tfOneTp.setColumns(10);
 		tfOneTp.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfOneTp.setBackground(SystemColor.menu);
-		tfOneTp.setBounds(37, 83, 322, 26);
+		tfOneTp.setBounds(35, 69, 322, 26);
 		panel_test_execution.add(tfOneTp);
 
 		btnSelectTp = new JButton("");
@@ -2072,15 +2078,15 @@ public class ConformanceView extends JFrame {
 		});
 		btnSelectTp.setOpaque(true);
 		btnSelectTp.setBackground(SystemColor.activeCaptionBorder);
-		btnSelectTp.setBounds(359, 83, 39, 28);
+		btnSelectTp.setBounds(359, 67, 39, 28);
 		btnSelectTp.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
 		panel_test_execution.add(btnSelectTp);
 
-		label_4 = new JLabel("Run mode");
-		label_4.setForeground(SystemColor.windowBorder);
-		label_4.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_4.setBounds(35, 11, 93, 22);
-		panel_test_execution.add(label_4);
+		lblRunModeTest = new JLabel("Run mode test purpose");
+		lblRunModeTest.setForeground(SystemColor.windowBorder);
+		lblRunModeTest.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblRunModeTest.setBounds(35, 11, 167, 22);
+		panel_test_execution.add(lblRunModeTest);
 
 		rdbtnOneTP = new JRadioButton("A test purpose");
 		rdbtnOneTP.addMouseListener(new MouseAdapter() {
@@ -2095,10 +2101,10 @@ public class ConformanceView extends JFrame {
 		});
 		rdbtnOneTP.setForeground(SystemColor.windowBorder);
 		rdbtnOneTP.setFont(new Font("Dialog", Font.BOLD, 13));
-		rdbtnOneTP.setBounds(126, 11, 155, 23);
+		rdbtnOneTP.setBounds(243, 11, 155, 23);
 		panel_test_execution.add(rdbtnOneTP);
 
-		JRadioButton rdbtnTPbatch = new JRadioButton("Test purpose in batch");
+		rdbtnTPbatch = new JRadioButton("Test purpose in batch");
 		rdbtnTPbatch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -2110,7 +2116,7 @@ public class ConformanceView extends JFrame {
 		});
 		rdbtnTPbatch.setForeground(SystemColor.windowBorder);
 		rdbtnTPbatch.setFont(new Font("Dialog", Font.BOLD, 13));
-		rdbtnTPbatch.setBounds(279, 11, 194, 23);
+		rdbtnTPbatch.setBounds(413, 11, 194, 23);
 		panel_test_execution.add(rdbtnTPbatch);
 
 		ButtonGroup groupTp = new ButtonGroup();
@@ -2119,6 +2125,82 @@ public class ConformanceView extends JFrame {
 
 		clearRadioButtonIut();
 		clearRadioButtonTP();
+	}
+
+	public boolean formRunIsValid() {
+		String msg = "";
+
+		if (!(rdbtnOneTP.isSelected() || rdbtnTPbatch.isSelected())) {
+			msg += ViewConstants.selectTpRunMode;
+		} else {
+			removeMessageRunForm(ViewConstants.selectTpRunMode);
+
+			if ((rdbtnOneTP.isSelected() && tfOneTp.getText().isEmpty())
+					|| (rdbtnTPbatch.isSelected() && tfTpFolder.getText().isEmpty())) {
+				if (rdbtnOneTP.isSelected()) {
+					// one tp
+					if (!tfOneTp.getText().isEmpty()) {
+						removeMessageRunForm(ViewConstants.selectOneTp);
+					} else {
+						msg += ViewConstants.selectOneTp;
+					}
+				} else {
+					// tp in batch
+					if (!tfTpFolder.getText().isEmpty()) {
+						removeMessageRunForm(ViewConstants.selectTpFolder);
+					} else {
+						msg += ViewConstants.selectTpFolder;
+					}
+				}
+			} else {
+				removeMessageRunForm(ViewConstants.selectOneTp);
+				removeMessageRunForm(ViewConstants.selectTpFolder);
+			}
+		}
+
+		if (!(rdbtnOneIut.isSelected() || rdbtnInBatch.isSelected())) {
+			msg += ViewConstants.selectIutRunMode;
+
+		} else {
+			removeMessageRunForm(ViewConstants.selectIutRunMode);
+
+			if ((rdbtnOneIut.isSelected() && tfOneIut.getText().isEmpty())
+					|| (rdbtnInBatch.isSelected() && tfFolderIut.getText().isEmpty())) {
+				if (rdbtnOneIut.isSelected()) {
+					// one tp
+					if (!tfOneIut.getText().isEmpty()) {
+						removeMessageRunForm(ViewConstants.selectOneIut);
+					} else {
+						msg += ViewConstants.selectOneIut;
+					}
+				} else {
+					// tp in batch
+					if (!tfFolderIut.getText().isEmpty()) {
+						removeMessageRunForm(ViewConstants.selectIutFolder);
+					} else {
+						msg += ViewConstants.selectIutFolder;
+					}
+				}
+			} else {
+				removeMessageRunForm(ViewConstants.selectOneIut);
+				removeMessageRunForm(ViewConstants.selectIutFolder);
+			}
+
+		}
+
+		if(tfVerdictSavePath.getText().isEmpty()) {
+			msg += ViewConstants.selectPathSaveVerdict;
+		}else {
+			removeMessageRunForm(ViewConstants.selectPathSaveVerdict);
+		}
+		
+		taWarningRun.setText(msg);
+
+		return msg.isEmpty();
+	}
+
+	public void removeMessageRunForm(String msg) {
+		taWarningRun.setText(taWarningRun.getText().replace(msg, ""));
 	}
 
 	String pathTP;
@@ -2505,7 +2587,7 @@ public class ConformanceView extends JFrame {
 	private JLabel lblPathToSave;
 	private JTextField tfVerdictSavePath;
 	private JTextField tfOneTp;
-	private JLabel label_4;
+	private JLabel lblRunModeTest;
 
 	public boolean isFormValid(boolean ioco) {
 		boolean defineInpOut = true;

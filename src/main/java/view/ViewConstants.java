@@ -37,4 +37,15 @@ public class ViewConstants {
 	public static final String selectIolts_gen = "Test generation is defined over IOLTS models \n";//"The informed model must be IOLTS \n";
 	public static final String labelInpOut="There labels that were not set as input/output \n";
 	public static final String mInteger="The parameter max IUT states must be integer \n";
+	
+	public static final String selectTpRunMode = "Select test purpose run mode \n";
+	public static final String selectOneTp= "Select the test purpose \n";
+	public static final String selectTpFolder= "Select test purposes folder \n";
+	
+	public static final String selectIutRunMode = "Select impletation run mode \n";
+	public static final String selectOneIut= "Select the implementation \n";
+	public static final String selectIutFolder= "Select implentation folder\n";
+	
+	public static final String selectPathSaveVerdict= "Select the path to save the verdict \n";
+	
 }
