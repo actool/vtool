@@ -22,7 +22,7 @@ import model.State_;
 import model.Transition_;
 import parser.ImportAutFile;
 import util.Constants;
-import view.ConformanceView;
+import view.EverestView;
 
 public class TestGeneration {
 
@@ -267,22 +267,22 @@ public class TestGeneration {
 		return a;
 	}
 
-	public static void runTestWithTP(String pathTp, boolean oneIut, boolean oneTP, String pathImplementation,
+	public static void run(String pathTp, boolean oneIut, boolean oneTP, String pathIut,
 			String pathCsv) {
 
 		if (oneTP) {
 
-			run(new File(pathTp), oneIut, pathImplementation, pathCsv);
+			runAllIutTp(new File(pathTp), oneIut, pathIut, pathCsv);
 		} else {
 			File tpFolderF = new File(pathTp);
 			File[] listOfTpFiles = tpFolderF.listFiles();
 
 			// each tp
 			for (File fileTp : listOfTpFiles) {
-				if (ConformanceView.isAutFile(fileTp)) {
+				if (EverestView.isAutFile(fileTp)) {
 					// run( pathTp + "//" + fileTp.getName(), fileTp, oneIut, pathImplementation,
 					// pathCsv);
-					run(fileTp, oneIut, pathImplementation, pathCsv);
+					runAllIutTp(fileTp, oneIut, pathIut, pathCsv);
 				}
 			}
 
@@ -290,7 +290,7 @@ public class TestGeneration {
 
 	}
 
-	public static void run(File fileTp, boolean oneIut, String pathImplementation, String pathCsv) {// String pathTp,
+	public static void runAllIutTp(File fileTp, boolean oneIut, String pathIut, String pathCsv) {// String pathTp,
 																									// File fileTp,
 																									// boolean oneIut,
 																									// String
@@ -330,19 +330,19 @@ public class TestGeneration {
 
 				// one iut
 				if (oneIut) {
-					toSave = runIutTp(pathImplementation, word, fileTp);// pathTp
+					toSave = runIutTp(pathIut, word, fileTp);// pathTp
 
 					saveOnCSVFile(toSave, pathCsv);
 				} else {
 					// iut in batch
 					if (!oneIut) {
-						iutFolderF = new File(pathImplementation);
+						iutFolderF = new File(pathIut);
 						listOfIutFiles = iutFolderF.listFiles();
 
 						// for each iut
 						for (File fileIut : listOfIutFiles) {
-							if (ConformanceView.isAutFile(fileIut)) {
-								toSave = runIutTp(pathImplementation + "//" + fileIut.getName(), word, fileTp);
+							if (EverestView.isAutFile(fileIut)) {
+								toSave = runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp);
 								saveOnCSVFile(toSave, pathCsv);
 
 							}
@@ -356,11 +356,11 @@ public class TestGeneration {
 		}
 	}
 
-	public static List<List<String>> runIutTp(String pathImplementation, String word, File fileTp) {
+	public static List<List<String>> runIutTp(String pathIut, String word, File fileTp) {
 		List<List<String>> toSave = new ArrayList<>();
 		try {
 			IOLTS iut;
-			iut = ImportAutFile.autToIOLTS(pathImplementation, false, null, null);
+			iut = ImportAutFile.autToIOLTS(pathIut, false, null, null);
 			iut.addQuiescentTransitions();
 
 			List<String> partialResult = new ArrayList<>();
@@ -370,7 +370,7 @@ public class TestGeneration {
 			statesPath = Operations.statePath(iut, word);
 			for (List<State_> statePath : statesPath) {
 				partialResult = new ArrayList<>();
-				partialResult.add(pathImplementation);
+				partialResult.add(pathIut);
 				partialResult.add(fileTp.getAbsolutePath());
 				partialResult.add(word);
 				partialResult.add(statePath.toString().replaceAll(Constants.COMMA, " -> "));

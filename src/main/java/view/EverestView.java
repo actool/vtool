@@ -89,7 +89,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.JRadioButton;
 
-public class ConformanceView extends JFrame {
+public class EverestView extends JFrame {
 	private JComboBox cbModel;
 	private JComboBox cbLabel;
 	private JLabel lblImplementation;
@@ -177,7 +177,7 @@ public class ConformanceView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ConformanceView frame = new ConformanceView();
+					EverestView frame = new EverestView();
 					frame.setResizable(false);
 					frame.setVisible(true);
 
@@ -212,7 +212,7 @@ public class ConformanceView extends JFrame {
 		cleanVeredict();
 		try {
 			configFilterFile();
-			fc.showOpenDialog(ConformanceView.this);
+			fc.showOpenDialog(EverestView.this);
 			tfImplementation.setText(fc.getSelectedFile().getName());
 			pathImplementation = fc.getSelectedFile().getAbsolutePath();
 			fc.setCurrentDirectory(fc.getSelectedFile().getParentFile());
@@ -259,7 +259,7 @@ public class ConformanceView extends JFrame {
 		cleanVeredict();
 		try {
 			configFilterFile();
-			fc.showOpenDialog(ConformanceView.this);
+			fc.showOpenDialog(EverestView.this);
 			tfSpecification.setText(fc.getSelectedFile().getName());
 			pathSpecification = fc.getSelectedFile().getAbsolutePath();
 			lblmodelIoco.setText(tfSpecification.getText());
@@ -822,7 +822,7 @@ public class ConformanceView extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ConformanceView() {
+	public EverestView() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/icon.PNG")));
 		setTitle(ViewConstants.toolName);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1770,7 +1770,7 @@ public class ConformanceView extends JFrame {
 				JFrame loading = loadingDialog();
 				try {
 					JFileChooser fc = directoryChooser();
-					fc.showOpenDialog(ConformanceView.this);
+					fc.showOpenDialog(EverestView.this);
 
 					loading.setVisible(true);
 
@@ -1987,7 +1987,7 @@ public class ConformanceView extends JFrame {
 					JFrame loading = loadingDialog();
 					loading.setVisible(true);
 
-					TestGeneration.runTestWithTP(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
+					TestGeneration.run(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
 							rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder,
 							saveFolderRun);
 
@@ -2209,7 +2209,7 @@ public class ConformanceView extends JFrame {
 
 		try {
 			configFilterFile();
-			fc.showOpenDialog(ConformanceView.this);
+			fc.showOpenDialog(EverestView.this);
 
 			tfOneTp.setText(fc.getSelectedFile().getName());
 			pathTP = fc.getSelectedFile().getAbsolutePath();
@@ -2243,7 +2243,7 @@ public class ConformanceView extends JFrame {
 
 	public void getIutFolder() {
 		JFileChooser fc = directoryChooser();
-		fc.showOpenDialog(ConformanceView.this);
+		fc.showOpenDialog(EverestView.this);
 		iutFolder = fc.getSelectedFile().getAbsolutePath();
 		tfFolderIut.setText(fc.getSelectedFile().getName());
 	}
@@ -2252,7 +2252,7 @@ public class ConformanceView extends JFrame {
 
 	public void getSaveVerdictRun() {
 		JFileChooser fc = directoryChooser();
-		fc.showOpenDialog(ConformanceView.this);
+		fc.showOpenDialog(EverestView.this);
 		saveFolderRun = fc.getSelectedFile().getAbsolutePath();
 		tfVerdictSavePath.setText(fc.getSelectedFile().getName());
 	}
@@ -2261,7 +2261,7 @@ public class ConformanceView extends JFrame {
 
 		try {
 			configFilterFile();
-			fc.showOpenDialog(ConformanceView.this);
+			fc.showOpenDialog(EverestView.this);
 
 			tfOneIut.setText(fc.getSelectedFile().getName());
 			pathImplementation = fc.getSelectedFile().getAbsolutePath();
@@ -2293,7 +2293,7 @@ public class ConformanceView extends JFrame {
 
 	public void selectTPsFolder() {
 		JFileChooser fc = directoryChooser();
-		fc.showOpenDialog(ConformanceView.this);
+		fc.showOpenDialog(EverestView.this);
 		tpFolder = fc.getSelectedFile().getAbsolutePath();
 		tfTpFolder.setText(fc.getSelectedFile().getName());
 	}
@@ -2462,10 +2462,10 @@ public class ConformanceView extends JFrame {
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			failPath = "";
 			conformidade = IocoConformance.verifyIOCOConformance(S, I, Integer.parseInt(tfNTestCasesIOCO.getText()));
-			if (conformidade.getFinalStates().size() > 0) {
+			//if (conformidade.getFinalStates().size() > 0) {
 				failPath = Operations.path(S, I, conformidade, true, false,
 						Integer.parseInt(tfNTestCasesIOCO.getText()));
-			}
+			//}
 		}
 
 	}
@@ -2517,7 +2517,7 @@ public class ConformanceView extends JFrame {
 
 				if (regexIsValid(D) && regexIsValid(F)) {
 					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F,
-							Integer.parseInt(tfNTestCasesLang.getText()));
+							Integer.MAX_VALUE);//Integer.parseInt(tfNTestCasesLang.getText())
 					if (conformidade.getFinalStates().size() > 0) {
 						failPath = Operations.path(S_, I_, conformidade, false, false,
 								Integer.parseInt(tfNTestCasesLang.getText()));
