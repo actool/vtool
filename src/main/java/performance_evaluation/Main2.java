@@ -10,12 +10,15 @@ import java.io.InputStreamReader;
 import java.rmi.server.Operation;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.tinkerpop.blueprints.Graph;
 
 import algorithm.Operations;
+import dk.brics.automaton.Automaton;
+import dk.brics.automaton.RegExp;
 import model.Automaton_;
 import model.IOLTS;
 import model.State_;
@@ -23,57 +26,90 @@ import model.Transition_;
 import parser.ImportAutFile;
 import parser.ImportGraphmlFile;
 import util.AutGenerator;
+import util.Constants;
 
 public class Main2 {
 
 	public static void main(String[] args) throws Exception {
-		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-50states\\result\\ioco-n-conf\\4pct\\30states\\";
-		String tool = "everest";
-		String path = rootPath+tool+".csv";
-		String COMMA_DELIMITER = ",";
-		boolean states;
-		String alfabeto, experimento;
-		List<String> values;
-		String header = "";
+		
+		String regex = "(a|b|x)*"+Constants.DELTA;
+		RegExp regExp = new RegExp(regex, RegExp.ALL);
+		Automaton automaton = regExp.toAutomaton();
+		System.err.println("["+regex+"]");
+		System.out.println(automaton);
+		
+		Map<String, String> map = new HashMap<String, String>();
+		List<String> alphabet = new ArrayList<>();
+		alphabet.add("a");
+		alphabet.add("b");
+		alphabet.add("x");
+		alphabet.add(Constants.DELTA);
+		
+		for (int i = 0; i < alphabet.size(); i++) {
+			map.put(Character.toString(Constants.ALPHABET_[i]), alphabet.get(i));
 
-		List<List<String>> records = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-			String line;
-			header = br.readLine();// pula cabeçalho
-			header += "alphabet" + COMMA_DELIMITER + "experiment";
-			records.add(Arrays.asList(header.split(COMMA_DELIMITER)));
-			while ((line = br.readLine()) != null) {
-				alfabeto = "";
-				experimento = "";
-				values = new ArrayList<String>();
-				values.addAll(Arrays.asList(line.split(COMMA_DELIMITER)));
-
-				
-				
-				//values.add("");//jtorx ioco
-				for (String l : Arrays.asList(values.get(1).replace("\\", "@").split("@"))) {
-					if (l.contains("alfabeto")) {
-						String s = (l.replace("alfabeto", ""));
-						values.add(s);
-					}
-
-					if (l.contains("experimento")) {
-						values.add(l.replace("experimento", ""));
-					}
-				}
-				records.add(values);
-
-			}
 		}
+		System.out.println(map);
 
-		FileWriter csvWriter = new FileWriter(rootPath+"new-"+tool+".csv");
-		for (List<String> rowData : records) {
-			csvWriter.append(String.join(COMMA_DELIMITER, rowData));
-			csvWriter.append("\n");
+		
+		for (int i = 0; i < alphabet.size(); i++) {
+			if (!alphabet.get(i).equals(Constants.DELTA))
+			regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET_[i]));
 		}
-
-		csvWriter.flush();
-		csvWriter.close();
+		
+		regExp = new RegExp(regex, RegExp.ALL);
+		 automaton = regExp.toAutomaton();
+		
+		 System.err.println("["+regex+"]");
+		System.out.println(automaton);
+		
+//		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-50states\\result\\ioco-n-conf\\4pct\\30states\\";
+//		String tool = "everest";
+//		String path = rootPath+tool+".csv";
+//		String COMMA_DELIMITER = ",";
+//		boolean states;
+//		String alfabeto, experimento;
+//		List<String> values;
+//		String header = "";
+//
+//		List<List<String>> records = new ArrayList<>();
+//		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+//			String line;
+//			header = br.readLine();// pula cabeçalho
+//			header += "alphabet" + COMMA_DELIMITER + "experiment";
+//			records.add(Arrays.asList(header.split(COMMA_DELIMITER)));
+//			while ((line = br.readLine()) != null) {
+//				alfabeto = "";
+//				experimento = "";
+//				values = new ArrayList<String>();
+//				values.addAll(Arrays.asList(line.split(COMMA_DELIMITER)));
+//
+//				
+//				
+//				//values.add("");//jtorx ioco
+//				for (String l : Arrays.asList(values.get(1).replace("\\", "@").split("@"))) {
+//					if (l.contains("alfabeto")) {
+//						String s = (l.replace("alfabeto", ""));
+//						values.add(s);
+//					}
+//
+//					if (l.contains("experimento")) {
+//						values.add(l.replace("experimento", ""));
+//					}
+//				}
+//				records.add(values);
+//
+//			}
+//		}
+//
+//		FileWriter csvWriter = new FileWriter(rootPath+"new-"+tool+".csv");
+//		for (List<String> rowData : records) {
+//			csvWriter.append(String.join(COMMA_DELIMITER, rowData));
+//			csvWriter.append("\n");
+//		}
+//
+//		csvWriter.flush();
+//		csvWriter.close();
 		
 		
 //		String path = "C:\\Users\\camil\\Desktop\\ab.aut";

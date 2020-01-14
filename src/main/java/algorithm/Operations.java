@@ -439,12 +439,13 @@ public class Operations {
 
 		}
 
-		for (int i = 0; i < alphabet.size(); i++) {
+		for (int i = 0; i < alphabet.size(); i++) {	
+			if(alphabet.get(i).length() > 1)
 			regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET_[i]));
 		}
 
 		// regex to automaton
-		RegExp regExp = new RegExp(regex, RegExp.EMPTY);
+		RegExp regExp = new RegExp(regex, RegExp.ALL);
 		Automaton automaton = regExp.toAutomaton();
 
 		Automaton_ automatonBrics = automatonBricsInAutomaton_(automaton, tag, map);
@@ -1213,9 +1214,13 @@ public class Operations {
 			for (Transition t : transitions) {
 				// add transition to automaton_
 				for (Transition_ transition : getBricsTransition(iniState, t, tag)) {
-					// automaton.addTransition(transition);
+					//automaton.addTransition(transition);
+					if(transition.getLabel().length() > 1 && !transition.getLabel().contains(Constants.DELTA_UNICODE_n)) {
 					automaton.addTransition(new Transition_(transition.getIniState(), map.get(transition.getLabel()),
 							transition.getEndState()));
+					}else {
+						automaton.addTransition(transition);
+					}
 				}
 			}
 		}
