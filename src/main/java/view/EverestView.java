@@ -2458,13 +2458,25 @@ public class EverestView extends JFrame {
 
 	public void iocoConformance() {
 		conformidade = null;
+		int nTestCase = Integer.MAX_VALUE;
+		
+		if(!tfNTestCasesIOCO.getText().isEmpty()) {
+			try {
+				nTestCase = Integer.parseInt(tfNTestCasesIOCO.getText());
+				
+			}catch (Exception e) {
+				nTestCase = Integer.MAX_VALUE;
+			}
+		}else {
+			nTestCase = 0;
+		}
 
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			failPath = "";
-			conformidade = IocoConformance.verifyIOCOConformance(S, I, Integer.parseInt(tfNTestCasesIOCO.getText()));
+			conformidade = IocoConformance.verifyIOCOConformance(S, I, nTestCase);
 			//if (conformidade.getFinalStates().size() > 0) {
 				failPath = Operations.path(S, I, conformidade, true, false,
-						Integer.parseInt(tfNTestCasesIOCO.getText()));
+						nTestCase);
 			//}
 		}
 
@@ -2516,11 +2528,24 @@ public class EverestView extends JFrame {
 				String F = tfF.getText();
 
 				if (regexIsValid(D) && regexIsValid(F)) {
+					int nTestCase = Integer.MAX_VALUE;
+					if(!tfNTestCasesLang.getText().isEmpty()) {
+						try {
+							nTestCase = Integer.parseInt(tfNTestCasesLang.getText());
+
+						}catch (Exception e) {
+							nTestCase = Integer.MAX_VALUE;
+						}
+					}else {
+						nTestCase = 0;
+					}
+					
+					
+					
 					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F,
 							Integer.MAX_VALUE);//Integer.parseInt(tfNTestCasesLang.getText())
 					if (conformidade.getFinalStates().size() > 0) {
-						failPath = Operations.path(S_, I_, conformidade, false, false,
-								Integer.parseInt(tfNTestCasesLang.getText()));
+						failPath = Operations.path(S_, I_, conformidade, false, false,nTestCase);
 					} else {
 						failPath = "";
 					}

@@ -439,9 +439,9 @@ public class Operations {
 
 		}
 
-		for (int i = 0; i < alphabet.size(); i++) {	
-			if(alphabet.get(i).length() > 1)
-			regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET_[i]));
+		for (int i = 0; i < alphabet.size(); i++) {
+			if (alphabet.get(i).length() > 1)
+				regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET_[i]));
 		}
 
 		// regex to automaton
@@ -480,7 +480,6 @@ public class Operations {
 	 * @return all words that reach the final states
 	 */
 	public static List<String> getAllWordsFromAutomaton(Automaton_ a, boolean ioco) {// , int nTestCases
-		
 
 		String word = "";
 		String tagWord = " , ";
@@ -573,8 +572,8 @@ public class Operations {
 		}
 
 		word = "";
-		 for (State_ e : a.getStates()) {//end:
-			
+		for (State_ e : a.getStates()) {// end:
+
 			if (a.getFinalStates().contains(e)) {
 				if (e.getInfo() != null) {
 					aux = e.getInfo().split(tagWord);
@@ -588,10 +587,11 @@ public class Operations {
 							}
 						}
 						words.add(word);
-//						System.out.println(word);
-//						if (words.size() == nTestCases + (nTestCases < 15 ? (nTestCases * 2) : (nTestCases / 4))) {// Constants.MAX_TEST_CASES
-//							break end;
-//						}
+						// System.out.println(word);
+						// if (words.size() == nTestCases + (nTestCases < 15 ? (nTestCases * 2) :
+						// (nTestCases / 4))) {// Constants.MAX_TEST_CASES
+						// break end;
+						// }
 					}
 					// } else {
 					// // catch smaller word
@@ -611,7 +611,6 @@ public class Operations {
 			}
 		}
 
-	
 		return (new ArrayList<>(new HashSet<>(words)));
 	}
 
@@ -1053,17 +1052,19 @@ public class Operations {
 
 		List<String> testCases;
 
-		//##################### SAME TS JTORX - ini  
-		//testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
-		//##################### SAME TS JTORX - end
-		
-		//OR  ********
-		
-		//##################### TRANSITION COVER - ini
-		testCases = getAllWordsFromAutomaton(faultModel, ioco);
-		nTestCases = Integer.MAX_VALUE;
-		//##################### TRANSITION COVER - end
-		
+		int ntc = nTestCases+ (nTestCases <15? (nTestCases*2): (nTestCases/4));
+		if (nTestCases != 0) {
+			// ##################### SAME TS JTORX - ini
+			testCases = getWordsFromAutomaton(faultModel, ioco, ntc);
+			// ##################### SAME TS JTORX - end
+		} else {
+			// OR ********
+
+			// ##################### TRANSITION COVER - ini
+			testCases = getAllWordsFromAutomaton(faultModel, ioco);
+			nTestCases = Integer.MAX_VALUE;
+			// ##################### TRANSITION COVER - end
+		}
 
 		String path = path(iolts_s, iolts_i, ioco, testCases, nTestCases);
 		iolts_s = null;
@@ -1140,46 +1141,47 @@ public class Operations {
 
 			IOLTS automatonIOLTS = faultModel.toIOLTS(S.getInputs(), S.getOutputs());
 			automatonIOLTS.addQuiescentTransitions();
-			 states = faultModel.getFinalStates();
+			states = faultModel.getFinalStates();
 			faultModel = automatonIOLTS.ltsToAutomaton();
-			
 
-			
-			//##################### SAME TS JTORX - ini
-			//// for generate same test suite that JTorx to IOCO, set final states from fault
-			//// model.
-			//states = new ArrayList<>();
-			//			for (Transition_ t : faultModel.getTransitions()) {
-			//				if (faultModel.getFinalStates().contains(t.getEndState())) {
-			//					states.add(t.getIniState());
-			//				}
-			//			}
-			//			faultModel.setFinalStates(states);
-			// testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);			
-			//##################### SAME TS JTORX - end
-			
-			//OR ********
-			
-			//##################### TRANSITION COVER - ini
-			//faultModel.setFinalStates(states);
-			testCases = getAllWordsFromAutomaton(faultModel, ioco);// transitionCoverSpec	
-			nTestCases = Integer.MAX_VALUE;
-			//##################### TRANSITION COVER - ini
-			
-			
+			if (nTestCases != 0) {
+				// ##################### SAME TS JTORX - ini
+				// for generate same test suite that JTorx to IOCO, set final states from
+				// fault
+				// model.
+				states = new ArrayList<>();
+				for (Transition_ t : faultModel.getTransitions()) {
+					if (faultModel.getFinalStates().contains(t.getEndState())) {
+						states.add(t.getIniState());
+					}
+				}
+				faultModel.setFinalStates(states);
+				testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
+				// ##################### SAME TS JTORX - end
+			} else {
+				// OR ********
+
+				// ##################### TRANSITION COVER - ini
+				// faultModel.setFinalStates(states);
+				testCases = getAllWordsFromAutomaton(faultModel, ioco);// transitionCoverSpec
+				nTestCases = Integer.MAX_VALUE;
+				// ##################### TRANSITION COVER - ini
+			}
+
 			automatonIOLTS = null;
 		} else {
-			//##################### SAME TS JTORX - ini
-			// testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
-			//##################### SAME TS JTORX - end
-			
-			//OR  ********
-			
-			//##################### TRANSITION COVER - ini
-			testCases = getAllWordsFromAutomaton(faultModel, ioco);
-			nTestCases = Integer.MAX_VALUE;
-			//##################### TRANSITION COVER - ini
+			if (nTestCases != 0) {
+				// ##################### SAME TS JTORX - ini
+				testCases = getWordsFromAutomaton(faultModel, ioco, nTestCases);
+				// ##################### SAME TS JTORX - end
+			} else {
+				// OR ********
 
+				// ##################### TRANSITION COVER - ini
+				testCases = getAllWordsFromAutomaton(faultModel, ioco);
+				nTestCases = Integer.MAX_VALUE;
+				// ##################### TRANSITION COVER - ini
+			}
 		}
 
 		return path(S, I, ioco, testCases, nTestCases);
@@ -1214,11 +1216,12 @@ public class Operations {
 			for (Transition t : transitions) {
 				// add transition to automaton_
 				for (Transition_ transition : getBricsTransition(iniState, t, tag)) {
-					//automaton.addTransition(transition);
-					if(transition.getLabel().length() > 1 && !transition.getLabel().contains(Constants.DELTA_UNICODE_n)) {
-					automaton.addTransition(new Transition_(transition.getIniState(), map.get(transition.getLabel()),
-							transition.getEndState()));
-					}else {
+					// automaton.addTransition(transition);
+					if (transition.getLabel().length() > 1
+							&& !transition.getLabel().contains(Constants.DELTA_UNICODE_n)) {
+						automaton.addTransition(new Transition_(transition.getIniState(),
+								map.get(transition.getLabel()), transition.getEndState()));
+					} else {
 						automaton.addTransition(transition);
 					}
 				}
