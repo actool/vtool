@@ -265,7 +265,7 @@ public class Operations {
 	 *            automaton
 	 * @return automaton result of the intersection between the automata Q and S
 	 */
-	public static Automaton_ intersection(Automaton_ Q, Automaton_ S, Integer nTestCases) {
+	public static Automaton_ intersection(Automaton_ Q, Automaton_ S) {//Integer nTestCases
 		// nFinalState=Integer.MAX_VALUE;
 
 		// intersection automato
@@ -343,11 +343,10 @@ public class Operations {
 									&& Q.getFinalStates().contains(new State_(endStateQ.getName()))) {
 								Ar.addFinalStates(synchronized_);
 
-								// if (nFinalState != null && Ar.getFinalStates().size() == nFinalState +
-								// (nFinalState < 15 ? (nFinalState * 3) : (nFinalState / 4))) {
-								if (nTestCases != null && Ar.getFinalStates().size() >= nTestCases) {
-									break endIntersection;
-								}
+								
+//								if (nTestCases != null && Ar.getFinalStates().size() >= nTestCases) {
+//									break endIntersection;
+//								}
 
 							}
 

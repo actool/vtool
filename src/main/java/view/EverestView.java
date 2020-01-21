@@ -1754,13 +1754,13 @@ public class EverestView extends JFrame {
 		panel_test_generation.add(lblM);
 
 		tfM = new JTextField();
+		tfM.setText("1");
 		tfM.setForeground(SystemColor.controlShadow);
 		tfM.setFont(new Font("Dialog", Font.BOLD, 13));
 		tfM.setColumns(10);
 		tfM.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfM.setBackground(SystemColor.menu);
 		tfM.setBounds(20, 142, 111, 32);
-		tfM.setText("1");
 		panel_test_generation.add(tfM);
 
 		btnSaveTP = new JButton("Save test purpose");
@@ -2473,7 +2473,7 @@ public class EverestView extends JFrame {
 
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			failPath = "";
-			conformidade = IocoConformance.verifyIOCOConformance(S, I, nTestCase);
+			conformidade = IocoConformance.verifyIOCOConformance(S, I);//, nTestCase
 			//if (conformidade.getFinalStates().size() > 0) {
 				failPath = Operations.path(S, I, conformidade, true, false,
 						nTestCase);
@@ -2542,8 +2542,7 @@ public class EverestView extends JFrame {
 					
 					
 					
-					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F,
-							Integer.MAX_VALUE);//Integer.parseInt(tfNTestCasesLang.getText())
+					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);//,Integer.MAX_VALUE
 					if (conformidade.getFinalStates().size() > 0) {
 						failPath = Operations.path(S_, I_, conformidade, false, false,nTestCase);
 					} else {

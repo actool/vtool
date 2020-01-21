@@ -17,7 +17,6 @@ import org.bridj.util.Pair;
 import model.Automaton_;
 import model.Graph;
 import model.IOLTS;
-import model.LTS;
 import model.State_;
 import model.Transition_;
 import parser.ImportAutFile;

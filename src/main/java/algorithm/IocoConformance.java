@@ -41,7 +41,7 @@ public class IocoConformance {
 	 *            IOLTS implementation
 	 * @return
 	 */
-	public static Automaton_ verifyIOCOConformance(IOLTS S, IOLTS I, int nTestCases) {
+	public static Automaton_ verifyIOCOConformance(IOLTS S, IOLTS I) {//, int nTestCases
 		// set alphabet from models
 		S.setAlphabet(new ArrayList<>(new LinkedHashSet<>(ListUtils.union(I.getAlphabet(),S.getAlphabet()))));
 		I.setAlphabet(new ArrayList<>(new LinkedHashSet<>(ListUtils.union(I.getAlphabet(),S.getAlphabet()))));
@@ -53,7 +53,7 @@ public class IocoConformance {
 		Automaton_ ai = I.ioltsToAutomaton();
 
 		// intersection between the implementation and failure model to find fault
-		Automaton_ ab = Operations.intersection(at, ai, nTestCases);// Constants.MAX_TEST_CASES
+		Automaton_ ab = Operations.intersection(at, ai);// , nTestCases
 
 		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		// System.out.println("<<<<<<<<<<<<<<<<<<<< verification IOCO conformance
@@ -99,7 +99,7 @@ public class IocoConformance {
 		// automaton D with the desired behaviors
 		Automaton_ ad = modelD(S);
 
-		Automaton_ faultModel = Operations.intersection(ad, aCompS, null);
+		Automaton_ faultModel = Operations.intersection(ad, aCompS);//, null
 
 		// System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		// System.out.println("<<<<<<<<<<<<<<<<<<<<
