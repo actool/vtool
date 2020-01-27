@@ -144,11 +144,11 @@ public class RunJTorx {
 
 			// IOCO conf submaquina e IOCO not conf com sub maquina
 			String aux;
-			String root = "C:\\4pct\\";
+			String root = "C:\\ioco-n-conf\\10inp-2out\\";
 			// int nState = 100;// 50,100,150,200,250
 			boolean stateVariation = true;// state or percentage
 			// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
-			List<Integer> tamAlfabeto = Arrays.asList(10);
+			List<Integer> tamAlfabeto = Arrays.asList(12);
 			String rootPathIUTs, pathAutSpec;
 			File folder;
 			File[] listOfFiles;
@@ -158,10 +158,10 @@ public class RunJTorx {
 			String rootPathSaveTS;
 			String ioco = "";// ioco-nao-conf
 		
-			List<Integer> states = Arrays.asList(30);// 50,100
+			List<Integer> states = Arrays.asList(10);// 50,100
 			// List<Integer> states = Arrays.asList(10,50,100);
 			
-			List<Integer> tamIUTs = Arrays.asList(30,40,50);
+			List<Integer> tamIUTs = Arrays.asList(15,25,35);
 			//List<Integer> tamIUTs = Arrays.asList( 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,170, 180, 190, 200);	
 											
 //			List<Integer> tamIUTs = Arrays.asList( 110, 120, 130, 140, 150, 160,

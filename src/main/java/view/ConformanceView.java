@@ -89,7 +89,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.JRadioButton;
 
-public class EverestView extends JFrame {
+public class ConformanceView extends JFrame {
 	private JComboBox cbModel;
 	private JComboBox cbLabel;
 	private JLabel lblImplementation;
@@ -177,7 +177,7 @@ public class EverestView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EverestView frame = new EverestView();
+					ConformanceView frame = new ConformanceView();
 					frame.setResizable(false);
 					frame.setVisible(true);
 
@@ -212,7 +212,7 @@ public class EverestView extends JFrame {
 		cleanVeredict();
 		try {
 			configFilterFile();
-			fc.showOpenDialog(EverestView.this);
+			fc.showOpenDialog(ConformanceView.this);
 			tfImplementation.setText(fc.getSelectedFile().getName());
 			pathImplementation = fc.getSelectedFile().getAbsolutePath();
 			fc.setCurrentDirectory(fc.getSelectedFile().getParentFile());
@@ -259,7 +259,7 @@ public class EverestView extends JFrame {
 		cleanVeredict();
 		try {
 			configFilterFile();
-			fc.showOpenDialog(EverestView.this);
+			fc.showOpenDialog(ConformanceView.this);
 			tfSpecification.setText(fc.getSelectedFile().getName());
 			pathSpecification = fc.getSelectedFile().getAbsolutePath();
 			lblmodelIoco.setText(tfSpecification.getText());
@@ -822,7 +822,7 @@ public class EverestView extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EverestView() {
+	public ConformanceView() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/icon.PNG")));
 		setTitle(ViewConstants.toolName);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -846,7 +846,7 @@ public class EverestView extends JFrame {
 
 				String tab = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
 
-				//JFrame loading = loadingDialog();
+				JFrame loading = loadingDialog();
 
 				// TODO Auto-generated method stub
 				if (tab.equals(ViewConstants.tabIOCO)) {
@@ -859,7 +859,7 @@ public class EverestView extends JFrame {
 						tfNTestCasesIOCO.setText(Objects.toString(Constants.MAX_TEST_CASES));
 					}
 
-					//loading.setVisible(true);
+					loading.setVisible(true);
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {
 						ioco = false;
@@ -867,18 +867,15 @@ public class EverestView extends JFrame {
 						if (tfNTestCasesLang.getText().isEmpty()) {
 							tfNTestCasesLang.setText(Objects.toString(Constants.MAX_TEST_CASES));
 						}
-						//loading.setVisible(true);
+						loading.setVisible(true);
 					} else {
 						if (tab.equals(ViewConstants.tabTSGeneration)) {
-							//loading.setVisible(true);
-							
 							generation = true;
 							verifyModelFileChange(ioco, false);
 
 							errorMessageGen();
 
 							if (isFormValidGeneration()) {
-								taWarning_gen.setText("");
 								showModelLabel_(false);
 								verifyInpOutEmpty(false, true);
 								verifyModelsEmpty(false, false);
@@ -911,9 +908,10 @@ public class EverestView extends JFrame {
 						e.printStackTrace();
 					}
 				}
-//				if (loading != null) {
-//					loading.dispose();
-//				}
+
+				if (loading != null) {
+					loading.dispose();
+				}
 
 			}
 		});
@@ -1572,11 +1570,41 @@ public class EverestView extends JFrame {
 		btnGenerate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				//generateTP();
-			}
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				generateTP();
+
+				if (isFormValidGeneration()) {
+					JFrame loading = null;
+					try {
+						loading = loadingDialog();
+						loading.setVisible(true);
+						// System.out.println(S);
+						removeMessageGen(ViewConstants.mInteger);
+
+						multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+						// System.out.println(multgraph);
+						testSuite = Graph.getWords(multigraph);
+
+						multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+						// System.out.println(multgraph);
+						words = Graph.getWords(multgraph);
+
+						words.sort(Comparator.comparing(String::length));
+
+						// System.out.println(StringUtils.join(words, ","));
+
+						taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
+
+						btnSaveTP.setVisible(true);
+
+						lblNumTC.setVisible(true);
+						lblNumTC.setText("# Test cases: " + words.size());
+
+					} catch (NumberFormatException e) {
+						taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
+					} finally {
+						if (loading != null)
+							loading.dispose();
+					}
+				}
 			}
 		});
 		btnGenerate.setBounds(141, 130, 167, 44);
@@ -1726,32 +1754,59 @@ public class EverestView extends JFrame {
 		panel_test_generation.add(lblM);
 
 		tfM = new JTextField();
-		tfM.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				lblNumTC.setText("# Test cases: ");
-				taTestCases_gen.setText("");
-				btnSaveTP.setVisible(false);
-			}
-		});
-		tfM.setText("1");
 		tfM.setForeground(SystemColor.controlShadow);
 		tfM.setFont(new Font("Dialog", Font.BOLD, 13));
 		tfM.setColumns(10);
 		tfM.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfM.setBackground(SystemColor.menu);
 		tfM.setBounds(20, 142, 111, 32);
+		tfM.setText("1");
 		panel_test_generation.add(tfM);
 
 		btnSaveTP = new JButton("Save test purpose");
 		btnSaveTP.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				saveTP();
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-				saveTP();
+				JFrame loading = loadingDialog();
+				try {
+					JFileChooser fc = directoryChooser();
+					fc.showOpenDialog(ConformanceView.this);
+
+					loading.setVisible(true);
+
+					// fc.getSelectedFile().getName()
+					String path = fc.getSelectedFile().getAbsolutePath();
+
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+
+					new File(path + "/Tp " + dateFormat.format(new Date())).mkdirs();
+					path = path + "/Tp " + dateFormat.format(new Date());
+					File file;
+					BufferedWriter writer;
+					int count = 0;
+					for (String tc : testSuite) {
+						file = new File(path, "tp" + count + ".aut");
+						writer = new BufferedWriter(new FileWriter(file));
+						writer.write(AutGenerator
+								.ioltsToAut(TestGeneration.testPurpose(multigraph, tc, S.getOutputs(), S.getInputs())));
+						writer.close();
+						// System.out.println(TestGeneration.testPurpose(multigraph, tc, S.getOutputs(),
+						// S.getInputs()));
+						count++;
+
+						// if (count == 4) {
+						// break;
+						// }
+
+					}
+
+				} catch (Exception e) {
+
+				} finally {
+					if (loading != null) {
+						loading.dispose();
+					}
+				}
 			}
 		});
 		btnSaveTP.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1928,11 +1983,16 @@ public class EverestView extends JFrame {
 		btnRun.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				runTest();
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-				runTest();
+				if (formRunIsValid()) {
+					JFrame loading = loadingDialog();
+					loading.setVisible(true);
+
+					TestGeneration.run(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
+							rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder,
+							saveFolderRun);
+
+					loading.dispose();
+				}
 			}
 		});
 		btnRun.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -2066,111 +2126,7 @@ public class EverestView extends JFrame {
 		clearRadioButtonIut();
 		clearRadioButtonTP();
 	}
-	
-	public void runTest() {
-		if (formRunIsValid()) {
-			JFrame loading = loadingDialog();
-			loading.setVisible(true);
 
-			TestGeneration.run(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
-					rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder,
-					saveFolderRun);
-
-			loading.dispose();
-		}
-	}
-
-	public void saveTP() {
-		JFrame loading = loadingDialog();
-		try {
-			JFileChooser fc = directoryChooser();
-			fc.showOpenDialog(EverestView.this);
-
-			loading.setVisible(true);
-
-			// fc.getSelectedFile().getName()
-			String path = fc.getSelectedFile().getAbsolutePath();
-
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-
-			new File(path + "/Tp " + dateFormat.format(new Date())).mkdirs();
-			path = path + "/Tp " + dateFormat.format(new Date());
-			File file;
-			BufferedWriter writer;
-			int count = 0;
-			for (String tc : testSuite) {
-				file = new File(path, "tp" + count + ".aut");
-				writer = new BufferedWriter(new FileWriter(file));
-				writer.write(AutGenerator
-						.ioltsToAut(TestGeneration.testPurpose(multigraph, tc, S.getOutputs(), S.getInputs())));
-				writer.close();
-				// System.out.println(TestGeneration.testPurpose(multigraph, tc, S.getOutputs(),
-				// S.getInputs()));
-				count++;
-
-				// if (count == 4) {
-				// break;
-				// }
-
-			}
-
-		} catch (Exception e) {
-
-		} finally {
-			if (loading != null) {
-				loading.dispose();
-			}
-		}
-	}
-	
-	
-	public void generateTP() {
-		if (isFormValidGeneration()) {
-			JFrame loading = null;
-			try {
-				loading = loadingDialog();
-				loading.setVisible(true);
-				// System.out.println(S);
-				removeMessageGen(ViewConstants.mInteger);
-
-				multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-				 System.out.println(multigraph);
-				//testSuite = Graph.getWords(multigraph);
-				testSuite = Operations.getWordsFromAutomaton(multigraph);
-
-				System.err.println("qtd:" + testSuite.size() + " transições: " + multigraph.getTransitions().size());
-				
-				
-				//testSuite = Operations.getAllWordsFromAutomaton(multigraph, false);
-				
-				//multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-				// System.out.println(multgraph);
-				//words = Graph.getWords(multgraph);
-
-				//words = new ArrayList<>(testSuite);
-				testSuite.sort(Comparator.comparing(String::length));
-
-				// System.out.println(StringUtils.join(words, ","));
-
-				taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
-
-				btnSaveTP.setVisible(true);
-
-				lblNumTC.setVisible(true);
-				lblNumTC.setText("# Test cases: " + testSuite.size());
-
-			} catch (NumberFormatException e) {
-				taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
-			} catch(OutOfMemoryError e){
-				JOptionPane.showMessageDialog(null, "OutOfMemoryError");
-			}finally {
-				if (loading != null)
-					loading.dispose();
-			}
-		}
-	}
-	
-	
 	public boolean formRunIsValid() {
 		String msg = "";
 
@@ -2253,7 +2209,7 @@ public class EverestView extends JFrame {
 
 		try {
 			configFilterFile();
-			fc.showOpenDialog(EverestView.this);
+			fc.showOpenDialog(ConformanceView.this);
 
 			tfOneTp.setText(fc.getSelectedFile().getName());
 			pathTP = fc.getSelectedFile().getAbsolutePath();
@@ -2287,7 +2243,7 @@ public class EverestView extends JFrame {
 
 	public void getIutFolder() {
 		JFileChooser fc = directoryChooser();
-		fc.showOpenDialog(EverestView.this);
+		fc.showOpenDialog(ConformanceView.this);
 		iutFolder = fc.getSelectedFile().getAbsolutePath();
 		tfFolderIut.setText(fc.getSelectedFile().getName());
 	}
@@ -2296,7 +2252,7 @@ public class EverestView extends JFrame {
 
 	public void getSaveVerdictRun() {
 		JFileChooser fc = directoryChooser();
-		fc.showOpenDialog(EverestView.this);
+		fc.showOpenDialog(ConformanceView.this);
 		saveFolderRun = fc.getSelectedFile().getAbsolutePath();
 		tfVerdictSavePath.setText(fc.getSelectedFile().getName());
 	}
@@ -2305,7 +2261,7 @@ public class EverestView extends JFrame {
 
 		try {
 			configFilterFile();
-			fc.showOpenDialog(EverestView.this);
+			fc.showOpenDialog(ConformanceView.this);
 
 			tfOneIut.setText(fc.getSelectedFile().getName());
 			pathImplementation = fc.getSelectedFile().getAbsolutePath();
@@ -2337,7 +2293,7 @@ public class EverestView extends JFrame {
 
 	public void selectTPsFolder() {
 		JFileChooser fc = directoryChooser();
-		fc.showOpenDialog(EverestView.this);
+		fc.showOpenDialog(ConformanceView.this);
 		tpFolder = fc.getSelectedFile().getAbsolutePath();
 		tfTpFolder.setText(fc.getSelectedFile().getName());
 	}
@@ -2502,26 +2458,14 @@ public class EverestView extends JFrame {
 
 	public void iocoConformance() {
 		conformidade = null;
-		int nTestCase = Integer.MAX_VALUE;
-		
-		if(!tfNTestCasesIOCO.getText().isEmpty()) {
-			try {
-				nTestCase = Integer.parseInt(tfNTestCasesIOCO.getText());
-				
-			}catch (Exception e) {
-				nTestCase = Integer.MAX_VALUE;
-			}
-		}else {
-			nTestCase = 0;
-		}
 
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			failPath = "";
-			conformidade = IocoConformance.verifyIOCOConformance(S, I);//, nTestCase
-			//if (conformidade.getFinalStates().size() > 0) {
+			conformidade = IocoConformance.verifyIOCOConformance(S, I);//Integer.parseInt(tfNTestCasesIOCO.getText())
+			if (conformidade.getFinalStates().size() > 0) {
 				failPath = Operations.path(S, I, conformidade, true, false,
-						nTestCase);
-			//}
+						Integer.parseInt(tfNTestCasesIOCO.getText()));
+			}
 		}
 
 	}
@@ -2572,23 +2516,10 @@ public class EverestView extends JFrame {
 				String F = tfF.getText();
 
 				if (regexIsValid(D) && regexIsValid(F)) {
-					int nTestCase = Integer.MAX_VALUE;
-					if(!tfNTestCasesLang.getText().isEmpty()) {
-						try {
-							nTestCase = Integer.parseInt(tfNTestCasesLang.getText());
-
-						}catch (Exception e) {
-							nTestCase = Integer.MAX_VALUE;
-						}
-					}else {
-						nTestCase = 0;
-					}
-					
-					
-					
-					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);//,Integer.MAX_VALUE
+					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);//,Integer.parseInt(tfNTestCasesLang.getText())
 					if (conformidade.getFinalStates().size() > 0) {
-						failPath = Operations.path(S_, I_, conformidade, false, false,nTestCase);
+						failPath = Operations.path(S_, I_, conformidade, false, false,
+								Integer.parseInt(tfNTestCasesLang.getText()));
 					} else {
 						failPath = "";
 					}

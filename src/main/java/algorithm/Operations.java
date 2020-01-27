@@ -265,7 +265,7 @@ public class Operations {
 	 *            automaton
 	 * @return automaton result of the intersection between the automata Q and S
 	 */
-	public static Automaton_ intersection(Automaton_ Q, Automaton_ S) {//Integer nTestCases
+	public static Automaton_ intersection(Automaton_ Q, Automaton_ S) {// Integer nTestCases
 		// nFinalState=Integer.MAX_VALUE;
 
 		// intersection automato
@@ -343,10 +343,9 @@ public class Operations {
 									&& Q.getFinalStates().contains(new State_(endStateQ.getName()))) {
 								Ar.addFinalStates(synchronized_);
 
-								
-//								if (nTestCases != null && Ar.getFinalStates().size() >= nTestCases) {
-//									break endIntersection;
-//								}
+								// if (nTestCases != null && Ar.getFinalStates().size() >= nTestCases) {
+								// break endIntersection;
+								// }
 
 							}
 
@@ -1051,7 +1050,7 @@ public class Operations {
 
 		List<String> testCases;
 
-		int ntc = nTestCases+ (nTestCases <15? (nTestCases*2): (nTestCases/4));
+		int ntc = nTestCases + (nTestCases < 15 ? (nTestCases * 2) : (nTestCases / 4));
 		if (nTestCases != 0) {
 			// ##################### SAME TS JTORX - ini
 			testCases = getWordsFromAutomaton(faultModel, ioco, ntc);
@@ -1287,6 +1286,60 @@ public class Operations {
 		int idxFinal = stringState.indexOf('[');
 		stringState = stringState.substring(idxInitial, idxFinal).replaceAll("\\s+", "");
 		return new State_(tag + stringState);
+	}
+
+	public static List<String> getWordsFromAutomaton(Automaton_ S) {
+		List<Transition_> toVisit = S.transitionsByIniState(S.getInitialState());
+		Map<String, List<String>> map = new HashMap<>();
+		List<Transition_> toVisit_aux = new ArrayList<>(toVisit);
+		List<String> aux;
+		List<String> words;
+		Transition_ current;
+		List<State_> states = new ArrayList<>();
+		// states.add(S.getInitialState());
+		while (!toVisit.isEmpty()) {
+			current = toVisit.get(0);
+
+			if (map.containsKey(current.getIniState().getName())) {
+				aux = new ArrayList<>();
+				for (String e : map.get(current.getIniState().getName())) {
+					aux.add(e + " -> " + current.getLabel());
+				}
+				// if (map.containsKey(current.getEndState().getName())) {
+				if (map.containsKey(current.getEndState().getName())
+						&& !(S.getFinalStates().contains(current.getEndState())
+								&& current.getEndState().getName().equals(current.getIniState().getName()))) {
+					aux.addAll(map.get(current.getEndState().getName()));
+				}
+				// }
+				map.put(current.getEndState().getName(), aux);
+			} else {
+				map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
+			}
+
+			toVisit.remove(current);
+			// for (Transition_ t : S.transitionsByIniState(current.getEndState())) {
+			// if (!toVisit_aux.contains(t)) {
+			// toVisit.add(t);
+			// toVisit_aux.add(t);
+
+			if (!states.contains(current.getEndState())) {
+				toVisit.addAll(S.transitionsByIniState(current.getEndState()));
+				toVisit_aux.addAll(S.transitionsByIniState(current.getEndState()));
+			}
+			// }
+			// }
+			states.add(current.getEndState());
+		}
+
+		words = new ArrayList<>();
+		for (State_ s : S.getFinalStates()) {
+
+			words.addAll(map.get(s.getName()));
+		}
+
+		return words;
+		// return String.join(",", words);
 	}
 
 }

@@ -32,38 +32,46 @@ public class Main2 {
 
 	public static void main(String[] args) throws Exception {
 		
-		String regex = "(a|b|x)*"+Constants.DELTA;
-		RegExp regExp = new RegExp(regex, RegExp.ALL);
-		Automaton automaton = regExp.toAutomaton();
-		System.err.println("["+regex+"]");
-		System.out.println(automaton);
+		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-q.aut";//iolts-to-getword
 		
-		Map<String, String> map = new HashMap<String, String>();
-		List<String> alphabet = new ArrayList<>();
-		alphabet.add("a");
-		alphabet.add("b");
-		alphabet.add("x");
-		alphabet.add(Constants.DELTA);
+		IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
+		Automaton_ a = iolts.ioltsToAutomaton();
+		a.setFinalStates(Arrays.asList(new State_("q2"),new State_("q3")));
 		
-		for (int i = 0; i < alphabet.size(); i++) {
-			map.put(Character.toString(Constants.ALPHABET_[i]), alphabet.get(i));
-
-		}
-		System.out.println(map);
-
+		System.out.println(Operations.getWordsFromAutomaton(a));
 		
-		for (int i = 0; i < alphabet.size(); i++) {
-			if (!alphabet.get(i).equals(Constants.DELTA))
-			regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET_[i]));
-		}
-		
-		regExp = new RegExp(regex, RegExp.ALL);
-		 automaton = regExp.toAutomaton();
-		
-		 System.err.println("["+regex+"]");
-		System.out.println(automaton);
-		
-//		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-50states\\result\\ioco-n-conf\\4pct\\30states\\";
+//		String regex = "(a|b|x)*"+Constants.DELTA;
+//		RegExp regExp = new RegExp(regex, RegExp.ALL);
+//		Automaton automaton = regExp.toAutomaton();
+//		System.err.println("["+regex+"]");
+//		System.out.println(automaton);
+//		
+//		Map<String, String> map = new HashMap<String, String>();
+//		List<String> alphabet = new ArrayList<>();
+//		alphabet.add("a");
+//		alphabet.add("b");
+//		alphabet.add("x");
+//		alphabet.add(Constants.DELTA);
+//		
+//		for (int i = 0; i < alphabet.size(); i++) {
+//			map.put(Character.toString(Constants.ALPHABET_[i]), alphabet.get(i));
+//
+//		}
+//		System.out.println(map);
+//
+//		
+//		for (int i = 0; i < alphabet.size(); i++) {
+//			if (!alphabet.get(i).equals(Constants.DELTA))
+//			regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET_[i]));
+//		}
+//		
+//		regExp = new RegExp(regex, RegExp.ALL);
+//		 automaton = regExp.toAutomaton();
+//		
+//		 System.err.println("["+regex+"]");
+//		System.out.println(automaton);
+	
+//		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-50states\\result\\i-o\\ioco-n-conf-2pct\\10inp-2out\\";
 //		String tool = "everest";
 //		String path = rootPath+tool+".csv";
 //		String COMMA_DELIMITER = ",";

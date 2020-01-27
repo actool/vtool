@@ -219,16 +219,16 @@ public class RunEverest {
 
 			
 			// IOCO Conf submaquina e IOCO not conf com sub maquina
-			String root = "C:\\4pct\\";
-			List<Integer> states = Arrays.asList(30);// 10,20,30
+			String root = "C:\\ioco-n-conf\\10inp-2out\\";//"C:\\ioco-n-conf\\2inp-10out\\";
+			List<Integer> states = Arrays.asList(10);// 10,20,30
 			// List<Integer> states = Arrays.asList(10,50,100);
-			List<Integer> tamIUTs = Arrays.asList(30,40,50);//10,20,30,40,50);
+			List<Integer> tamIUTs = Arrays.asList(15,25,35);//10,20,30,40,50);
 //			List<Integer> tamIUTs = Arrays.asList(20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,
 //					170, 180, 190, 200);
 			
 //			List<Integer> tamIUTs = Arrays.asList( 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,170, 180, 190, 200);	
 			// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18, 20);
-			List<Integer> tamAlfabeto = Arrays.asList(10);
+			List<Integer> tamAlfabeto = Arrays.asList(12);
 			String rootPathIUTs, pathAutSpec;
 			File folder;
 			File[] listOfFiles;
