@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Map.Entry;
+import java.beans.Statement;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -26,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.ArrayStack;
@@ -1288,6 +1290,8 @@ public class Operations {
 		return new State_(tag + stringState);
 	}
 
+
+static volatile Transition_ aa = null;
 	public static List<String> getWordsFromAutomaton(Automaton_ S) {
 		List<Transition_> toVisit = S.transitionsByIniState(S.getInitialState());
 		Map<String, List<String>> map = new HashMap<>();
@@ -1296,47 +1300,65 @@ public class Operations {
 		List<String> words;
 		Transition_ current;
 		List<State_> states = new ArrayList<>();
-		// states.add(S.getInitialState());
+		
+		states.add(S.getInitialState());
 		while (!toVisit.isEmpty()) {
 			current = toVisit.get(0);
-
+			aa = current;
+			
+			
 			if (map.containsKey(current.getIniState().getName())) {
 				aux = new ArrayList<>();
-				for (String e : map.get(current.getIniState().getName())) {
-					aux.add(e + " -> " + current.getLabel());
+				
+
+				if (map.containsKey(current.getIniState().getName())) {
+					for (String e : map.get(current.getIniState().getName())) {
+						aux.add(e + " -> " + current.getLabel());
+						
+					}
 				}
-				// if (map.containsKey(current.getEndState().getName())) {
+				
 				if (map.containsKey(current.getEndState().getName())
 						&& !(S.getFinalStates().contains(current.getEndState())
 								&& current.getEndState().getName().equals(current.getIniState().getName()))) {
 					aux.addAll(map.get(current.getEndState().getName()));
+					
 				}
-				// }
+				
+				if(toVisit.stream().filter(x->x.getIniState().getName().equals(aa.getIniState().getName())).collect(Collectors.toList()).size() == 1 ) {//&& !S.getFinalStates().contains(aa.getIniState())					
+					map.remove(current.getIniState().getName());
+				}
+				
 				map.put(current.getEndState().getName(), aux);
+
 			} else {
 				map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
 			}
 
 			toVisit.remove(current);
-			// for (Transition_ t : S.transitionsByIniState(current.getEndState())) {
-			// if (!toVisit_aux.contains(t)) {
-			// toVisit.add(t);
-			// toVisit_aux.add(t);
-
+		
 			if (!states.contains(current.getEndState())) {
 				toVisit.addAll(S.transitionsByIniState(current.getEndState()));
 				toVisit_aux.addAll(S.transitionsByIniState(current.getEndState()));
 			}
-			// }
-			// }
+			
 			states.add(current.getEndState());
 		}
 
 		words = new ArrayList<>();
+
+		//System.out.println(map);
+		//System.out.println(S.getFinalStates());
+		
 		for (State_ s : S.getFinalStates()) {
 
+			if(map.containsKey(s.getName()))
 			words.addAll(map.get(s.getName()));
 		}
+
+		//words.sort(Comparator.comparing(String::length));
+		
+		// System.out.println(words);
 
 		return words;
 		// return String.join(",", words);

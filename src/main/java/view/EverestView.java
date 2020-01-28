@@ -2148,7 +2148,7 @@ public class EverestView extends JFrame {
 				//words = Graph.getWords(multgraph);
 
 				//words = new ArrayList<>(testSuite);
-				testSuite.sort(Comparator.comparing(String::length));
+				//testSuite.sort(Comparator.comparing(String::length));
 
 				// System.out.println(StringUtils.join(words, ","));
 

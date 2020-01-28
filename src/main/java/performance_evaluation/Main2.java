@@ -38,7 +38,8 @@ public class Main2 {
 		Automaton_ a = iolts.ioltsToAutomaton();
 		a.setFinalStates(Arrays.asList(new State_("q2"),new State_("q3")));
 		
-		System.out.println(Operations.getWordsFromAutomaton(a));
+		System.out.println(String.join(", ", Operations.getWordsFromAutomaton(a)));
+		System.out.println("size: " + Operations.getWordsFromAutomaton(a).size());
 		
 //		String regex = "(a|b|x)*"+Constants.DELTA;
 //		RegExp regExp = new RegExp(regex, RegExp.ALL);
