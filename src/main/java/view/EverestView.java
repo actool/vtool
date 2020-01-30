@@ -2134,9 +2134,14 @@ public class EverestView extends JFrame {
 				removeMessageGen(ViewConstants.mInteger);
 
 				multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-				 System.out.println(multigraph);
+				//System.out.println(multigraph);
 				//testSuite = Graph.getWords(multigraph);
-				testSuite = Operations.getWordsFromAutomaton(multigraph);
+				try {
+					testSuite = Operations.getWordsFromAutomaton(multigraph, S.getStates().size());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				System.err.println("qtd:" + testSuite.size() + " transições: " + multigraph.getTransitions().size());
 				
@@ -2162,6 +2167,7 @@ public class EverestView extends JFrame {
 			} catch (NumberFormatException e) {
 				taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
 			} catch(OutOfMemoryError e){
+				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, "OutOfMemoryError");
 			}finally {
 				if (loading != null)

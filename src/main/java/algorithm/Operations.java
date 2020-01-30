@@ -30,6 +30,8 @@ import java.util.TreeSet;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javax.print.attribute.standard.DateTimeAtCompleted;
+
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.MultiMap;
@@ -1290,75 +1292,191 @@ public class Operations {
 		return new State_(tag + stringState);
 	}
 
+	static volatile int level;
+	static volatile Transition_ aa = null;
 
-static volatile Transition_ aa = null;
-	public static List<String> getWordsFromAutomaton(Automaton_ S) {
+	public static List<String> getWordsFromAutomaton(Automaton_ S, int nStatesSpec) throws IOException {
 		List<Transition_> toVisit = S.transitionsByIniState(S.getInitialState());
-		Map<String, List<String>> map = new HashMap<>();
+		// Map<String, List<String>> map = new HashMap<>();
+		Map<String, String> map = new HashMap<>();
 		List<Transition_> toVisit_aux = new ArrayList<>(toVisit);
-		List<String> aux;
+
+		String filename = "C:\\Users\\camil\\Desktop\\teste.txt";
+		FileWriter fw = new FileWriter(filename, true);
+
+		// List<String> aux;
+		String aux;
 		List<String> words;
 		Transition_ current;
 		List<State_> states = new ArrayList<>();
+		level = 0;
+		List<String> toRemove = new ArrayList<>();
 		
+		List<Transition_> selfloopFailState = S.transitionsByIniState(S.getFinalStates().get(0));
+
 		states.add(S.getInitialState());
+		int totalTC = 0;
+
 		while (!toVisit.isEmpty()) {
+
 			current = toVisit.get(0);
 			aa = current;
-			
-			
-			if (map.containsKey(current.getIniState().getName())) {
-				aux = new ArrayList<>();
-				
 
-				if (map.containsKey(current.getIniState().getName())) {
-					for (String e : map.get(current.getIniState().getName())) {
-						aux.add(e + " -> " + current.getLabel());
-						
+			// if has path to endState
+			if (map.containsKey(current.getIniState().getName())) {
+				// aux = new ArrayList<>();
+				aux = "";
+				System.out.println("a: " + new Date() + " - "
+						+ Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*")).size());
+
+				// get all path to iniState + current label
+				// System.out.println(current.getIniState().getName() + " -
+				// "+map.get(current.getIniState().getName()).size());
+				for (String e : Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*"))) {// map.get(current.getIniState().getName())
+					// aux.add(e + " -> " + current.getLabel());
+
+					if (current.getEndState().getName().equals(S.getFinalStates().get(0).getName())) {
+						//add label of fail self loop on each TC
+						for (Transition_ transition_ : selfloopFailState) {
+							aux += e + " -> " + current.getLabel() + " -> " + transition_.getLabel() + ",";
+						}
+					} else {
+						aux += e + " -> " + current.getLabel() + ",";
 					}
 				}
-				
+
+				// Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*")).stream()
+				// .map(Person::getName)
+				// .collect(Collectors.toList());
+
+				System.out.println("b: " + new Date());
+
+				// if end state has path, add
 				if (map.containsKey(current.getEndState().getName())
 						&& !(S.getFinalStates().contains(current.getEndState())
 								&& current.getEndState().getName().equals(current.getIniState().getName()))) {
-					aux.addAll(map.get(current.getEndState().getName()));
-					
-				}
-				
-				if(toVisit.stream().filter(x->x.getIniState().getName().equals(aa.getIniState().getName())).collect(Collectors.toList()).size() == 1 ) {//&& !S.getFinalStates().contains(aa.getIniState())					
-					map.remove(current.getIniState().getName());
-				}
-				
-				map.put(current.getEndState().getName(), aux);
+					// aux.addAll(map.get(current.getEndState().getName()));
 
+					aux += String.join(",", map.get(current.getEndState().getName()));
+
+				}
+
+				System.out.println("c: " + new Date());
+
+				//
+				// if (toVisit.stream().filter(x ->
+				// x.getIniState().getName().equals(aa.getIniState().getName()))
+				// .collect(Collectors.toList()).size() == 1 &&
+				// !S.getFinalStates().contains(aa.getIniState())) {// &&
+				// // !S.getFinalStates().contains(aa.getIniState())
+				// map.remove(current.getIniState().getName());
+				// }
+
+				System.out.println("d: " + new Date());
+
+				// if current state is not final state, the words is not a tc
+				if (!current.getEndState().getName().equals(S.getFinalStates().get(0).getName())) {
+					// map.put(current.getEndState().getName(), aux);
+					// map.put(current.getEndState().getName(),
+					// Arrays.asList(aux.split("\\s*,\\s*")));
+					map.put(current.getEndState().getName(), aux);
+				} else {
+					// not selfloop of final state
+					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
+						// if is a test case
+						// totalTC += aux.size();
+						totalTC += (int) Arrays.asList(aux.split("\\s*,\\s*")).size();
+						fw.write(String.join("\n", Arrays.asList(aux.split("\\s*,\\s*"))));// appends the string to the
+																							// file]
+						// fw.write(String.join("\n", aux));// appends the string to the file
+						fw.write("\n");
+						//y += ((String.join("\n", Arrays.asList(aux.split("\\s*,\\s*")))) + "\n");
+						// fw.close();
+						// System.out.print(String.join("\n", aux)+"\n");
+					}
+				}
+				System.out.println("e: " + new Date());
 			} else {
-				map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
+				// if current state is not final state, the words is not a tc
+				if (!current.getEndState().getName().equals(S.getFinalStates().get(0).getName())) {
+
+					// map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
+					map.put(current.getEndState().getName(), current.getLabel());
+				} else {
+					// not selfloop of final state
+					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
+						// if is a test case
+						totalTC += 1;
+						fw.write(String.join("\n", Arrays.asList(current.getLabel()))); // file
+						fw.write("\n");
+
+						//y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";
+						// fw.close();
+						// System.out.print(String.join("\n", Arrays.asList(current.getLabel()))+"\n");
+					}
+				}
 			}
 
 			toVisit.remove(current);
-		
+
+			System.out.println("f: " + new Date());
+
+			// add transition of endState of current transition
 			if (!states.contains(current.getEndState())) {
 				toVisit.addAll(S.transitionsByIniState(current.getEndState()));
 				toVisit_aux.addAll(S.transitionsByIniState(current.getEndState()));
 			}
-			
+
 			states.add(current.getEndState());
+
+			// System.out.println(map.size()+ "-"+ map);
+
+			System.out.println("g: " + new Date());
+
+			// avoid steackoverflow, remove from map, levels that are not be used/visited
+			toVisit.stream().filter(x -> x.getIniState().getName().contains("," + level)
+					&& x.getEndState().getName().contains("," + level)).collect(Collectors.toList());
+			// toRemove = states.stream().filter(x -> x.getName().contains("," +
+			// level)).collect(Collectors.toList());
+			if (toVisit.stream()
+					.filter(x -> x.getIniState().getName().contains("," + level)
+							&& x.getEndState().getName().contains("," + level))
+					.collect(Collectors.toList()).size() == 0) {
+				// remove from map all states at level
+				for (String m : map.keySet()) {
+					if (m.contains("," + level)) {
+
+						toRemove.add(m);
+					}
+				}
+
+				map.remove(toRemove);
+				level++;
+				aux = null;
+				// fw=null;
+				System.gc();
+			}
+
+			System.err.println("Total tc: " + totalTC);
+			
+			// System.err.println(map.size()+ "-"+map.keySet() +" - "+
+			// current.getEndState());
+			// if(map.containsKey(S.getFinalStates().get(0).toString()))
+			// System.out.println(map.get(S.getFinalStates().get(0).toString()).size()+"tcs:
+			// " + map.get(S.getFinalStates().get(0).toString()));
+
 		}
+		fw.close();
+
+		System.err.println("Total tc: " + totalTC);
 
 		words = new ArrayList<>();
 
-		//System.out.println(map);
-		//System.out.println(S.getFinalStates());
-		
-		for (State_ s : S.getFinalStates()) {
-
-			if(map.containsKey(s.getName()))
-			words.addAll(map.get(s.getName()));
-		}
-
-		//words.sort(Comparator.comparing(String::length));
-		
-		// System.out.println(words);
+		// for (State_ s : S.getFinalStates()) {
+		//
+		// if (map.containsKey(s.getName()))
+		// words.addAll(map.get(s.getName()));
+		// }
 
 		return words;
 		// return String.join(",", words);

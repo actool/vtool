@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import com.tinkerpop.blueprints.Graph;
 
@@ -32,14 +33,21 @@ public class Main2 {
 
 	public static void main(String[] args) throws Exception {
 		
-		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-impl-q.aut";//iolts-to-getword
+		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-to-getword.aut";//iolts-to-getword  iolts-impl-q
 		
 		IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
 		Automaton_ a = iolts.ioltsToAutomaton();
-		a.setFinalStates(Arrays.asList(new State_("q2"),new State_("q3")));
+		//a.setFinalStates(Arrays.asList(new State_("q2")));
+		//a.setFinalStates(Arrays.asList(new State_("q2"),new State_("q3")));
+		a.setFinalStates(Arrays.asList(new State_("q2")));
 		
-		System.out.println(String.join(", ", Operations.getWordsFromAutomaton(a)));
-		System.out.println("size: " + Operations.getWordsFromAutomaton(a).size());
+		System.out.println(String.join("\n", Operations.getWordsFromAutomaton(a, iolts.getStates().size())));
+		
+		
+		
+	
+		
+		//System.out.println("size: " + Operations.getWordsFromAutomaton(a).size());
 		
 //		String regex = "(a|b|x)*"+Constants.DELTA;
 //		RegExp regExp = new RegExp(regex, RegExp.ALL);
