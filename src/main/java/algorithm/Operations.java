@@ -1297,21 +1297,21 @@ public class Operations {
 
 	public static List<String> getWordsFromAutomaton(Automaton_ S, int nStatesSpec) throws IOException {
 		List<Transition_> toVisit = S.transitionsByIniState(S.getInitialState());
-		// Map<String, List<String>> map = new HashMap<>();
-		Map<String, String> map = new HashMap<>();
+		Map<String, List<String>> map = new HashMap<>();
+		// Map<String, String> map = new HashMap<>();
 		List<Transition_> toVisit_aux = new ArrayList<>(toVisit);
 
 		String filename = "C:\\Users\\camil\\Desktop\\teste.txt";
 		FileWriter fw = new FileWriter(filename, true);
 
-		// List<String> aux;
-		String aux;
+		List<String> aux;
+		// String aux;
 		List<String> words;
 		Transition_ current;
 		List<State_> states = new ArrayList<>();
 		level = 0;
 		List<String> toRemove = new ArrayList<>();
-		
+
 		List<Transition_> selfloopFailState = S.transitionsByIniState(S.getFinalStates().get(0));
 
 		states.add(S.getInitialState());
@@ -1324,24 +1324,25 @@ public class Operations {
 
 			// if has path to endState
 			if (map.containsKey(current.getIniState().getName())) {
-				// aux = new ArrayList<>();
-				aux = "";
-				System.out.println("a: " + new Date() + " - "
-						+ Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*")).size());
+				aux = new ArrayList<>();
+				// aux = "";
 
 				// get all path to iniState + current label
 				// System.out.println(current.getIniState().getName() + " -
 				// "+map.get(current.getIniState().getName()).size());
-				for (String e : Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*"))) {// map.get(current.getIniState().getName())
+				for (String e : map.get(current.getIniState().getName())) {// Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*"))
 					// aux.add(e + " -> " + current.getLabel());
 
 					if (current.getEndState().getName().equals(S.getFinalStates().get(0).getName())) {
-						//add label of fail self loop on each TC
+						// add label of fail self loop on each TC
 						for (Transition_ transition_ : selfloopFailState) {
-							aux += e + " -> " + current.getLabel() + " -> " + transition_.getLabel() + ",";
+							// aux += e + " -> " + current.getLabel() + " -> " + transition_.getLabel() +
+							// ",";
+							aux.add(e + " -> " + current.getLabel() + " -> " + transition_.getLabel());
 						}
 					} else {
-						aux += e + " -> " + current.getLabel() + ",";
+						// aux += e + " -> " + current.getLabel() + ",";
+						aux.add(e + " -> " + current.getLabel() );
 					}
 				}
 
@@ -1355,14 +1356,14 @@ public class Operations {
 				if (map.containsKey(current.getEndState().getName())
 						&& !(S.getFinalStates().contains(current.getEndState())
 								&& current.getEndState().getName().equals(current.getIniState().getName()))) {
-					// aux.addAll(map.get(current.getEndState().getName()));
+					 aux.addAll(map.get(current.getEndState().getName()));
 
-					aux += String.join(",", map.get(current.getEndState().getName()));
+					// aux += String.join(",", map.get(current.getEndState().getName()));
+					
 
 				}
 
 				System.out.println("c: " + new Date());
-
 				//
 				// if (toVisit.stream().filter(x ->
 				// x.getIniState().getName().equals(aa.getIniState().getName()))
@@ -1384,13 +1385,14 @@ public class Operations {
 					// not selfloop of final state
 					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
 						// if is a test case
-						// totalTC += aux.size();
-						totalTC += (int) Arrays.asList(aux.split("\\s*,\\s*")).size();
-						fw.write(String.join("\n", Arrays.asList(aux.split("\\s*,\\s*"))));// appends the string to the
-																							// file]
-						// fw.write(String.join("\n", aux));// appends the string to the file
+						totalTC += aux.size();
+						// totalTC += (int) Arrays.asList(aux.split("\\s*,\\s*")).size();
+						// fw.write(String.join("\n", Arrays.asList(aux.split("\\s*,\\s*"))));// appends
+						// the string to the
+						// file]
+						fw.write(String.join("\n", aux));// appends the string to the file
 						fw.write("\n");
-						//y += ((String.join("\n", Arrays.asList(aux.split("\\s*,\\s*")))) + "\n");
+						// y += ((String.join("\n", Arrays.asList(aux.split("\\s*,\\s*")))) + "\n");
 						// fw.close();
 						// System.out.print(String.join("\n", aux)+"\n");
 					}
@@ -1400,8 +1402,8 @@ public class Operations {
 				// if current state is not final state, the words is not a tc
 				if (!current.getEndState().getName().equals(S.getFinalStates().get(0).getName())) {
 
-					// map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
-					map.put(current.getEndState().getName(), current.getLabel());
+					map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
+					// map.put(current.getEndState().getName(), current.getLabel());
 				} else {
 					// not selfloop of final state
 					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
@@ -1410,7 +1412,7 @@ public class Operations {
 						fw.write(String.join("\n", Arrays.asList(current.getLabel()))); // file
 						fw.write("\n");
 
-						//y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";
+						// y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";
 						// fw.close();
 						// System.out.print(String.join("\n", Arrays.asList(current.getLabel()))+"\n");
 					}
@@ -1458,7 +1460,7 @@ public class Operations {
 			}
 
 			System.err.println("Total tc: " + totalTC);
-			
+
 			// System.err.println(map.size()+ "-"+map.keySet() +" - "+
 			// current.getEndState());
 			// if(map.containsKey(S.getFinalStates().get(0).toString()))
