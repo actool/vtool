@@ -1,7 +1,9 @@
 package algorithm;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +22,7 @@ import model.IOLTS;
 import model.State_;
 import model.Transition_;
 import parser.ImportAutFile;
+import util.AutGenerator;
 import util.Constants;
 import view.EverestView;
 
@@ -329,7 +332,7 @@ public class TestGeneration {
 
 				// one iut
 				if (oneIut) {
-					toSave = runIutTp(pathIut, word, fileTp);// pathTp
+					toSave = runIutTp(pathIut, word, fileTp).getKey();// pathTp
 
 					saveOnCSVFile(toSave, pathCsv);
 				} else {
@@ -341,7 +344,7 @@ public class TestGeneration {
 						// for each iut
 						for (File fileIut : listOfIutFiles) {
 							if (EverestView.isAutFile(fileIut)) {
-								toSave = runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp);
+								toSave = runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp).getKey();
 								saveOnCSVFile(toSave, pathCsv);
 
 							}
@@ -355,8 +358,9 @@ public class TestGeneration {
 		}
 	}
 
-	public static List<List<String>> runIutTp(String pathIut, String word, File fileTp) {
+	public static javafx.util.Pair<List<List<String>>, Boolean> runIutTp(String pathIut, String word, File fileTp) {
 		List<List<String>> toSave = new ArrayList<>();
+		boolean nonconformance = false;
 		try {
 			IOLTS iut;
 			iut = ImportAutFile.autToIOLTS(pathIut, false, null, null);
@@ -381,6 +385,7 @@ public class TestGeneration {
 				} else {
 					// not conform
 					partialResult.add(Constants.RUN_VERDICT_NON_CONFORM);
+					nonconformance=true;
 
 				}
 
@@ -391,14 +396,32 @@ public class TestGeneration {
 			e.printStackTrace();
 		}
 
-		return toSave;
+		return new javafx.util.Pair<List<List<String>>, Boolean>(toSave, nonconformance);
+	}
+	
+
+	
+	public static File  saveTP(String tpFolder, IOLTS tp) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-S");
+		File file = new File(tpFolder, "tp_" + dateFormat.format(new Date()) + ".aut");
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(file));
+			writer.write(AutGenerator.ioltsToAut(tp));
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return file;
 	}
 
 	public static void saveOnCSVFile(List<List<String>> toSave, String pathCsv) {
 
 		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-			pathCsv += "\\run-everest-result "+dateFormat.format(new Date())+".csv";
+			//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+			pathCsv += "\\run-everest-result.csv";//+dateFormat.format(new Date())+".csv";
 			String delimiterCSV = ",";
 
 			ArrayList<String> headerCSV = new ArrayList<String>();

@@ -933,6 +933,7 @@ public class AutGenerator {
 		String aut = "des(" + iolts.getInitialState().getName().replace(",", "_") + "," + iolts.getTransitions().size()
 				+ "," + iolts.getStates().size() + ")" + newline;
 
+		
 		for (Transition_ t : iolts.getTransitions()) {
 			// if name of states contains COMMA replace to _
 			t.setIniState(new State_(t.getIniState().getName().replace(",", "_")));

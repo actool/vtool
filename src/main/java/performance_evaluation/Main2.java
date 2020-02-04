@@ -33,16 +33,23 @@ public class Main2 {
 
 	public static void main(String[] args) throws Exception {
 		
-		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-to-getword.aut";//iolts-to-getword  iolts-impl-q
+//		String path = "C:\\Users\\camil\\Documents\\aut-modelos\\iolts-to-getword.aut";//iolts-to-getword  iolts-impl-q
+//		
+//		IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
+//		Automaton_ a = iolts.ioltsToAutomaton();
+//		//a.setFinalStates(Arrays.asList(new State_("q2")));
+//		//a.setFinalStates(Arrays.asList(new State_("q2"),new State_("q3")));
+//		a.setFinalStates(Arrays.asList(new State_("q2")));
+//		
+//		System.out.println(String.join("\n", Operations.getWordsFromAutomaton(a, iolts.getStates().size())));
+			
+		String path = "C:\\Users\\camil\\Desktop\\multigraph -l1El2.aut";//iolts-to-getword  iolts-impl-q
 		
 		IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
 		Automaton_ a = iolts.ioltsToAutomaton();
-		//a.setFinalStates(Arrays.asList(new State_("q2")));
-		//a.setFinalStates(Arrays.asList(new State_("q2"),new State_("q3")));
-		a.setFinalStates(Arrays.asList(new State_("q2")));
+		a.setFinalStates(Arrays.asList(new State_("fail")));
 		
-		System.out.println(String.join("\n", Operations.getWordsFromAutomaton(a, iolts.getStates().size())));
-		
+		//System.out.println(String.join("\n", Operations.getWordsFromAutomaton(a, iolts.getStates().size())));
 		
 		
 	

@@ -139,7 +139,7 @@ public class EverestView extends JFrame {
 	JRadioButton rdbtnOneIut;
 	JRadioButton rdbtnInBatch;
 
-	JButton btnSaveTP;
+	JButton btnMultigraph;
 	List<String> testSuite;
 	Automaton_ multigraph;
 	JLabel lblNumTC;
@@ -200,7 +200,7 @@ public class EverestView extends JFrame {
 		taTestCasesIoco.setText("");
 		taTestCasesLang.setText("");
 
-		btnSaveTP.setVisible(false);
+		btnMultigraph.setVisible(false);
 		taTestCases_gen.setText("");
 
 		lblNumTC.setVisible(false);
@@ -219,6 +219,8 @@ public class EverestView extends JFrame {
 			lblImplementationIoco.setText(tfImplementation.getText());
 			lblimplementationLang.setText(tfImplementation.getText());
 			lblimplementation_gen.setText(tfImplementation.getText());
+			
+			lbliut_gen.setText(tfImplementation.getText());
 			// processModels(true, ioco);
 			isImplementationProcess = false;
 
@@ -265,6 +267,7 @@ public class EverestView extends JFrame {
 			lblmodelIoco.setText(tfSpecification.getText());
 			lblmodelLang.setText(tfSpecification.getText());
 			lblmodel_gen.setText(tfSpecification.getText());
+			
 			isModelProcess = false;
 
 			lastModifiedSpec = new File(pathSpecification).lastModified();
@@ -846,7 +849,7 @@ public class EverestView extends JFrame {
 
 				String tab = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
 
-				//JFrame loading = loadingDialog();
+				// JFrame loading = loadingDialog();
 
 				// TODO Auto-generated method stub
 				if (tab.equals(ViewConstants.tabIOCO)) {
@@ -859,7 +862,7 @@ public class EverestView extends JFrame {
 						tfNTestCasesIOCO.setText(Objects.toString(Constants.MAX_TEST_CASES));
 					}
 
-					//loading.setVisible(true);
+					// loading.setVisible(true);
 				} else {
 					if (tab.equals(ViewConstants.tabLang)) {
 						ioco = false;
@@ -867,11 +870,11 @@ public class EverestView extends JFrame {
 						if (tfNTestCasesLang.getText().isEmpty()) {
 							tfNTestCasesLang.setText(Objects.toString(Constants.MAX_TEST_CASES));
 						}
-						//loading.setVisible(true);
+						// loading.setVisible(true);
 					} else {
 						if (tab.equals(ViewConstants.tabTSGeneration)) {
-							//loading.setVisible(true);
-							
+							// loading.setVisible(true);
+
 							generation = true;
 							verifyModelFileChange(ioco, false);
 
@@ -911,9 +914,9 @@ public class EverestView extends JFrame {
 						e.printStackTrace();
 					}
 				}
-//				if (loading != null) {
-//					loading.dispose();
-//				}
+				// if (loading != null) {
+				// loading.dispose();
+				// }
 
 			}
 		});
@@ -1570,18 +1573,16 @@ public class EverestView extends JFrame {
 
 		btnGenerate = new JButton("Generate");
 		btnGenerate.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				//generateTP();
-			}
+
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				generateTP();
+				saveMultigraphAndTP();
 			}
 		});
-		btnGenerate.setBounds(141, 130, 167, 44);
+		btnGenerate.setBounds(332, 128, 106, 44);
 		btnGenerate.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnGenerate.setBackground(Color.LIGHT_GRAY);
+		btnGenerate.setVisible(false);
 		panel_test_generation.add(btnGenerate);
 
 		lblModel = new JLabel("Model");
@@ -1631,7 +1632,7 @@ public class EverestView extends JFrame {
 		taTestCases_gen = new JTextArea();
 		taTestCases_gen.setBounds(10, 277, 231, 150);
 		JScrollPane scrolltxt3 = new JScrollPane(taTestCases_gen);
-		scrolltxt3.setBounds(10, 201, 405, 196);
+		scrolltxt3.setBounds(10, 265, 405, 183);
 		panel_test_generation.add(scrolltxt3);
 
 		imgModel_gen = new JLabel("");
@@ -1711,65 +1712,167 @@ public class EverestView extends JFrame {
 		JLabel lblWarning = new JLabel("Warnings");
 		lblWarning.setForeground(SystemColor.windowBorder);
 		lblWarning.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblWarning.setBounds(425, 178, 93, 14);
+		lblWarning.setBounds(425, 240, 93, 14);
 		panel_test_generation.add(lblWarning);
 
 		taWarning_gen = new JTextArea("");
 		taWarning_gen.setForeground(SystemColor.controlShadow);
-		taWarning_gen.setBounds(426, 201, 366, 247);
+		taWarning_gen.setBounds(426, 265, 366, 183);
 		panel_test_generation.add(taWarning_gen);
 
-		lblM = new JLabel("# max IUT states");
+		lblM = new JLabel("# Max IUT states");
 		lblM.setForeground(SystemColor.windowBorder);
 		lblM.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblM.setBounds(11, 125, 117, 14);
+		lblM.setBounds(10, 123, 117, 14);
 		panel_test_generation.add(lblM);
 
 		tfM = new JTextField();
 		tfM.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				lblNumTC.setText("# Test cases: ");
+				lblNumTC.setText("#Extracted test cases: ");
 				taTestCases_gen.setText("");
-				btnSaveTP.setVisible(false);
+				// btnMultigraph.setVisible(false);
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!tfNTestCases_gen.getText().isEmpty() && !tfM.getText().isEmpty() && S != null) {
+					btnGenerate.setVisible(true);
+				} else {
+					btnGenerate.setVisible(false);
+				}
+
+				if (S != null && I != null && !tfM.getText().isEmpty()) {
+					btnRunGenerate.setVisible(true);
+				} else {
+					btnRunGenerate.setVisible(true);
+				}
 			}
 		});
-		tfM.setText("1");
 		tfM.setForeground(SystemColor.controlShadow);
 		tfM.setFont(new Font("Dialog", Font.BOLD, 13));
 		tfM.setColumns(10);
 		tfM.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfM.setBackground(SystemColor.menu);
-		tfM.setBounds(20, 142, 111, 32);
+		tfM.setBounds(10, 135, 133, 32);
 		panel_test_generation.add(tfM);
 
-		btnSaveTP = new JButton("Save test purpose");
-		btnSaveTP.addMouseListener(new MouseAdapter() {
+		btnMultigraph = new JButton("Save test purpose");
+		btnMultigraph.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				saveTP();
 			}
+
 			@Override
 			public void mousePressed(MouseEvent e) {
 				saveTP();
 			}
 		});
-		btnSaveTP.setFont(new Font("Dialog", Font.BOLD, 13));
-		btnSaveTP.setBackground(Color.LIGHT_GRAY);
-		btnSaveTP.setBounds(248, 404, 167, 44);
-		btnSaveTP.setVisible(false);
-		panel_test_generation.add(btnSaveTP);
+		btnMultigraph.setFont(new Font("Dialog", Font.BOLD, 13));
+		btnMultigraph.setBackground(Color.LIGHT_GRAY);
+		btnMultigraph.setBounds(647, 220, 70, 44);
+		btnMultigraph.setVisible(false);
+		panel_test_generation.add(btnMultigraph);
 
-		lblNumTC = new JLabel("# Test cases: ");
+		lblNumTC = new JLabel("#Extracted test cases: ");
 		lblNumTC.setForeground(SystemColor.windowBorder);
 		lblNumTC.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblNumTC.setBounds(318, 146, 287, 14);
+		lblNumTC.setBounds(10, 235, 287, 14);
 		lblNumTC.setVisible(false);
 		panel_test_generation.add(lblNumTC);
 
+		JLabel lblTestCases_1 = new JLabel("#  Test cases");
+		lblTestCases_1.setForeground(SystemColor.windowBorder);
+		lblTestCases_1.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblTestCases_1.setBounds(166, 123, 117, 14);
+		panel_test_generation.add(lblTestCases_1);
+
+		tfNTestCases_gen = new JTextField();
+		tfNTestCases_gen.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!tfNTestCases_gen.getText().isEmpty() && !tfM.getText().isEmpty() && S != null) {
+					btnGenerate.setVisible(true);
+				} else {
+					btnGenerate.setVisible(false);
+				}
+			}
+		});
+
+		tfNTestCases_gen.setForeground(SystemColor.controlShadow);
+		tfNTestCases_gen.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfNTestCases_gen.setColumns(10);
+		tfNTestCases_gen.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		tfNTestCases_gen.setBackground(SystemColor.menu);
+		tfNTestCases_gen.setBounds(166, 135, 140, 32);
+		panel_test_generation.add(tfNTestCases_gen);
+
+		label_4 = new JLabel("Implementation");
+		label_4.setForeground(SystemColor.windowBorder);
+		label_4.setFont(new Font("Dialog", Font.BOLD, 13));
+		label_4.setBounds(425, 7, 133, 22);
+		panel_test_generation.add(label_4);
+
+		lbliut_gen = new JLabel("");
+		lbliut_gen.setForeground(SystemColor.controlShadow);
+		lbliut_gen.setBounds(425, 29, 367, 26);
+		panel_test_generation.add(lbliut_gen);
+
+		lblMultigraph = new JLabel("Multigraph");
+		lblMultigraph.setForeground(SystemColor.controlDkShadow);
+		lblMultigraph.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblMultigraph.setBounds(10, 178, 93, 14);
+		panel_test_generation.add(lblMultigraph);
+
+		textField = new JTextField();
+		textField.setToolTipText("accepts only .aut files");
+		textField.setForeground(SystemColor.controlShadow);
+		textField.setFont(new Font("Dialog", Font.BOLD, 13));
+		textField.setColumns(10);
+		textField.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		textField.setBackground(SystemColor.menu);
+		textField.setBounds(10, 198, 294, 26);
+		panel_test_generation.add(textField);
+
+		JButton lblverdict_run = new JButton("Run");
+		lblverdict_run.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblverdict_run.setBackground(Color.LIGHT_GRAY);
+		lblverdict_run.setBounds(332, 185, 106, 44);
+		lblverdict_run.setVisible(false);
+		panel_test_generation.add(lblverdict_run);
+
+		btnRunGenerate = new JButton("Generate + Run");
+		btnRunGenerate.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				saveMultigraphTPAndVerdict();
+			}
+		});
+		btnRunGenerate.setFont(new Font("Dialog", Font.BOLD, 13));
+		btnRunGenerate.setBackground(Color.LIGHT_GRAY);
+		btnRunGenerate.setBounds(448, 128, 167, 44);
+		btnRunGenerate.setVisible(false);
+		panel_test_generation.add(btnRunGenerate);
+		
+		lblGenRunVerdict = new JLabel("Verdict: ");
+		lblGenRunVerdict.setForeground(SystemColor.windowBorder);
+		lblGenRunVerdict.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblGenRunVerdict.setBounds(625, 144, 167, 14);
+		lblGenRunVerdict.setVisible(false);
+		panel_test_generation.add(lblGenRunVerdict);
+		
+		lblRunVerdict = new JLabel("Verdict: ");
+		lblRunVerdict.setForeground(SystemColor.windowBorder);
+		lblRunVerdict.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblRunVerdict.setBounds(448, 196, 167, 14);
+		panel_test_generation.add(lblRunVerdict);
+
 		// Panel run test
 		panel_test_execution = new JPanel();
-		tabbedPane.addTab(ViewConstants.tabTestRun, null, panel_test_execution, null);
+		// tabbedPane.addTab(ViewConstants.tabTestRun, null, panel_test_execution,
+		// null);
 		panel_test_execution.setLayout(null);
 
 		lblSelectFolderContaining = new JLabel("Test purposes folder");
@@ -1930,6 +2033,7 @@ public class EverestView extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				runTest();
 			}
+
 			@Override
 			public void mousePressed(MouseEvent e) {
 				runTest();
@@ -2058,6 +2162,7 @@ public class EverestView extends JFrame {
 		rdbtnTPbatch.setFont(new Font("Dialog", Font.BOLD, 13));
 		rdbtnTPbatch.setBounds(413, 11, 194, 23);
 		panel_test_execution.add(rdbtnTPbatch);
+		panel_test_execution.setVisible(false);
 
 		ButtonGroup groupTp = new ButtonGroup();
 		groupTp.add(rdbtnTPbatch);
@@ -2066,15 +2171,14 @@ public class EverestView extends JFrame {
 		clearRadioButtonIut();
 		clearRadioButtonTP();
 	}
-	
+
 	public void runTest() {
 		if (formRunIsValid()) {
 			JFrame loading = loadingDialog();
 			loading.setVisible(true);
 
 			TestGeneration.run(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
-					rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder,
-					saveFolderRun);
+					rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder, saveFolderRun);
 
 			loading.dispose();
 		}
@@ -2122,61 +2226,156 @@ public class EverestView extends JFrame {
 			}
 		}
 	}
-	
-	
-	public void generateTP() {
+
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+
+	public void saveMultigraphTPAndVerdict() {
 		if (isFormValidGeneration()) {
+			lblNumTC.setVisible(false);
+			lblGenRunVerdict.setVisible(false);
+			
+			JFileChooser fc = directoryChooser();
+			fc.showOpenDialog(EverestView.this);
+			String folder = fc.getSelectedFile().getAbsolutePath();
+
+			File file = new File(folder + "\\TPs\\");
+			if (!file.exists()) {
+				file.mkdir();
+			}
+
 			JFrame loading = null;
 			try {
+
 				loading = loadingDialog();
 				loading.setVisible(true);
 				// System.out.println(S);
 				removeMessageGen(ViewConstants.mInteger);
 
 				multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-				//System.out.println(multigraph);
-				//testSuite = Graph.getWords(multigraph);
+				multigraph.setInitialState(new State_(multigraph.getInitialState().getName().replace(",", "_")));
+
 				try {
-					testSuite = Operations.getWordsFromAutomaton(multigraph, S.getStates().size());
+					file = new File(folder, "multigraph_" + dateFormat.format(new Date()) + ".aut");
+					BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+					writer.write(AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(), multigraph.getInitialState(),
+							multigraph.getAlphabet(), multigraph.getTransitions(), S.getInputs(), S.getOutputs())));
+					writer.close();
+
+					javafx.util.Pair<List<String>, Boolean> result =  Operations.getWordsFromAutomaton(multigraph, S.getStates().size(),
+							(!tfNTestCases_gen.getText().isEmpty())?Integer.parseInt(tfNTestCases_gen.getText()):null, folder , S.getInputs(),
+							S.getOutputs(),pathImplementation);
+
+					testSuite = result.getKey();
+					
+					//nonconf verdict
+					if(result.getValue()) {
+						lblGenRunVerdict.setText(ViewConstants.genRun_fault);
+					}else {
+						lblGenRunVerdict.setText(ViewConstants.genRun_noFault);
+					}
+					lblGenRunVerdict.setVisible(true);
+					
+				
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
-				System.err.println("qtd:" + testSuite.size() + " transições: " + multigraph.getTransitions().size());
-				
-				
-				//testSuite = Operations.getAllWordsFromAutomaton(multigraph, false);
-				
-				//multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-				// System.out.println(multgraph);
-				//words = Graph.getWords(multgraph);
+			} catch (NumberFormatException e) {
+				taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
+			} catch (OutOfMemoryError e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "OutOfMemoryError");
+			} finally {
+				if (loading != null)
+					loading.dispose();
+			}
 
-				//words = new ArrayList<>(testSuite);
-				//testSuite.sort(Comparator.comparing(String::length));
+		}
+	}
+
+	public void saveMultigraphAndTP() {
+		if (isFormValidGeneration()) {
+
+			JFileChooser fc = directoryChooser();
+			fc.showOpenDialog(EverestView.this);
+			String folder = fc.getSelectedFile().getAbsolutePath();
+
+			File file = new File(folder + "\\TPs\\");
+			if (!file.exists()) {
+				file.mkdir();
+			}
+
+			JFrame loading = null;
+			try {
+
+				loading = loadingDialog();
+				loading.setVisible(true);
+				// System.out.println(S);
+				removeMessageGen(ViewConstants.mInteger);
+
+				multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+				multigraph.setInitialState(new State_(multigraph.getInitialState().getName().replace(",", "_")));
+
+				try {
+					file = new File(folder, "multigraph_" + dateFormat.format(new Date()) + ".aut");
+					BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+					writer.write(AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(), multigraph.getInitialState(),
+							multigraph.getAlphabet(), multigraph.getTransitions(), S.getInputs(), S.getOutputs())));
+					writer.close();
+
+					// System.out.println(multigraph);
+					// testSuite = Graph.getWords(multigraph);
+
+					// File file = new File("C:\\Users\\camil\\Desktop\\", "multigraph.aut");
+					// BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+					// writer.write(AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(),
+					// multigraph.getInitialState(), multigraph.getAlphabet(),
+					// multigraph.getTransitions(), S.getInputs(), S.getOutputs())));
+					// writer.close();
+
+					testSuite = Operations.getWordsFromAutomaton(multigraph, S.getStates().size(),
+							Integer.parseInt(tfNTestCases_gen.getText()), folder + "\\TPs\\", S.getInputs(),
+							S.getOutputs(),null).getKey();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				// System.err.println("qtd:" + testSuite.size() + " transições: " +
+				// multigraph.getTransitions().size());
+
+				// testSuite = Operations.getAllWordsFromAutomaton(multigraph, false);
+
+				// multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+				// System.out.println(multgraph);
+				// words = Graph.getWords(multgraph);
+
+				// words = new ArrayList<>(testSuite);
 
 				// System.out.println(StringUtils.join(words, ","));
 
+				testSuite.sort(Comparator.comparing(String::length));
 				taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
 
-				btnSaveTP.setVisible(true);
+				// btnMultigraph.setVisible(true);
 
 				lblNumTC.setVisible(true);
-				lblNumTC.setText("# Test cases: " + testSuite.size());
+				lblNumTC.setText("#Extracted test cases: " + testSuite.size());
+				
 
 			} catch (NumberFormatException e) {
 				taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
-			} catch(OutOfMemoryError e){
+			} catch (OutOfMemoryError e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, "OutOfMemoryError");
-			}finally {
+			} finally {
 				if (loading != null)
 					loading.dispose();
 			}
 		}
 	}
-	
-	
+
 	public boolean formRunIsValid() {
 		String msg = "";
 
@@ -2238,12 +2437,12 @@ public class EverestView extends JFrame {
 
 		}
 
-		if(tfVerdictSavePath.getText().isEmpty()) {
+		if (tfVerdictSavePath.getText().isEmpty()) {
 			msg += ViewConstants.selectPathSaveVerdict;
-		}else {
+		} else {
 			removeMessageRunForm(ViewConstants.selectPathSaveVerdict);
 		}
-		
+
 		taWarningRun.setText(msg);
 
 		return msg.isEmpty();
@@ -2509,25 +2708,24 @@ public class EverestView extends JFrame {
 	public void iocoConformance() {
 		conformidade = null;
 		int nTestCase = Integer.MAX_VALUE;
-		
-		if(!tfNTestCasesIOCO.getText().isEmpty()) {
+
+		if (!tfNTestCasesIOCO.getText().isEmpty()) {
 			try {
 				nTestCase = Integer.parseInt(tfNTestCasesIOCO.getText());
-				
-			}catch (Exception e) {
+
+			} catch (Exception e) {
 				nTestCase = Integer.MAX_VALUE;
 			}
-		}else {
+		} else {
 			nTestCase = 0;
 		}
 
 		if (S.getTransitions().size() != 0 || I.getTransitions().size() != 0) {
 			failPath = "";
-			conformidade = IocoConformance.verifyIOCOConformance(S, I);//, nTestCase
-			//if (conformidade.getFinalStates().size() > 0) {
-				failPath = Operations.path(S, I, conformidade, true, false,
-						nTestCase);
-			//}
+			conformidade = IocoConformance.verifyIOCOConformance(S, I);// , nTestCase
+			// if (conformidade.getFinalStates().size() > 0) {
+			failPath = Operations.path(S, I, conformidade, true, false, nTestCase);
+			// }
 		}
 
 	}
@@ -2579,22 +2777,20 @@ public class EverestView extends JFrame {
 
 				if (regexIsValid(D) && regexIsValid(F)) {
 					int nTestCase = Integer.MAX_VALUE;
-					if(!tfNTestCasesLang.getText().isEmpty()) {
+					if (!tfNTestCasesLang.getText().isEmpty()) {
 						try {
 							nTestCase = Integer.parseInt(tfNTestCasesLang.getText());
 
-						}catch (Exception e) {
+						} catch (Exception e) {
 							nTestCase = Integer.MAX_VALUE;
 						}
-					}else {
+					} else {
 						nTestCase = 0;
 					}
-					
-					
-					
-					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);//,Integer.MAX_VALUE
+
+					conformidade = LanguageBasedConformance.verifyLanguageConformance(S_, I_, D, F);// ,Integer.MAX_VALUE
 					if (conformidade.getFinalStates().size() > 0) {
-						failPath = Operations.path(S_, I_, conformidade, false, false,nTestCase);
+						failPath = Operations.path(S_, I_, conformidade, false, false, nTestCase);
 					} else {
 						failPath = "";
 					}
@@ -2662,6 +2858,14 @@ public class EverestView extends JFrame {
 	private JTextField tfVerdictSavePath;
 	private JTextField tfOneTp;
 	private JLabel lblRunModeTest;
+	private JTextField tfNTestCases_gen;
+	private JLabel label_4;
+	private JLabel lbliut_gen;
+	private JLabel lblMultigraph;
+	private JTextField textField;
+	private JButton btnRunGenerate;
+	private JLabel lblGenRunVerdict;
+	private JLabel lblRunVerdict;
 
 	public boolean isFormValid(boolean ioco) {
 		boolean defineInpOut = true;

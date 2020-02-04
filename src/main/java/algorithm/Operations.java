@@ -1295,29 +1295,36 @@ public class Operations {
 	static volatile int level;
 	static volatile Transition_ aa = null;
 
-	public static List<String> getWordsFromAutomaton(Automaton_ S, int nStatesSpec) throws IOException {
-		List<Transition_> toVisit = S.transitionsByIniState(S.getInitialState());
+	public static javafx.util.Pair<List<String>, Boolean>  getWordsFromAutomaton(Automaton_ multigraph, int nStatesSpec, Integer nTC,
+			String absolutePath, List<String> li, List<String> lu, String pathIUT) throws IOException {
+		List<Transition_> toVisit = multigraph.transitionsByIniState(multigraph.getInitialState());
 		Map<String, List<String>> map = new HashMap<>();
 		// Map<String, String> map = new HashMap<>();
 		List<Transition_> toVisit_aux = new ArrayList<>(toVisit);
+		boolean nonConf = false;
 
-		String filename = "C:\\Users\\camil\\Desktop\\teste.txt";
-		FileWriter fw = new FileWriter(filename, true);
+		// String filename = "C:\\Users\\camil\\Desktop\\teste.txt";
+		// FileWriter fw = new FileWriter(filename, true);
 
 		List<String> aux;
 		// String aux;
-		List<String> words;
+		List<String> words = new ArrayList<>();
 		Transition_ current;
 		List<State_> states = new ArrayList<>();
 		level = 0;
 		List<String> toRemove = new ArrayList<>();
 
-		List<Transition_> selfloopFailState = S.transitionsByIniState(S.getFinalStates().get(0));
+		List<Transition_> selfloopFailState = multigraph.transitionsByIniState(multigraph.getFinalStates().get(0));
 
-		states.add(S.getInitialState());
+		states.add(multigraph.getInitialState());
 		int totalTC = 0;
+		IOLTS tp;
+		File file;
+		BufferedWriter writer;
+		File tpFile;
+		javafx.util.Pair<List<List<String>>, Boolean> result;
 
-		while (!toVisit.isEmpty()) {
+		end: while (!toVisit.isEmpty()) {
 
 			current = toVisit.get(0);
 			aa = current;
@@ -1333,7 +1340,7 @@ public class Operations {
 				for (String e : map.get(current.getIniState().getName())) {// Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*"))
 					// aux.add(e + " -> " + current.getLabel());
 
-					if (current.getEndState().getName().equals(S.getFinalStates().get(0).getName())) {
+					if (current.getEndState().getName().equals(multigraph.getFinalStates().get(0).getName())) {
 						// add label of fail self loop on each TC
 						for (Transition_ transition_ : selfloopFailState) {
 							// aux += e + " -> " + current.getLabel() + " -> " + transition_.getLabel() +
@@ -1342,7 +1349,7 @@ public class Operations {
 						}
 					} else {
 						// aux += e + " -> " + current.getLabel() + ",";
-						aux.add(e + " -> " + current.getLabel() );
+						aux.add(e + " -> " + current.getLabel());
 					}
 				}
 
@@ -1350,20 +1357,16 @@ public class Operations {
 				// .map(Person::getName)
 				// .collect(Collectors.toList());
 
-				System.out.println("b: " + new Date());
-
 				// if end state has path, add
 				if (map.containsKey(current.getEndState().getName())
-						&& !(S.getFinalStates().contains(current.getEndState())
+						&& !(multigraph.getFinalStates().contains(current.getEndState())
 								&& current.getEndState().getName().equals(current.getIniState().getName()))) {
-					 aux.addAll(map.get(current.getEndState().getName()));
+					aux.addAll(map.get(current.getEndState().getName()));
 
 					// aux += String.join(",", map.get(current.getEndState().getName()));
-					
 
 				}
 
-				System.out.println("c: " + new Date());
 				//
 				// if (toVisit.stream().filter(x ->
 				// x.getIniState().getName().equals(aa.getIniState().getName()))
@@ -1373,10 +1376,8 @@ public class Operations {
 				// map.remove(current.getIniState().getName());
 				// }
 
-				System.out.println("d: " + new Date());
-
 				// if current state is not final state, the words is not a tc
-				if (!current.getEndState().getName().equals(S.getFinalStates().get(0).getName())) {
+				if (!current.getEndState().getName().equals(multigraph.getFinalStates().get(0).getName())) {
 					// map.put(current.getEndState().getName(), aux);
 					// map.put(current.getEndState().getName(),
 					// Arrays.asList(aux.split("\\s*,\\s*")));
@@ -1385,22 +1386,53 @@ public class Operations {
 					// not selfloop of final state
 					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
 						// if is a test case
-						totalTC += aux.size();
-						// totalTC += (int) Arrays.asList(aux.split("\\s*,\\s*")).size();
-						// fw.write(String.join("\n", Arrays.asList(aux.split("\\s*,\\s*"))));// appends
-						// the string to the
-						// file]
-						fw.write(String.join("\n", aux));// appends the string to the file
-						fw.write("\n");
-						// y += ((String.join("\n", Arrays.asList(aux.split("\\s*,\\s*")))) + "\n");
-						// fw.close();
-						// System.out.print(String.join("\n", aux)+"\n");
+						// totalTC += aux.size();
+						// // totalTC += (int) Arrays.asList(aux.split("\\s*,\\s*")).size();
+						// // fw.write(String.join("\n", Arrays.asList(aux.split("\\s*,\\s*"))));//
+						// appends
+						// // the string to the
+						// // file]
+						// fw.write(String.join("\n", aux));// appends the string to the file
+						// fw.write("\n");
+						// // y += ((String.join("\n", Arrays.asList(aux.split("\\s*,\\s*")))) + "\n");
+						// // fw.close();
+						// // System.out.print(String.join("\n", aux)+"\n");
+
+						for (String tc : aux) {
+							totalTC += 1;
+							
+							// save tp
+							tp = TestGeneration.testPurpose(multigraph, tc, li, lu);
+							tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+							
+							// if run TP x IUT
+							if (pathIUT != null) {
+								result = TestGeneration.runIutTp(pathIUT, tc, tpFile);
+								TestGeneration.saveOnCSVFile(result.getKey(),
+										absolutePath );//"\\runVerdicts.csv"
+								
+								//no conformance
+								if(result.getValue()) {
+									nonConf = result.getValue();
+									break end;
+								}
+							} else {
+								words.add(tc);
+								if (nTC != null && nTC == totalTC) {
+									break end;
+								}
+							}
+
+							
+
+						}
+
 					}
 				}
-				System.out.println("e: " + new Date());
+
 			} else {
 				// if current state is not final state, the words is not a tc
-				if (!current.getEndState().getName().equals(S.getFinalStates().get(0).getName())) {
+				if (!current.getEndState().getName().equals(multigraph.getFinalStates().get(0).getName())) {
 
 					map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
 					// map.put(current.getEndState().getName(), current.getLabel());
@@ -1409,31 +1441,50 @@ public class Operations {
 					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
 						// if is a test case
 						totalTC += 1;
-						fw.write(String.join("\n", Arrays.asList(current.getLabel()))); // file
-						fw.write("\n");
-
+						// fw.write(String.join("\n", Arrays.asList(current.getLabel()))); // file
+						// fw.write("\n");
+						// save tp
+						tp = TestGeneration.testPurpose(multigraph, current.getLabel(), li, lu);
+						tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+						
+						// if run TP x IUT
+						if (pathIUT != null) {
+							result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile);
+							TestGeneration.saveOnCSVFile(result.getKey(),
+									absolutePath );//+ "\\runVerdicts.csv"
+							nonConf = result.getValue();
+							//no conformance
+							if(result.getValue()) {
+								break end;
+							}
+						} else {
+							words.add(current.getLabel());
+							if (nTC != null && nTC == totalTC) {
+								break end;
+							}
+						}
+						
+						
 						// y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";
 						// fw.close();
 						// System.out.print(String.join("\n", Arrays.asList(current.getLabel()))+"\n");
+
+
 					}
 				}
 			}
 
 			toVisit.remove(current);
 
-			System.out.println("f: " + new Date());
-
 			// add transition of endState of current transition
 			if (!states.contains(current.getEndState())) {
-				toVisit.addAll(S.transitionsByIniState(current.getEndState()));
-				toVisit_aux.addAll(S.transitionsByIniState(current.getEndState()));
+				toVisit.addAll(multigraph.transitionsByIniState(current.getEndState()));
+				toVisit_aux.addAll(multigraph.transitionsByIniState(current.getEndState()));
 			}
 
 			states.add(current.getEndState());
 
 			// System.out.println(map.size()+ "-"+ map);
-
-			System.out.println("g: " + new Date());
 
 			// avoid steackoverflow, remove from map, levels that are not be used/visited
 			toVisit.stream().filter(x -> x.getIniState().getName().contains("," + level)
@@ -1459,8 +1510,6 @@ public class Operations {
 				System.gc();
 			}
 
-			System.err.println("Total tc: " + totalTC);
-
 			// System.err.println(map.size()+ "-"+map.keySet() +" - "+
 			// current.getEndState());
 			// if(map.containsKey(S.getFinalStates().get(0).toString()))
@@ -1468,11 +1517,11 @@ public class Operations {
 			// " + map.get(S.getFinalStates().get(0).toString()));
 
 		}
-		fw.close();
+		// fw.close();
 
-		System.err.println("Total tc: " + totalTC);
+		// System.err.println("Total tc: " + totalTC);
 
-		words = new ArrayList<>();
+		// words = new ArrayList<>();
 
 		// for (State_ s : S.getFinalStates()) {
 		//
@@ -1480,7 +1529,7 @@ public class Operations {
 		// words.addAll(map.get(s.getName()));
 		// }
 
-		return words;
+		return new javafx.util.Pair<List<String>, Boolean>(words, nonConf) ;
 		// return String.join(",", words);
 	}
 
