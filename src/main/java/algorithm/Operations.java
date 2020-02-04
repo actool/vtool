@@ -1295,7 +1295,7 @@ public class Operations {
 	static volatile int level;
 	static volatile Transition_ aa = null;
 
-	public static javafx.util.Pair<List<String>, Boolean>  getWordsFromAutomaton(Automaton_ multigraph, int nStatesSpec, Integer nTC,
+	public static javafx.util.Pair<List<String>, Boolean>  getWordsFromAutomaton(Automaton_ multigraph, Integer nTC,
 			String absolutePath, List<String> li, List<String> lu, String pathIUT) throws IOException {
 		List<Transition_> toVisit = multigraph.transitionsByIniState(multigraph.getInitialState());
 		Map<String, List<String>> map = new HashMap<>();
