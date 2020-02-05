@@ -1857,9 +1857,22 @@ public class EverestView extends JFrame {
 
 					try {
 
+					
+						
+						String contents = new String(Files.readAllBytes(Paths.get(pathMultigraph)));
+						contents=contents.substring(contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE));
+						contents = contents.substring(contents.indexOf('\n')+1);
+						String tempFileName =  "multigraph_" + dateFormat.format(new Date()) + ".aut";
+						file = new File(folder,tempFileName);
+						BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+						writer.write(contents);
+						writer.close();
+						
+						
 						multigraph = ImportAutFile
-								.autToIOLTS(pathMultigraph, false, new ArrayList<>(), new ArrayList<>())
+								.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>())
 								.ioltsToAutomaton();
+						file.delete();
 						multigraph.setFinalStates(Arrays.asList(new State_("fail")));
 
 						javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(multigraph,
@@ -2375,11 +2388,7 @@ public class EverestView extends JFrame {
 				multigraph.setInitialState(new State_(multigraph.getInitialState().getName().replace(",", "_")));
 
 				try {
-					file = new File(folder, "multigraph_" + dateFormat.format(new Date()) + ".aut");
-					BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-					writer.write(AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(), multigraph.getInitialState(),
-							multigraph.getAlphabet(), multigraph.getTransitions(), I.getInputs(), I.getOutputs())));
-					writer.close();
+					saveMultigraphFile(folder);
 
 					javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(multigraph,
 
@@ -2415,6 +2424,27 @@ public class EverestView extends JFrame {
 		}
 	}
 
+	public void saveMultigraphFile(String folder) {
+		try {
+			String fileContent = "";
+			// save m
+			fileContent += "Max IUT states: " + tfM.getText() + "\n";
+			// save spec
+			fileContent += AutGenerator.ioltsToAut(new IOLTS(S.getStates(), S.getInitialState(), S.getAlphabet(),
+					S.getTransitions(), S.getInputs(), S.getOutputs()));
+			// save multigraph
+			fileContent += Constants.SEPARATOR_MULTIGRAPH_FILE;
+			fileContent += AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(), multigraph.getInitialState(),
+					multigraph.getAlphabet(), multigraph.getTransitions(), S.getInputs(), S.getOutputs()));
+			File file = new File(folder, "spec-multigraph_" + dateFormat.format(new Date()) + ".aut");
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write(fileContent);
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void saveMultigraphAndTP() {
 		if (isFormValidGeneration()) {
 
@@ -2435,11 +2465,9 @@ public class EverestView extends JFrame {
 				multigraph.setInitialState(new State_(multigraph.getInitialState().getName().replace(",", "_")));
 
 				try {
-					file = new File(folder, "multigraph_" + dateFormat.format(new Date()) + ".aut");
-					BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-					writer.write(AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(), multigraph.getInitialState(),
-							multigraph.getAlphabet(), multigraph.getTransitions(), S.getInputs(), S.getOutputs())));
-					writer.close();
+					
+					saveMultigraphFile(folder);
+					
 
 					// System.out.println(multigraph);
 					// testSuite = Graph.getWords(multigraph);
@@ -3173,7 +3201,7 @@ public class EverestView extends JFrame {
 
 		if (!constainsMessage_gen(ViewConstants.multigraph_generation))
 			msg += ViewConstants.multigraph_generation;
-		
+
 		if (!constainsMessage_gen(ViewConstants.generation_mult))
 			msg += ViewConstants.generation_mult;
 

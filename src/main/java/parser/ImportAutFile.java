@@ -150,6 +150,8 @@ public class ImportAutFile {
 			throw e;
 		}
 	}
+	
+	
 
 	/***
 	 * Converts the lts from the .aut file to the LTS object

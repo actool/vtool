@@ -34,6 +34,8 @@ public class Constants {
 	public static final Integer MAX_TEST_CASES = 5;//Integer.MAX_VALUE
 //	public static final Integer MAX_TEST_CASES_REAL =MAX_TEST_CASES+ (MAX_TEST_CASES <15? (MAX_TEST_CASES*2): (MAX_TEST_CASES/4));
 	
+	public static final String SEPARATOR_MULTIGRAPH_FILE = "#######################################################\n";
+	
 	
 
 }
