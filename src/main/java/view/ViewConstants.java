@@ -40,9 +40,10 @@ public class ViewConstants {
 	public static final String labelInpOut="There labels that were not set as input/output \n";
 	public static final String mInteger="The parameter max IUT states must be integer \n";
 	public static final String ntcInteger="The parameter # Test cases must be integer \n";
+	public static final String generation_mult = "* To generate the multigraph, \n inform the 'Specification' and '# Max iut states' \n";
 	public static final String generation = "* To generate the multigraph and some TPs, \n inform the 'Specification', '# Max iut states' and '# Teste cases'  \n";
 	public static final String run_generation = "* To generate (multigraph and TPs) and run the test, \n inform the 'Specification', 'Implementation' and '# Max iut states' \n";
-	public static final String multigraph_generation = "* To extract the TPs from the multigraph and execute, \n inform the 'Implementation' and 'Multigraph' \n";
+	public static final String multigraph_generation = "* To extract the TPs from the multigraph and run, \n inform the 'Implementation' and 'Multigraph' \n";
 	public static final String selectSpecification_iut = "Select the specification or/and implementation model \n";
 	
 	

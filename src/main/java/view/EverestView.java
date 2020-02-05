@@ -220,8 +220,7 @@ public class EverestView extends JFrame {
 			lblImplementationIoco.setText(tfImplementation.getText());
 			lblimplementationLang.setText(tfImplementation.getText());
 			lblimplementation_gen.setText(tfImplementation.getText());
-			
-			
+
 			lbliut_gen.setText(tfImplementation.getText());
 			processModels(true, true);
 			isImplementationProcess = false;
@@ -878,7 +877,7 @@ public class EverestView extends JFrame {
 							// loading.setVisible(true);
 
 							generation = true;
-							//verifyModelFileChange(ioco, false);
+							// verifyModelFileChange(ioco, false);
 
 							visibilityRunButtons();
 							errorMessageGen();
@@ -2246,41 +2245,38 @@ public class EverestView extends JFrame {
 		clearRadioButtonTP();
 	}
 
-	
 	public void visibilityRunButtons() {
 		boolean removeMessage = false;
-		
-		
-		if ( !tfM.getText().isEmpty() && S != null) {//!tfNTestCases_gen.getText().isEmpty() &&
+
+		if (!tfM.getText().isEmpty() && S != null) {// !tfNTestCases_gen.getText().isEmpty() &&
 			btnGenerate.setVisible(true);
-			removeMessage=true;			
+			removeMessage = true;
 		} else {
 			btnGenerate.setVisible(false);
 		}
 
 		if (S != null && I != null && !tfM.getText().isEmpty()) {
 			btnRunGenerate.setVisible(true);
-			removeMessage=true;
+			removeMessage = true;
 		} else {
 			btnRunGenerate.setVisible(false);
 		}
-		
 
 		if (pathMultigraph != null && I != null) {
 			btnRunMultigraph.setVisible(true);
-			removeMessage=true;
+			removeMessage = true;
 		} else {
 			btnRunMultigraph.setVisible(false);
 		}
-		
-		
-		if(removeMessage) {
+
+		if (removeMessage) {
 			removeMessageGen(ViewConstants.generation);
 			removeMessageGen(ViewConstants.run_generation);
 			removeMessageGen(ViewConstants.multigraph_generation);
+			removeMessageGen(ViewConstants.generation_mult);
 		}
 	}
-	
+
 	String pathMultigraph;
 
 	public void getMultigraphPaph() {
@@ -2425,11 +2421,7 @@ public class EverestView extends JFrame {
 			JFileChooser fc = directoryChooser();
 			fc.showOpenDialog(EverestView.this);
 			String folder = fc.getSelectedFile().getAbsolutePath();
-
-			File file = new File(folder + "\\TPs\\");
-			if (!file.exists()) {
-				file.mkdir();
-			}
+			File file;
 
 			JFrame loading = null;
 			try {
@@ -2459,9 +2451,17 @@ public class EverestView extends JFrame {
 					// multigraph.getTransitions(), S.getInputs(), S.getOutputs())));
 					// writer.close();
 
-					testSuite = Operations.getWordsFromAutomaton(multigraph,
-							(!tfNTestCases_gen.getText().isEmpty())?Integer.parseInt(tfNTestCases_gen.getText()):Integer.MAX_VALUE, folder, S.getInputs(), S.getOutputs(), null)
-							.getKey();
+					if (!tfNTestCases_gen.getText().isEmpty()) {// generate just multigraph if #test cases is empty
+						file = new File(folder + "\\TPs\\");
+						if (!file.exists()) {
+							file.mkdir();
+						}
+						testSuite = Operations
+								.getWordsFromAutomaton(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
+										S.getInputs(), S.getOutputs(), null)
+								.getKey();
+					}
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -2482,13 +2482,14 @@ public class EverestView extends JFrame {
 
 				// System.out.println(StringUtils.join(words, ","));
 
-				testSuite.sort(Comparator.comparing(String::length));
-				taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
+				if (!tfNTestCases_gen.getText().isEmpty()) {
+					testSuite.sort(Comparator.comparing(String::length));
+					taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
+					// btnMultigraph.setVisible(true);
 
-				// btnMultigraph.setVisible(true);
-
-				lblNumTC.setVisible(true);
-				lblNumTC.setText("#Extracted test cases: " + testSuite.size());
+					lblNumTC.setVisible(true);
+					lblNumTC.setText("#Extracted test cases: " + testSuite.size());
+				}
 
 			} catch (NumberFormatException e) {
 				taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
@@ -3080,15 +3081,15 @@ public class EverestView extends JFrame {
 		boolean model = cbModel.getSelectedIndex() == 0;
 		String msg = "";
 
-		//verifyModelsEmpty(true, false);
-		
-		if(!tfImplementation.getText().isEmpty()) {
+		// verifyModelsEmpty(true, false);
+
+		if (!tfImplementation.getText().isEmpty()) {
 			setModel(false, true);
-			
+
 		}
-		if(!tfSpecification.getText().isEmpty()) {
+		if (!tfSpecification.getText().isEmpty()) {
 			setModel(false, false);
-			
+
 		}
 
 		if (!constainsMessage_gen(ViewConstants.selectSpecification_iut) && (S == null && I == null)) {
@@ -3172,6 +3173,9 @@ public class EverestView extends JFrame {
 
 		if (!constainsMessage_gen(ViewConstants.multigraph_generation))
 			msg += ViewConstants.multigraph_generation;
+		
+		if (!constainsMessage_gen(ViewConstants.generation_mult))
+			msg += ViewConstants.generation_mult;
 
 		taWarning_gen.setText(taWarning_gen.getText() + msg);
 
