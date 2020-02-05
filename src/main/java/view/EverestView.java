@@ -220,9 +220,10 @@ public class EverestView extends JFrame {
 			lblImplementationIoco.setText(tfImplementation.getText());
 			lblimplementationLang.setText(tfImplementation.getText());
 			lblimplementation_gen.setText(tfImplementation.getText());
-
+			
+			
 			lbliut_gen.setText(tfImplementation.getText());
-			 processModels(true, true);
+			processModels(true, true);
 			isImplementationProcess = false;
 
 			lastModifiedImp = new File(pathImplementation).lastModified();
@@ -877,17 +878,19 @@ public class EverestView extends JFrame {
 							// loading.setVisible(true);
 
 							generation = true;
-							verifyModelFileChange(ioco, false);
+							//verifyModelFileChange(ioco, false);
 
+							visibilityRunButtons();
 							errorMessageGen();
 
 							if (isFormValidGeneration()) {
-								taWarning_gen.setText("");
+								// taWarning_gen.setText("");
 								showModelLabel_(false);
 								verifyInpOutEmpty(false, true);
-								verifyModelsEmpty(false, false);
+								// verifyModelsEmpty(false, false);
 							}
-							removeMessageGen(ViewConstants.selectImplementation);
+							// removeMessageGen(ViewConstants.selectImplementation);
+
 						}
 					}
 				}
@@ -1738,17 +1741,7 @@ public class EverestView extends JFrame {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (!tfNTestCases_gen.getText().isEmpty() && !tfM.getText().isEmpty() && S != null) {
-					btnGenerate.setVisible(true);
-				} else {
-					btnGenerate.setVisible(false);
-				}
-
-				if (S != null && I != null && !tfM.getText().isEmpty()) {
-					btnRunGenerate.setVisible(true);
-				} else {
-					btnRunGenerate.setVisible(true);
-				}
+				visibilityRunButtons();
 			}
 		});
 		tfM.setForeground(SystemColor.controlShadow);
@@ -1794,11 +1787,7 @@ public class EverestView extends JFrame {
 		tfNTestCases_gen.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (!tfNTestCases_gen.getText().isEmpty() && !tfM.getText().isEmpty() && S != null) {
-					btnGenerate.setVisible(true);
-				} else {
-					btnGenerate.setVisible(false);
-				}
+				visibilityRunButtons();
 			}
 		});
 
@@ -1847,67 +1836,66 @@ public class EverestView extends JFrame {
 		btnRunMultigraph.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				//if (isFormValidGeneration()) {
-					lblNumTC.setVisible(false);
-					lblGenRunVerdict.setVisible(false);
-					lblRunVerdict.setVisible(false);
+				// if (isFormValidGeneration()) {
+				lblNumTC.setVisible(false);
+				lblGenRunVerdict.setVisible(false);
+				lblRunVerdict.setVisible(false);
 
-					JFileChooser fc = directoryChooser();
-					fc.showOpenDialog(EverestView.this);
-					String folder = fc.getSelectedFile().getAbsolutePath();
+				JFileChooser fc = directoryChooser();
+				fc.showOpenDialog(EverestView.this);
+				String folder = fc.getSelectedFile().getAbsolutePath();
 
-					File file = new File(folder + "\\TPs\\");
-					if (!file.exists()) {
-						file.mkdir();
-					}
+				File file = new File(folder + "\\TPs\\");
+				if (!file.exists()) {
+					file.mkdir();
+				}
 
-					JFrame loading = null;
+				JFrame loading = null;
+				try {
+
+					loading = loadingDialog();
+					loading.setVisible(true);
+
 					try {
 
-						loading = loadingDialog();
-						loading.setVisible(true);
+						multigraph = ImportAutFile
+								.autToIOLTS(pathMultigraph, false, new ArrayList<>(), new ArrayList<>())
+								.ioltsToAutomaton();
+						multigraph.setFinalStates(Arrays.asList(new State_("fail")));
 
-						try {
+						javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(multigraph,
+								(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
+										: null,
+								folder, I.getInputs(), I.getOutputs(), pathImplementation);
 
-							multigraph = ImportAutFile.autToIOLTS(pathMultigraph, false, new ArrayList<>(), new ArrayList<>()).ioltsToAutomaton();
-							multigraph.setFinalStates(Arrays.asList(new State_("fail")));
-							
-							
-							javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(
-									multigraph, 
-									(!tfNTestCases_gen.getText().isEmpty())
-											? Integer.parseInt(tfNTestCases_gen.getText())
-											: null,
-									folder, I.getInputs(), I.getOutputs(), pathImplementation);
+						testSuite = result.getKey();
 
-							testSuite = result.getKey();
-
-							// nonconf verdict
-							if (result.getValue()) {
-								lblRunVerdict.setText(ViewConstants.genRun_fault);
-							} else {
-								lblRunVerdict.setText(ViewConstants.genRun_noFault);
-							}
-							lblRunVerdict.setVisible(true);
-
-						} catch (IOException ee) {
-							// TODO Auto-generated catch block
-							ee.printStackTrace();
+						// nonconf verdict
+						if (result.getValue()) {
+							lblRunVerdict.setText(ViewConstants.genRun_fault);
+						} else {
+							lblRunVerdict.setText(ViewConstants.genRun_noFault);
 						}
+						lblRunVerdict.setVisible(true);
 
-					} catch (NumberFormatException ee) {
-						taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
-					} catch (OutOfMemoryError ee) {
+					} catch (IOException ee) {
+						// TODO Auto-generated catch block
 						ee.printStackTrace();
-						JOptionPane.showMessageDialog(null, "OutOfMemoryError");
-					} catch (Exception ee) {
-						ee.printStackTrace();
-					} finally {
-						if (loading != null)
-							loading.dispose();
 					}
 
-				//}
+				} catch (NumberFormatException ee) {
+					taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.mInteger);
+				} catch (OutOfMemoryError ee) {
+					ee.printStackTrace();
+					JOptionPane.showMessageDialog(null, "OutOfMemoryError");
+				} catch (Exception ee) {
+					ee.printStackTrace();
+				} finally {
+					if (loading != null)
+						loading.dispose();
+				}
+
+				// }
 			}
 		});
 		btnRunMultigraph.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1929,14 +1917,14 @@ public class EverestView extends JFrame {
 		btnRunGenerate.setVisible(false);
 		panel_test_generation.add(btnRunGenerate);
 
-		lblGenRunVerdict = new JLabel("Verdict: ");
+		lblGenRunVerdict = new JLabel("");
 		lblGenRunVerdict.setForeground(SystemColor.windowBorder);
 		lblGenRunVerdict.setFont(new Font("Dialog", Font.BOLD, 13));
 		lblGenRunVerdict.setBounds(625, 144, 167, 14);
 		lblGenRunVerdict.setVisible(false);
 		panel_test_generation.add(lblGenRunVerdict);
 
-		lblRunVerdict = new JLabel("Verdict: ");
+		lblRunVerdict = new JLabel("");
 		lblRunVerdict.setForeground(SystemColor.windowBorder);
 		lblRunVerdict.setFont(new Font("Dialog", Font.BOLD, 13));
 		lblRunVerdict.setBounds(625, 195, 167, 14);
@@ -2258,6 +2246,41 @@ public class EverestView extends JFrame {
 		clearRadioButtonTP();
 	}
 
+	
+	public void visibilityRunButtons() {
+		boolean removeMessage = false;
+		
+		
+		if ( !tfM.getText().isEmpty() && S != null) {//!tfNTestCases_gen.getText().isEmpty() &&
+			btnGenerate.setVisible(true);
+			removeMessage=true;			
+		} else {
+			btnGenerate.setVisible(false);
+		}
+
+		if (S != null && I != null && !tfM.getText().isEmpty()) {
+			btnRunGenerate.setVisible(true);
+			removeMessage=true;
+		} else {
+			btnRunGenerate.setVisible(false);
+		}
+		
+
+		if (pathMultigraph != null && I != null) {
+			btnRunMultigraph.setVisible(true);
+			removeMessage=true;
+		} else {
+			btnRunMultigraph.setVisible(false);
+		}
+		
+		
+		if(removeMessage) {
+			removeMessageGen(ViewConstants.generation);
+			removeMessageGen(ViewConstants.run_generation);
+			removeMessageGen(ViewConstants.multigraph_generation);
+		}
+	}
+	
 	String pathMultigraph;
 
 	public void getMultigraphPaph() {
@@ -2267,11 +2290,7 @@ public class EverestView extends JFrame {
 			tfMultigraph.setText(fc.getSelectedFile().getName());
 			pathMultigraph = fc.getSelectedFile().getAbsolutePath();
 
-			if (pathMultigraph != null && I != null) {
-				btnRunMultigraph.setVisible(true);
-			} else {
-				btnRunMultigraph.setVisible(false);
-			}
+			visibilityRunButtons();
 		} catch (Exception e) {
 		}
 	}
@@ -2367,7 +2386,7 @@ public class EverestView extends JFrame {
 					writer.close();
 
 					javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(multigraph,
-							
+
 							(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 									: null,
 							folder, S.getInputs(), S.getOutputs(), pathImplementation);
@@ -2440,12 +2459,14 @@ public class EverestView extends JFrame {
 					// multigraph.getTransitions(), S.getInputs(), S.getOutputs())));
 					// writer.close();
 
-					testSuite = Operations.getWordsFromAutomaton(multigraph, 
-							Integer.parseInt(tfNTestCases_gen.getText()), folder + "\\TPs\\", S.getInputs(),
-							S.getOutputs(), null).getKey();
+					testSuite = Operations.getWordsFromAutomaton(multigraph,
+							(!tfNTestCases_gen.getText().isEmpty())?Integer.parseInt(tfNTestCases_gen.getText()):Integer.MAX_VALUE, folder, S.getInputs(), S.getOutputs(), null)
+							.getKey();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (NumberFormatException e) {
+					taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.ntcInteger);
 				}
 
 				// System.err.println("qtd:" + testSuite.size() + " transições: " +
@@ -3002,19 +3023,25 @@ public class EverestView extends JFrame {
 
 	public boolean isFormValidGeneration() {
 		boolean defineInpOut = true;
+		List<String> inpOut = new ArrayList<>();
+		List<String> alphabet = new ArrayList<>();
 		if (S != null) {
-			List<String> inpOut = new ArrayList<>();
 			inpOut.addAll(S.getInputs());
 			inpOut.addAll(S.getOutputs());
-
-			List<String> alphabet = new ArrayList<>();
 			alphabet.addAll(S.getAlphabet());
-
+			alphabet.remove(Constants.DELTA);
 			defineInpOut = inpOut.containsAll(alphabet);
-
+		}
+		if (I != null) {
+			inpOut.addAll(I.getInputs());
+			inpOut.addAll(I.getOutputs());
+			alphabet.addAll(I.getAlphabet());
+			alphabet.remove(Constants.DELTA);
+			defineInpOut = inpOut.containsAll(alphabet);
 		}
 
-		return (!tfSpecification.getText().isEmpty() && (cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST
+		return ((!tfSpecification.getText().isEmpty() || !tfImplementation.getText().isEmpty()) && (cbModel
+				.getSelectedItem() == ViewConstants.IOLTS_CONST
 				&& ((cbLabel.getSelectedItem() == ViewConstants.typeAutomaticLabel)
 						|| (cbLabel.getSelectedItem() == ViewConstants.typeManualLabel
 								&& (!tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty())) && defineInpOut)));
@@ -3030,6 +3057,10 @@ public class EverestView extends JFrame {
 		}
 
 		return false;
+	}
+
+	public boolean constainsMessage_gen(String msg) {
+		return taWarning_gen.getText().contains(msg);
 	}
 
 	public void removeMessageGen(String msg) {
@@ -3049,9 +3080,24 @@ public class EverestView extends JFrame {
 		boolean model = cbModel.getSelectedIndex() == 0;
 		String msg = "";
 
-		verifyModelsEmpty(true, false);
+		//verifyModelsEmpty(true, false);
+		
+		if(!tfImplementation.getText().isEmpty()) {
+			setModel(false, true);
+			
+		}
+		if(!tfSpecification.getText().isEmpty()) {
+			setModel(false, false);
+			
+		}
 
-		if (!constainsMessage(true, ViewConstants.selectModel) && model) {
+		if (!constainsMessage_gen(ViewConstants.selectSpecification_iut) && (S == null && I == null)) {
+			msg += ViewConstants.selectSpecification_iut;
+		} else {
+			removeMessageGen(ViewConstants.selectSpecification_iut);
+		}
+
+		if (!constainsMessage_gen(ViewConstants.selectModel) && model) {
 			msg += ViewConstants.selectModel;
 		} else {
 			if (!model) {
@@ -3061,7 +3107,7 @@ public class EverestView extends JFrame {
 
 		boolean ioltsLabel = cbLabel.getSelectedIndex() == 0 && cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST;
 
-		if (!constainsMessage(true, ViewConstants.selectIoltsLabel) && ioltsLabel) {
+		if (!constainsMessage_gen(ViewConstants.selectIoltsLabel) && ioltsLabel) {
 			msg += ViewConstants.selectIoltsLabel;
 		} else {
 			if (!ioltsLabel) {
@@ -3071,32 +3117,45 @@ public class EverestView extends JFrame {
 
 		boolean lts = cbModel.getSelectedItem() == ViewConstants.LTS_CONST;
 
-		if (!constainsMessage(true, ViewConstants.selectIolts) && lts) {
-			msg += ViewConstants.selectIolts;
+		if (!constainsMessage_gen(ViewConstants.selectIolts_gen) && lts) {
+			msg += ViewConstants.selectIolts_gen;
 		} else {
 			if (!lts) {
-				removeMessageGen(ViewConstants.selectIolts);
+				removeMessageGen(ViewConstants.selectIolts_gen);
 			}
 		}
 
 		verifyInpOutEmpty(true, true);
 
 		boolean defineInpOut = true;
+		List<String> alphabet = new ArrayList<>();
+		List<String> inpOut = new ArrayList<>();
+		HashSet hashSet_s_;
 		if (S != null) {
-			List<String> inpOut = new ArrayList<>();
 			inpOut.addAll(S.getInputs());
 			inpOut.addAll(S.getOutputs());
 
-			List<String> alphabet = new ArrayList<>();
 			alphabet.addAll(S.getAlphabet());
 
-			HashSet hashSet_s_ = new LinkedHashSet<>(alphabet);
+			hashSet_s_ = new LinkedHashSet<>(alphabet);
 			alphabet = new ArrayList<>(hashSet_s_);
 			alphabet.remove(Constants.DELTA);
 			defineInpOut = inpOut.containsAll(alphabet);
-
 		}
-		if (!constainsMessage(true, ViewConstants.labelInpOut) && !defineInpOut && !model
+
+		if (I != null) {
+			inpOut.addAll(I.getInputs());
+			inpOut.addAll(I.getOutputs());
+
+			alphabet.addAll(I.getAlphabet());
+
+			hashSet_s_ = new LinkedHashSet<>(alphabet);
+			alphabet = new ArrayList<>(hashSet_s_);
+			alphabet.remove(Constants.DELTA);
+			defineInpOut = inpOut.containsAll(alphabet);
+		}
+
+		if (!constainsMessage_gen(ViewConstants.labelInpOut) && !defineInpOut && !model
 				&& (cbModel.getSelectedIndex() != 1 && cbLabel.getSelectedIndex() != 0)) {
 			msg += ViewConstants.labelInpOut;
 		} else {
@@ -3105,13 +3164,14 @@ public class EverestView extends JFrame {
 			}
 		}
 
-		if (!constainsMessage(true, ViewConstants.selectIolts_gen) && lts) {
-			msg += ViewConstants.selectIolts_gen;
-		} else {
-			if (!lts) {
-				removeMessage(true, ViewConstants.selectIolts_gen);
-			}
-		}
+		if (!constainsMessage_gen(ViewConstants.generation))
+			msg += ViewConstants.generation;
+
+		if (!constainsMessage_gen(ViewConstants.run_generation))
+			msg += ViewConstants.run_generation;
+
+		if (!constainsMessage_gen(ViewConstants.multigraph_generation))
+			msg += ViewConstants.multigraph_generation;
 
 		taWarning_gen.setText(taWarning_gen.getText() + msg);
 

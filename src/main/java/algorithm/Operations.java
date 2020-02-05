@@ -1295,7 +1295,7 @@ public class Operations {
 	static volatile int level;
 	static volatile Transition_ aa = null;
 
-	public static javafx.util.Pair<List<String>, Boolean>  getWordsFromAutomaton(Automaton_ multigraph, Integer nTC,
+	public static javafx.util.Pair<List<String>, Boolean> getWordsFromAutomaton(Automaton_ multigraph, Integer nTC,
 			String absolutePath, List<String> li, List<String> lu, String pathIUT) throws IOException {
 		List<Transition_> toVisit = multigraph.transitionsByIniState(multigraph.getInitialState());
 		Map<String, List<String>> map = new HashMap<>();
@@ -1323,6 +1323,7 @@ public class Operations {
 		BufferedWriter writer;
 		File tpFile;
 		javafx.util.Pair<List<List<String>>, Boolean> result;
+		int contSelfLoopFinalState = selfloopFailState.size()-1;
 
 		end: while (!toVisit.isEmpty()) {
 
@@ -1341,12 +1342,24 @@ public class Operations {
 					// aux.add(e + " -> " + current.getLabel());
 
 					if (current.getEndState().getName().equals(multigraph.getFinalStates().get(0).getName())) {
-						// add label of fail self loop on each TC
-						for (Transition_ transition_ : selfloopFailState) {
-							// aux += e + " -> " + current.getLabel() + " -> " + transition_.getLabel() +
-							// ",";
-							aux.add(e + " -> " + current.getLabel() + " -> " + transition_.getLabel());
+						//if # test cases was informed not add self loop on every TC
+						if (nTC == null|| nTC == Integer.MAX_VALUE) {
+							// add label of fail self loop on each TC
+							for (Transition_ transition_ : selfloopFailState) {
+								// aux += e + " -> " + current.getLabel() + " -> " + transition_.getLabel() +
+								// ",";
+								aux.add(e + " -> " + current.getLabel() + " -> " + transition_.getLabel());
+							}
+						} else {
+							//if has selfloop not coverage
+							if (contSelfLoopFinalState >= 0) {
+								aux.add(e + " -> " + current.getLabel() + " -> " + selfloopFailState.get(contSelfLoopFinalState).getLabel());
+								contSelfLoopFinalState--;
+							}else {
+								aux.add(e + " -> " + current.getLabel() );
+							}
 						}
+
 					} else {
 						// aux += e + " -> " + current.getLabel() + ",";
 						aux.add(e + " -> " + current.getLabel());
@@ -1400,19 +1413,18 @@ public class Operations {
 
 						for (String tc : aux) {
 							totalTC += 1;
-							
+
 							// save tp
 							tp = TestGeneration.testPurpose(multigraph, tc, li, lu);
 							tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
-							
+
 							// if run TP x IUT
 							if (pathIUT != null) {
 								result = TestGeneration.runIutTp(pathIUT, tc, tpFile);
-								TestGeneration.saveOnCSVFile(result.getKey(),
-										absolutePath );//"\\runVerdicts.csv"
-								
-								//no conformance
-								if(result.getValue()) {
+								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
+
+								// no conformance
+								if (result.getValue()) {
 									nonConf = result.getValue();
 									break end;
 								}
@@ -1422,8 +1434,6 @@ public class Operations {
 									break end;
 								}
 							}
-
-							
 
 						}
 
@@ -1446,15 +1456,14 @@ public class Operations {
 						// save tp
 						tp = TestGeneration.testPurpose(multigraph, current.getLabel(), li, lu);
 						tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
-						
+
 						// if run TP x IUT
 						if (pathIUT != null) {
 							result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile);
-							TestGeneration.saveOnCSVFile(result.getKey(),
-									absolutePath );//+ "\\runVerdicts.csv"
+							TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// + "\\runVerdicts.csv"
 							nonConf = result.getValue();
-							//no conformance
-							if(result.getValue()) {
+							// no conformance
+							if (result.getValue()) {
 								break end;
 							}
 						} else {
@@ -1463,12 +1472,10 @@ public class Operations {
 								break end;
 							}
 						}
-						
-						
+
 						// y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";
 						// fw.close();
 						// System.out.print(String.join("\n", Arrays.asList(current.getLabel()))+"\n");
-
 
 					}
 				}
@@ -1529,7 +1536,7 @@ public class Operations {
 		// words.addAll(map.get(s.getName()));
 		// }
 
-		return new javafx.util.Pair<List<String>, Boolean>(words, nonConf) ;
+		return new javafx.util.Pair<List<String>, Boolean>(words, nonConf);
 		// return String.join(",", words);
 	}
 

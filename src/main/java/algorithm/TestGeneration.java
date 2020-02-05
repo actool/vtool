@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -403,7 +404,7 @@ public class TestGeneration {
 	
 	public static File  saveTP(String tpFolder, IOLTS tp) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-S");
-		File file = new File(tpFolder, "tp_" + dateFormat.format(new Date()) + ".aut");
+		File file = new File(tpFolder, "tp_" + dateFormat.format(new Date()) + "-"+Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)]+".aut");
 		BufferedWriter writer;
 		try {
 			writer = new BufferedWriter(new FileWriter(file));
