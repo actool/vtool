@@ -1414,10 +1414,13 @@ public class Operations {
 						for (String tc : aux) {
 							totalTC += 1;
 
+							
 							// save tp
 							tp = TestGeneration.testPurpose(multigraph, tc, li, lu);
-							tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
-
+							//tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+							tpFile = TestGeneration.saveTP(absolutePath , tp);
+							
+							
 							// if run TP x IUT
 							if (pathIUT != null) {
 								result = TestGeneration.runIutTp(pathIUT, tc, tpFile);
@@ -1430,10 +1433,12 @@ public class Operations {
 								}
 							} else {
 								words.add(tc);
-								if (nTC != null && nTC == totalTC) {
-									break end;
-								}
+								
 							}
+							if (nTC != null && nTC == totalTC) {
+								break end;
+							}
+							
 
 						}
 
@@ -1455,7 +1460,8 @@ public class Operations {
 						// fw.write("\n");
 						// save tp
 						tp = TestGeneration.testPurpose(multigraph, current.getLabel(), li, lu);
-						tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+						//tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+						tpFile = TestGeneration.saveTP(absolutePath, tp);
 
 						// if run TP x IUT
 						if (pathIUT != null) {
@@ -1468,9 +1474,11 @@ public class Operations {
 							}
 						} else {
 							words.add(current.getLabel());
-							if (nTC != null && nTC == totalTC) {
-								break end;
-							}
+							
+						}
+						
+						if (nTC != null && nTC == totalTC) {
+							break end;
 						}
 
 						// y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";

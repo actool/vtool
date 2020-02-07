@@ -29,85 +29,85 @@ import view.EverestView;
 
 public class TestGeneration {
 
-	public static void main(String[] args) {
-		String path = "C:\\Users\\camil\\Documents\\aut-separados\\iolts-spec.aut";
-		try {
-			IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
-
-			List<State_> endStates = new ArrayList<>();
-			List<Transition_> endTransitions = new ArrayList<>();
-			iolts.addQuiescentTransitions();
-			// System.out.println(iolts);
-
-			Automaton_ multgraph = multiGraphD(iolts, 1);
-
-			// System.out.println(multgraph);//201 transições
-
-			// *implementar
-			// get word from multgraph
-
-			// System.out.println(new Date());
-			// List<String> words = Graph.getWords(multgraph);
-			// System.out.println(new Date());
-			//// words = new ArrayList<>(new HashSet<>(words));
-			//
-			// // System.out.println(words.size());
-			//
-			// for (String w : words) {
-			// System.out.println(w);
-			// }
-
-			// // to decrease the performance of statePath
-			// if (multgraph.getInitialState().getTransitions().size() == 0) {
-			// if
-			// (multgraph.getStates().stream().findAny().orElse(null).getTransitions().size()
-			// == 0) {
-			// for (Transition_ t : multgraph.getTransitions()) {
-			// multgraph.getStates().stream().filter(x ->
-			// x.equals(t.getIniState())).findFirst().orElse(null)
-			// .addTransition(t);
-			// t.setIniState(multgraph.getStates().stream().filter(x ->
-			// x.equals(t.getIniState())).findFirst()
-			// .orElse(null));
-			// t.setEndState(multgraph.getStates().stream().filter(x ->
-			// x.equals(t.getEndState())).findFirst()
-			// .orElse(null));
-			// }
-			// }
-			// multgraph.setInitialState(multgraph.getStates().stream()
-			// .filter(x ->
-			// x.equals(multgraph.getInitialState())).findFirst().orElse(null));
-			// }
-			//
-			// List<String> testCases = new ArrayList<>();
-			// // set words to reach final state, because of the modification of the final
-			// // states
-			// for (String w : words) {
-			// for (List<State_> states_ : Operations.statePath(multgraph, w)) {
-			//
-			// // endState = states_.get(states_.size()-1);//-1
-			// for (Transition_ t : endTransitions.stream()
-			// .filter(x -> x.getIniState().equals(states_.get(states_.size() - 1)))
-			// .collect(Collectors.toList())) {
-			// testCases.add(w + " -> " + t.getLabel());
-			// }
-			// }
-			// }
-			//
-			// // System.out.println(testCases);
-			//
-			// for (String tc : testCases) {
-			// System.out.println(testPurpose(multgraph, tc, iolts.getOutputs(),
-			// iolts.getInputs()));// "a -> x -> b ->
-			// // a -> a -> b
-			// // -> b -> x"
-			// }
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		String path = "C:\\Users\\camil\\Documents\\aut-separados\\iolts-spec.aut";
+//		try {
+//			IOLTS iolts = ImportAutFile.autToIOLTS(path, false, null, null);
+//
+//			List<State_> endStates = new ArrayList<>();
+//			List<Transition_> endTransitions = new ArrayList<>();
+//			iolts.addQuiescentTransitions();
+//			// System.out.println(iolts);
+//
+//			Automaton_ multgraph = multiGraphD(iolts, 1);
+//
+//			// System.out.println(multgraph);//201 transições
+//
+//			// *implementar
+//			// get word from multgraph
+//
+//			// System.out.println(new Date());
+//			// List<String> words = Graph.getWords(multgraph);
+//			// System.out.println(new Date());
+//			//// words = new ArrayList<>(new HashSet<>(words));
+//			//
+//			// // System.out.println(words.size());
+//			//
+//			// for (String w : words) {
+//			// System.out.println(w);
+//			// }
+//
+//			// // to decrease the performance of statePath
+//			// if (multgraph.getInitialState().getTransitions().size() == 0) {
+//			// if
+//			// (multgraph.getStates().stream().findAny().orElse(null).getTransitions().size()
+//			// == 0) {
+//			// for (Transition_ t : multgraph.getTransitions()) {
+//			// multgraph.getStates().stream().filter(x ->
+//			// x.equals(t.getIniState())).findFirst().orElse(null)
+//			// .addTransition(t);
+//			// t.setIniState(multgraph.getStates().stream().filter(x ->
+//			// x.equals(t.getIniState())).findFirst()
+//			// .orElse(null));
+//			// t.setEndState(multgraph.getStates().stream().filter(x ->
+//			// x.equals(t.getEndState())).findFirst()
+//			// .orElse(null));
+//			// }
+//			// }
+//			// multgraph.setInitialState(multgraph.getStates().stream()
+//			// .filter(x ->
+//			// x.equals(multgraph.getInitialState())).findFirst().orElse(null));
+//			// }
+//			//
+//			// List<String> testCases = new ArrayList<>();
+//			// // set words to reach final state, because of the modification of the final
+//			// // states
+//			// for (String w : words) {
+//			// for (List<State_> states_ : Operations.statePath(multgraph, w)) {
+//			//
+//			// // endState = states_.get(states_.size()-1);//-1
+//			// for (Transition_ t : endTransitions.stream()
+//			// .filter(x -> x.getIniState().equals(states_.get(states_.size() - 1)))
+//			// .collect(Collectors.toList())) {
+//			// testCases.add(w + " -> " + t.getLabel());
+//			// }
+//			// }
+//			// }
+//			//
+//			// // System.out.println(testCases);
+//			//
+//			// for (String tc : testCases) {
+//			// System.out.println(testPurpose(multgraph, tc, iolts.getOutputs(),
+//			// iolts.getInputs()));// "a -> x -> b ->
+//			// // a -> a -> b
+//			// // -> b -> x"
+//			// }
+//
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	public static IOLTS testPurpose(Automaton_ multgraph, String testCase, List<String> li, List<String> lu) {
 		li = new ArrayList<String>(new HashSet(new ArrayList<String>(li)));
@@ -158,15 +158,15 @@ public class TestGeneration {
 		}
 
 		State_ fail = new State_("fail");
-		for (String l : li) {
+		for (String l : lu) {//li
 			tp.addTransition(new Transition_(pass, l, pass));
 			tp.addTransition(new Transition_(fail, l, fail));
 		}
 
 		// invert inp/out to generate tp
-		List<String> inp = tp.getInputs();
-		tp.setInputs(tp.getOutputs());
-		tp.setOutputs(inp);
+//		List<String> inp = tp.getInputs();
+//		tp.setInputs(tp.getOutputs());
+//		tp.setOutputs(inp);
 
 		return tp;
 	}
@@ -270,12 +270,13 @@ public class TestGeneration {
 		return a;
 	}
 
-	public static void run(String pathTp, boolean oneIut, boolean oneTP, String pathIut,
+	public static boolean  run(String pathTp, boolean oneIut, boolean oneTP, String pathIut,
 			String pathCsv) {
-
+boolean fault= false;
+		
 		if (oneTP) {
 
-			runAllIutTp(new File(pathTp), oneIut, pathIut, pathCsv);
+			return runAllIutTp(new File(pathTp), oneIut, pathIut, pathCsv);
 		} else {
 			File tpFolderF = new File(pathTp);
 			File[] listOfTpFiles = tpFolderF.listFiles();
@@ -285,15 +286,18 @@ public class TestGeneration {
 				if (EverestView.isAutFile(fileTp)) {
 					// run( pathTp + "//" + fileTp.getName(), fileTp, oneIut, pathImplementation,
 					// pathCsv);
-					runAllIutTp(fileTp, oneIut, pathIut, pathCsv);
+					if(!fault)
+						fault = runAllIutTp(fileTp, oneIut, pathIut, pathCsv);
 				}
 			}
 
 		}
 
+		return fault;
+		
 	}
 
-	public static void runAllIutTp(File fileTp, boolean oneIut, String pathIut, String pathCsv) {// String pathTp,
+	public static boolean runAllIutTp(File fileTp, boolean oneIut, String pathIut, String pathCsv) {// String pathTp,
 																									// File fileTp,
 																									// boolean oneIut,
 																									// String
@@ -302,7 +306,9 @@ public class TestGeneration {
 		File iutFolderF;
 		File[] listOfIutFiles;
 		IOLTS tp;
-
+		boolean fault = false;
+		
+		javafx.util.Pair<List<List<String>>, Boolean> result;
 		Automaton_ tpAutomaton;
 		List<String> wordsTp;
 
@@ -312,7 +318,8 @@ public class TestGeneration {
 
 			tp = ImportAutFile.autToIOLTS(fileTp.getAbsolutePath(), false, new ArrayList<>(), // pathTp
 					new ArrayList<>());
-			tpAutomaton = tp.ioltsToAutomaton();
+			//tpAutomaton = tp.ioltsToAutomaton();
+			tpAutomaton =  new Automaton_(tp.getStates(), tp.getInitialState(), tp.getAlphabet(), new ArrayList<>(), tp.getTransitions());	
 			tpAutomaton.setFinalStates(new ArrayList<>());
 			tpAutomaton.addFinalStates(new State_("fail"));
 			wordsTp = Graph.getWords(tpAutomaton);
@@ -333,8 +340,11 @@ public class TestGeneration {
 
 				// one iut
 				if (oneIut) {
-					toSave = runIutTp(pathIut, word, fileTp).getKey();// pathTp
-
+					result = runIutTp(pathIut, word, fileTp);// pathTp
+					toSave = result.getKey();
+					if(!fault)
+					fault = result.getValue();
+					
 					saveOnCSVFile(toSave, pathCsv);
 				} else {
 					// iut in batch
@@ -345,7 +355,11 @@ public class TestGeneration {
 						// for each iut
 						for (File fileIut : listOfIutFiles) {
 							if (EverestView.isAutFile(fileIut)) {
-								toSave = runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp).getKey();
+								result =runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp);
+								toSave = result.getKey();
+								
+								if(!fault)
+									fault = result.getValue();
 								saveOnCSVFile(toSave, pathCsv);
 
 							}
@@ -357,6 +371,8 @@ public class TestGeneration {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return fault;
 	}
 
 	public static javafx.util.Pair<List<List<String>>, Boolean> runIutTp(String pathIut, String word, File fileTp) {
@@ -404,7 +420,13 @@ public class TestGeneration {
 	
 	public static File  saveTP(String tpFolder, IOLTS tp) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-S");
-		File file = new File(tpFolder, "tp_" + dateFormat.format(new Date()) + "-"+Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)]+".aut");
+		
+		
+		File file = new File(new File(tpFolder, "TPs").getAbsolutePath(), "tp_" + dateFormat.format(new Date()) + "-"+Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)]+".aut");
+		//File file = new File(tpFolder, "tp_" + dateFormat.format(new Date()) + "-"+Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)]+".aut");
+		
+		
+		
 		BufferedWriter writer;
 		try {
 			writer = new BufferedWriter(new FileWriter(file));
@@ -422,7 +444,7 @@ public class TestGeneration {
 
 		try {
 			//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-			pathCsv += "\\run-everest-result.csv";//+dateFormat.format(new Date())+".csv";
+			pathCsv += System.getProperty("file.separator")+"run-everest-result.csv";//+dateFormat.format(new Date())+".csv";
 			String delimiterCSV = ",";
 
 			ArrayList<String> headerCSV = new ArrayList<String>();

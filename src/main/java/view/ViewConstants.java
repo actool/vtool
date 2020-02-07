@@ -18,7 +18,7 @@ public class ViewConstants {
 	public static final String titleFrameImgSpecification = "Model - ";
 
 	public static final String genRun_noFault = "verdict: \n no fault was found";
-	public static final String genRun_fault = "verdict: \n a fault was found";
+	public static final String genRun_fault =   "verdict: \n a fault was found";
 
 	// message
 	/*public static final String modelWithoutTransition = "Model without transition, if you selected the option "
@@ -30,20 +30,22 @@ public class ViewConstants {
 	public static final String msgModel = "Decoration ? and ! are missing in the input files \n";//"The model transitions are not labeled with '?' and '!'\n ";
 	public static final String exceptionMessage = "An unexpected error ocurred \n";
 	public static final String invalidRegex = " Invalid regex! \n";
-	public static final String selectModel = "Select the type model \n";//"Select the kind of model \n";
+	public static final String selectModel = "Select the model type \n";//"Select the kind of model \n";
 	public static final String selectImplementation = "Select the IUT model \n";//"The field Implementation is required \n";
 	public static final String selectSpecification = "Select the specification model \n";//"The field Model is required \n";
-	public static final String selectIoltsLabel = "Choose the I/O partition mode";//"It is necessary how the IOLTS labels will be distinguished \n";
+	public static final String selectIoltsLabel = "Choose the I/O partition mode \n";//"It is necessary how the IOLTS labels will be distinguished \n";
 	public static final String selectInpOut = "Define the input and output labels \n";//"The fields Input and Output is required \n";
 	public static final String selectIolts = "IOCO relation is defined over IOLTS models \n";//"The informed model must be IOLTS \n";
 	public static final String selectIolts_gen = "Test generation is defined over IOLTS models \n";//"The informed model must be IOLTS \n";
 	public static final String labelInpOut="There labels that were not set as input/output \n";
 	public static final String mInteger="The parameter max IUT states must be integer \n";
 	public static final String ntcInteger="The parameter # Test cases must be integer \n";
-	public static final String generation_mult = "* To generate the multigraph, \n inform the 'Specification' and '# Max iut states' \n";
-	public static final String generation = "* To generate the multigraph and some TPs, \n inform the 'Specification', '# Max iut states' and '# Teste cases'  \n";
-	public static final String run_generation = "* To generate (multigraph and TPs) and run the test, \n inform the 'Specification', 'Implementation' and '# Max iut states' \n";
-	public static final String multigraph_generation = "* To extract the TPs from the multigraph and run, \n inform the 'Implementation' and 'Multigraph' \n";
+	public static final String generation_mult = "* To generate the multigraph,  inform the 'Specification' and '# Max iut states' \n";
+	public static final String generation = "* To generate the multigraph and some TPs,  inform the 'Specification', '# Max iut states' and '# Teste cases'  \n";
+	public static final String run_generation = "* To generate (multigraph and TPs) and run the test,  inform the 'Specification', 'Implementation', '# Max iut states' and '# Teste cases' \n";
+	public static final String generation_tp_from_multi = "* To extract the TPs from the multigraph  inform the 'Multigraph' and '# Teste cases' \n";
+	public static final String multigraph_generation = "* To extract the TPs from the multigraph and run,  inform the 'Implementation', 'Multigraph' and '# Teste cases'\n";
+	public static final String run_tp= "* To run TPs,  inform the 'Implementation' and 'Test purpose folder'\n";
 	public static final String selectSpecification_iut = "Select the specification or/and implementation model \n";
 	
 	

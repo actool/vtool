@@ -140,7 +140,7 @@ public class EverestView extends JFrame {
 	JRadioButton rdbtnOneIut;
 	JRadioButton rdbtnInBatch;
 
-	JButton btnMultigraph;
+	JButton btnrunTp;
 	List<String> testSuite;
 	Automaton_ multigraph;
 	JLabel lblNumTC;
@@ -201,7 +201,7 @@ public class EverestView extends JFrame {
 		taTestCasesIoco.setText("");
 		taTestCasesLang.setText("");
 
-		btnMultigraph.setVisible(false);
+		btnrunTp.setVisible(false);
 		taTestCases_gen.setText("");
 
 		lblNumTC.setVisible(false);
@@ -268,6 +268,12 @@ public class EverestView extends JFrame {
 			lblmodelIoco.setText(tfSpecification.getText());
 			lblmodelLang.setText(tfSpecification.getText());
 			lblmodel_gen.setText(tfSpecification.getText());
+			
+			//clean multigraph fields
+			tfM.setText("");
+			tfMultigraph.setText("");
+			pathMultigraph=null;
+			multigraph = null;
 
 			isModelProcess = false;
 
@@ -1582,7 +1588,7 @@ public class EverestView extends JFrame {
 				saveMultigraphAndTP();
 			}
 		});
-		btnGenerate.setBounds(332, 128, 106, 44);
+		btnGenerate.setBounds(316, 128, 106, 44);
 		btnGenerate.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnGenerate.setBackground(Color.LIGHT_GRAY);
 		btnGenerate.setVisible(false);
@@ -1635,7 +1641,7 @@ public class EverestView extends JFrame {
 		taTestCases_gen = new JTextArea();
 		taTestCases_gen.setBounds(10, 277, 231, 150);
 		JScrollPane scrolltxt3 = new JScrollPane(taTestCases_gen);
-		scrolltxt3.setBounds(10, 265, 405, 183);
+		scrolltxt3.setBounds(10, 312, 405, 136);
 		panel_test_generation.add(scrolltxt3);
 
 		imgModel_gen = new JLabel("");
@@ -1715,13 +1721,22 @@ public class EverestView extends JFrame {
 		JLabel lblWarning = new JLabel("Warnings");
 		lblWarning.setForeground(SystemColor.windowBorder);
 		lblWarning.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblWarning.setBounds(425, 240, 93, 14);
+		lblWarning.setBounds(425, 287, 93, 14);
 		panel_test_generation.add(lblWarning);
 
 		taWarning_gen = new JTextArea("");
 		taWarning_gen.setForeground(SystemColor.controlShadow);
-		taWarning_gen.setBounds(426, 265, 366, 183);
-		panel_test_generation.add(taWarning_gen);
+		taWarning_gen.setBounds(426, 312, 366, 136);
+
+		JScrollPane scrolltxt4 = new JScrollPane(taWarning_gen);
+		scrolltxt4.setBounds(426, 312, 366, 136);
+		panel_test_generation.add(scrolltxt4);
+
+		// JScrollPane sampleScrollPane = new JScrollPane (taWarning_gen,
+		// JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		// JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		// panel_test_generation.add(taWarning_gen);
+		// panel_test_generation.add(sampleScrollPane);
 
 		lblM = new JLabel("# Max IUT states");
 		lblM.setForeground(SystemColor.windowBorder);
@@ -1751,28 +1766,39 @@ public class EverestView extends JFrame {
 		tfM.setBounds(10, 135, 133, 32);
 		panel_test_generation.add(tfM);
 
-		btnMultigraph = new JButton("Save test purpose");
-		btnMultigraph.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				saveTP();
-			}
+		btnrunTp = new JButton("Run TPs");
+		btnrunTp.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				saveTP();
+
+				System.setProperty("apple.awt.fileDialogForDirectories", "true");
+				JFileChooser fc = directoryChooser();
+				fc.showOpenDialog(EverestView.this);
+				String folder = fc.getSelectedFile().getAbsolutePath();
+
+				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, folder);
+				
+				
+				// nonconf verdict
+				if (fault) {
+					lblRunVerdict.setText(ViewConstants.genRun_fault);
+				} else {
+					lblRunVerdict.setText(ViewConstants.genRun_noFault);
+				}
+				lblRunVerdict.setVisible(true);
 			}
 		});
-		btnMultigraph.setFont(new Font("Dialog", Font.BOLD, 13));
-		btnMultigraph.setBackground(Color.LIGHT_GRAY);
-		btnMultigraph.setBounds(647, 220, 70, 44);
-		btnMultigraph.setVisible(false);
-		panel_test_generation.add(btnMultigraph);
+		btnrunTp.setFont(new Font("Dialog", Font.BOLD, 13));
+		btnrunTp.setBackground(Color.LIGHT_GRAY);
+		btnrunTp.setBounds(509, 242, 117, 44);
+		btnrunTp.setVisible(false);
+		panel_test_generation.add(btnrunTp);
 
 		lblNumTC = new JLabel("#Extracted test cases: ");
 		lblNumTC.setForeground(SystemColor.windowBorder);
 		lblNumTC.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblNumTC.setBounds(10, 235, 287, 14);
+		lblNumTC.setBounds(10, 287, 287, 14);
 		lblNumTC.setVisible(false);
 		panel_test_generation.add(lblNumTC);
 
@@ -1816,6 +1842,12 @@ public class EverestView extends JFrame {
 		panel_test_generation.add(lblMultigraph);
 
 		tfMultigraph = new JTextField();
+		tfMultigraph.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				visibilityRunButtons();
+			}
+		});
 		tfMultigraph.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -1828,7 +1860,7 @@ public class EverestView extends JFrame {
 		tfMultigraph.setColumns(10);
 		tfMultigraph.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfMultigraph.setBackground(SystemColor.menu);
-		tfMultigraph.setBounds(10, 203, 447, 26);
+		tfMultigraph.setBounds(10, 195, 447, 26);
 		panel_test_generation.add(tfMultigraph);
 
 		btnRunMultigraph = new JButton("Run");
@@ -1837,14 +1869,16 @@ public class EverestView extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				// if (isFormValidGeneration()) {
 				lblNumTC.setVisible(false);
-				lblGenRunVerdict.setVisible(false);
+				
 				lblRunVerdict.setVisible(false);
 
+				System.setProperty("apple.awt.fileDialogForDirectories", "true");
 				JFileChooser fc = directoryChooser();
 				fc.showOpenDialog(EverestView.this);
 				String folder = fc.getSelectedFile().getAbsolutePath();
 
-				File file = new File(folder + "\\TPs\\");
+				// File file = new File(folder + "\\TPs\\");--
+				File file = new File(folder, "TPs");
 				if (!file.exists()) {
 					file.mkdir();
 				}
@@ -1857,23 +1891,7 @@ public class EverestView extends JFrame {
 
 					try {
 
-					
-						
-						String contents = new String(Files.readAllBytes(Paths.get(pathMultigraph)));
-						contents=contents.substring(contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE));
-						contents = contents.substring(contents.indexOf('\n')+1);
-						String tempFileName =  "multigraph_" + dateFormat.format(new Date()) + ".aut";
-						file = new File(folder,tempFileName);
-						BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-						writer.write(contents);
-						writer.close();
-						
-						
-						multigraph = ImportAutFile
-								.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>())
-								.ioltsToAutomaton();
-						file.delete();
-						multigraph.setFinalStates(Arrays.asList(new State_("fail")));
+						loadMultigraph(folder);
 
 						javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(multigraph,
 								(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
@@ -1916,7 +1934,7 @@ public class EverestView extends JFrame {
 		btnRunMultigraph.setVisible(false);
 		panel_test_generation.add(btnRunMultigraph);
 
-		btnRunGenerate = new JButton("Generate + Run");
+		btnRunGenerate = new JButton("Test Generation  + Run");
 		btnRunGenerate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -1925,21 +1943,14 @@ public class EverestView extends JFrame {
 		});
 		btnRunGenerate.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnRunGenerate.setBackground(Color.LIGHT_GRAY);
-		btnRunGenerate.setBounds(448, 128, 167, 44);
+		btnRunGenerate.setBounds(432, 128, 183, 44);
 		btnRunGenerate.setVisible(false);
 		panel_test_generation.add(btnRunGenerate);
-
-		lblGenRunVerdict = new JLabel("");
-		lblGenRunVerdict.setForeground(SystemColor.windowBorder);
-		lblGenRunVerdict.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblGenRunVerdict.setBounds(625, 144, 167, 14);
-		lblGenRunVerdict.setVisible(false);
-		panel_test_generation.add(lblGenRunVerdict);
 
 		lblRunVerdict = new JLabel("");
 		lblRunVerdict.setForeground(SystemColor.windowBorder);
 		lblRunVerdict.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblRunVerdict.setBounds(625, 195, 167, 14);
+		lblRunVerdict.setBounds(625, 242, 178, 41);
 		panel_test_generation.add(lblRunVerdict);
 
 		button = new JButton("");
@@ -1954,6 +1965,41 @@ public class EverestView extends JFrame {
 		button.setBackground(SystemColor.activeCaptionBorder);
 		button.setBounds(460, 201, 39, 28);
 		panel_test_generation.add(button);
+
+		JLabel lblTpFolder = new JLabel("Test purpose folder ");
+		lblTpFolder.setForeground(SystemColor.controlDkShadow);
+		lblTpFolder.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblTpFolder.setBounds(10, 235, 189, 14);
+		panel_test_generation.add(lblTpFolder);
+
+		tfTPFolder = new JTextField();
+		tfTPFolder.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				selectTPFolder();
+			}
+		});
+		tfTPFolder.setToolTipText("accepts only .aut files");
+		tfTPFolder.setForeground(SystemColor.controlShadow);
+		tfTPFolder.setFont(new Font("Dialog", Font.BOLD, 13));
+		tfTPFolder.setColumns(10);
+		tfTPFolder.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		tfTPFolder.setBackground(SystemColor.menu);
+		tfTPFolder.setBounds(10, 252, 447, 26);
+		panel_test_generation.add(tfTPFolder);
+
+		JButton button_2 = new JButton("");
+		button_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				selectTPFolder();
+			}
+		});
+		button_2.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
+		button_2.setOpaque(true);
+		button_2.setBackground(SystemColor.activeCaptionBorder);
+		button_2.setBounds(460, 254, 39, 28);
+		panel_test_generation.add(button_2);
 
 		// Panel run test
 		panel_test_execution = new JPanel();
@@ -2259,35 +2305,62 @@ public class EverestView extends JFrame {
 	}
 
 	public void visibilityRunButtons() {
-		boolean removeMessage = false;
 
-		if (!tfM.getText().isEmpty() && S != null) {// !tfNTestCases_gen.getText().isEmpty() &&
-			btnGenerate.setVisible(true);
-			removeMessage = true;
-		} else {
-			btnGenerate.setVisible(false);
+		lblRunVerdict.setVisible(false);
+		
+		taTestCases_gen.setText("");
+		lblNumTC.setVisible(false);
+
+		if (tfMultigraph.getText().isEmpty()) {
+			pathMultigraph = null;
 		}
 
-		if (S != null && I != null && !tfM.getText().isEmpty()) {
+		if (pathImplementation != null && !pathImplementation.isEmpty())
+			setModel(false, true);
+		if (pathSpecification != null && !pathSpecification.isEmpty())
+			setModel(false, false);
+
+		boolean removeMessage = false;
+
+		if ((S != null && !tfM.getText().isEmpty())
+				|| (pathMultigraph != null && !pathMultigraph.isEmpty() && !tfNTestCases_gen.getText().isEmpty())) {// !tfNTestCases_gen.getText().isEmpty()
+			// &&
+			btnGenerate.setVisible(true);
+			removeMessage = true;
+			btnGenerate.setEnabled(true);
+		} else {
+			// if (S != null) {
+			btnGenerate.setVisible(true);
+			btnGenerate.setEnabled(false);
+			// }
+		}
+
+		if (S != null && I != null && !tfM.getText().isEmpty() && !tfNTestCases_gen.getText().isEmpty()) {
 			btnRunGenerate.setVisible(true);
 			removeMessage = true;
 		} else {
 			btnRunGenerate.setVisible(false);
 		}
 
-		if (pathMultigraph != null && I != null) {
+		if (pathMultigraph != null && I != null && !tfNTestCases_gen.getText().isEmpty()) {
 			btnRunMultigraph.setVisible(true);
 			removeMessage = true;
 		} else {
 			btnRunMultigraph.setVisible(false);
 		}
 
-		if (removeMessage) {
-			removeMessageGen(ViewConstants.generation);
-			removeMessageGen(ViewConstants.run_generation);
-			removeMessageGen(ViewConstants.multigraph_generation);
-			removeMessageGen(ViewConstants.generation_mult);
+		if (tpFolder != null && !tpFolder.isEmpty() && I != null) {
+			btnrunTp.setVisible(true);
+		} else {
+			btnrunTp.setVisible(false);
 		}
+
+		// if (removeMessage) {
+		// removeMessageGen(ViewConstants.generation);
+		// removeMessageGen(ViewConstants.run_generation);
+		// removeMessageGen(ViewConstants.multigraph_generation);
+		// removeMessageGen(ViewConstants.generation_mult);
+		// }
 	}
 
 	String pathMultigraph;
@@ -2299,8 +2372,11 @@ public class EverestView extends JFrame {
 			tfMultigraph.setText(fc.getSelectedFile().getName());
 			pathMultigraph = fc.getSelectedFile().getAbsolutePath();
 
+			loadMultigraph(pathMultigraph);
+			
 			visibilityRunButtons();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -2338,7 +2414,7 @@ public class EverestView extends JFrame {
 				file = new File(path, "tp" + count + ".aut");
 				writer = new BufferedWriter(new FileWriter(file));
 				writer.write(AutGenerator
-						.ioltsToAut(TestGeneration.testPurpose(multigraph, tc, S.getOutputs(), S.getInputs())));
+						.ioltsToAut(TestGeneration.testPurpose(multigraph, tc, S.getInputs(), S.getOutputs())));
 				writer.close();
 				// System.out.println(TestGeneration.testPurpose(multigraph, tc, S.getOutputs(),
 				// S.getInputs()));
@@ -2364,14 +2440,16 @@ public class EverestView extends JFrame {
 	public void saveMultigraphTPAndVerdict() {
 		if (isFormValidGeneration()) {
 			lblNumTC.setVisible(false);
-			lblGenRunVerdict.setVisible(false);
+			
 			lblRunVerdict.setVisible(false);
 
+			System.setProperty("apple.awt.fileDialogForDirectories", "true");
 			JFileChooser fc = directoryChooser();
 			fc.showOpenDialog(EverestView.this);
 			String folder = fc.getSelectedFile().getAbsolutePath();
 
-			File file = new File(folder + "\\TPs\\");
+			// File file = new File(folder + "\\TPs\\");--
+			File file = new File(folder, "TPs");
 			if (!file.exists()) {
 				file.mkdir();
 			}
@@ -2400,11 +2478,11 @@ public class EverestView extends JFrame {
 
 					// nonconf verdict
 					if (result.getValue()) {
-						lblGenRunVerdict.setText(ViewConstants.genRun_fault);
+						lblRunVerdict.setText(ViewConstants.genRun_fault);
 					} else {
-						lblGenRunVerdict.setText(ViewConstants.genRun_noFault);
+						lblRunVerdict.setText(ViewConstants.genRun_noFault);
 					}
-					lblGenRunVerdict.setVisible(true);
+					lblRunVerdict.setVisible(true);
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -2428,7 +2506,7 @@ public class EverestView extends JFrame {
 		try {
 			String fileContent = "";
 			// save m
-			fileContent += "Max IUT states: " + tfM.getText() + "\n";
+			fileContent += Constants.MAX_IUT_STATES +tfM.getText() + "] \n";
 			// save spec
 			fileContent += AutGenerator.ioltsToAut(new IOLTS(S.getStates(), S.getInitialState(), S.getAlphabet(),
 					S.getTransitions(), S.getInputs(), S.getOutputs()));
@@ -2448,12 +2526,14 @@ public class EverestView extends JFrame {
 	public void saveMultigraphAndTP() {
 		if (isFormValidGeneration()) {
 
+			System.setProperty("apple.awt.fileDialogForDirectories", "true");
 			JFileChooser fc = directoryChooser();
 			fc.showOpenDialog(EverestView.this);
 			String folder = fc.getSelectedFile().getAbsolutePath();
 			File file;
 
 			JFrame loading = null;
+			IOLTS iolts_aux = new IOLTS();
 			try {
 
 				loading = loadingDialog();
@@ -2461,33 +2541,41 @@ public class EverestView extends JFrame {
 				// System.out.println(S);
 				removeMessageGen(ViewConstants.mInteger);
 
-				multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-				multigraph.setInitialState(new State_(multigraph.getInitialState().getName().replace(",", "_")));
+				// construct multigraph with param S and m
+				if ((!tfM.getText().isEmpty() && S != null)) {
+					multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+					multigraph.setInitialState(new State_(multigraph.getInitialState().getName().replace(",", "_")));
+					saveMultigraphFile(folder);
+				}
+
+				// read multgraph from multigraph field
+				if ((pathMultigraph != null && !pathMultigraph.isEmpty() && !tfNTestCases_gen.getText().isEmpty())) {
+					try {
+						loadMultigraph(folder);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 
 				try {
-					
-					saveMultigraphFile(folder);
-					
-
-					// System.out.println(multigraph);
-					// testSuite = Graph.getWords(multigraph);
-
-					// File file = new File("C:\\Users\\camil\\Desktop\\", "multigraph.aut");
-					// BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-					// writer.write(AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(),
-					// multigraph.getInitialState(), multigraph.getAlphabet(),
-					// multigraph.getTransitions(), S.getInputs(), S.getOutputs())));
-					// writer.close();
 
 					if (!tfNTestCases_gen.getText().isEmpty()) {// generate just multigraph if #test cases is empty
-						file = new File(folder + "\\TPs\\");
+						// file = new File(folder + "\\TPs\\");
+						file = new File(folder, "TPs");
 						if (!file.exists()) {
 							file.mkdir();
 						}
-						testSuite = Operations
-								.getWordsFromAutomaton(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-										S.getInputs(), S.getOutputs(), null)
-								.getKey();
+						if ((!tfM.getText().isEmpty() && S != null)) {
+							testSuite = Operations
+									.getWordsFromAutomaton(multigraph, Integer.parseInt(tfNTestCases_gen.getText()),
+											folder, S.getInputs(), S.getOutputs(), null)
+									.getKey();
+						} else {
+							testSuite = Operations
+									.getWordsFromAutomaton(multigraph, Integer.parseInt(tfNTestCases_gen.getText()),
+											folder, iolts_aux.getInputs(), iolts_aux.getOutputs(), null)
+									.getKey();
+						}
 					}
 
 				} catch (IOException e) {
@@ -2496,19 +2584,6 @@ public class EverestView extends JFrame {
 				} catch (NumberFormatException e) {
 					taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.ntcInteger);
 				}
-
-				// System.err.println("qtd:" + testSuite.size() + " transições: " +
-				// multigraph.getTransitions().size());
-
-				// testSuite = Operations.getAllWordsFromAutomaton(multigraph, false);
-
-				// multgraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-				// System.out.println(multgraph);
-				// words = Graph.getWords(multgraph);
-
-				// words = new ArrayList<>(testSuite);
-
-				// System.out.println(StringUtils.join(words, ","));
 
 				if (!tfNTestCases_gen.getText().isEmpty()) {
 					testSuite.sort(Comparator.comparing(String::length));
@@ -3019,9 +3094,9 @@ public class EverestView extends JFrame {
 	private JLabel lblMultigraph;
 	private JTextField tfMultigraph;
 	private JButton btnRunGenerate;
-	private JLabel lblGenRunVerdict;
 	private JLabel lblRunVerdict;
 	private JButton button;
+	private JTextField tfTPFolder;
 
 	public boolean isFormValid(boolean ioco) {
 		boolean defineInpOut = true;
@@ -3069,11 +3144,14 @@ public class EverestView extends JFrame {
 			defineInpOut = inpOut.containsAll(alphabet);
 		}
 
-		return ((!tfSpecification.getText().isEmpty() || !tfImplementation.getText().isEmpty()) && (cbModel
-				.getSelectedItem() == ViewConstants.IOLTS_CONST
-				&& ((cbLabel.getSelectedItem() == ViewConstants.typeAutomaticLabel)
-						|| (cbLabel.getSelectedItem() == ViewConstants.typeManualLabel
-								&& (!tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty())) && defineInpOut)));
+		return (tfSpecification.getText().isEmpty() && tfImplementation.getText().isEmpty())
+				|| ((!tfSpecification.getText().isEmpty() || !tfImplementation.getText().isEmpty())
+						&& (cbModel.getSelectedItem() == ViewConstants.IOLTS_CONST
+								&& ((cbLabel.getSelectedItem() == ViewConstants.typeAutomaticLabel)
+										|| (cbLabel.getSelectedItem() == ViewConstants.typeManualLabel
+												&& (!tfInput.getText().isEmpty() && !tfOutput.getText().isEmpty()))
+												&& defineInpOut)));
+
 	}
 
 	public boolean constainsMessage(boolean ioco, String msg) {
@@ -3106,7 +3184,7 @@ public class EverestView extends JFrame {
 	}
 
 	public void errorMessageGen() {
-		boolean model = cbModel.getSelectedIndex() == 0;
+		boolean model = cbModel.getSelectedIndex() == 0 && (S != null || I != null);
 		String msg = "";
 
 		// verifyModelsEmpty(true, false);
@@ -3120,11 +3198,12 @@ public class EverestView extends JFrame {
 
 		}
 
-		if (!constainsMessage_gen(ViewConstants.selectSpecification_iut) && (S == null && I == null)) {
-			msg += ViewConstants.selectSpecification_iut;
-		} else {
-			removeMessageGen(ViewConstants.selectSpecification_iut);
-		}
+		// if (!constainsMessage_gen(ViewConstants.selectSpecification_iut) && (S ==
+		// null && I == null)) {
+		// msg += ViewConstants.selectSpecification_iut;
+		// } else {
+		// removeMessageGen(ViewConstants.selectSpecification_iut);
+		// }
 
 		if (!constainsMessage_gen(ViewConstants.selectModel) && model) {
 			msg += ViewConstants.selectModel;
@@ -3205,7 +3284,13 @@ public class EverestView extends JFrame {
 		if (!constainsMessage_gen(ViewConstants.generation_mult))
 			msg += ViewConstants.generation_mult;
 
-		taWarning_gen.setText(taWarning_gen.getText() + msg);
+		if (!constainsMessage_gen(ViewConstants.generation_tp_from_multi))
+			msg += ViewConstants.generation_tp_from_multi;
+
+		if (!constainsMessage_gen(ViewConstants.run_tp))
+			msg += ViewConstants.run_tp;
+
+		taWarning_gen.setText(msg + taWarning_gen.getText());
 
 	}
 
@@ -3346,6 +3431,61 @@ public class EverestView extends JFrame {
 
 			taWarning_gen.setText(taWarning_gen.getText() + msg);
 		}
+
+	}
+
+	public void selectTPFolder() {
+		JFileChooser fc = directoryChooser();
+		fc.showOpenDialog(EverestView.this);
+		tpFolder = fc.getSelectedFile().getAbsolutePath();
+		tfTPFolder.setText(fc.getSelectedFile().getName());
+
+		visibilityRunButtons();
+	}
+
+	public void loadMultigraph(String folder) throws Exception {
+		String contents = new String(Files.readAllBytes(Paths.get(pathMultigraph)));
+		
+		//get and set param m
+		tfM.setText(contents.substring(contents.lastIndexOf(Constants.MAX_IUT_STATES) + Constants.MAX_IUT_STATES.length() , contents.indexOf("]")));
+		
+	
+		
+		
+		//get and set specification 
+		//File file = new File(new File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(), "spec.aut");
+		File file = new File(new File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(), "specification-"+folder.substring(folder.lastIndexOf(System.getProperty("file.separator"))+1, folder.length()));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+		writer.write(contents.substring(contents.indexOf("des("),contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE)));
+		writer.close();
+		
+		//set spec fields
+		tfSpecification.setText(file.getName());
+		pathSpecification = file.getAbsolutePath();
+		lblmodelIoco.setText(tfSpecification.getText());
+		lblmodelLang.setText(tfSpecification.getText());
+		lblmodel_gen.setText(tfSpecification.getText());
+		cbModel.setSelectedIndex(1);
+		cbLabel.setSelectedIndex(1);
+		setModel(false, false);
+		//file.delete();
+		
+		
+		
+		contents = contents.substring(contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE));
+		contents = contents.substring(contents.indexOf('\n') + 1);
+		String tempFileName = "multigraph_" + dateFormat.format(new Date()) + ".aut";
+		file = new File(new File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(), tempFileName);
+		writer = new BufferedWriter(new FileWriter(file));
+		writer.write(contents);
+		writer.close();
+
+		multigraph = ImportAutFile.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>())
+				.ioltsToAutomaton();
+		file.delete();
+		multigraph.setFinalStates(Arrays.asList(new State_("fail")));
+		
+		visibilityRunButtons();
 
 	}
 }
