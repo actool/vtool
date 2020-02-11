@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bridj.util.Pair;
 
 import algorithm.*;
 import dk.brics.automaton.RegExp;
@@ -125,7 +126,7 @@ public class EverestView extends JFrame {
 	JLabel lblModel;
 	JLabel lblInputLabel_gen;
 	JLabel lblInput_gen, lblM;
-	JLabel lblmodel_gen, lblLabel_gen, lblLabel_g;
+	JLabel lblmodel_gen, lblLabel_gen;
 	JLabel lblIut, lblimplementation_gen, lblOutput_gen, lblLabelOutput, imgModel_gen, imgImplementation_gen;
 	JTextArea taTestCases_gen, taWarning_gen;
 
@@ -268,11 +269,11 @@ public class EverestView extends JFrame {
 			lblmodelIoco.setText(tfSpecification.getText());
 			lblmodelLang.setText(tfSpecification.getText());
 			lblmodel_gen.setText(tfSpecification.getText());
-			
-			//clean multigraph fields
+
+			// clean multigraph fields
 			tfM.setText("");
 			tfMultigraph.setText("");
-			pathMultigraph=null;
+			pathMultigraph = null;
 			multigraph = null;
 
 			isModelProcess = false;
@@ -1704,19 +1705,12 @@ public class EverestView extends JFrame {
 		btnViewImplementation_gen.setBackground(Color.LIGHT_GRAY);
 		btnViewImplementation_gen.setBounds(568, 5, 154, 26);
 		btnViewImplementation_gen.setVisible(false);
-		// panel_test_generation.add(btnViewImplementation_gen);
+		panel_test_generation.add(btnViewImplementation_gen);
 
 		lblLabel_gen = new JLabel("");
 		lblLabel_gen.setForeground(SystemColor.controlShadow);
 		lblLabel_gen.setBounds(37, 88, 755, 26);
 		panel_test_generation.add(lblLabel_gen);
-
-		lblLabel_g = new JLabel("label");
-		lblLabel_g.setVisible(false);
-		lblLabel_g.setForeground(SystemColor.windowBorder);
-		lblLabel_g.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblLabel_g.setBounds(37, 71, 106, 14);
-		panel_test_generation.add(lblLabel_g);
 
 		JLabel lblWarning = new JLabel("Warnings");
 		lblWarning.setForeground(SystemColor.windowBorder);
@@ -1757,6 +1751,10 @@ public class EverestView extends JFrame {
 			public void keyReleased(KeyEvent e) {
 				visibilityRunButtons();
 			}
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				multigraph = null;
+			}
 		});
 		tfM.setForeground(SystemColor.controlShadow);
 		tfM.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1778,8 +1776,7 @@ public class EverestView extends JFrame {
 				String folder = fc.getSelectedFile().getAbsolutePath();
 
 				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, folder);
-				
-				
+
 				// nonconf verdict
 				if (fault) {
 					lblRunVerdict.setText(ViewConstants.genRun_fault);
@@ -1869,7 +1866,7 @@ public class EverestView extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				// if (isFormValidGeneration()) {
 				lblNumTC.setVisible(false);
-				
+
 				lblRunVerdict.setVisible(false);
 
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
@@ -2307,7 +2304,7 @@ public class EverestView extends JFrame {
 	public void visibilityRunButtons() {
 
 		lblRunVerdict.setVisible(false);
-		
+
 		taTestCases_gen.setText("");
 		lblNumTC.setVisible(false);
 
@@ -2373,7 +2370,7 @@ public class EverestView extends JFrame {
 			pathMultigraph = fc.getSelectedFile().getAbsolutePath();
 
 			loadMultigraph(pathMultigraph);
-			
+
 			visibilityRunButtons();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2440,7 +2437,7 @@ public class EverestView extends JFrame {
 	public void saveMultigraphTPAndVerdict() {
 		if (isFormValidGeneration()) {
 			lblNumTC.setVisible(false);
-			
+
 			lblRunVerdict.setVisible(false);
 
 			System.setProperty("apple.awt.fileDialogForDirectories", "true");
@@ -2462,11 +2459,14 @@ public class EverestView extends JFrame {
 				// System.out.println(S);
 				removeMessageGen(ViewConstants.mInteger);
 
-				multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-				multigraph.setInitialState(new State_(multigraph.getInitialState().getName().replace(",", "_")));
+				if (multigraph == null) {
+					multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
+					saveMultigraphFile(folder);
+				}
+				// multigraph.setInitialState(new
+				// State_(multigraph.getInitialState().getName().replace(",", "_")));
 
 				try {
-					saveMultigraphFile(folder);
 
 					javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(multigraph,
 
@@ -2475,6 +2475,9 @@ public class EverestView extends JFrame {
 							folder, S.getInputs(), S.getOutputs(), pathImplementation);
 
 					testSuite = result.getKey();
+					taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
+					lblNumTC.setVisible(true);
+					lblNumTC.setText("#Extracted test cases: " + testSuite.size());
 
 					// nonconf verdict
 					if (result.getValue()) {
@@ -2506,14 +2509,28 @@ public class EverestView extends JFrame {
 		try {
 			String fileContent = "";
 			// save m
-			fileContent += Constants.MAX_IUT_STATES +tfM.getText() + "] \n";
+			fileContent += Constants.MAX_IUT_STATES + tfM.getText() + "] \n";
 			// save spec
-			fileContent += AutGenerator.ioltsToAut(new IOLTS(S.getStates(), S.getInitialState(), S.getAlphabet(),
-					S.getTransitions(), S.getInputs(), S.getOutputs()));
+			// fileContent += AutGenerator.ioltsToAut(new IOLTS(S.getStates(),
+			// S.getInitialState(), S.getAlphabet(),
+			// S.getTransitions(), S.getInputs(), S.getOutputs()).removeDeltaTransitions());
+			fileContent += AutGenerator.ioltsToAut(
+					ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<>(), new ArrayList<>()));
 			// save multigraph
 			fileContent += Constants.SEPARATOR_MULTIGRAPH_FILE;
-			fileContent += AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(), multigraph.getInitialState(),
-					multigraph.getAlphabet(), multigraph.getTransitions(), S.getInputs(), S.getOutputs()));
+
+			fileContent += "des(" + multigraph.getInitialState().getName().replace(",", "_") + ","
+					+ multigraph.getTransitions().size() + "," + multigraph.getStates().size() + ")"
+					+ System.getProperty("line.separator");
+			//fileContent += aut_transitions;
+			
+			
+			fileContent+=StringUtils.join( multigraph.getTransitions(),"");
+
+			// fileContent += AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(),
+			// multigraph.getInitialState(),
+			// multigraph.getAlphabet(), multigraph.getTransitions(), S.getInputs(),
+			// S.getOutputs()));
 			File file = new File(folder, "spec-multigraph_" + dateFormat.format(new Date()) + ".aut");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(fileContent);
@@ -2542,9 +2559,11 @@ public class EverestView extends JFrame {
 				removeMessageGen(ViewConstants.mInteger);
 
 				// construct multigraph with param S and m
-				if ((!tfM.getText().isEmpty() && S != null)) {
+				if ((!tfM.getText().isEmpty() && S != null && multigraph == null)) {//
+				
 					multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
-					multigraph.setInitialState(new State_(multigraph.getInitialState().getName().replace(",", "_")));
+					// multigraph.setInitialState(new
+					// State_(multigraph.getInitialState().getName().replace(",", "_")));
 					saveMultigraphFile(folder);
 				}
 
@@ -3445,21 +3464,27 @@ public class EverestView extends JFrame {
 
 	public void loadMultigraph(String folder) throws Exception {
 		String contents = new String(Files.readAllBytes(Paths.get(pathMultigraph)));
-		
-		//get and set param m
-		tfM.setText(contents.substring(contents.lastIndexOf(Constants.MAX_IUT_STATES) + Constants.MAX_IUT_STATES.length() , contents.indexOf("]")));
-		
-	
-		
-		
-		//get and set specification 
-		//File file = new File(new File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(), "spec.aut");
-		File file = new File(new File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(), "specification-"+folder.substring(folder.lastIndexOf(System.getProperty("file.separator"))+1, folder.length()));
+
+		// get and set param m
+		tfM.setText(
+				contents.substring(contents.lastIndexOf(Constants.MAX_IUT_STATES) + Constants.MAX_IUT_STATES.length(),
+						contents.indexOf("]")));
+
+		// get and set specification
+		// File file = new File(new
+		// File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(),
+		// "spec.aut");
+		File file = new File(
+				new File(folder.substring(0, folder.lastIndexOf(System.getProperty("file.separator"))))
+						.getAbsolutePath(),
+				"specification-" + folder.substring(folder.lastIndexOf(System.getProperty("file.separator")) + 1,
+						folder.length()));
 		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-		writer.write(contents.substring(contents.indexOf("des("),contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE)));
+		writer.write(contents.substring(contents.indexOf("des("),
+				contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE)));
 		writer.close();
-		
-		//set spec fields
+
+		// set spec fields
 		tfSpecification.setText(file.getName());
 		pathSpecification = file.getAbsolutePath();
 		lblmodelIoco.setText(tfSpecification.getText());
@@ -3468,14 +3493,13 @@ public class EverestView extends JFrame {
 		cbModel.setSelectedIndex(1);
 		cbLabel.setSelectedIndex(1);
 		setModel(false, false);
-		//file.delete();
-		
-		
-		
+		// file.delete();
+
 		contents = contents.substring(contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE));
 		contents = contents.substring(contents.indexOf('\n') + 1);
 		String tempFileName = "multigraph_" + dateFormat.format(new Date()) + ".aut";
-		file = new File(new File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(), tempFileName);
+		file = new File(new File(folder.substring(0, folder.lastIndexOf(System.getProperty("file.separator"))))
+				.getAbsolutePath(), tempFileName);
 		writer = new BufferedWriter(new FileWriter(file));
 		writer.write(contents);
 		writer.close();
@@ -3484,7 +3508,7 @@ public class EverestView extends JFrame {
 				.ioltsToAutomaton();
 		file.delete();
 		multigraph.setFinalStates(Arrays.asList(new State_("fail")));
-		
+
 		visibilityRunButtons();
 
 	}

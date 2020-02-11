@@ -5,6 +5,8 @@
  */
 package model;
 
+import util.Constants;
+
 /**
  * Class Transition_
  * 
@@ -21,6 +23,8 @@ public class Transition_ {
 	private State_ endState;
 	// id used for libraries
 	private String id;
+	
+	private TransitionType type;
 
 	/***
 	 * empty constructor
@@ -54,6 +58,13 @@ public class Transition_ {
 		this.iniState = iniState;
 		this.label = label;
 		this.endState = endState;
+	}
+	
+	public Transition_(State_ iniState, String label, State_ endState, TransitionType t) {
+		this.iniState = iniState;
+		this.label = label;
+		this.endState = endState;
+		this.type = t;
 	}
 	
 	public Transition_(Transition_  t) {
@@ -183,7 +194,39 @@ public class Transition_ {
 	 */
 	@Override
 	public String toString() {
-		return "[" + iniState + " - " + label + " - " + endState + "] \n";
+		String ini_ = getIniState().getName().replace(",", "_");
+		String end_ = getEndState().getName().replace(",", "_");
+		String newline = System.getProperty("line.separator");
+
+		if (getLabel().equals(Constants.DELTA)) {
+			return "(" + ini_ + "," + Constants.DELTA_TXT + "," + end_ + ")" + newline;// t.getLabel()
+		} else {
+			
+			if (getType()==null) {
+				return "[" + iniState + " - " + label + " - " + endState + "] \n";
+			}
+			
+			if (getType().equals(TransitionType.INPUT)) {
+				return "(" + ini_ + "," + Constants.INPUT_TAG + getLabel() + "," + end_
+						+ ")" + newline;
+			}
+
+			if (getType().equals(TransitionType.OUTPUT)) {
+				return"(" + ini_ + "," + Constants.OUTPUT_TAG + getLabel() + "," + end_
+						+ ")" + newline;
+			}
+		}
+		
+		return "";
+		//return "[" + iniState + " - " + label + " - " + endState + "] \n";
+	}
+
+	private TransitionType getType() {
+		return type;
+	}
+
+	private void setType(TransitionType type) {
+		this.type = type;
 	}
 
 	/***
@@ -192,8 +235,8 @@ public class Transition_ {
 	 * @author camila
 	 *
 	 */
-//	public enum TransitionType {
-//		INPUT, OUTPUT
-//	};
+	public enum TransitionType {
+		INPUT, OUTPUT
+	};
 
 }

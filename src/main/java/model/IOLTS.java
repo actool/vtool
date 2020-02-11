@@ -260,6 +260,19 @@ public class IOLTS extends LTS implements Cloneable {
 		return transitions_;
 
 	}
+	
+//	public IOLTS removeDeltaTransitions() {
+//		List<Transition_> toRemove = new ArrayList<>();
+//		for (Transition_ t : this.transitions) {
+//			if(t.getLabel().equals(Constants.DELTA)) {
+//				toRemove.add(t);
+//			}
+//		}
+//		
+//		this.transitions.removeAll(toRemove);
+//		
+//		return this;
+//	}
 
 	/***
 	 * Overwriting the toString method, with the separation between the input and

@@ -51,6 +51,15 @@ public class IocoConformance {
 	
 		// automaton underlying the implementation
 		Automaton_ ai = I.ioltsToAutomaton();
+		
+//		//make iut inputenabled
+//		for(State_ s : ai.getStates()) {
+//			for (String l: I.getInputs()) {
+//				if(!I.transitionExists(s.getName(), l)) {
+//					ai.addTransition(new Transition_(s,l,s));
+//				}
+//			}
+//		}
 
 		// intersection between the implementation and failure model to find fault
 		Automaton_ ab = Operations.intersection(at, ai);// , nTestCases

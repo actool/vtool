@@ -1426,6 +1426,7 @@ public class Operations {
 								result = TestGeneration.runIutTp(pathIUT, tc, tpFile);
 								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
 
+								words.add(tc);
 								// no conformance
 								if (result.getValue()) {
 									nonConf = result.getValue();

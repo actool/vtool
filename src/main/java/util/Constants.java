@@ -19,6 +19,7 @@ public class Constants {
 	public static final char OUTPUT_TAG = '!';
 	public static final String EMPTY = "Ø";
 	public static final String COMMA = ",";
+	public static final String UNDERLINE = "_";
 	
 	public static final String RUN_VERDICT_NON_CONFORM = "non conformance";
 	public static final String RUN_VERDICT_INCONCLUSIVE = "inconclusive";
