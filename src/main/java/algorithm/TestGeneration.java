@@ -351,7 +351,7 @@ public class TestGeneration {
 		for (String key : map_state_out_transition.keySet()) {
 			for (String l : S.getOutputs()) {
 				if (!map_state_out_transition.get(key).contains(l)) {
-					transition = new Transition_(new State_(key), l, fail);
+					transition = new Transition_(new State_(key), l, fail, TransitionType.OUTPUT);
 					D.addTransition(transition);
 					//aut += transitionAut(key, l, fail.getName(), false, l.equals(Constants.DELTA));
 				}
