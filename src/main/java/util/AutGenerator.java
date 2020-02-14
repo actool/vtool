@@ -33,98 +33,101 @@ import parser.ImportAutFile;
 public class AutGenerator {
 	public static void main(String[] args) throws Exception {
 		// GENERATE <ONE> RANDOM MODEL
-		// int nState = 10;
-		List<Integer> nStates = Arrays.asList(55);
-
-		List<List<Integer>> iutStates = Arrays.asList(Arrays.asList(55,65,75,85,95,105));
-		List<Integer> iutState;
-
-		List<String> labels = new ArrayList<>();
-		// List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18,20);
-
-		int cont = 0;
-		int inp = 0;
-		int out = 0;
-		/**
-		 * inp/out (2,5) (3,4) (4,3) (5,2)
-		 */
-		labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y","!z","!w","!k");;
-		List<Integer> tamAlfabeto = Arrays.asList(labels.size());
-
-		for (String l : labels) {
-			if (l.charAt(0) == '?') {
-				inp++;
-			} else {
-				if (l.charAt(0) == '!') {
-					out++;
-				}
-			}
-		}
-
-		for (int nState : nStates) {
-			iutState = iutStates.get(cont);
-
-			for (int nStateIUT : iutState) {
-				for (Integer alfabeto : tamAlfabeto) {
-					for (int i = 1; i <= 10; i++) {
-						// if (alfabeto == 4) {
-						// labels = Arrays.asList("?a", "?b", "!x", "!y");// 4
-						// }
-						//
-						// if (alfabeto == 6) {
-						// labels = Arrays.asList("?a", "?b", "?c", "!x", "!y", "!z");
-						// }
-						//
-						// if (alfabeto == 8) {
-						// labels = Arrays.asList("?a", "?b", "?c", "?d", "!x", "!y", "!z", "!w");
-						// }
-						//
-						// if (alfabeto == 10) {
-						// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y","!z","!w",
-						// "!k");
-						// }
-						//
-						// if (alfabeto == 12) {
-						// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "!x","!y","!z",
-						// "!w", "!k", "!l");
-						// }
-						//
-						// if (alfabeto == 14) {
-						// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g","!x","!y",
-						// "!z", "!w", "!k", "!l",
-						// "!m");
-						// }
-						//
-						// if (alfabeto == 16) {
-						// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g","?h","!x",
-						// "!y", "!z", "!w", "!k",
-						// "!l", "!m", "!n");
-						// }
-						//
-						// if (alfabeto == 18) {
-						// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g","?h","?i",
-						// "!x", "!y", "!z", "!w",
-						// "!k", "!l", "!m", "!n", "!o");
-						// }
-						//
-						// if (alfabeto == 20) {
-						// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g","?h","?i",
-						// "?j", "!x", "!y", "!z",
-						// "!w", "!k", "!l", "!m", "!n", "!o", "!p");
-						// }
-
-						boolean inputEnabled = true;
-						String tag = "g";
-						String path = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\1pct\\"
-								+ nState + "states\\alfabeto" + alfabeto + "\\iut"
-								+ nStateIUT + "\\experimento" + i + "\\";
-						generate(nState, labels, inputEnabled, tag, path, nState + "states_spec",
-								System.currentTimeMillis());
-					}
-				}
-			}
-			cont++;
-		}
+		// // int nState = 10;
+		// List<Integer> nStates = Arrays.asList(55);
+		//
+		// List<List<Integer>> iutStates =
+		// Arrays.asList(Arrays.asList(55,65,75,85,95,105));
+		// List<Integer> iutState;
+		//
+		// List<String> labels = new ArrayList<>();
+		// // List<Integer> tamAlfabeto = Arrays.asList(4, 6, 8, 10, 12, 14, 16, 18,20);
+		//
+		// int cont = 0;
+		// int inp = 0;
+		// int out = 0;
+		// /**
+		// * inp/out (2,5) (3,4) (4,3) (5,2)
+		// */
+		// labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x",
+		// "!y","!z","!w","!k");;
+		// List<Integer> tamAlfabeto = Arrays.asList(labels.size());
+		//
+		// for (String l : labels) {
+		// if (l.charAt(0) == '?') {
+		// inp++;
+		// } else {
+		// if (l.charAt(0) == '!') {
+		// out++;
+		// }
+		// }
+		// }
+		//
+		// for (int nState : nStates) {
+		// iutState = iutStates.get(cont);
+		//
+		// for (int nStateIUT : iutState) {
+		// for (Integer alfabeto : tamAlfabeto) {
+		// for (int i = 1; i <= 10; i++) {
+		// // if (alfabeto == 4) {
+		// // labels = Arrays.asList("?a", "?b", "!x", "!y");// 4
+		// // }
+		// //
+		// // if (alfabeto == 6) {
+		// // labels = Arrays.asList("?a", "?b", "?c", "!x", "!y", "!z");
+		// // }
+		// //
+		// // if (alfabeto == 8) {
+		// // labels = Arrays.asList("?a", "?b", "?c", "?d", "!x", "!y", "!z", "!w");
+		// // }
+		// //
+		// // if (alfabeto == 10) {
+		// // labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "!x", "!y","!z","!w",
+		// // "!k");
+		// // }
+		// //
+		// // if (alfabeto == 12) {
+		// // labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "!x","!y","!z",
+		// // "!w", "!k", "!l");
+		// // }
+		// //
+		// // if (alfabeto == 14) {
+		// // labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g","!x","!y",
+		// // "!z", "!w", "!k", "!l",
+		// // "!m");
+		// // }
+		// //
+		// // if (alfabeto == 16) {
+		// // labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g","?h","!x",
+		// // "!y", "!z", "!w", "!k",
+		// // "!l", "!m", "!n");
+		// // }
+		// //
+		// // if (alfabeto == 18) {
+		// // labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g","?h","?i",
+		// // "!x", "!y", "!z", "!w",
+		// // "!k", "!l", "!m", "!n", "!o");
+		// // }
+		// //
+		// // if (alfabeto == 20) {
+		// // labels = Arrays.asList("?a", "?b", "?c", "?d", "?e", "?f", "?g","?h","?i",
+		// // "?j", "!x", "!y", "!z",
+		// // "!w", "!k", "!l", "!m", "!n", "!o", "!p");
+		// // }
+		//
+		// boolean inputEnabled = true;
+		// String tag = "g";
+		// String path = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
+		// desempenho\\teste-geração\\1pct\\"
+		// + nState + "states\\alfabeto" + alfabeto + "\\iut"
+		// + nStateIUT + "\\experimento" + i + "\\";
+		// generate(nState, labels, inputEnabled, tag, path, nState + "states_spec",
+		// System.currentTimeMillis());
+		// }
+		// }
+		// }
+		// cont++;
+		// }
 
 		// ************************************************
 		// GENERATE <ONE> - PERCENTAGE MODEL
@@ -156,10 +159,10 @@ public class AutGenerator {
 
 		// **************************
 
-		// // GENERATE <IN LOTE> - PERCENTAGE
-		// int percentage = 2;
+		// GENERATE <IN LOTE> - PERCENTAGE
+		// int percentage = 4;
 		//
-		// List<String> nStates = Arrays.asList("10");
+		// List<String> nStates = Arrays.asList("35"); //*****
 		// // String nState = "50";// 10,50,100
 		// long seed = System.currentTimeMillis();
 		// boolean inputEnabled = true;
@@ -167,8 +170,9 @@ public class AutGenerator {
 		// int qtdadeModelos = 10;
 		// String tag = "g";
 		//
-		// List<Integer> tamAlfabeto = Arrays.asList(12);
-		// List<List<Integer>> tamIUTs = Arrays.asList(Arrays.asList(15, 25, 35));
+		// List<Integer> tamAlfabeto = Arrays.asList(10);
+		// List<List<Integer>> tamIUTs = Arrays.asList(Arrays.asList(35,45,55));//
+		// ****** Arrays.asList(5,15,25,35,45,55)
 		//
 		// int cont = 0;
 		// List<Integer> tamIUT;
@@ -186,13 +190,14 @@ public class AutGenerator {
 		// for (int i = 1; i <= 10; i++) {
 		// System.out.println("experimento: " + i);
 		//
+		//
 		// rootPathIUTs = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
-		// desempenho\\10-50states\\i-o\\ioco-n-conf-2pct\\10inp-2out\\"
+		// desempenho\\teste-geração\\"+percentage+"pct\\"
 		// + "\\" + nState + "states\\alfabeto" + alfabeto + "\\iut" + tIut +
 		// "\\experimento" + i
 		// + "\\";
 		// rootSpec = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
-		// desempenho\\10-50states\\i-o\\ioco-n-conf-2pct\\10inp-2out\\"
+		// desempenho\\teste-geração\\"+percentage+"pct\\"
 		// + "\\" + nState + "states\\alfabeto" + alfabeto + "\\iut" + tIut +
 		// "\\experimento" + i
 		// + "\\" + nState + "states_spec.aut";
@@ -258,43 +263,39 @@ public class AutGenerator {
 
 		// alterando modelos da iut adicionando estados, submodelos + estados,
 		// alterar o mesmo arquivo da iut
-		// int percentage = 2;
-		//
-		// List<Integer> nStateSpecs = Arrays.asList(10);
-		// int alfabeto = 12;
-		// List<List<Integer>> nStateIUTs = Arrays.asList(Arrays.asList(15, 25, 35));
-		//
-		// int nExperimentos = 10;
-		// int iutPorExperimento = 10;
-		// boolean inputEnabled = true;
-		// int cont = 0;
-		//
-		// for (Integer nStateSpec : nStateSpecs) {
-		// System.out.println(">>>>>>>>>>>>> spec: " + nStateSpec);
-		// List<Integer> nStateIUT = nStateIUTs.get(cont);
-		// for (Integer k : nStateIUT) {
-		// System.out.println(">>>>>>>>>>>>> iut: " + k);
-		// for (int j = 1; j <= nExperimentos; j++) {
-		// System.out.println(">>>> experimento: " + j);
-		// for (int i = 0; i < iutPorExperimento; i++) {
-		// // System.out.println("> modelo: " + i);
-		// generateByNumStatesIocoConf(
-		// "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
-		// desempenho\\10-50states\\i-o\\ioco-n-conf-2pct\\10inp-2out\\"
-		// + nStateSpec + "states\\alfabeto" + alfabeto + "\\iut" + k + "\\experimento"
-		// + j
-		// + "\\iut\\" + percentage + "pct_iut_" + i + ".aut",
-		// "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
-		// desempenho\\10-50states\\i-o\\ioco-n-conf-2pct\\10inp-2out\\"
-		// + nStateSpec + "states\\alfabeto" + alfabeto + "\\iut" + k + "\\experimento"
-		// + j,
-		// percentage + "pct_iut_" + i + "", k, "g", System.currentTimeMillis(),
-		// inputEnabled);
-		// }
-		// }
-		// }
-		// cont++;
-		// }
+		int percentage = 4;
+
+		List<Integer> nStateSpecs = Arrays.asList(35);
+		int alfabeto = 10;
+		List<List<Integer>> nStateIUTs = Arrays.asList(Arrays.asList(45,55));//15,25,35,45,55
+
+		int nExperimentos = 10;
+		int iutPorExperimento = 10;
+		boolean inputEnabled = true;
+		int cont = 0;
+
+		for (Integer nStateSpec : nStateSpecs) {
+			System.out.println(">>>>>>>>>>>>> spec: " + nStateSpec);
+			List<Integer> nStateIUT = nStateIUTs.get(cont);
+			for (Integer k : nStateIUT) {
+				System.out.println(">>>>>>>>>>>>> iut: " + k);
+				for (int j = 1; j <= nExperimentos; j++) {
+					System.out.println(">>>> experimento: " + j);
+					for (int i = 0; i < iutPorExperimento; i++) {
+						// System.out.println("> modelo: " + i);
+						generateByNumStatesIocoConf(
+								"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\"+percentage+"pct\\"
+										+ nStateSpec + "states\\alfabeto" + alfabeto + "\\iut" + k + "\\experimento" + j
+										+ "\\iut\\" + percentage + "pct_iut_" + i + ".aut",
+								"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\"+percentage+"pct\\"
+										+ nStateSpec + "states\\alfabeto" + alfabeto + "\\iut" + k + "\\experimento"
+										+ j,
+								percentage + "pct_iut_" + i + "", k, "g", System.currentTimeMillis(), inputEnabled);
+					}
+				}
+			}
+			cont++;
+		}
 
 		// *******************
 

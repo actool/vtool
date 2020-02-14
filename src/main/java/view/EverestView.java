@@ -1751,6 +1751,7 @@ public class EverestView extends JFrame {
 			public void keyReleased(KeyEvent e) {
 				visibilityRunButtons();
 			}
+
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				multigraph = null;
@@ -1890,7 +1891,7 @@ public class EverestView extends JFrame {
 
 						loadMultigraph(folder);
 
-						javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(multigraph,
+						javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 								(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 										: null,
 								folder, I.getInputs(), I.getOutputs(), pathImplementation);
@@ -2468,7 +2469,7 @@ public class EverestView extends JFrame {
 
 				try {
 
-					javafx.util.Pair<List<String>, Boolean> result = Operations.getWordsFromAutomaton(multigraph,
+					javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 
 							(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 									: null,
@@ -2522,10 +2523,9 @@ public class EverestView extends JFrame {
 			fileContent += "des(" + multigraph.getInitialState().getName().replace(",", "_") + ","
 					+ multigraph.getTransitions().size() + "," + multigraph.getStates().size() + ")"
 					+ System.getProperty("line.separator");
-			//fileContent += aut_transitions;
-			
-			
-			fileContent+=StringUtils.join( multigraph.getTransitions(),"");
+			// fileContent += aut_transitions;
+
+			fileContent += StringUtils.join(multigraph.getTransitions(), "");
 
 			// fileContent += AutGenerator.ioltsToAut(new IOLTS(multigraph.getStates(),
 			// multigraph.getInitialState(),
@@ -2560,7 +2560,7 @@ public class EverestView extends JFrame {
 
 				// construct multigraph with param S and m
 				if ((!tfM.getText().isEmpty() && S != null && multigraph == null)) {//
-				
+
 					multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
 					// multigraph.setInitialState(new
 					// State_(multigraph.getInitialState().getName().replace(",", "_")));
@@ -2584,15 +2584,16 @@ public class EverestView extends JFrame {
 						if (!file.exists()) {
 							file.mkdir();
 						}
+
 						if ((!tfM.getText().isEmpty() && S != null)) {
-							testSuite = Operations
-									.getWordsFromAutomaton(multigraph, Integer.parseInt(tfNTestCases_gen.getText()),
-											folder, S.getInputs(), S.getOutputs(), null)
+							testSuite = TestGeneration
+									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
+											S.getInputs(), S.getOutputs(), null)
 									.getKey();
 						} else {
-							testSuite = Operations
-									.getWordsFromAutomaton(multigraph, Integer.parseInt(tfNTestCases_gen.getText()),
-											folder, iolts_aux.getInputs(), iolts_aux.getOutputs(), null)
+							testSuite = TestGeneration
+									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
+											iolts_aux.getInputs(), iolts_aux.getOutputs(), null)
 									.getKey();
 						}
 					}

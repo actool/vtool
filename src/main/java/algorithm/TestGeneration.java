@@ -211,11 +211,11 @@ public class TestGeneration {
 		State_ d;
 		String name;
 		Transition_ transition;
-		//String aut = "";
+		// String aut = "";
 
 		boolean inp, delta;
 
-		//System.out.println("a");
+		// System.out.println("a");
 		// construct first level
 		while (toVisit.size() > 0) {
 			current = toVisit.remove(0);// remove from the beginning of queue
@@ -251,7 +251,8 @@ public class TestGeneration {
 					}
 				}
 				D.addTransition(transition);
-				//aut += transitionAut(current + Constants.UNDERLINE + "0", t.getLabel(), d.getName(), inp, delta);
+				// aut += transitionAut(current + Constants.UNDERLINE + "0", t.getLabel(),
+				// d.getName(), inp, delta);
 
 				if (S.getOutputs().contains(t.getLabel())) {
 					if (map_state_out_transition.keySet().contains(name)) {
@@ -273,7 +274,7 @@ public class TestGeneration {
 		List<State_> states = new ArrayList<>();
 
 		int cont = 0;
-		//System.out.println("b");
+		// System.out.println("b");
 		// construct rest of levels
 		for (Transition_ t : D.getTransitions()) {
 			named = t.getIniState().getName().split(Constants.COMMA)[0];
@@ -291,8 +292,7 @@ public class TestGeneration {
 				end = new State_(named2 + Constants.COMMA + leveld2);
 
 				// transition = new Transition_(ini, t.getLabel(), end);
-				
-				
+
 				if (S.getOutputs().contains(t.getLabel())) {
 					transition = new Transition_(ini, t.getLabel(), end, TransitionType.OUTPUT);
 				} else {
@@ -302,15 +302,25 @@ public class TestGeneration {
 						transition = new Transition_(ini, t.getLabel(), end);
 					}
 				}
-				
-				
+
 				transitions.add(transition);
-//				aut += transitionAut(named + Constants.UNDERLINE + leveld, t.getLabel(),
-//						named2 + Constants.UNDERLINE + leveld2, inp, delta);
-				
-				//aut += transition.toString();
-				
-				//transitions.add(new Transition_(ini, t.getLabel(), end));
+
+				if (S.getOutputs().contains(transition.getLabel())) {
+					if (map_state_out_transition.keySet().contains(transition.getIniState().getName())) {
+						labels = new ArrayList<>(map_state_out_transition.get(transition.getIniState().getName()));
+						labels.add(transition.getLabel());
+						map_state_out_transition.put(transition.getIniState().getName(), labels);
+					} else {
+						map_state_out_transition.put(transition.getIniState().getName(),
+								Arrays.asList(transition.getLabel()));
+					}
+				}
+				// aut += transitionAut(named + Constants.UNDERLINE + leveld, t.getLabel(),
+				// named2 + Constants.UNDERLINE + leveld2, inp, delta);
+
+				// aut += transition.toString();
+
+				// transitions.add(new Transition_(ini, t.getLabel(), end));
 
 				// transitions.add(new Transition_(ini, t.getLabel(), end));
 
@@ -327,13 +337,15 @@ public class TestGeneration {
 				// System.out.println("transitions: " +transitions.size()+" - states: " +
 				// states.size() + " - level: " + leveld2 + " - max level:"+totalLevels);
 			}
-			//System.out.println("total: " + D.getTransitions().size() + " - atual: " + cont);
-			//System.out.println("transitions: " + transitions.size() + " - states: " + states.size() + " - level: "
-			//		+ leveld2 + " - max level:" + totalLevels);
+			// System.out.println("total: " + D.getTransitions().size() + " - atual: " +
+			// cont);
+			// System.out.println("transitions: " + transitions.size() + " - states: " +
+			// states.size() + " - level: "
+			// + leveld2 + " - max level:" + totalLevels);
 			cont++;
 		}
 
-		//System.out.println("c");
+		// System.out.println("c");
 		D.getTransitions().addAll(new HashSet<>(transitions));
 		D.getStates().addAll(new ArrayList<>(new HashSet<>(states)));
 
@@ -353,21 +365,20 @@ public class TestGeneration {
 				if (!map_state_out_transition.get(key).contains(l)) {
 					transition = new Transition_(new State_(key), l, fail, TransitionType.OUTPUT);
 					D.addTransition(transition);
-					//aut += transitionAut(key, l, fail.getName(), false, l.equals(Constants.DELTA));
+					// aut += transitionAut(key, l, fail.getName(), false,
+					// l.equals(Constants.DELTA));
 				}
 			}
 		}
 
-		//System.out.println("d");
+		// System.out.println("d");
 		Automaton_ a = new Automaton_(D.getStates(), D.getInitialState(), D.getAlphabet(), D.getStates(),
 				D.getTransitions());
 		a.setFinalStates(Arrays.asList(new State_[] { fail }));
-		//System.out.println("e");
+		// System.out.println("e");
 
 		return a;
 	}
-
-
 
 	public static boolean run(String pathTp, boolean oneIut, boolean oneTP, String pathIut, String pathCsv) {
 		boolean fault = false;
@@ -515,11 +526,276 @@ public class TestGeneration {
 		return new javafx.util.Pair<List<List<String>>, Boolean>(toSave, nonconformance);
 	}
 
+	static volatile int level;
+	static volatile Transition_ aa = null;
+
+
+	public static javafx.util.Pair<List<String>, Boolean> getTcAndSaveTP(Automaton_ multigraph, Integer nTC,
+			String absolutePath, List<String> li, List<String> lu, String pathIUT) throws IOException {
+		
+		
+		List<Transition_> toVisit = multigraph.transitionsByIniState(multigraph.getInitialState());
+		Map<String, List<String>> map = new HashMap<>();
+		// Map<String, String> map = new HashMap<>();
+		List<Transition_> toVisit_aux = new ArrayList<>(toVisit);
+		boolean nonConf = false;
+
+		// String filename = "C:\\Users\\camil\\Desktop\\teste.txt";
+		// FileWriter fw = new FileWriter(filename, true);
+
+		List<String> aux;
+		// String aux;
+		List<String> words = new ArrayList<>();
+		Transition_ current;
+		List<State_> states = new ArrayList<>();
+		level = 0;
+		List<String> toRemove = new ArrayList<>();
+
+		List<Transition_> selfloopFailState = multigraph.transitionsByIniState(multigraph.getFinalStates().get(0));
+
+		states.add(multigraph.getInitialState());
+		int totalTC = 0;
+		IOLTS tp;
+		File file;
+		BufferedWriter writer;
+		File tpFile;
+		javafx.util.Pair<List<List<String>>, Boolean> result;
+		int contSelfLoopFinalState = selfloopFailState.size() - 1;
+
+		end: while (!toVisit.isEmpty()) {
+
+			current = toVisit.get(0);
+			aa = current;
+
+			// if has path to endState
+			if (map.containsKey(current.getIniState().getName())) {
+				aux = new ArrayList<>();
+				// aux = "";
+
+				// get all path to iniState + current label
+				// System.out.println(current.getIniState().getName() + " -
+				// "+map.get(current.getIniState().getName()).size());
+				for (String e : map.get(current.getIniState().getName())) {// Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*"))
+					// aux.add(e + " -> " + current.getLabel());
+
+					if (current.getEndState().getName().equals(multigraph.getFinalStates().get(0).getName())) {
+						// if # test cases was informed not add self loop on every TC
+						if (nTC == null || nTC == Integer.MAX_VALUE) {
+							// add label of fail self loop on each TC
+							for (Transition_ transition_ : selfloopFailState) {
+								// aux += e + " -> " + current.getLabel() + " -> " + transition_.getLabel() +
+								// ",";
+								aux.add(e + " -> " + current.getLabel() + " -> " + transition_.getLabel());
+							}
+						} else {
+							// if has selfloop not coverage
+							if (contSelfLoopFinalState >= 0) {
+								aux.add(e + " -> " + current.getLabel() + " -> "
+										+ selfloopFailState.get(contSelfLoopFinalState).getLabel());
+								contSelfLoopFinalState--;
+							} else {
+								aux.add(e + " -> " + current.getLabel());
+							}
+						}
+
+					} else {
+						// aux += e + " -> " + current.getLabel() + ",";
+						aux.add(e + " -> " + current.getLabel());
+					}
+
+					// System.out.println();
+				}
+
+				// Arrays.asList(map.get(current.getIniState().getName()).split("\\s*,\\s*")).stream()
+				// .map(Person::getName)
+				// .collect(Collectors.toList());
+
+				// if end state has path, add
+				if (map.containsKey(current.getEndState().getName())
+						&& !(multigraph.getFinalStates().contains(current.getEndState())
+								&& current.getEndState().getName().equals(current.getIniState().getName()))) {
+					aux.addAll(map.get(current.getEndState().getName()));
+
+					// aux += String.join(",", map.get(current.getEndState().getName()));
+
+				}
+
+				//
+				// if (toVisit.stream().filter(x ->
+				// x.getIniState().getName().equals(aa.getIniState().getName()))
+				// .collect(Collectors.toList()).size() == 1 &&
+				// !S.getFinalStates().contains(aa.getIniState())) {// &&
+				// // !S.getFinalStates().contains(aa.getIniState())
+				// map.remove(current.getIniState().getName());
+				// }
+
+				// if current state is not final state, the words is not a tc
+				if (!current.getEndState().getName().equals(multigraph.getFinalStates().get(0).getName())) {
+					// map.put(current.getEndState().getName(), aux);
+					// map.put(current.getEndState().getName(),
+					// Arrays.asList(aux.split("\\s*,\\s*")));
+					map.put(current.getEndState().getName(), aux);
+				} else {
+					// not selfloop of final state
+					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
+						// if is a test case
+						// totalTC += aux.size();
+						// // totalTC += (int) Arrays.asList(aux.split("\\s*,\\s*")).size();
+						// // fw.write(String.join("\n", Arrays.asList(aux.split("\\s*,\\s*"))));//
+						// appends
+						// // the string to the
+						// // file]
+						// fw.write(String.join("\n", aux));// appends the string to the file
+						// fw.write("\n");
+						// // y += ((String.join("\n", Arrays.asList(aux.split("\\s*,\\s*")))) + "\n");
+						// // fw.close();
+						// // System.out.print(String.join("\n", aux)+"\n");
+
+						for (String tc : aux) {
+							totalTC += 1;
+
+							// save tp
+							tp = TestGeneration.testPurpose(multigraph, tc, li, lu);
+							// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+							tpFile = TestGeneration.saveTP(absolutePath, tp);
+
+							// if run TP x IUT
+							if (pathIUT != null) {
+								result = TestGeneration.runIutTp(pathIUT, tc, tpFile);
+								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
+
+								words.add(tc);
+								// no conformance
+								if (result.getValue()) {
+									nonConf = result.getValue();
+									break end;
+								}
+							} else {
+								words.add(tc);
+
+							}
+							if (nTC != null && nTC == totalTC) {
+								break end;
+							}
+
+						}
+
+					}
+				}
+
+			} else {
+				// if current state is not final state, the words is not a tc
+				if (!current.getEndState().getName().equals(multigraph.getFinalStates().get(0).getName())) {
+
+					map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
+					// map.put(current.getEndState().getName(), current.getLabel());
+				} else {
+					// not selfloop of final state
+					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
+						// if is a test case
+						totalTC += 1;
+						// fw.write(String.join("\n", Arrays.asList(current.getLabel()))); // file
+						// fw.write("\n");
+						// save tp
+						tp = TestGeneration.testPurpose(multigraph, current.getLabel(), li, lu);
+						// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+						tpFile = TestGeneration.saveTP(absolutePath, tp);
+
+						// if run TP x IUT
+						if (pathIUT != null) {
+							result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile);
+							TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// + "\\runVerdicts.csv"
+							nonConf = result.getValue();
+							// no conformance
+							if (result.getValue()) {
+								break end;
+							}
+						} else {
+							words.add(current.getLabel());
+
+						}
+
+						if (nTC != null && nTC == totalTC) {
+							break end;
+						}
+
+						// y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";
+						// fw.close();
+						// System.out.print(String.join("\n", Arrays.asList(current.getLabel()))+"\n");
+
+					}
+				}
+			}
+
+			toVisit.remove(current);
+
+			// add transition of endState of current transition
+			if (!states.contains(current.getEndState())) {
+				toVisit.addAll(multigraph.transitionsByIniState(current.getEndState()));
+				toVisit_aux.addAll(multigraph.transitionsByIniState(current.getEndState()));
+			}
+
+			states.add(current.getEndState());
+
+			// System.out.println(map.size()+ "-"+ map);
+
+			// avoid steackoverflow, remove from map, levels that are not be used/visited
+			toVisit.stream().filter(x -> x.getIniState().getName().contains("," + level)
+					&& x.getEndState().getName().contains("," + level)).collect(Collectors.toList());
+			// toRemove = states.stream().filter(x -> x.getName().contains("," +
+			// level)).collect(Collectors.toList());
+			if (toVisit.stream()
+					.filter(x -> x.getIniState().getName().contains("," + level)
+							&& x.getEndState().getName().contains("," + level))
+					.collect(Collectors.toList()).size() == 0) {
+				// remove from map all states at level
+				for (String m : map.keySet()) {
+					if (m.contains("," + level)) {
+
+						toRemove.add(m);
+					}
+				}
+
+				map.remove(toRemove);
+				level++;
+				aux = null;
+				// fw=null;
+				System.gc();
+			}
+
+			// System.err.println(map.size()+ "-"+map.keySet() +" - "+
+			// current.getEndState());
+			// if(map.containsKey(S.getFinalStates().get(0).toString()))
+			// System.out.println(map.get(S.getFinalStates().get(0).toString()).size()+"tcs:
+			// " + map.get(S.getFinalStates().get(0).toString()));
+
+		}
+		// fw.close();
+
+		// System.err.println("Total tc: " + totalTC);
+
+		// words = new ArrayList<>();
+
+		// for (State_ s : S.getFinalStates()) {
+		//
+		// if (map.containsKey(s.getName()))
+		// words.addAll(map.get(s.getName()));
+		// }
+
+		return new javafx.util.Pair<List<String>, Boolean>(words, nonConf);
+		// return String.join(",", words);
+	}
+
 	public static File saveTP(String tpFolder, IOLTS tp) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-S");
 
-		File file = new File(new File(tpFolder, "TPs").getAbsolutePath(), "tp_" + dateFormat.format(new Date()) + "-"
-				+ Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)] + ".aut");
+		// File file = new File(new File(tpFolder, "TPs").getAbsolutePath(), "tp_" +
+		// dateFormat.format(new Date()) + "-"
+		// + Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)]
+		// +Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)]+
+		// ".aut");
+		File file = new File(new File(tpFolder, "TPs").getAbsolutePath(), "tp_" + java.util.UUID.randomUUID() + ".aut");
+
 		// File file = new File(tpFolder, "tp_" + dateFormat.format(new Date()) +
 		// "-"+Constants.ALPHABET_[new
 		// Random().nextInt(Constants.ALPHABET_.length)]+".aut");
@@ -529,6 +805,7 @@ public class TestGeneration {
 			writer = new BufferedWriter(new FileWriter(file));
 			writer.write(AutGenerator.ioltsToAut(tp));
 			writer.close();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
