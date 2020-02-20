@@ -10,7 +10,7 @@ public class ViewConstants {
 	public static final String tabIOCO = "IOCO Conformance";
 	public static final String tabLang = "Language Based Conformance";
 	public static final String tabTSGeneration = "Test Generation & Run";
-	public static final String tabTestRun = "Run Test";
+	public static final String tabTestRun = "Run in batch";
 	public static final String toolName = "Everest";
 	public static final String[] models = new String[] { "", "IOLTS", "LTS" };
 	public static final String folderIconPath = "/img/folder.png";

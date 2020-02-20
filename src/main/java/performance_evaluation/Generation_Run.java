@@ -120,54 +120,125 @@ public class Generation_Run {
 
 		// ########################### Gerar TPs
 
-		// String specPath = "C:\\Users\\camil\\Documents\\35states_spec.aut";
-		// IOLTS S = ImportAutFile.autToIOLTS(specPath, false, null, null);
-		// int m = 55;
-		// Automaton_ multigraph = TestGeneration.multiGraphD(S, m);
-		// int alfabeto = 10;
-		// int experimento = 1;
+		// List<Integer> m_array = Arrays.asList( 35, 45, 55);
+		// List<Integer> spec_states = Arrays.asList(35);// 5, 15, 25, 35, 45,55
 		//
-		// long time_ini = System.nanoTime();
-		// List<String> testSuite = getTcAndSaveTP(multigraph, 3,
-		// "C:\\Users\\camil\\Documents\\", S.getInputs(),
+		// List<Integer> n_experimentos = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		//
+		// String multigraphName;
+		// double time_ini, time_end = 0, total_seconds;
+		// // Get the Java runtime
+		// Runtime runtime = Runtime.getRuntime();
+		// double memory;
+		//
+		// String tempFolder = "C:\\Users\\camil\\Desktop\\aaa\\";
+		// String root = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
+		// desempenho\\teste-geração\\";
+		// String multigraph_root_path = "";
+		// String tp_root_path;
+		// int nTestCase = 1000;
+		// List<String> testSuite;
+		// IOLTS S;
+		// Automaton_ multigraph;
+		// int alphabet = 10;
+		// String specPath;
+		//
+		// File folder;
+		// File[] listOfFiles;
+		//
+		// end: for (int spec_state : spec_states) {
+		// int iut_state = spec_state;
+		// // for (int iut_state : m_array) {
+		// for (int experiment : n_experimentos) {
+		//
+		// for (int m : m_array) {
+		// System.out.println("experimento: " + experiment + " - " + "m: " + m);
+		//
+		// specPath = root + "\\multigrafos-tps\\" + spec_state +
+		// "states-spec\\experimento" + experiment
+		// + "//" + spec_state + "states_spec.aut";
+		// S = ImportAutFile.autToIOLTS(specPath, false, null, null);
+		// multigraph = TestGeneration.multiGraphD(S, m);
+		//
+		// // \5states\multigrafo-tp
+		// multigraph_root_path = root + "\\multigrafos-tps\\" + spec_state +
+		// "states-spec\\experimento"
+		// + experiment + "\\multigraph" + m + "\\";
+		// tp_root_path = root + "\\multigrafos-tps\\" + spec_state +
+		// "states-spec\\experimento" + experiment
+		// + "\\multigraph" + m + "\\TPs\\";
+		//
+		// File dir = new File(tp_root_path);
+		// if (!dir.exists())
+		// dir.mkdirs();
+		//
+		//// folder = new File(multigraph_root_path);
+		//// listOfFiles = folder.listFiles();
+		//
+		// // for (File multigraphFileName : listOfFiles) {
+		// // if ((multigraphFileName.getName().indexOf(".") != -1 &&
+		// // multigraphFileName.getName()
+		// // .substring(multigraphFileName.getName().indexOf(".")).equals(".aut"))) {
+		// // Get the Java runtime
+		// runtime = Runtime.getRuntime();
+		// // Run the garbage collector
+		// runtime.gc();
+		//
+		// // generate multigraph
+		// time_ini = System.nanoTime();
+		//
+		// testSuite = getTcAndSaveTP(multigraph, nTestCase, multigraph_root_path,
+		// S.getInputs(),
 		// S.getOutputs(), null, S.getStates().size(), S.getTransitions().size(),
 		// specPath, "everest",
-		// multigraph.getStates().size(), multigraph.getTransitions().size(), alfabeto,
-		// experimento, m).getKey();
+		// multigraph.getStates().size(), multigraph.getTransitions().size(), alphabet,
+		// experiment, m,root )
+		// .getKey();
 		//
-		// // specState, specTransition, specPath, tool, multigraphState,
-		// // multgraphTransition, alphabet, experimento, m
-		// long time_end = System.nanoTime();
+		// time_end = System.nanoTime();
 		//
-		// double total_seconds = (time_end - time_ini);
-		// total_seconds = (total_seconds / 1e6);
+		// total_seconds = (time_end - time_ini);
+		// total_seconds = (total_seconds / 1e6);// 1e6 milisegundos/ 1e9 milisegundos
+		// System.err.println("tempo: " + total_seconds + " milisegundos " );
+		// memory = (runtime.totalMemory() - runtime.freeMemory());
 		//
-		// System.out.println(total_seconds);
+		// saveOnCSVFile_TpGen(root + "tp-gen-geral.csv", "everest",
+		// multigraph_root_path,
+		// multigraph.getStates().size(), multigraph.getTransitions().size(),
+		// total_seconds,
+		// "miliseconds", memory, "bytes", S.getAlphabet().size(),
+		// Objects.toString(experiment), m,
+		// testSuite.size());
+		// // }
+		// // }
+		//
+		//
+		//
+		// }
+		// }
+		//
+		// }
 
-		List<Integer> m_array = Arrays.asList(5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 105);
-		List<Integer> spec_states = Arrays.asList(5);// 5, 15, 25, 35, 45,55
+		// ########################### Executar Tps x Iuts
+		List<Integer> m_array = Arrays.asList(25);// 5, 15, 25, 35, 45,55
+		List<Integer> spec_states = Arrays.asList(25);// 5,15,25,35
+		String pct = "4";
 
 		List<Integer> n_experimentos = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
-		String multigraphName;
 		double time_ini, time_end = 0, total_seconds;
 		// Get the Java runtime
 		Runtime runtime = Runtime.getRuntime();
 		double memory;
-
-		String tempFolder = "C:\\Users\\camil\\Desktop\\aaa\\";
 		String root = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\";
-		String multigraph_root_path = "";
 		String tp_root_path;
-		int nTestCase = 2;
-		List<String> testSuite;
-		IOLTS S;
-		Automaton_ multigraph;
 		int alphabet = 10;
-		String specPath;
+		String iut_path;
+		File folder_tp, folder_iut;
+		File[] listOfFiles_tp, listOfFiles_iut;
+		boolean verdict, v_aux;
 
-		File folder;
-		File[] listOfFiles;
+	
+		double time_ini_unt, time_end_unt = 0, total_seconds_unt;
 
 		end: for (int spec_state : spec_states) {
 			int iut_state = spec_state;
@@ -175,57 +246,71 @@ public class Generation_Run {
 			for (int experiment : n_experimentos) {
 
 				for (int m : m_array) {
-					specPath = root + "\\multigrafos-tps\\" + spec_state + "states-spec\\experimento" + experiment
-							+ "//" + spec_state + "states_spec.aut";
-					S = ImportAutFile.autToIOLTS(specPath, false, null, null);
-					multigraph = TestGeneration.multiGraphD(S, m);
+					System.out.println("experimento: " + experiment + " - " + "m: " + m);
 
-					// \5states\multigrafo-tp
-					multigraph_root_path = root + "\\multigrafos-tps\\" + spec_state + "states-spec\\experimento"
-							+ experiment + "\\multigraph" + m + "\\";
 					tp_root_path = root + "\\multigrafos-tps\\" + spec_state + "states-spec\\experimento" + experiment
 							+ "\\multigraph" + m + "\\TPs\\";
-					
-					File dir = new File(tp_root_path);
-					if (!dir.exists())
-						dir.mkdirs();
 
-//					folder = new File(multigraph_root_path);
-//					listOfFiles = folder.listFiles();
+					iut_path = root + pct + "pct\\" + spec_state + "states\\alfabeto" + alphabet + "\\iut" + m
+							+ "\\experimento" + experiment + "\\iut\\";
 
-					// for (File multigraphFileName : listOfFiles) {
-					// if ((multigraphFileName.getName().indexOf(".") != -1 &&
-					// multigraphFileName.getName()
-					// .substring(multigraphFileName.getName().indexOf(".")).equals(".aut"))) {
-					// Get the Java runtime
-					runtime = Runtime.getRuntime();
-					// Run the garbage collector
-					runtime.gc();
+					folder_iut = new File(iut_path);
+					listOfFiles_iut = folder_iut.listFiles();
 
-					// generate multigraph
-					time_ini = System.nanoTime();
+					// pega uma iut roda tds os TPs
+					for (File iut : listOfFiles_iut) {
+						verdict = false;
+						v_aux = false;
 
-					testSuite = getTcAndSaveTP(multigraph, nTestCase, multigraph_root_path, S.getInputs(),
-							S.getOutputs(), null, S.getStates().size(), S.getTransitions().size(), specPath, "everest",
-							multigraph.getStates().size(), multigraph.getTransitions().size(), alphabet, experiment, m,root )
-									.getKey();
+						// generate multigraph
+						time_ini = System.nanoTime();
 
-					time_end = System.nanoTime();
+						folder_tp = new File(tp_root_path);
+						listOfFiles_tp = folder_tp.listFiles();
 
-					total_seconds = (time_end - time_ini);
-					total_seconds = (total_seconds / 1e6);// 1e6 milisegundos/ 1e9 milisegundos
-					System.out.println("tempo: " + total_seconds + " - tcs: " + testSuite.size());
-					memory = (runtime.totalMemory() - runtime.freeMemory());
+						for (File tp : listOfFiles_tp) {
+							// if ((multigraphFileName.getName().indexOf(".") != -1 &&
+							// multigraphFileName.getName()
+							// .substring(multigraphFileName.getName().indexOf(".")).equals(".aut"))) {
+							// Get the Java runtime
+							runtime = Runtime.getRuntime();
+							// Run the garbage collector
+							runtime.gc();
 
-					saveOnCSVFile_TpGen(root + "performance-tp.csv", "everest", multigraph_root_path,
-							multigraph.getStates().size(), multigraph.getTransitions().size(), total_seconds,
-							"miliseconds", memory, "bytes", S.getAlphabet().size(), Objects.toString(experiment), m,
-							testSuite.size());
-					// }
-					// }
+							time_ini_unt = System.nanoTime();
+							v_aux = runAllIutTp(tp, true, iut.getAbsolutePath(), root);
 
-					break end;
+							if (verdict == false && v_aux) {
+								verdict = false;
+							}
+							time_end_unt = System.nanoTime();
 
+							total_seconds_unt = (time_end_unt - time_ini_unt);
+							total_seconds_unt = (total_seconds_unt / 1e6);// 1e6 milisegundos/ 1e9 milisegundos
+							memory = (runtime.totalMemory() - runtime.freeMemory());
+
+							saveOnCSVFile_runTPGeneral(root + "run-tp-unitario"+pct+"pct.csv", "everest", iut.getAbsolutePath(),
+									tp.getAbsolutePath(), total_seconds_unt, "miliseconds", memory, "byte", alphabet,
+									experiment, pct, listOfFiles_tp.length, verdict);
+
+							// }
+							
+						}
+
+						time_end = System.nanoTime();
+
+						total_seconds = (time_end - time_ini);
+						total_seconds = (total_seconds / 1e6);// 1e6 milisegundos/ 1e9 milisegundos
+						System.err.println("tempo: " + total_seconds + " milisegundos ");
+						memory = (runtime.totalMemory() - runtime.freeMemory());
+
+						saveOnCSVFile_runTPGeneral(root + "run-tp-geral"+pct+"pct.csv", "everest", iut.getAbsolutePath(),
+								tp_root_path, total_seconds, "miliseconds", memory, "byte", alphabet, experiment, pct,
+								listOfFiles_tp.length, verdict);
+						
+						
+						
+					}
 				}
 			}
 
@@ -461,6 +546,64 @@ public class Generation_Run {
 		}
 	}
 
+	public static void saveOnCSVFile_runTPGeneral(String pathCsv, String tool, String pathIut, String rootPathTp,
+			double time, String unitTime, double memory, String unityMemory, int alphabet, int experiment, String pct,
+			int ntps, boolean verdict) {
+
+		List<String> headerCSV = Arrays.asList("tool", "iut", "rootPathTP", "time", "unit", "memory", "unit",
+				"alphabet", "experiment", "pct_iut", "nTPs", "verdict");
+		String delimiterCSV = ";";
+		try {
+
+			ArrayList<String> row = new ArrayList<String>();
+			row.add(tool);
+			row.add(pathIut);
+			row.add(rootPathTp);
+			row.add(String.format("%.2f", time).replace(",", "."));// .replace(",", "."))
+			// row.add(Objects.toString(time));
+			row.add(unitTime);
+			row.add(Objects.toString(memory));
+			row.add(unityMemory);
+			row.add(Objects.toString(alphabet));
+			row.add(Objects.toString(experiment));
+			row.add(pct);
+			row.add(Objects.toString(ntps));
+			row.add(Objects.toString(verdict));
+
+			FileWriter csvWriter;
+
+			File file = new File(pathCsv);
+			if (!file.exists()) {
+				file.createNewFile();
+
+			}
+
+			// first record
+			if (new File(pathCsv).length() == 0) {
+				csvWriter = new FileWriter(pathCsv);
+
+				for (String header : headerCSV) {
+					csvWriter.append(header);
+					csvWriter.append(delimiterCSV);
+				}
+				csvWriter.append("\n");
+			} else {
+				csvWriter = new FileWriter(pathCsv, true);
+			}
+
+			csvWriter.append(String.join(delimiterCSV, row));
+			csvWriter.append("\n");
+
+			csvWriter.flush();
+			csvWriter.close();
+
+		} catch (Exception e)
+
+		{
+			e.printStackTrace();
+		}
+	}
+
 	public static void saveOnCSVFile_TpGen(String pathCsv, String tool, String pathMultigraph, int statesMultigraph,
 			int transitionsMultigraph, double time, String unitTime, double memory, String unityMemory, int alphabet,
 			String experiment, int m, int ntps) {
@@ -652,7 +795,7 @@ public class Generation_Run {
 							tp = testPurpose(multigraph, tc, li, lu);
 							// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
 							tpFile = saveTP(absolutePath, tp, specState, specTransition, specPath, tool,
-									multigraphState, multgraphTransition, alphabet, experimento, m,pathCsvTime);
+									multigraphState, multgraphTransition, alphabet, experimento, m, pathCsvTime);
 
 							// if run TP x IUT
 							if (pathIUT != null) {
@@ -847,7 +990,8 @@ public class Generation_Run {
 	static long time = System.nanoTime();
 
 	public static File saveTP(String tpFolder, IOLTS tp, int specState, int specTransition, String specPath,
-			String tool, int multigraphState, int multgraphTransition, int alphabet, int experimento, int m, String pathCsvTime) {
+			String tool, int multigraphState, int multgraphTransition, int alphabet, int experimento, int m,
+			String pathCsvTime) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-S");
 
 		String tpName;
@@ -873,8 +1017,8 @@ public class Generation_Run {
 			String unity = "milisecond";
 
 			// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-			pathCsvTime += System.getProperty("file.separator") + "tp-gen.csv";// +dateFormat.format(new
-																			// Date())+".csv";
+			pathCsvTime += System.getProperty("file.separator") + "tp-gen-unitario.csv";// +dateFormat.format(new
+			// Date())+".csv";
 			String delimiterCSV = ",";
 
 			ArrayList<String> headerCSV = new ArrayList<String>();
@@ -1099,7 +1243,7 @@ public class Generation_Run {
 			headerCSV.add("tp file");
 			headerCSV.add("test case");
 			headerCSV.add("state path");
-			headerCSV.add("verdict");
+			headerCSV.add("fault");
 
 			FileWriter csvWriter;
 

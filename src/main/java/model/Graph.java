@@ -109,6 +109,7 @@ public class Graph {
 	}
 
 	public static List<String> getWords(Automaton_ a) {
+		
 		a.makeInitiallyConnected();
 		Map<String, Integer> stateNames = new HashMap<>();
 		Map<Integer, String> stateNum = new HashMap<>();

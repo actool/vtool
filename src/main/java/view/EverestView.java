@@ -2001,8 +2001,8 @@ public class EverestView extends JFrame {
 
 		// Panel run test
 		panel_test_execution = new JPanel();
-		// tabbedPane.addTab(ViewConstants.tabTestRun, null, panel_test_execution,
-		// null);
+//		 tabbedPane.addTab(ViewConstants.tabTestRun, null, panel_test_execution,
+//		 null);
 		panel_test_execution.setLayout(null);
 
 		lblSelectFolderContaining = new JLabel("Test purposes folder");
