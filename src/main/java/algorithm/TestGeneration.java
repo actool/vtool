@@ -162,6 +162,7 @@ public class TestGeneration {
 			}
 		}
 
+		//self loop pass/fail state
 		State_ fail = new State_("fail");
 		for (String l : lu) {// li
 			tp.addTransition(new Transition_(pass, l, pass));
@@ -432,6 +433,7 @@ public class TestGeneration {
 					tp.getTransitions());
 			tpAutomaton.setFinalStates(new ArrayList<>());
 			tpAutomaton.addFinalStates(new State_("fail"));
+			tpAutomaton.addFinalStates(new State_("pass"));
 			wordsTp = Graph.getWords(tpAutomaton);
 			wordsTp_aux = new ArrayList<>();
 
@@ -445,12 +447,13 @@ public class TestGeneration {
 			}
 
 			wordsTp.addAll(wordsTp_aux);
+			wordsTp = new ArrayList<>(new HashSet<>(wordsTp));
 
 			for (String word : wordsTp) {
 
 				// one iut
 				if (oneIut) {
-					result = runIutTp(pathIut, word, fileTp);// pathTp
+					result = runIutTp(pathIut, word, fileTp, tpAutomaton);// pathTp
 					toSave = result.getKey();
 					if (!fault)
 						fault = result.getValue();
@@ -465,7 +468,7 @@ public class TestGeneration {
 						// for each iut
 						for (File fileIut : listOfIutFiles) {
 							if (EverestView.isAutFile(fileIut)) {
-								result = runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp);
+								result = runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp, tpAutomaton);
 								toSave = result.getKey();
 
 								if (!fault)
@@ -485,19 +488,24 @@ public class TestGeneration {
 		return fault;
 	}
 
-	public static javafx.util.Pair<List<List<String>>, Boolean> runIutTp(String pathIut, String word, File fileTp) {
+	public static javafx.util.Pair<List<List<String>>, Boolean> runIutTp(String pathIut, String word, File fileTp,
+			Automaton_ tp) {
 		List<List<String>> toSave = new ArrayList<>();
 		boolean nonconformance = false;
+		tp.addState(new State_("fail"));
+		Operations.addTransitionToStates(tp);
 		try {
 			IOLTS iut;
 			iut = ImportAutFile.autToIOLTS(pathIut, false, null, null);
 			iut.addQuiescentTransitions();
 
 			List<String> partialResult = new ArrayList<>();
-			List<List<State_>> statesPath;
+			List<List<State_>> statesPath, statesPath_tp;
 			// System.out.println(word);
 			Operations.addTransitionToStates(iut);
 			statesPath = Operations.statePath(iut, word);
+			statesPath_tp = Operations.statePath(tp, word);
+
 			for (List<State_> statePath : statesPath) {
 				partialResult = new ArrayList<>();
 				partialResult.add(pathIut);
@@ -510,10 +518,17 @@ public class TestGeneration {
 					partialResult.add(Constants.RUN_VERDICT_INCONCLUSIVE);
 
 				} else {
-					// not conform
-					partialResult.add(Constants.RUN_VERDICT_NON_CONFORM);
-					nonconformance = true;
-
+					
+					if (statesPath_tp.get(0).get(statesPath_tp.get(0).size() - 1).getName().contains("fail")) {
+						// not conform
+						partialResult.add(Constants.RUN_VERDICT_NON_CONFORM);
+						nonconformance = true;
+					} else {
+						if (statesPath_tp.get(0).get(statesPath_tp.get(0).size() - 1).getName().contains("pass")) {
+							// pass
+							partialResult.add(Constants.RUN_VERDICT_PASS);
+						}
+					}
 				}
 
 				toSave.add(partialResult);
@@ -529,11 +544,9 @@ public class TestGeneration {
 	static volatile int level;
 	static volatile Transition_ aa = null;
 
-
 	public static javafx.util.Pair<List<String>, Boolean> getTcAndSaveTP(Automaton_ multigraph, Integer nTC,
 			String absolutePath, List<String> li, List<String> lu, String pathIUT) throws IOException {
-		
-		
+
 		List<Transition_> toVisit = multigraph.transitionsByIniState(multigraph.getInitialState());
 		Map<String, List<String>> map = new HashMap<>();
 		// Map<String, String> map = new HashMap<>();
@@ -556,6 +569,7 @@ public class TestGeneration {
 		states.add(multigraph.getInitialState());
 		int totalTC = 0;
 		IOLTS tp;
+		Automaton_ tp_automaton;
 		File file;
 		BufferedWriter writer;
 		File tpFile;
@@ -656,12 +670,16 @@ public class TestGeneration {
 
 							// save tp
 							tp = TestGeneration.testPurpose(multigraph, tc, li, lu);
+							tp_automaton = tp.ioltsToAutomaton();
+							tp_automaton.setFinalStates(new ArrayList<>());
+							tp_automaton.addFinalStates(new State_("fail"));
+							tp_automaton.addFinalStates(new State_("pass"));
 							// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
 							tpFile = TestGeneration.saveTP(absolutePath, tp);
 
 							// if run TP x IUT
 							if (pathIUT != null) {
-								result = TestGeneration.runIutTp(pathIUT, tc, tpFile);
+								result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);
 								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
 
 								words.add(tc);
@@ -698,12 +716,17 @@ public class TestGeneration {
 						// fw.write("\n");
 						// save tp
 						tp = TestGeneration.testPurpose(multigraph, current.getLabel(), li, lu);
+						tp_automaton = tp.ioltsToAutomaton();
+						tp_automaton.setFinalStates(new ArrayList<>());
+						tp_automaton.addFinalStates(new State_("fail"));
+						tp_automaton.addFinalStates(new State_("pass"));
+						
 						// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
 						tpFile = TestGeneration.saveTP(absolutePath, tp);
 
 						// if run TP x IUT
 						if (pathIUT != null) {
-							result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile);
+							result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile, tp_automaton);
 							TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// + "\\runVerdicts.csv"
 							nonConf = result.getValue();
 							// no conformance
@@ -805,7 +828,7 @@ public class TestGeneration {
 			writer = new BufferedWriter(new FileWriter(file));
 			writer.write(AutGenerator.ioltsToAut(tp));
 			writer.close();
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

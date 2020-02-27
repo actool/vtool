@@ -267,7 +267,7 @@ public class AutGenerator {
 
 		List<Integer> nStateSpecs = Arrays.asList(35);
 		int alfabeto = 10;
-		List<List<Integer>> nStateIUTs = Arrays.asList(Arrays.asList(45,55));//15,25,35,45,55
+		List<List<Integer>> nStateIUTs = Arrays.asList(Arrays.asList(45, 55));// 15,25,35,45,55
 
 		int nExperimentos = 10;
 		int iutPorExperimento = 10;
@@ -284,12 +284,12 @@ public class AutGenerator {
 					for (int i = 0; i < iutPorExperimento; i++) {
 						// System.out.println("> modelo: " + i);
 						generateByNumStatesIocoConf(
-								"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\"+percentage+"pct\\"
-										+ nStateSpec + "states\\alfabeto" + alfabeto + "\\iut" + k + "\\experimento" + j
-										+ "\\iut\\" + percentage + "pct_iut_" + i + ".aut",
-								"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\"+percentage+"pct\\"
-										+ nStateSpec + "states\\alfabeto" + alfabeto + "\\iut" + k + "\\experimento"
-										+ j,
+								"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\"
+										+ percentage + "pct\\" + nStateSpec + "states\\alfabeto" + alfabeto + "\\iut"
+										+ k + "\\experimento" + j + "\\iut\\" + percentage + "pct_iut_" + i + ".aut",
+								"C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\"
+										+ percentage + "pct\\" + nStateSpec + "states\\alfabeto" + alfabeto + "\\iut"
+										+ k + "\\experimento" + j,
 								percentage + "pct_iut_" + i + "", k, "g", System.currentTimeMillis(), inputEnabled);
 					}
 				}
@@ -933,9 +933,15 @@ public class AutGenerator {
 
 	public static String ioltsToAut(IOLTS iolts) {
 		String newline = System.getProperty("line.separator");
-		String aut = "des(" + iolts.getInitialState().getName().replace(",", "_") + "," + iolts.getTransitions().size()
-				+ "," + iolts.getStates().size() + ")" + newline;
+		String iniState = iolts.getInitialState().getName().replace(",", "_");
+		String aut = "des(" + iniState + "," + iolts.getTransitions().size() + "," + iolts.getStates().size() + ")"
+				+ newline;
+		iolts.getInitialState().setName(iniState);
 
+		for (State_ s : iolts.getStates()) {
+			s.setName(s.getName().replace(",", "_"));
+		}
+		
 		for (Transition_ t : iolts.getTransitions()) {
 			// if name of states contains COMMA replace to _
 			t.setIniState(new State_(t.getIniState().getName().replace(",", "_")));

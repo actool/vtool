@@ -3509,6 +3509,7 @@ public class EverestView extends JFrame {
 				.ioltsToAutomaton();
 		file.delete();
 		multigraph.setFinalStates(Arrays.asList(new State_("fail")));
+		multigraph.setFinalStates(Arrays.asList(new State_("pass")));
 
 		visibilityRunButtons();
 

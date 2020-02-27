@@ -46,6 +46,98 @@ public class Generation_Run {
 
 	public static void main(String[] args) throws Exception {
 
+//		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\10-50states\\result\\i-o\\ioco-n-conf-2pct\\10inp-2out\\";
+//		String tool = "everest";
+//		String path = rootPath + tool + ".csv";
+//		String COMMA_DELIMITER = ",";
+//		boolean states;
+//		String alfabeto, experimento;
+//		List<String> values;
+//		String header = "";
+//
+//		List<List<String>> records = new ArrayList<>();
+//		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+//			String line;
+//			header = br.readLine();// pula cabeçalho
+//			header += "alphabet" + COMMA_DELIMITER + "experiment";
+//			records.add(Arrays.asList(header.split(COMMA_DELIMITER)));
+//			while ((line = br.readLine()) != null) {
+//				alfabeto = "";
+//				experimento = "";
+//				values = new ArrayList<String>();
+//				values.addAll(Arrays.asList(line.split(COMMA_DELIMITER)));
+//
+//				// values.add("");//jtorx ioco
+//				for (String l : Arrays.asList(values.get(1).replace("\\", "@").split("@"))) {
+//					if (l.contains("alfabeto")) {
+//						String s = (l.replace("alfabeto", ""));
+//						values.add(s);
+//					}
+//
+//					if (l.contains("experimento")) {
+//						values.add(l.replace("experimento", ""));
+//					}
+//				}
+//				records.add(values);
+//
+//			}
+//		}
+//
+//		FileWriter csvWriter = new FileWriter(rootPath + "new-" + tool + ".csv");
+//		for (List<String> rowData : records) {
+//			csvWriter.append(String.join(COMMA_DELIMITER, rowData));
+//			csvWriter.append("\n");
+//		}
+//
+//		csvWriter.flush();
+//		csvWriter.close();
+		
+		String pct = "4";
+		String rootPath = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\run-tp-geral"+pct+"pct.csv";
+		
+		String COMMA_DELIMITER = ";";
+		boolean states;
+		String alfabeto, experimento;
+		List<String> values;
+		String header = "";
+
+		List<List<String>> records = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new FileReader(rootPath))) {
+			String line;
+			header = br.readLine();// pula cabeçalho
+			header += "pct" + COMMA_DELIMITER + "statesModel";
+			records.add(Arrays.asList(header.split(COMMA_DELIMITER)));
+			while ((line = br.readLine()) != null) {
+				alfabeto = "";
+				experimento = "";
+				values = new ArrayList<String>();
+				values.addAll(Arrays.asList(line.split(COMMA_DELIMITER)));
+
+				// values.add("");//jtorx ioco
+				for (String l : Arrays.asList(values.get(1).replace("\\", "@").split("@"))) {
+					if (l.contains("pct")) {
+						String s = (l.replace("pct", ""));
+						values.add(s);
+					}
+
+					if (l.contains("states")) {
+						values.add(l.replace("states", ""));
+					}
+				}
+				records.add(values);
+
+			}
+		}
+
+		FileWriter csvWriter = new FileWriter("C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\new-run-tp-geral"+pct+"pct.csv");
+		for (List<String> rowData : records) {
+			csvWriter.append(String.join(COMMA_DELIMITER, rowData));
+			csvWriter.append("\n");
+		}
+
+		csvWriter.flush();
+		csvWriter.close();
+
 		// ########################### Gerar multigrafo
 		// List<Integer> m_array = Arrays.asList(5, 15, 25, 35, 45, 55, 65, 75, 85, 95,
 		// 105);
@@ -219,154 +311,112 @@ public class Generation_Run {
 		//
 		// }
 
-		// ########################### Executar Tps x Iuts
-		List<Integer> m_array = Arrays.asList(25);// 5, 15, 25, 35, 45,55
-		List<Integer> spec_states = Arrays.asList(25);// 5,15,25,35
-		String pct = "4";
-
-		List<Integer> n_experimentos = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-		double time_ini, time_end = 0, total_seconds;
-		// Get the Java runtime
-		Runtime runtime = Runtime.getRuntime();
-		double memory;
-		String root = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste desempenho\\teste-geração\\";
-		String tp_root_path;
-		int alphabet = 10;
-		String iut_path;
-		File folder_tp, folder_iut;
-		File[] listOfFiles_tp, listOfFiles_iut;
-		boolean verdict, v_aux;
-
-	
-		double time_ini_unt, time_end_unt = 0, total_seconds_unt;
-
-		end: for (int spec_state : spec_states) {
-			int iut_state = spec_state;
-			// for (int iut_state : m_array) {
-			for (int experiment : n_experimentos) {
-
-				for (int m : m_array) {
-					System.out.println("experimento: " + experiment + " - " + "m: " + m);
-
-					tp_root_path = root + "\\multigrafos-tps\\" + spec_state + "states-spec\\experimento" + experiment
-							+ "\\multigraph" + m + "\\TPs\\";
-
-					iut_path = root + pct + "pct\\" + spec_state + "states\\alfabeto" + alphabet + "\\iut" + m
-							+ "\\experimento" + experiment + "\\iut\\";
-
-					folder_iut = new File(iut_path);
-					listOfFiles_iut = folder_iut.listFiles();
-
-					// pega uma iut roda tds os TPs
-					for (File iut : listOfFiles_iut) {
-						verdict = false;
-						v_aux = false;
-
-						// generate multigraph
-						time_ini = System.nanoTime();
-
-						folder_tp = new File(tp_root_path);
-						listOfFiles_tp = folder_tp.listFiles();
-
-						for (File tp : listOfFiles_tp) {
-							// if ((multigraphFileName.getName().indexOf(".") != -1 &&
-							// multigraphFileName.getName()
-							// .substring(multigraphFileName.getName().indexOf(".")).equals(".aut"))) {
-							// Get the Java runtime
-							runtime = Runtime.getRuntime();
-							// Run the garbage collector
-							runtime.gc();
-
-							time_ini_unt = System.nanoTime();
-							v_aux = runAllIutTp(tp, true, iut.getAbsolutePath(), root);
-
-							if (verdict == false && v_aux) {
-								verdict = false;
-							}
-							time_end_unt = System.nanoTime();
-
-							total_seconds_unt = (time_end_unt - time_ini_unt);
-							total_seconds_unt = (total_seconds_unt / 1e6);// 1e6 milisegundos/ 1e9 milisegundos
-							memory = (runtime.totalMemory() - runtime.freeMemory());
-
-							saveOnCSVFile_runTPGeneral(root + "run-tp-unitario"+pct+"pct.csv", "everest", iut.getAbsolutePath(),
-									tp.getAbsolutePath(), total_seconds_unt, "miliseconds", memory, "byte", alphabet,
-									experiment, pct, listOfFiles_tp.length, verdict);
-
-							// }
-							
-						}
-
-						time_end = System.nanoTime();
-
-						total_seconds = (time_end - time_ini);
-						total_seconds = (total_seconds / 1e6);// 1e6 milisegundos/ 1e9 milisegundos
-						System.err.println("tempo: " + total_seconds + " milisegundos ");
-						memory = (runtime.totalMemory() - runtime.freeMemory());
-
-						saveOnCSVFile_runTPGeneral(root + "run-tp-geral"+pct+"pct.csv", "everest", iut.getAbsolutePath(),
-								tp_root_path, total_seconds, "miliseconds", memory, "byte", alphabet, experiment, pct,
-								listOfFiles_tp.length, verdict);
-						
-						
-						
-					}
-				}
-			}
-
-		}
+		// // ########################### Executar Tps x Iuts
+		// List<Integer> m_array = Arrays.asList(25);// 5, 15, 25, 35, 45,55
+		// List<Integer> spec_states = Arrays.asList(25);// 5,15,25,35
+		// String pct = "4";
+		//
+		// List<Integer> n_experimentos = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		// double time_ini, time_end = 0, total_seconds;
+		// // Get the Java runtime
+		// Runtime runtime = Runtime.getRuntime();
+		// double memory;
+		// String root = "C:\\Users\\camil\\Google Drive\\UEL\\svn\\ferramenta\\teste
+		// desempenho\\teste-geração\\";
+		// String tp_root_path;
+		// int alphabet = 10;
+		// String iut_path;
+		// File folder_tp, folder_iut;
+		// File[] listOfFiles_tp, listOfFiles_iut;
+		// boolean verdict, v_aux;
+		//
+		//
+		// double time_ini_unt, time_end_unt = 0, total_seconds_unt;
+		//
+		// end: for (int spec_state : spec_states) {
+		// int iut_state = spec_state;
+		// // for (int iut_state : m_array) {
+		// for (int experiment : n_experimentos) {
+		//
+		// for (int m : m_array) {
+		// System.out.println("experimento: " + experiment + " - " + "m: " + m);
+		//
+		// tp_root_path = root + "\\multigrafos-tps\\" + spec_state +
+		// "states-spec\\experimento" + experiment
+		// + "\\multigraph" + m + "\\TPs\\";
+		//
+		// iut_path = root + pct + "pct\\" + spec_state + "states\\alfabeto" + alphabet
+		// + "\\iut" + m
+		// + "\\experimento" + experiment + "\\iut\\";
+		//
+		// folder_iut = new File(iut_path);
+		// listOfFiles_iut = folder_iut.listFiles();
+		//
+		// // pega uma iut roda tds os TPs
+		// for (File iut : listOfFiles_iut) {
+		// verdict = false;
+		// v_aux = false;
+		//
+		// // generate multigraph
+		// time_ini = System.nanoTime();
+		//
+		// folder_tp = new File(tp_root_path);
+		// listOfFiles_tp = folder_tp.listFiles();
+		//
+		// for (File tp : listOfFiles_tp) {
+		// // if ((multigraphFileName.getName().indexOf(".") != -1 &&
+		// // multigraphFileName.getName()
+		// // .substring(multigraphFileName.getName().indexOf(".")).equals(".aut"))) {
+		// // Get the Java runtime
+		// runtime = Runtime.getRuntime();
+		// // Run the garbage collector
+		// runtime.gc();
+		//
+		// time_ini_unt = System.nanoTime();
+		// v_aux = runAllIutTp(tp, true, iut.getAbsolutePath(), root);
+		//
+		// if (verdict == false && v_aux) {
+		// verdict = false;
+		// }
+		// time_end_unt = System.nanoTime();
+		//
+		// total_seconds_unt = (time_end_unt - time_ini_unt);
+		// total_seconds_unt = (total_seconds_unt / 1e6);// 1e6 milisegundos/ 1e9
+		// milisegundos
+		// memory = (runtime.totalMemory() - runtime.freeMemory());
+		//
+		// saveOnCSVFile_runTPGeneral(root + "run-tp-unitario"+pct+"pct.csv", "everest",
+		// iut.getAbsolutePath(),
+		// tp.getAbsolutePath(), total_seconds_unt, "miliseconds", memory, "byte",
+		// alphabet,
+		// experiment, pct, listOfFiles_tp.length, verdict);
+		//
+		// // }
+		//
+		// }
+		//
+		// time_end = System.nanoTime();
+		//
+		// total_seconds = (time_end - time_ini);
+		// total_seconds = (total_seconds / 1e6);// 1e6 milisegundos/ 1e9 milisegundos
+		// System.err.println("tempo: " + total_seconds + " milisegundos ");
+		// memory = (runtime.totalMemory() - runtime.freeMemory());
+		//
+		// saveOnCSVFile_runTPGeneral(root + "run-tp-geral"+pct+"pct.csv", "everest",
+		// iut.getAbsolutePath(),
+		// tp_root_path, total_seconds, "miliseconds", memory, "byte", alphabet,
+		// experiment, pct,
+		// listOfFiles_tp.length, verdict);
+		//
+		//
+		//
+		// }
+		// }
+		// }
+		//
+		// }
 
 		// ***************************************************************
-
-		// String rootPath = "C:\\Users\\camil\\Google
-		// Drive\\UEL\\svn\\ferramenta\\teste
-		// desempenho\\10-50states\\result\\i-o\\ioco-n-conf-2pct\\10inp-2out\\";
-		// String tool = "everest";
-		// String path = rootPath+tool+".csv";
-		// String COMMA_DELIMITER = ",";
-		// boolean states;
-		// String alfabeto, experimento;
-		// List<String> values;
-		// String header = "";
-		//
-		// List<List<String>> records = new ArrayList<>();
-		// try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-		// String line;
-		// header = br.readLine();// pula cabeçalho
-		// header += "alphabet" + COMMA_DELIMITER + "experiment";
-		// records.add(Arrays.asList(header.split(COMMA_DELIMITER)));
-		// while ((line = br.readLine()) != null) {
-		// alfabeto = "";
-		// experimento = "";
-		// values = new ArrayList<String>();
-		// values.addAll(Arrays.asList(line.split(COMMA_DELIMITER)));
-		//
-		//
-		//
-		// //values.add("");//jtorx ioco
-		// for (String l : Arrays.asList(values.get(1).replace("\\", "@").split("@"))) {
-		// if (l.contains("alfabeto")) {
-		// String s = (l.replace("alfabeto", ""));
-		// values.add(s);
-		// }
-		//
-		// if (l.contains("experimento")) {
-		// values.add(l.replace("experimento", ""));
-		// }
-		// }
-		// records.add(values);
-		//
-		// }
-		// }
-		//
-		// FileWriter csvWriter = new FileWriter(rootPath+"new-"+tool+".csv");
-		// for (List<String> rowData : records) {
-		// csvWriter.append(String.join(COMMA_DELIMITER, rowData));
-		// csvWriter.append("\n");
-		// }
-		//
-		// csvWriter.flush();
-		// csvWriter.close();
 
 	}
 
