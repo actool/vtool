@@ -1800,7 +1800,7 @@ public class EverestView extends JFrame {
 		lblNumTC.setVisible(false);
 		panel_test_generation.add(lblNumTC);
 
-		JLabel lblTestCases_1 = new JLabel("#  Test cases");
+		JLabel lblTestCases_1 = new JLabel("#  Test purposes");
 		lblTestCases_1.setForeground(SystemColor.windowBorder);
 		lblTestCases_1.setFont(new Font("Dialog", Font.BOLD, 13));
 		lblTestCases_1.setBounds(166, 123, 117, 14);
@@ -1810,6 +1810,7 @@ public class EverestView extends JFrame {
 		tfNTestCases_gen.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				multigraph = null;
 				visibilityRunButtons();
 			}
 		});
@@ -1819,7 +1820,7 @@ public class EverestView extends JFrame {
 		tfNTestCases_gen.setColumns(10);
 		tfNTestCases_gen.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfNTestCases_gen.setBackground(SystemColor.menu);
-		tfNTestCases_gen.setBounds(166, 135, 140, 32);
+		tfNTestCases_gen.setBounds(166, 141, 140, 26);
 		panel_test_generation.add(tfNTestCases_gen);
 
 		label_4 = new JLabel("Implementation");
@@ -2303,6 +2304,8 @@ public class EverestView extends JFrame {
 	}
 
 	public void visibilityRunButtons() {
+		
+		
 
 		lblRunVerdict.setVisible(false);
 

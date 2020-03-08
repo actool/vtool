@@ -162,7 +162,7 @@ public class TestGeneration {
 			}
 		}
 
-		//self loop pass/fail state
+		// self loop pass/fail state
 		State_ fail = new State_("fail");
 		for (String l : lu) {// li
 			tp.addTransition(new Transition_(pass, l, pass));
@@ -447,7 +447,7 @@ public class TestGeneration {
 			}
 
 			wordsTp.addAll(wordsTp_aux);
-			wordsTp = new ArrayList<>(new HashSet<>(wordsTp));
+			// wordsTp = new ArrayList<>(new HashSet<>(wordsTp));
 
 			for (String word : wordsTp) {
 
@@ -518,7 +518,7 @@ public class TestGeneration {
 					partialResult.add(Constants.RUN_VERDICT_INCONCLUSIVE);
 
 				} else {
-					
+
 					if (statesPath_tp.get(0).get(statesPath_tp.get(0).size() - 1).getName().contains("fail")) {
 						// not conform
 						partialResult.add(Constants.RUN_VERDICT_NON_CONFORM);
@@ -544,7 +544,7 @@ public class TestGeneration {
 	static volatile int level;
 	static volatile Transition_ aa = null;
 
-	public static javafx.util.Pair<List<String>, Boolean> getTcAndSaveTP(Automaton_ multigraph, Integer nTC,
+	public static javafx.util.Pair<List<String>, Boolean> getTcAndSaveTP(Automaton_ multigraph, Integer nTP,
 			String absolutePath, List<String> li, List<String> lu, String pathIUT) throws IOException {
 
 		List<Transition_> toVisit = multigraph.transitionsByIniState(multigraph.getInitialState());
@@ -594,7 +594,7 @@ public class TestGeneration {
 
 					if (current.getEndState().getName().equals(multigraph.getFinalStates().get(0).getName())) {
 						// if # test cases was informed not add self loop on every TC
-						if (nTC == null || nTC == Integer.MAX_VALUE) {
+						if (nTP == null || nTP == Integer.MAX_VALUE) {
 							// add label of fail self loop on each TC
 							for (Transition_ transition_ : selfloopFailState) {
 								// aux += e + " -> " + current.getLabel() + " -> " + transition_.getLabel() +
@@ -665,37 +665,42 @@ public class TestGeneration {
 						// // fw.close();
 						// // System.out.print(String.join("\n", aux)+"\n");
 
+						boolean exists = false;
 						for (String tc : aux) {
-							totalTC += 1;
+							if (!words.contains(tc)) {
+								totalTC += 1;
+							} else {
+								exists = true;
+							}
+							if (!exists) {
+								// save tp
+								tp = TestGeneration.testPurpose(multigraph, tc, li, lu);
+								tp_automaton = tp.ioltsToAutomaton();
+								tp_automaton.setFinalStates(new ArrayList<>());
+								tp_automaton.addFinalStates(new State_("fail"));
+								tp_automaton.addFinalStates(new State_("pass"));
+								// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+								tpFile = TestGeneration.saveTP(absolutePath, tp);
 
-							// save tp
-							tp = TestGeneration.testPurpose(multigraph, tc, li, lu);
-							tp_automaton = tp.ioltsToAutomaton();
-							tp_automaton.setFinalStates(new ArrayList<>());
-							tp_automaton.addFinalStates(new State_("fail"));
-							tp_automaton.addFinalStates(new State_("pass"));
-							// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
-							tpFile = TestGeneration.saveTP(absolutePath, tp);
+								// if run TP x IUT
+								if (pathIUT != null) {
+									result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);
+									TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
 
-							// if run TP x IUT
-							if (pathIUT != null) {
-								result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);
-								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
+									words.add(tc);
+									// no conformance
+									if (result.getValue()) {
+										nonConf = result.getValue();
+										break end;
+									}
+								} else {
+									words.add(tc);
 
-								words.add(tc);
-								// no conformance
-								if (result.getValue()) {
-									nonConf = result.getValue();
+								}
+								if (nTP != null && nTP == totalTC) {
 									break end;
 								}
-							} else {
-								words.add(tc);
-
 							}
-							if (nTC != null && nTC == totalTC) {
-								break end;
-							}
-
 						}
 
 					}
@@ -708,44 +713,50 @@ public class TestGeneration {
 					map.put(current.getEndState().getName(), Arrays.asList(current.getLabel()));
 					// map.put(current.getEndState().getName(), current.getLabel());
 				} else {
+					boolean exists = false;
 					// not selfloop of final state
 					if (!current.getEndState().getName().equals(current.getIniState().getName())) {
 						// if is a test case
-						totalTC += 1;
-						// fw.write(String.join("\n", Arrays.asList(current.getLabel()))); // file
-						// fw.write("\n");
-						// save tp
-						tp = TestGeneration.testPurpose(multigraph, current.getLabel(), li, lu);
-						tp_automaton = tp.ioltsToAutomaton();
-						tp_automaton.setFinalStates(new ArrayList<>());
-						tp_automaton.addFinalStates(new State_("fail"));
-						tp_automaton.addFinalStates(new State_("pass"));
-						
-						// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
-						tpFile = TestGeneration.saveTP(absolutePath, tp);
+						if (!words.contains(current.getLabel())) {
+							totalTC += 1;
+						} else {
+							exists = true;
+						}
+						if (!exists) {
+							// fw.write(String.join("\n", Arrays.asList(current.getLabel()))); // file
+							// fw.write("\n");
+							// save tp
+							tp = TestGeneration.testPurpose(multigraph, current.getLabel(), li, lu);
+							tp_automaton = tp.ioltsToAutomaton();
+							tp_automaton.setFinalStates(new ArrayList<>());
+							tp_automaton.addFinalStates(new State_("fail"));
+							tp_automaton.addFinalStates(new State_("pass"));
 
-						// if run TP x IUT
-						if (pathIUT != null) {
-							result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile, tp_automaton);
-							TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// + "\\runVerdicts.csv"
-							nonConf = result.getValue();
-							// no conformance
-							if (result.getValue()) {
+							// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
+							tpFile = TestGeneration.saveTP(absolutePath, tp);
+
+							// if run TP x IUT
+							if (pathIUT != null) {
+								result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile, tp_automaton);
+								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// + "\\runVerdicts.csv"
+								nonConf = result.getValue();
+								// no conformance
+								if (result.getValue()) {
+									break end;
+								}
+							} else {
+								words.add(current.getLabel());
+
+							}
+
+							if (nTP != null && nTP == totalTC) {
 								break end;
 							}
-						} else {
-							words.add(current.getLabel());
 
+							// y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";
+							// fw.close();
+							// System.out.print(String.join("\n", Arrays.asList(current.getLabel()))+"\n");
 						}
-
-						if (nTC != null && nTC == totalTC) {
-							break end;
-						}
-
-						// y += (String.join("\n", Arrays.asList(current.getLabel()))) + "\n";
-						// fw.close();
-						// System.out.print(String.join("\n", Arrays.asList(current.getLabel()))+"\n");
-
 					}
 				}
 			}
