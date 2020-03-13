@@ -442,7 +442,7 @@ public class Operations {
 		}
 
 		for (int i = 0; i < alphabet.size(); i++) {
-			if (alphabet.get(i).length() > 1)
+			//if (alphabet.get(i).length() > 1)
 				regex = regex.replace(alphabet.get(i), Character.toString(Constants.ALPHABET_[i]));
 		}
 
@@ -1229,7 +1229,8 @@ public class Operations {
 						automaton.addTransition(new Transition_(transition.getIniState(),
 								map.get(transition.getLabel()), transition.getEndState()));
 					} else {
-						automaton.addTransition(transition);
+						automaton.addTransition(new Transition_(transition.getIniState(),
+								map.get(transition.getLabel()), transition.getEndState()));
 					}
 				}
 			}

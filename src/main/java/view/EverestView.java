@@ -3511,8 +3511,9 @@ public class EverestView extends JFrame {
 		multigraph = ImportAutFile.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>())
 				.ioltsToAutomaton();
 		file.delete();
-		multigraph.setFinalStates(Arrays.asList(new State_("fail")));
-		multigraph.setFinalStates(Arrays.asList(new State_("pass")));
+		multigraph.setFinalStates(new ArrayList<>());
+		multigraph.addFinalStates(new State_("fail"));
+		multigraph.addFinalStates(new State_("pass"));
 
 		visibilityRunButtons();
 
