@@ -381,12 +381,16 @@ public class TestGeneration {
 		return a;
 	}
 
-	public static boolean run(String pathTp, boolean oneIut, boolean oneTP, String pathIut, String pathCsv) {
+	public static Boolean run(String pathTp, boolean oneIut, boolean oneTP, String pathIut, String pathCsv) {
 		boolean fault = false;
 
 		if (oneTP) {
-
-			return runAllIutTp(new File(pathTp), oneIut, pathIut, pathCsv);
+			if (EverestView.isAutFile(new File(pathTp)))
+				return runAllIutTp(new File(pathTp), oneIut, pathIut, pathCsv);
+			else {
+				return null;
+			}
+				
 		} else {
 			File tpFolderF = new File(pathTp);
 			File[] listOfTpFiles = tpFolderF.listFiles();
@@ -400,10 +404,10 @@ public class TestGeneration {
 						fault = runAllIutTp(fileTp, oneIut, pathIut, pathCsv);
 				}
 			}
-
+			return fault;
 		}
 
-		return fault;
+		
 
 	}
 
@@ -575,7 +579,7 @@ public class TestGeneration {
 		File file;
 		BufferedWriter writer;
 		File tpFile;
-		//javafx.util.Pair<List<List<String>>, Boolean> result;
+		// javafx.util.Pair<List<List<String>>, Boolean> result;
 		boolean result;
 		int contSelfLoopFinalState = selfloopFailState.size() - 1;
 
@@ -687,9 +691,11 @@ public class TestGeneration {
 
 								// if run TP x IUT
 								if (pathIUT != null) {
-									//result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);--
-									result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT, absolutePath);
-									//TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
+									// result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);--
+									result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT,
+											absolutePath);
+									// TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);//
+									// "\\runVerdicts.csv"
 
 									words.add(tc);
 									// no conformance
@@ -741,10 +747,13 @@ public class TestGeneration {
 
 							// if run TP x IUT
 							if (pathIUT != null) {
-//								result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile, tp_automaton);--
-//								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// + "\\runVerdicts.csv"
-								
-								result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT, absolutePath);
+								// result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile,
+								// tp_automaton);--
+								// TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// +
+								// "\\runVerdicts.csv"
+
+								result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT,
+										absolutePath);
 								nonConf = result;
 								// no conformance
 								if (result) {
@@ -894,10 +903,9 @@ public class TestGeneration {
 			}
 
 			for (List<String> row : toSave) {
-				
 
 				if (!lastTP.equals(row.get(1))) {//
-					csvWriter.append("\n"+row.get(1)+"\n");
+					csvWriter.append("\n" + row.get(1) + "\n");
 				}
 				csvWriter.append(String.join(delimiterCSV, row));
 				lastTP = row.get(1);

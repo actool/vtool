@@ -1772,12 +1772,12 @@ public class EverestView extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 
-				System.setProperty("apple.awt.fileDialogForDirectories", "true");
-				JFileChooser fc = directoryChooser();
-				fc.showOpenDialog(EverestView.this);
-				String folder = fc.getSelectedFile().getAbsolutePath();
+//				System.setProperty("apple.awt.fileDialogForDirectories", "true");
+//				JFileChooser fc = directoryChooser();
+//				fc.showOpenDialog(EverestView.this);
+//				String folder = fc.getSelectedFile().getAbsolutePath();
 
-				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, folder);
+				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, tpFolder);
 
 				// nonconf verdict
 				if (fault) {
