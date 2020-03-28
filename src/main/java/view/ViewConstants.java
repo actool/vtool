@@ -17,8 +17,8 @@ public class ViewConstants {
 	public static final String titleFrameImgImplementation = "Implementation - ";
 	public static final String titleFrameImgSpecification = "Model - ";
 
-	public static final String genRun_noFault = "verdict: \n no fault was found";
-	public static final String genRun_fault =   "verdict: \n a fault was found";
+	public static final String genRun_noFault = "no fault was found";
+	public static final String genRun_fault =   "a fault was found";
 
 	// message
 	/*public static final String modelWithoutTransition = "Model without transition, if you selected the option "

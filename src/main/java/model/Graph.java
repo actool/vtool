@@ -110,17 +110,23 @@ public class Graph {
 
 	public static List<String> getWords(Automaton_ a) {
 		
+		
+		
 		a.makeInitiallyConnected();
 		Map<String, Integer> stateNames = new HashMap<>();
 		Map<Integer, String> stateNum = new HashMap<>();
 		int numState = 0;
 
+		a.addState(new State_("fail"));
+		
 		for (State_ s : a.getStates()) {
 			stateNum.put(numState, s.getName());
 			stateNames.put(s.getName(), numState);
 			numState++;
 		}
 
+		
+		
 		// initialize adjacent labels
 		ArrayList<String>[][] adjacentLabels = new ArrayList[a.getStates().size()][a.getStates().size()];
 		for (int l = 0; l < a.getStates().size(); l++) {
@@ -143,6 +149,7 @@ public class Graph {
 
 		// get state paths
 		for (State_ finalState : a.getFinalStates()) {
+			
 			g.getStatePaths(stateNames.get(a.getInitialState().getName()), stateNames.get(finalState.getName()));
 		}
 

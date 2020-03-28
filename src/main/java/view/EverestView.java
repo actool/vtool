@@ -120,6 +120,7 @@ public class EverestView extends JFrame {
 	TextArea lblWarningLang;
 	TextArea lblWarningIoco;
 	JButton btnRunMultigraph;
+	JLabel lbl_result;
 
 	// TS Generation
 	JButton btnGenerate, btnViewModel_gen, btnViewImplementation_gen;
@@ -1642,7 +1643,7 @@ public class EverestView extends JFrame {
 		taTestCases_gen = new JTextArea();
 		taTestCases_gen.setBounds(10, 277, 231, 150);
 		JScrollPane scrolltxt3 = new JScrollPane(taTestCases_gen);
-		scrolltxt3.setBounds(10, 312, 405, 136);
+		scrolltxt3.setBounds(10, 333, 405, 115);
 		panel_test_generation.add(scrolltxt3);
 
 		imgModel_gen = new JLabel("");
@@ -1715,7 +1716,7 @@ public class EverestView extends JFrame {
 		JLabel lblWarning = new JLabel("Warnings");
 		lblWarning.setForeground(SystemColor.windowBorder);
 		lblWarning.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblWarning.setBounds(425, 287, 93, 14);
+		lblWarning.setBounds(425, 308, 93, 14);
 		panel_test_generation.add(lblWarning);
 
 		taWarning_gen = new JTextArea("");
@@ -1723,7 +1724,7 @@ public class EverestView extends JFrame {
 		taWarning_gen.setBounds(426, 312, 366, 136);
 
 		JScrollPane scrolltxt4 = new JScrollPane(taWarning_gen);
-		scrolltxt4.setBounds(426, 312, 366, 136);
+		scrolltxt4.setBounds(426, 333, 366, 115);
 		panel_test_generation.add(scrolltxt4);
 
 		// JScrollPane sampleScrollPane = new JScrollPane (taWarning_gen,
@@ -1781,10 +1782,15 @@ public class EverestView extends JFrame {
 				// nonconf verdict
 				if (fault) {
 					lblRunVerdict.setText(ViewConstants.genRun_fault);
+					lblRunVerdict.setForeground(new Color(178, 34, 34));
 				} else {
 					lblRunVerdict.setText(ViewConstants.genRun_noFault);
+					lblRunVerdict.setForeground(new Color(0, 128, 0));
 				}
+				lblRunVerdict.setOpaque(true);
 				lblRunVerdict.setVisible(true);
+				lbl_result.setVisible(true);
+				btnrunTp.setVisible(false);
 			}
 		});
 		btnrunTp.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1796,7 +1802,7 @@ public class EverestView extends JFrame {
 		lblNumTC = new JLabel("#Extracted test cases: ");
 		lblNumTC.setForeground(SystemColor.windowBorder);
 		lblNumTC.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblNumTC.setBounds(10, 287, 287, 14);
+		lblNumTC.setBounds(10, 308, 287, 14);
 		lblNumTC.setVisible(false);
 		panel_test_generation.add(lblNumTC);
 
@@ -1870,6 +1876,7 @@ public class EverestView extends JFrame {
 				lblNumTC.setVisible(false);
 
 				lblRunVerdict.setVisible(false);
+				lbl_result.setVisible(false);
 
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
 				JFileChooser fc = directoryChooser();
@@ -1877,7 +1884,7 @@ public class EverestView extends JFrame {
 				String folder = fc.getSelectedFile().getAbsolutePath();
 
 				// File file = new File(folder + "\\TPs\\");--
-				File file = new File(folder, "TPs");
+				File file = new File(folder, "TPs - " + fileNameMultigraph);
 				if (!file.exists()) {
 					file.mkdir();
 				}
@@ -1895,16 +1902,20 @@ public class EverestView extends JFrame {
 						javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 								(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 										: null,
-								folder, I.getInputs(), I.getOutputs(), pathImplementation);
+								folder, I.getInputs(), I.getOutputs(), pathImplementation,fileNameMultigraph);
 
 						testSuite = result.getKey();
 
 						// nonconf verdict
 						if (result.getValue()) {
 							lblRunVerdict.setText(ViewConstants.genRun_fault);
+							lblRunVerdict.setForeground(new Color(178, 34, 34));
 						} else {
 							lblRunVerdict.setText(ViewConstants.genRun_noFault);
+							lblRunVerdict.setForeground(new Color(0, 128, 0));
 						}
+						lblRunVerdict.setOpaque(true);
+						lbl_result.setVisible(true);
 						lblRunVerdict.setVisible(true);
 
 					} catch (IOException ee) {
@@ -1924,6 +1935,7 @@ public class EverestView extends JFrame {
 						loading.dispose();
 				}
 
+				btnRunMultigraph.setVisible(false);
 				// }
 			}
 		});
@@ -1949,7 +1961,7 @@ public class EverestView extends JFrame {
 		lblRunVerdict = new JLabel("");
 		lblRunVerdict.setForeground(SystemColor.windowBorder);
 		lblRunVerdict.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblRunVerdict.setBounds(625, 242, 178, 41);
+		lblRunVerdict.setBounds(62, 283, 178, 14);
 		panel_test_generation.add(lblRunVerdict);
 
 		button = new JButton("");
@@ -2000,10 +2012,16 @@ public class EverestView extends JFrame {
 		button_2.setBounds(460, 254, 39, 28);
 		panel_test_generation.add(button_2);
 
+		lbl_result = new JLabel("Verdict:");
+		lbl_result.setForeground(SystemColor.controlDkShadow);
+		lbl_result.setFont(new Font("Dialog", Font.BOLD, 13));
+		lbl_result.setBounds(10, 283, 58, 14);
+		panel_test_generation.add(lbl_result);
+
 		// Panel run test
 		panel_test_execution = new JPanel();
-//		 tabbedPane.addTab(ViewConstants.tabTestRun, null, panel_test_execution,
-//		 null);
+		// tabbedPane.addTab(ViewConstants.tabTestRun, null, panel_test_execution,
+		// null);
 		panel_test_execution.setLayout(null);
 
 		lblSelectFolderContaining = new JLabel("Test purposes folder");
@@ -2304,10 +2322,9 @@ public class EverestView extends JFrame {
 	}
 
 	public void visibilityRunButtons() {
-		
-		
 
 		lblRunVerdict.setVisible(false);
+		lbl_result.setVisible(false);
 
 		taTestCases_gen.setText("");
 		lblNumTC.setVisible(false);
@@ -2372,6 +2389,7 @@ public class EverestView extends JFrame {
 			fc.showOpenDialog(EverestView.this);
 			tfMultigraph.setText(fc.getSelectedFile().getName());
 			pathMultigraph = fc.getSelectedFile().getAbsolutePath();
+			fileNameMultigraph = fc.getSelectedFile().getName().replace(".aut", "");
 
 			loadMultigraph(pathMultigraph);
 
@@ -2443,18 +2461,14 @@ public class EverestView extends JFrame {
 			lblNumTC.setVisible(false);
 
 			lblRunVerdict.setVisible(false);
+			lbl_result.setVisible(false);
 
 			System.setProperty("apple.awt.fileDialogForDirectories", "true");
 			JFileChooser fc = directoryChooser();
 			fc.showOpenDialog(EverestView.this);
 			String folder = fc.getSelectedFile().getAbsolutePath();
 
-			// File file = new File(folder + "\\TPs\\");--
-			File file = new File(folder, "TPs");
-			if (!file.exists()) {
-				file.mkdir();
-			}
-
+			
 			JFrame loading = null;
 			try {
 
@@ -2467,6 +2481,11 @@ public class EverestView extends JFrame {
 					multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
 					saveMultigraphFile(folder);
 				}
+				
+				File file = new File(folder, "TPs - "+fileNameMultigraph);
+				if (!file.exists()) {
+					file.mkdir();
+				}
 				// multigraph.setInitialState(new
 				// State_(multigraph.getInitialState().getName().replace(",", "_")));
 
@@ -2476,7 +2495,7 @@ public class EverestView extends JFrame {
 
 							(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 									: null,
-							folder, S.getInputs(), S.getOutputs(), pathImplementation);
+							folder, S.getInputs(), S.getOutputs(), pathImplementation,fileNameMultigraph);
 
 					testSuite = result.getKey();
 					taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
@@ -2486,10 +2505,13 @@ public class EverestView extends JFrame {
 					// nonconf verdict
 					if (result.getValue()) {
 						lblRunVerdict.setText(ViewConstants.genRun_fault);
+						lblRunVerdict.setForeground(new Color(178, 34, 34));
 					} else {
 						lblRunVerdict.setText(ViewConstants.genRun_noFault);
+						lblRunVerdict.setForeground(new Color(0, 128, 0));
 					}
 					lblRunVerdict.setVisible(true);
+					lbl_result.setVisible(true);
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -2507,8 +2529,12 @@ public class EverestView extends JFrame {
 			}
 
 		}
+		
+		btnRunGenerate.setVisible(false);
+		btnGenerate.setVisible(false);
 	}
 
+	String fileNameMultigraph;
 	public void saveMultigraphFile(String folder) {
 		try {
 			String fileContent = "";
@@ -2518,8 +2544,14 @@ public class EverestView extends JFrame {
 			// fileContent += AutGenerator.ioltsToAut(new IOLTS(S.getStates(),
 			// S.getInitialState(), S.getAlphabet(),
 			// S.getTransitions(), S.getInputs(), S.getOutputs()).removeDeltaTransitions());
-			fileContent += AutGenerator.ioltsToAut(
-					ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<>(), new ArrayList<>()));
+			if (typeLabel.equals(ViewConstants.typeManualLabel)) {
+				fileContent += AutGenerator.ioltsToAut(ImportAutFile.autToIOLTS(pathSpecification, true,
+						new ArrayList<>(S.getInputs()), new ArrayList<>(S.getOutputs())));
+			} else {
+				fileContent += AutGenerator.ioltsToAut(
+						ImportAutFile.autToIOLTS(pathSpecification, false, new ArrayList<>(), new ArrayList<>()));
+			}
+
 			// save multigraph
 			fileContent += Constants.SEPARATOR_MULTIGRAPH_FILE;
 
@@ -2534,6 +2566,7 @@ public class EverestView extends JFrame {
 			// multigraph.getInitialState(),
 			// multigraph.getAlphabet(), multigraph.getTransitions(), S.getInputs(),
 			// S.getOutputs()));
+			fileNameMultigraph = "spec-multigraph_" + dateFormat.format(new Date());
 			File file = new File(folder, "spec-multigraph_" + dateFormat.format(new Date()) + ".aut");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(fileContent);
@@ -2583,7 +2616,7 @@ public class EverestView extends JFrame {
 
 					if (!tfNTestCases_gen.getText().isEmpty()) {// generate just multigraph if #test cases is empty
 						// file = new File(folder + "\\TPs\\");
-						file = new File(folder, "TPs");
+						file = new File(folder, "TPs - " + fileNameMultigraph);
 						if (!file.exists()) {
 							file.mkdir();
 						}
@@ -2591,12 +2624,12 @@ public class EverestView extends JFrame {
 						if ((!tfM.getText().isEmpty() && S != null)) {
 							testSuite = TestGeneration
 									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-											S.getInputs(), S.getOutputs(), null)
+											S.getInputs(), S.getOutputs(), null,fileNameMultigraph)
 									.getKey();
 						} else {
 							testSuite = TestGeneration
 									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-											iolts_aux.getInputs(), iolts_aux.getOutputs(), null)
+											iolts_aux.getInputs(), iolts_aux.getOutputs(), null,fileNameMultigraph)
 									.getKey();
 						}
 					}
@@ -2627,6 +2660,8 @@ public class EverestView extends JFrame {
 					loading.dispose();
 			}
 		}
+		
+		btnGenerate.setVisible(false);
 	}
 
 	public boolean formRunIsValid() {
@@ -2894,7 +2929,10 @@ public class EverestView extends JFrame {
 
 	}
 
+	String typeLabel;
+
 	public void actionCbLabel(String label) {
+		typeLabel = label;
 		if (label.equals(ViewConstants.typeManualLabel)) {
 			setInputOutputField(true);
 			removeMessage(true, ViewConstants.msgImp);

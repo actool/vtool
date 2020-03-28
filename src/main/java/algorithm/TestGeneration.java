@@ -534,6 +534,7 @@ public class TestGeneration {
 				toSave.add(partialResult);
 
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -545,7 +546,8 @@ public class TestGeneration {
 	static volatile Transition_ aa = null;
 
 	public static javafx.util.Pair<List<String>, Boolean> getTcAndSaveTP(Automaton_ multigraph, Integer nTP,
-			String absolutePath, List<String> li, List<String> lu, String pathIUT) throws IOException {
+			String absolutePath, List<String> li, List<String> lu, String pathIUT, String multigraphName)
+			throws IOException {
 
 		List<Transition_> toVisit = multigraph.transitionsByIniState(multigraph.getInitialState());
 		Map<String, List<String>> map = new HashMap<>();
@@ -573,7 +575,8 @@ public class TestGeneration {
 		File file;
 		BufferedWriter writer;
 		File tpFile;
-		javafx.util.Pair<List<List<String>>, Boolean> result;
+		//javafx.util.Pair<List<List<String>>, Boolean> result;
+		boolean result;
 		int contSelfLoopFinalState = selfloopFailState.size() - 1;
 
 		end: while (!toVisit.isEmpty()) {
@@ -680,17 +683,18 @@ public class TestGeneration {
 								tp_automaton.addFinalStates(new State_("fail"));
 								tp_automaton.addFinalStates(new State_("pass"));
 								// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
-								tpFile = TestGeneration.saveTP(absolutePath, tp);
+								tpFile = TestGeneration.saveTP(absolutePath, tp, multigraphName);
 
 								// if run TP x IUT
 								if (pathIUT != null) {
-									result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);
-									TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
+									//result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);--
+									result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT, absolutePath);
+									//TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// "\\runVerdicts.csv"
 
 									words.add(tc);
 									// no conformance
-									if (result.getValue()) {
-										nonConf = result.getValue();
+									if (result) {
+										nonConf = result;
 										break end;
 									}
 								} else {
@@ -733,15 +737,17 @@ public class TestGeneration {
 							tp_automaton.addFinalStates(new State_("pass"));
 
 							// tpFile = TestGeneration.saveTP(absolutePath + "\\TPs\\", tp);
-							tpFile = TestGeneration.saveTP(absolutePath, tp);
+							tpFile = TestGeneration.saveTP(absolutePath, tp, multigraphName);
 
 							// if run TP x IUT
 							if (pathIUT != null) {
-								result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile, tp_automaton);
-								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// + "\\runVerdicts.csv"
-								nonConf = result.getValue();
+//								result = TestGeneration.runIutTp(pathIUT, current.getLabel(), tpFile, tp_automaton);--
+//								TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);// + "\\runVerdicts.csv"
+								
+								result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT, absolutePath);
+								nonConf = result;
 								// no conformance
-								if (result.getValue()) {
+								if (result) {
 									break end;
 								}
 							} else {
@@ -820,7 +826,7 @@ public class TestGeneration {
 		// return String.join(",", words);
 	}
 
-	public static File saveTP(String tpFolder, IOLTS tp) {
+	public static File saveTP(String tpFolder, IOLTS tp, String multigraphName) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss-S");
 
 		// File file = new File(new File(tpFolder, "TPs").getAbsolutePath(), "tp_" +
@@ -828,7 +834,8 @@ public class TestGeneration {
 		// + Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)]
 		// +Constants.ALPHABET_[new Random().nextInt(Constants.ALPHABET_.length)]+
 		// ".aut");
-		File file = new File(new File(tpFolder, "TPs").getAbsolutePath(), "tp_" + java.util.UUID.randomUUID() + ".aut");
+		File file = new File(new File(tpFolder, "TPs - " + multigraphName).getAbsolutePath(),
+				"tp_" + java.util.UUID.randomUUID() + ".aut");
 
 		// File file = new File(tpFolder, "tp_" + dateFormat.format(new Date()) +
 		// "-"+Constants.ALPHABET_[new
@@ -848,7 +855,10 @@ public class TestGeneration {
 		return file;
 	}
 
+	static String lastTP = "";
+
 	public static void saveOnCSVFile(List<List<String>> toSave, String pathCsv) {
+		boolean firstLine = false;
 
 		try {
 			// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
@@ -871,6 +881,7 @@ public class TestGeneration {
 			}
 
 			if (new File(pathCsv).length() == 0) {
+				firstLine = true;
 				csvWriter = new FileWriter(pathCsv);
 
 				for (String header : headerCSV) {
@@ -883,7 +894,13 @@ public class TestGeneration {
 			}
 
 			for (List<String> row : toSave) {
+				
+
+				if (!lastTP.equals(row.get(1))) {//
+					csvWriter.append("\n"+row.get(1)+"\n");
+				}
 				csvWriter.append(String.join(delimiterCSV, row));
+				lastTP = row.get(1);
 			}
 
 			csvWriter.append("\n");
