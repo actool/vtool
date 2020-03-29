@@ -693,7 +693,7 @@ public class TestGeneration {
 								if (pathIUT != null) {
 									// result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);--
 									result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT,
-											absolutePath);
+											absolutePath+System.getProperty("file.separator")+"TPs - " + multigraphName+System.getProperty("file.separator"));
 									// TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);//
 									// "\\runVerdicts.csv"
 
@@ -703,10 +703,10 @@ public class TestGeneration {
 										nonConf = result;
 										break end;
 									}
-								} else {
+								} //else {
 									words.add(tc);
 
-								}
+								//}
 								if (nTP != null && nTP == totalTC) {
 									break end;
 								}
@@ -753,16 +753,16 @@ public class TestGeneration {
 								// "\\runVerdicts.csv"
 
 								result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT,
-										absolutePath);
+										absolutePath+System.getProperty("file.separator")+"TPs - " +multigraphName+System.getProperty("file.separator"));
 								nonConf = result;
 								// no conformance
 								if (result) {
 									break end;
 								}
-							} else {
+							} //else {
 								words.add(current.getLabel());
 
-							}
+							//}
 
 							if (nTP != null && nTP == totalTC) {
 								break end;
@@ -831,6 +831,7 @@ public class TestGeneration {
 		// words.addAll(map.get(s.getName()));
 		// }
 
+		 words = new ArrayList<>(new HashSet<>(words));
 		return new javafx.util.Pair<List<String>, Boolean>(words, nonConf);
 		// return String.join(",", words);
 	}
@@ -884,6 +885,7 @@ public class TestGeneration {
 
 			FileWriter csvWriter;
 
+			//System.out.println(pathCsv);
 			File file = new File(pathCsv);
 			if (!file.exists()) {
 				file.createNewFile();

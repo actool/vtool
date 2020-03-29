@@ -41,10 +41,10 @@ public class ViewConstants {
 	public static final String mInteger="The parameter max IUT states must be integer \n";
 	public static final String ntcInteger="The parameter # Test cases must be integer \n";
 	public static final String generation_mult = "* To generate the multigraph,  inform the 'Specification' and '# Max iut states' \n";
-	public static final String generation = "* To generate the multigraph and some TPs,  inform the 'Specification', '# Max iut states' and '# Teste cases'  \n";
-	public static final String run_generation = "* To generate (multigraph and TPs) and run the test,  inform the 'Specification', 'Implementation', '# Max iut states' and '# Teste cases' \n";
-	public static final String generation_tp_from_multi = "* To extract the TPs from the multigraph  inform the 'Multigraph' and '# Teste cases' \n";
-	public static final String multigraph_generation = "* To extract the TPs from the multigraph and run,  inform the 'Implementation', 'Multigraph' and '# Teste cases'\n";
+	public static final String generation = "* To generate the multigraph and some TPs,  inform the 'Specification', '# Max iut states' and '# Teste purposes'  \n";
+	public static final String run_generation = "* To generate (multigraph and TPs) and run the test,  inform the 'Specification', 'Implementation', '# Max iut states' and '# Teste purposes' \n";
+	public static final String generation_tp_from_multi = "* To extract the TPs from the multigraph  inform the 'Multigraph' and '# Teste purposes' \n";
+	public static final String multigraph_generation = "* To extract the TPs from the multigraph and run,  inform the 'Implementation', 'Multigraph' and '# Teste purposes'\n";
 	public static final String run_tp= "* To run TPs,  inform the 'Implementation' and 'Test purpose folder'\n";
 	public static final String selectSpecification_iut = "Select the specification or/and implementation model \n";
 	
