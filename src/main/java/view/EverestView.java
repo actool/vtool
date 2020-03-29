@@ -26,6 +26,7 @@ import util.ModelImageGenerator;
 
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.TextArea;
 import javax.swing.JLabel;
 
@@ -77,6 +78,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import javax.swing.border.MatteBorder;
@@ -89,6 +91,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.JRadioButton;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class EverestView extends JFrame {
 	private JComboBox cbModel;
@@ -181,8 +186,9 @@ public class EverestView extends JFrame {
 			public void run() {
 				try {
 					EverestView frame = new EverestView();
-					frame.setResizable(false);
+					//frame.setResizable(false);
 					frame.setVisible(true);
+					
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -835,21 +841,22 @@ public class EverestView extends JFrame {
 	 * Create the frame.
 	 */
 	public EverestView() {
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/icon.PNG")));
 		setTitle(ViewConstants.toolName);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 833, 540);
+		setMinimumSize(new Dimension(833, 540));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
+		contentPane.setLayout(new BorderLayout());
+		getContentPane().setLayout(new BorderLayout());
+		
 		setContentPane(contentPane);
-
-		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.NORTH);
-		panel.setLayout(new GridLayout(1, 0, 0, 0));
-
+		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
+		
 		tabbedPane.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 
@@ -941,7 +948,6 @@ public class EverestView extends JFrame {
 		panel_conf.setBackground(backgroundColor);
 		panel_conf.setToolTipText("");
 		tabbedPane.addTab("Configuration", null, panel_conf, null);
-		panel_conf.setLayout(null);
 
 		cbModel = new JComboBox();
 		cbModel.setForeground(textColor);
@@ -954,22 +960,16 @@ public class EverestView extends JFrame {
 
 		cbModel.setModel(new DefaultComboBoxModel(ViewConstants.models));
 		cbModel.setFont(new Font("Dialog", Font.BOLD, 13));
-		cbModel.setBounds(37, 167, 324, 26);
 		cbModel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-		panel_conf.add(cbModel);
 
 		lblImplementation = new JLabel("Implementation");
 		lblImplementation.setBackground(backgroundColor);
 		lblImplementation.setForeground(labelColor);
 		lblImplementation.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblImplementation.setBounds(37, 66, 157, 22);
-		panel_conf.add(lblImplementation);
 
 		lblSpecification = new JLabel("Model");
 		lblSpecification.setForeground(SystemColor.controlDkShadow);
 		lblSpecification.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblSpecification.setBounds(37, 11, 223, 14);
-		panel_conf.add(lblSpecification);
 
 		tfImplementation = new JTextField();
 		tfImplementation.setForeground(textColor);
@@ -988,15 +988,14 @@ public class EverestView extends JFrame {
 			}
 		});
 		tfImplementation.setColumns(10);
-		tfImplementation.setBounds(37, 93, 700, 26);
 		tfImplementation.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-		panel_conf.add(tfImplementation);
 
 		tfSpecification = new JTextField();
 		tfSpecification.setForeground(textColor);
 		tfSpecification.setBackground(backgroundColor);
 		tfSpecification.setToolTipText("accepts only .aut files");
 		tfSpecification.setFont(new Font("Dialog", Font.BOLD, 13));
+	
 		tfSpecification.addMouseListener(new MouseAdapter() {
 			/*
 			 * @Override public void mouseClicked(MouseEvent e) { getSpecificationPath(); }
@@ -1008,9 +1007,7 @@ public class EverestView extends JFrame {
 			}
 		});
 		tfSpecification.setColumns(10);
-		tfSpecification.setBounds(37, 29, 700, 26);
 		tfSpecification.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-		panel_conf.add(tfSpecification);
 
 		JButton btnFolderImp = new JButton("");
 		btnFolderImp.setBackground(buttonColor);
@@ -1026,8 +1023,6 @@ public class EverestView extends JFrame {
 			}
 		});
 		btnFolderImp.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
-		btnFolderImp.setBounds(736, 93, 39, 28);
-		panel_conf.add(btnFolderImp);
 
 		JButton btnFolderSpec = new JButton("");
 		btnFolderSpec.setBackground(buttonColor);
@@ -1043,22 +1038,16 @@ public class EverestView extends JFrame {
 			}
 		});
 		btnFolderSpec.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
-		btnFolderSpec.setBounds(736, 29, 39, 28);
-		panel_conf.add(btnFolderSpec);
 
 		lblOutput = new JLabel("Output  labels");
 		lblOutput.setForeground(labelColor);
 		lblOutput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblOutput.setBounds(37, 307, 274, 22);
 		lblOutput.setVisible(false);
-		panel_conf.add(lblOutput);
 
 		lblInput = new JLabel("Input labels");
 		lblInput.setForeground(labelColor);
 		lblInput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblInput.setBounds(37, 227, 223, 22);
 		lblInput.setVisible(false);
-		panel_conf.add(lblInput);
 
 		tfInput = new JTextField();
 		tfInput.setForeground(textColor);
@@ -1080,11 +1069,9 @@ public class EverestView extends JFrame {
 		tfInput.setToolTipText("");
 		tfInput.setFont(new Font("Dialog", Font.BOLD, 13));
 		tfInput.setColumns(10);
-		tfInput.setBounds(37, 247, 738, 22);
 		tfInput.setVisible(false);
 
 		tfInput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-		panel_conf.add(tfInput);
 
 		tfOutput = new JTextField();
 		tfOutput.setForeground(textColor);
@@ -1105,37 +1092,27 @@ public class EverestView extends JFrame {
 		});
 		tfOutput.setFont(new Font("Dialog", Font.BOLD, 13));
 		tfOutput.setColumns(10);
-		tfOutput.setBounds(37, 327, 738, 22);
 		tfOutput.setVisible(false);
 		tfOutput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-		panel_conf.add(tfOutput);
 
 		lblLabelInp = new JLabel("(separated by comma)");
 		lblLabelInp.setBackground(backgroundColor);
 		lblLabelInp.setForeground(tipColor);
 		lblLabelInp.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblLabelInp.setBounds(651, 280, 173, 14);
 		lblLabelInp.setVisible(false);
-		panel_conf.add(lblLabelInp);
 
 		lblLabelOut = new JLabel("(separated by comma)");
 		lblLabelOut.setBackground(backgroundColor);
 		lblLabelOut.setForeground(tipColor);
 		lblLabelOut.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblLabelOut.setBounds(651, 358, 164, 14);
 		lblLabelOut.setVisible(false);
-		panel_conf.add(lblLabelOut);
 
 		JList list = new JList();
-		list.setBounds(371, 25, 1, 1);
-		panel_conf.add(list);
 
 		lblRotulo = new JLabel("Label");
 		lblRotulo.setForeground(labelColor);
 		lblRotulo.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblRotulo.setBounds(451, 143, 274, 22);
 		lblRotulo.setVisible(false);
-		panel_conf.add(lblRotulo);
 
 		cbLabel = new JComboBox();
 		cbLabel.setVisible(false);
@@ -1149,29 +1126,131 @@ public class EverestView extends JFrame {
 		cbLabel.setModel(new DefaultComboBoxModel(
 				new String[] { "", ViewConstants.typeAutomaticLabel, ViewConstants.typeManualLabel }));
 		cbLabel.setFont(new Font("Dialog", Font.BOLD, 13));
-		cbLabel.setBounds(451, 167, 324, 26);
 		// cbLabel.setVisible(false);
 		cbLabel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-		panel_conf.add(cbLabel);
 
 		JLabel lblIolts = new JLabel("Model type");
 		lblIolts.setForeground(SystemColor.windowBorder);
 		lblIolts.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblIolts.setBounds(37, 147, 144, 14);
-		panel_conf.add(lblIolts);
+		GroupLayout gl_panel_conf = new GroupLayout(panel_conf);
+		gl_panel_conf.setHorizontalGroup(
+			gl_panel_conf.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 223, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(564, Short.MAX_VALUE))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(371)
+					.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addComponent(tfSpecification, GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+							.addGap(38))
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED, 699, Short.MAX_VALUE)
+							.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)))
+					.addGap(49))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addComponent(tfImplementation, GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+							.addGap(38))
+						.addGroup(Alignment.TRAILING, gl_panel_conf.createSequentialGroup()
+							.addGap(699)
+							.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)))
+					.addGap(49))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(lblIolts, GroupLayout.PREFERRED_SIZE, 144, GroupLayout.PREFERRED_SIZE)
+					.addGap(270)
+					.addComponent(lblRotulo, GroupLayout.PREFERRED_SIZE, 274, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(cbModel, 0, 324, Short.MAX_VALUE)
+					.addGap(90)
+					.addComponent(cbLabel, 0, 324, Short.MAX_VALUE)
+					.addGap(49))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(tfInput, GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
+						.addComponent(lblInput, GroupLayout.PREFERRED_SIZE, 223, GroupLayout.PREFERRED_SIZE))
+					.addGap(49))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addContainerGap(651, Short.MAX_VALUE)
+					.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 173, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(tfOutput, GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
+						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 274, GroupLayout.PREFERRED_SIZE))
+					.addGap(49))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addContainerGap(651, Short.MAX_VALUE)
+					.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
+					.addGap(9))
+		);
+		gl_panel_conf.setVerticalGroup(
+			gl_panel_conf.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addContainerGap(11, Short.MAX_VALUE)
+					.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
+					.addGap(3)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(tfSpecification, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+					.addGap(9)
+					.addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+					.addGap(5)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(tfImplementation, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+					.addGap(22)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addGap(4)
+							.addComponent(lblIolts, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblRotulo, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+					.addGap(2)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(cbModel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbLabel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addGap(34)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addGap(20)
+							.addComponent(tfInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+					.addGap(11)
+					.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addGap(13)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addGap(20)
+							.addComponent(tfOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+					.addGap(9)
+					.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addGap(87))
+		);
+		panel_conf.setLayout(gl_panel_conf);
 
 		panel_ioco = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabIOCO, null, panel_ioco, null);
-		panel_ioco.setLayout(null);
 
 		tfNTestCasesIOCO = new JTextField();
 		tfNTestCasesIOCO.setForeground(SystemColor.controlShadow);
 		tfNTestCasesIOCO.setFont(new Font("Dialog", Font.BOLD, 13));
 		tfNTestCasesIOCO.setBackground(UIManager.getColor("Button.background"));
-		tfNTestCasesIOCO.setBounds(20, 142, 111, 32);
 		tfNTestCasesIOCO.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfNTestCasesIOCO.setNextFocusableComponent(btnVerifyConf_ioco);
-		panel_ioco.add(tfNTestCasesIOCO);
 		tfNTestCasesIOCO.setColumns(10);
 
 		btnVerifyConf_ioco = new JButton("Verify");
@@ -1182,67 +1261,45 @@ public class EverestView extends JFrame {
 				actionVerifyConformance(true);
 			}
 		});
-		btnVerifyConf_ioco.setBounds(141, 130, 167, 44);
 		btnVerifyConf_ioco.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnVerifyConf_ioco.setBackground(Color.LIGHT_GRAY);
 		btnVerifyConf_ioco.setNextFocusableComponent(taTestCasesIoco);
-		panel_ioco.add(btnVerifyConf_ioco);
 
 		taTestCasesIoco = new JTextArea();
 		taTestCasesIoco.setBounds(10, 277, 231, 150);
 		JScrollPane scrolltxt = new JScrollPane(taTestCasesIoco);
-		scrolltxt.setBounds(10, 201, 405, 247);
-		panel_ioco.add(scrolltxt);
 
 		lbl_veredict_ioco = new JLabel("[Verdict]");
 		lbl_veredict_ioco.setForeground(SystemColor.windowBorder);
 		lbl_veredict_ioco.setFont(new Font("Dialog", Font.BOLD, 13));
-		lbl_veredict_ioco.setBounds(318, 142, 474, 20);
-		panel_ioco.add(lbl_veredict_ioco);
 
 		JLabel lblModel = new JLabel("Model");
 		lblModel.setForeground(SystemColor.windowBorder);
 		lblModel.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblModel.setBounds(37, 11, 52, 14);
-		panel_ioco.add(lblModel);
 
 		JLabel lblImplementation_1 = new JLabel("Implementation");
 		lblImplementation_1.setForeground(SystemColor.windowBorder);
 		lblImplementation_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblImplementation_1.setBounds(425, 11, 133, 22);
-		panel_ioco.add(lblImplementation_1);
 
 		lblnput = new JLabel("Input label");
 		lblnput.setForeground(SystemColor.windowBorder);
 		lblnput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblnput.setBounds(37, 71, 140, 14);
-		panel_ioco.add(lblnput);
 
 		lblOutput_1 = new JLabel("Output label");
 		lblOutput_1.setForeground(SystemColor.windowBorder);
 		lblOutput_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblOutput_1.setBounds(425, 71, 149, 14);
-		panel_ioco.add(lblOutput_1);
 
 		lblmodelIoco = new JLabel("");
 		lblmodelIoco.setForeground(SystemColor.controlShadow);
-		lblmodelIoco.setBounds(37, 29, 265, 26);
-		panel_ioco.add(lblmodelIoco);
 
 		lblImplementationIoco = new JLabel("");
 		lblImplementationIoco.setForeground(SystemColor.controlShadow);
-		lblImplementationIoco.setBounds(425, 34, 367, 26);
-		panel_ioco.add(lblImplementationIoco);
 
 		lblInputIoco = new JLabel("");
 		lblInputIoco.setForeground(SystemColor.controlShadow);
-		lblInputIoco.setBounds(37, 88, 378, 26);
-		panel_ioco.add(lblInputIoco);
 
 		lblOutputIoco = new JLabel("");
 		lblOutputIoco.setForeground(SystemColor.controlShadow);
-		lblOutputIoco.setBounds(425, 88, 367, 26);
-		panel_ioco.add(lblOutputIoco);
 
 		imgModelIoco = new JLabel("");
 		imgModelIoco.setVisible(false);
@@ -1252,11 +1309,8 @@ public class EverestView extends JFrame {
 				// showModelImage(false);
 			}
 		});
-		imgModelIoco.setBounds(469, 130, 44, 44);
 		imgImplementationIoco = new JLabel("");
 		imgImplementationIoco.setVisible(false);
-		// imageShowHide(false, true);
-		panel_ioco.add(imgModelIoco);
 
 		imgImplementationIoco.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1264,9 +1318,6 @@ public class EverestView extends JFrame {
 				// showModelImage(true);
 			}
 		});
-		imgImplementationIoco.setBounds(530, 130, 44, 44);
-
-		panel_ioco.add(imgImplementationIoco);
 
 		btnViewModelIoco = new JButton("View model");
 		btnViewModelIoco.setVisible(false);
@@ -1285,8 +1336,6 @@ public class EverestView extends JFrame {
 		});
 		btnViewModelIoco.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnViewModelIoco.setBackground(Color.LIGHT_GRAY);
-		btnViewModelIoco.setBounds(113, 5, 154, 26);
-		panel_ioco.add(btnViewModelIoco);
 
 		btnViewImplementationIoco = new JButton("View IUT");
 		btnViewImplementationIoco.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -1308,37 +1357,154 @@ public class EverestView extends JFrame {
 		});
 		btnViewImplementationIoco.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnViewImplementationIoco.setBackground(Color.LIGHT_GRAY);
-		btnViewImplementationIoco.setBounds(568, 5, 154, 26);
-		panel_ioco.add(btnViewImplementationIoco);
 
 		lblLabel = new JLabel("Label");
 		lblLabel.setVisible(false);
 		lblLabel.setForeground(SystemColor.windowBorder);
 		lblLabel.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblLabel.setBounds(37, 71, 121, 14);
-		panel_ioco.add(lblLabel);
 
 		lblLabelIoco = new JLabel("");
 		lblLabelIoco.setForeground(SystemColor.controlShadow);
-		lblLabelIoco.setBounds(37, 88, 755, 26);
-		panel_ioco.add(lblLabelIoco);
 
 		JLabel lblWarnings = new JLabel("Warnings");
 		lblWarnings.setForeground(SystemColor.windowBorder);
 		lblWarnings.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblWarnings.setBounds(425, 179, 88, 14);
-		panel_ioco.add(lblWarnings);
 
 		lblWarningIoco = new TextArea("");
 		lblWarningIoco.setForeground(SystemColor.controlShadow);
-		lblWarningIoco.setBounds(425, 201, 367, 247);
-		panel_ioco.add(lblWarningIoco);
 
 		JLabel lblTestCases = new JLabel("# Test cases");
 		lblTestCases.setForeground(SystemColor.windowBorder);
 		lblTestCases.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblTestCases.setBounds(10, 125, 99, 14);
-		panel_ioco.add(lblTestCases);
+		GroupLayout gl_panel_ioco = new GroupLayout(panel_ioco);
+		gl_panel_ioco.setHorizontalGroup(
+			gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_ioco.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addComponent(lblModel, GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+							.addGap(213))
+						.addComponent(lblmodelIoco, GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addGap(76)
+							.addComponent(btnViewModelIoco, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+							.addGap(35)))
+					.addGap(123)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addComponent(lblImplementation_1, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+							.addGap(10)
+							.addComponent(btnViewImplementationIoco, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+							.addGap(70))
+						.addComponent(lblImplementationIoco, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
+					.addGap(10))
+				.addGroup(gl_panel_ioco.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblnput, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addComponent(lblLabel, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+							.addGap(19)))
+					.addGap(248)
+					.addComponent(lblOutput_1, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+					.addGap(228))
+				.addGroup(gl_panel_ioco.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addComponent(lblInputIoco, GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+							.addGap(10)
+							.addComponent(lblOutputIoco, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
+						.addComponent(lblLabelIoco, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE))
+					.addGap(10))
+				.addGroup(gl_panel_ioco.createSequentialGroup()
+					.addGap(10)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addComponent(lblTestCases, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+							.addGap(22))
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addGap(10)
+							.addComponent(tfNTestCasesIOCO, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)))
+					.addGap(10)
+					.addComponent(btnVerifyConf_ioco, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+					.addGap(10)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addGap(151)
+							.addComponent(imgModelIoco, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lbl_veredict_ioco, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addGap(212)
+							.addComponent(imgImplementationIoco, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+					.addGap(10))
+				.addGroup(gl_panel_ioco.createSequentialGroup()
+					.addContainerGap(425, Short.MAX_VALUE)
+					.addComponent(lblWarnings, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+					.addGap(289))
+				.addGroup(gl_panel_ioco.createSequentialGroup()
+					.addGap(10)
+					.addComponent(scrolltxt, GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
+					.addGap(10)
+					.addComponent(lblWarningIoco, GroupLayout.PREFERRED_SIZE, 367, Short.MAX_VALUE)
+					.addGap(10))
+		);
+		gl_panel_ioco.setVerticalGroup(
+			gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_ioco.createSequentialGroup()
+					.addGap(5)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lblModel, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+							.addGap(4)
+							.addComponent(lblmodelIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnViewModelIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_ioco.createSequentialGroup()
+									.addGap(6)
+									.addComponent(lblImplementation_1, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+								.addComponent(btnViewImplementationIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+							.addGap(1)
+							.addComponent(lblImplementationIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)))
+					.addGap(11)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblnput, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblLabel, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblOutput_1, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					.addGap(3)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblInputIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblOutputIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblLabelIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addGap(11)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addComponent(lblTestCases, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+							.addGap(3)
+							.addComponent(tfNTestCasesIOCO, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addGap(5)
+							.addComponent(btnVerifyConf_ioco, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_ioco.createSequentialGroup()
+							.addGap(5)
+							.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+								.addComponent(imgModelIoco, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_ioco.createSequentialGroup()
+									.addGap(12)
+									.addComponent(lbl_veredict_ioco, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+								.addComponent(imgImplementationIoco, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))))
+					.addGap(5)
+					.addComponent(lblWarnings, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addGap(8)
+					.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrolltxt, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+						.addComponent(lblWarningIoco, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+					.addGap(11))
+		);
+		panel_ioco.setLayout(gl_panel_ioco);
 
 		/*
 		 * taTestCasesLang = new JTextArea(); taTestCasesLang.setBounds(10, 282, 584,
@@ -1349,13 +1515,10 @@ public class EverestView extends JFrame {
 
 		panel_language = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabLang, null, panel_language, null);
-		panel_language.setLayout(null);
 
 		lblD = new JLabel("Desirable behavior");
 		lblD.setForeground(SystemColor.windowBorder);
 		lblD.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblD.setBounds(37, 125, 244, 20);
-		panel_language.add(lblD);
 
 		tfD = new JTextField();
 		tfD.addKeyListener(new KeyAdapter() {
@@ -1369,20 +1532,14 @@ public class EverestView extends JFrame {
 		tfD.setColumns(10);
 		tfD.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfD.setBackground(SystemColor.menu);
-		tfD.setBounds(37, 152, 352, 26);
-		panel_language.add(tfD);
 
 		lblRegexD = new JLabel("Regex example: (a|b)*c");
 		lblRegexD.setForeground(SystemColor.windowBorder);
 		lblRegexD.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblRegexD.setBounds(255, 179, 225, 36);
-		panel_language.add(lblRegexD);
 
 		lblF = new JLabel("Undesirable behavior");
 		lblF.setForeground(SystemColor.windowBorder);
 		lblF.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblF.setBounds(425, 128, 200, 14);
-		panel_language.add(lblF);
 
 		tfF = new JTextField();
 		tfF.addKeyListener(new KeyAdapter() {
@@ -1396,21 +1553,15 @@ public class EverestView extends JFrame {
 		tfF.setColumns(10);
 		tfF.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfF.setBackground(SystemColor.menu);
-		tfF.setBounds(425, 152, 367, 26);
 		tfF.setNextFocusableComponent(tfNTestCasesLang);
-		panel_language.add(tfF);
 
 		lblRegexF = new JLabel("Regex example: (a|b)*c");
 		lblRegexF.setForeground(SystemColor.windowBorder);
 		lblRegexF.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblRegexF.setBounds(652, 179, 184, 36);
-		panel_language.add(lblRegexF);
 
 		lbl_veredict_lang = new JLabel("");
 		lbl_veredict_lang.setForeground(SystemColor.windowBorder);
 		lbl_veredict_lang.setFont(new Font("Dialog", Font.BOLD, 13));
-		lbl_veredict_lang.setBounds(318, 234, 474, 20);
-		panel_language.add(lbl_veredict_lang);
 
 		btnVerifyConf_lang = new JButton("Verify");
 		btnVerifyConf_lang.addMouseListener(new MouseAdapter() {
@@ -1421,61 +1572,40 @@ public class EverestView extends JFrame {
 		});
 		btnVerifyConf_lang.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnVerifyConf_lang.setBackground(Color.LIGHT_GRAY);
-		btnVerifyConf_lang.setBounds(147, 226, 167, 44);
-		panel_language.add(btnVerifyConf_lang);
 
 		label_1 = new JLabel("Model");
 		label_1.setForeground(SystemColor.windowBorder);
 		label_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_1.setBounds(37, 11, 52, 14);
-		panel_language.add(label_1);
 
 		lblInput_ = new JLabel("Input label");
 		lblInput_.setForeground(SystemColor.windowBorder);
 		lblInput_.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblInput_.setBounds(37, 71, 277, 14);
-		panel_language.add(lblInput_);
 
 		lblInputLang = new JLabel("");
 		lblInputLang.setForeground(SystemColor.controlShadow);
-		lblInputLang.setBounds(37, 91, 378, 26);
-		panel_language.add(lblInputLang);
 
 		lblmodelLang = new JLabel("");
 		lblmodelLang.setForeground(SystemColor.controlShadow);
-		lblmodelLang.setBounds(37, 29, 352, 26);
-		panel_language.add(lblmodelLang);
 
 		label_5 = new JLabel("Implementation");
 		label_5.setForeground(SystemColor.windowBorder);
 		label_5.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_5.setBounds(425, 11, 133, 22);
-		panel_language.add(label_5);
 
 		lblimplementationLang = new JLabel("");
 		lblimplementationLang.setForeground(SystemColor.controlShadow);
-		lblimplementationLang.setBounds(425, 29, 367, 26);
-		panel_language.add(lblimplementationLang);
 
 		lblOutput_ = new JLabel("Output label");
 		lblOutput_.setForeground(SystemColor.windowBorder);
 		lblOutput_.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblOutput_.setBounds(425, 71, 167, 14);
-		panel_language.add(lblOutput_);
 
 		lblOutputLang = new JLabel("");
 		lblOutputLang.setForeground(SystemColor.controlShadow);
-		lblOutputLang.setBounds(425, 88, 367, 26);
-		panel_language.add(lblOutputLang);
 
 		taTestCasesLang = new JTextArea();
 		taTestCasesLang.setEditable(false);
 		taTestCasesLang.setBounds(10, 282, 584, 197);
 		// taTestCasesLang.enable(false);
 		JScrollPane scrolltxt2 = new JScrollPane(taTestCasesLang);
-		scrolltxt2.setBounds(11, 293, 405, 160);
-
-		panel_language.add(scrolltxt2);
 
 		imgModelLang = new JLabel("");
 		imgModelLang.setVisible(false);
@@ -1485,11 +1615,8 @@ public class EverestView extends JFrame {
 				// showModelImage(false);
 			}
 		});
-		imgModelLang.setBounds(678, 235, 44, 36);
 		imgImplementationLang = new JLabel("");
 		imgImplementationLang.setVisible(false);
-		// imageShowHide(false, false);
-		panel_language.add(imgModelLang);
 		imgImplementationLang.setVisible(false);
 		imgImplementationLang.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1497,11 +1624,9 @@ public class EverestView extends JFrame {
 				// showModelImage(true);
 			}
 		});
-		imgImplementationLang.setBounds(660, 235, 44, 36);
-		panel_language.add(imgImplementationLang);
 
 		btnViewModelLang = new JButton("View model");
-		btnViewModelLang.setVisible(false);
+		//btnViewModelLang.setVisible(false);
 		btnViewModelLang.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -1516,11 +1641,9 @@ public class EverestView extends JFrame {
 		});
 		btnViewModelLang.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnViewModelLang.setBackground(Color.LIGHT_GRAY);
-		btnViewModelLang.setBounds(113, 5, 154, 26);
-		panel_language.add(btnViewModelLang);
 
 		btnViewImplementationLang = new JButton("View IUT");
-		btnViewImplementationLang.setVisible(false);
+		//btnViewImplementationLang.setVisible(false);
 		btnViewImplementationLang.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -1535,37 +1658,25 @@ public class EverestView extends JFrame {
 		});
 		btnViewImplementationLang.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnViewImplementationLang.setBackground(Color.LIGHT_GRAY);
-		btnViewImplementationLang.setBounds(568, 5, 154, 26);
-		panel_language.add(btnViewImplementationLang);
 
 		lblLabelLang = new JLabel("");
 		lblLabelLang.setForeground(SystemColor.controlShadow);
-		lblLabelLang.setBounds(37, 88, 755, 26);
-		panel_language.add(lblLabelLang);
 
 		lblLabel_ = new JLabel("label");
 		lblLabel_.setVisible(false);
 		lblLabel_.setForeground(SystemColor.windowBorder);
 		lblLabel_.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblLabel_.setBounds(37, 71, 106, 14);
-		panel_language.add(lblLabel_);
 
 		JLabel label = new JLabel("Warnings");
 		label.setForeground(SystemColor.windowBorder);
 		label.setFont(new Font("Dialog", Font.BOLD, 13));
-		label.setBounds(426, 276, 93, 14);
-		panel_language.add(label);
 
 		lblWarningLang = new TextArea("");
 		lblWarningLang.setForeground(SystemColor.controlShadow);
-		lblWarningLang.setBounds(426, 293, 366, 160);
-		panel_language.add(lblWarningLang);
 
 		label_2 = new JLabel("# Test cases");
 		label_2.setForeground(SystemColor.windowBorder);
 		label_2.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_2.setBounds(11, 226, 99, 14);
-		panel_language.add(label_2);
 
 		tfNTestCasesLang = new JTextField();
 		tfNTestCasesLang.setForeground(SystemColor.controlShadow);
@@ -1573,14 +1684,176 @@ public class EverestView extends JFrame {
 		tfNTestCasesLang.setColumns(10);
 		tfNTestCasesLang.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfNTestCasesLang.setBackground(SystemColor.menu);
-		tfNTestCasesLang.setBounds(21, 238, 111, 32);
 		tfNTestCasesLang.setNextFocusableComponent(btnVerifyConf_lang);
-		panel_language.add(tfNTestCasesLang);
+		GroupLayout gl_panel_language = new GroupLayout(panel_language);
+		gl_panel_language.setHorizontalGroup(
+			gl_panel_language.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_language.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addComponent(label_1, GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+							.addGap(300))
+						.addComponent(lblmodelLang, GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(76)
+							.addComponent(btnViewModelLang, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+							.addGap(122)))
+					.addGap(36)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(143)
+							.addComponent(btnViewImplementationLang, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+							.addGap(70))
+						.addComponent(lblimplementationLang, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addComponent(label_5, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+							.addGap(234)))
+					.addGap(44))
+				.addGroup(gl_panel_language.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblLabel_, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblInput_, GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE))
+					.addGap(111)
+					.addComponent(lblOutput_, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+					.addGap(244))
+				.addGroup(gl_panel_language.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addComponent(lblInputLang, GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+							.addGap(377))
+						.addComponent(lblLabelLang, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(388)
+							.addComponent(lblOutputLang, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)))
+					.addGap(44))
+				.addGroup(gl_panel_language.createSequentialGroup()
+					.addGap(37)
+					.addComponent(lblD, GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+					.addGap(144)
+					.addComponent(lblF, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+					.addGap(211))
+				.addGroup(gl_panel_language.createSequentialGroup()
+					.addGap(37)
+					.addComponent(tfD, GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+					.addGap(36)
+					.addComponent(tfF, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+					.addGap(44))
+				.addGroup(gl_panel_language.createSequentialGroup()
+					.addContainerGap(255, Short.MAX_VALUE)
+					.addComponent(lblRegexD, GroupLayout.PREFERRED_SIZE, 225, GroupLayout.PREFERRED_SIZE)
+					.addGap(172)
+					.addComponent(lblRegexF, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_language.createSequentialGroup()
+					.addGap(11)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(10)
+							.addComponent(tfNTestCasesLang, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE))
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addComponent(label_2, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+							.addGap(22)))
+					.addGap(15)
+					.addComponent(btnVerifyConf_lang, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+					.addGap(4)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(360)
+							.addComponent(imgModelLang, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lbl_veredict_lang, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(342)
+							.addComponent(imgImplementationLang, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+					.addGap(44))
+				.addGroup(Alignment.TRAILING, gl_panel_language.createSequentialGroup()
+					.addGap(11)
+					.addComponent(scrolltxt2, GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
+					.addGap(10)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addComponent(label, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())
+						.addGroup(Alignment.TRAILING, gl_panel_language.createSequentialGroup()
+							.addComponent(lblWarningLang, GroupLayout.PREFERRED_SIZE, 366, Short.MAX_VALUE)
+							.addGap(44))))
+		);
+		gl_panel_language.setVerticalGroup(
+			gl_panel_language.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_language.createSequentialGroup()
+					.addGap(5)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(6)
+							.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+							.addGap(4)
+							.addComponent(lblmodelLang, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnViewModelLang, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnViewImplementationLang, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(24)
+							.addComponent(lblimplementationLang, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(6)
+							.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)))
+					.addGap(16)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblLabel_, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblInput_, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblOutput_, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					.addGap(3)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(3)
+							.addComponent(lblInputLang, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblLabelLang, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblOutputLang, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addGap(8)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblD, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(3)
+							.addComponent(lblF, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)))
+					.addGap(7)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addComponent(tfD, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(tfF, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addGap(1)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblRegexD, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblRegexF, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
+					.addGap(11)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(12)
+							.addComponent(tfNTestCasesLang, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+						.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnVerifyConf_lang, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_language.createSequentialGroup()
+							.addGap(8)
+							.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_language.createSequentialGroup()
+									.addGap(1)
+									.addComponent(imgModelLang, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lbl_veredict_lang, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_language.createSequentialGroup()
+									.addGap(1)
+									.addComponent(imgImplementationLang, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)))))
+					.addGap(7)
+					.addComponent(label, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panel_language.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrolltxt2, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+						.addComponent(lblWarningLang, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					)
+		);
+		panel_language.setLayout(gl_panel_language);
 
 		// Panel generation
 		panel_test_generation = new JPanel();
 		tabbedPane.addTab(ViewConstants.tabTSGeneration, null, panel_test_generation, null);
-		panel_test_generation.setLayout(null);
 
 		btnGenerate = new JButton("Generate");
 		btnGenerate.addMouseListener(new MouseAdapter() {
@@ -1590,33 +1863,23 @@ public class EverestView extends JFrame {
 				saveMultigraphAndTP();
 			}
 		});
-		btnGenerate.setBounds(316, 128, 106, 44);
 		btnGenerate.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnGenerate.setBackground(Color.LIGHT_GRAY);
 		btnGenerate.setVisible(false);
-		panel_test_generation.add(btnGenerate);
 
-		lblModel = new JLabel("Model");
-		lblModel.setForeground(SystemColor.windowBorder);
-		lblModel.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblModel.setBounds(37, 11, 52, 14);
-		panel_test_generation.add(lblModel);
+		lblModel_1 = new JLabel("Model");
+		lblModel_1.setForeground(SystemColor.windowBorder);
+		lblModel_1.setFont(new Font("Dialog", Font.BOLD, 13));
 
 		lblInputLabel_gen = new JLabel("Input label");
 		lblInputLabel_gen.setForeground(SystemColor.windowBorder);
 		lblInputLabel_gen.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblInputLabel_gen.setBounds(37, 71, 277, 14);
-		panel_test_generation.add(lblInputLabel_gen);
 
 		lblInput_gen = new JLabel("");
 		lblInput_gen.setForeground(SystemColor.controlShadow);
-		lblInput_gen.setBounds(37, 91, 378, 26);
-		panel_test_generation.add(lblInput_gen);
 
 		lblmodel_gen = new JLabel("");
 		lblmodel_gen.setForeground(SystemColor.controlShadow);
-		lblmodel_gen.setBounds(37, 29, 352, 26);
-		panel_test_generation.add(lblmodel_gen);
 
 		lblIut = new JLabel("Implementation");
 		lblIut.setForeground(SystemColor.windowBorder);
@@ -1632,19 +1895,13 @@ public class EverestView extends JFrame {
 		lblLabelOutput = new JLabel("Output label");
 		lblLabelOutput.setForeground(SystemColor.windowBorder);
 		lblLabelOutput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblLabelOutput.setBounds(425, 71, 167, 14);
-		panel_test_generation.add(lblLabelOutput);
 
 		lblOutput_gen = new JLabel("");
 		lblOutput_gen.setForeground(SystemColor.controlShadow);
-		lblOutput_gen.setBounds(425, 88, 367, 26);
-		panel_test_generation.add(lblOutput_gen);
 
 		taTestCases_gen = new JTextArea();
 		taTestCases_gen.setBounds(10, 277, 231, 150);
 		JScrollPane scrolltxt3 = new JScrollPane(taTestCases_gen);
-		scrolltxt3.setBounds(10, 333, 405, 115);
-		panel_test_generation.add(scrolltxt3);
 
 		imgModel_gen = new JLabel("");
 		imgModel_gen.setVisible(false);
@@ -1654,11 +1911,8 @@ public class EverestView extends JFrame {
 				showModelImage(false);
 			}
 		});
-		imgModel_gen.setBounds(678, 235, 44, 36);
 		imgImplementation_gen = new JLabel("");
 		imgImplementation_gen.setVisible(false);
-		// imageShowHide(false, false);
-		panel_test_generation.add(imgModel_gen);
 		imgImplementation_gen.setVisible(false);
 		imgImplementation_gen.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1666,8 +1920,6 @@ public class EverestView extends JFrame {
 				showModelImage(true);
 			}
 		});
-		imgImplementation_gen.setBounds(660, 235, 44, 36);
-		panel_test_generation.add(imgImplementation_gen);
 
 		btnViewModel_gen = new JButton("View model");
 		btnViewModel_gen.setVisible(false);
@@ -1685,8 +1937,6 @@ public class EverestView extends JFrame {
 		});
 		btnViewModel_gen.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnViewModel_gen.setBackground(Color.LIGHT_GRAY);
-		btnViewModel_gen.setBounds(113, 5, 154, 26);
-		panel_test_generation.add(btnViewModel_gen);
 
 		btnViewImplementation_gen = new JButton("view IUT");
 		btnViewImplementation_gen.setVisible(false);
@@ -1704,28 +1954,20 @@ public class EverestView extends JFrame {
 		});
 		btnViewImplementation_gen.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnViewImplementation_gen.setBackground(Color.LIGHT_GRAY);
-		btnViewImplementation_gen.setBounds(568, 5, 154, 26);
 		btnViewImplementation_gen.setVisible(false);
-		panel_test_generation.add(btnViewImplementation_gen);
 
 		lblLabel_gen = new JLabel("");
 		lblLabel_gen.setForeground(SystemColor.controlShadow);
-		lblLabel_gen.setBounds(37, 88, 755, 26);
-		panel_test_generation.add(lblLabel_gen);
 
 		JLabel lblWarning = new JLabel("Warnings");
 		lblWarning.setForeground(SystemColor.windowBorder);
 		lblWarning.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblWarning.setBounds(425, 308, 93, 14);
-		panel_test_generation.add(lblWarning);
 
 		taWarning_gen = new JTextArea("");
 		taWarning_gen.setForeground(SystemColor.controlShadow);
 		taWarning_gen.setBounds(426, 312, 366, 136);
 
 		JScrollPane scrolltxt4 = new JScrollPane(taWarning_gen);
-		scrolltxt4.setBounds(426, 333, 366, 115);
-		panel_test_generation.add(scrolltxt4);
 
 		// JScrollPane sampleScrollPane = new JScrollPane (taWarning_gen,
 		// JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -1736,8 +1978,6 @@ public class EverestView extends JFrame {
 		lblM = new JLabel("# Max IUT states");
 		lblM.setForeground(SystemColor.windowBorder);
 		lblM.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblM.setBounds(10, 123, 117, 14);
-		panel_test_generation.add(lblM);
 
 		tfM = new JTextField();
 		tfM.addKeyListener(new KeyAdapter() {
@@ -1763,8 +2003,6 @@ public class EverestView extends JFrame {
 		tfM.setColumns(10);
 		tfM.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfM.setBackground(SystemColor.menu);
-		tfM.setBounds(10, 135, 133, 32);
-		panel_test_generation.add(tfM);
 
 		btnrunTp = new JButton("Run TPs");
 		btnrunTp.addMouseListener(new MouseAdapter() {
@@ -1795,22 +2033,16 @@ public class EverestView extends JFrame {
 		});
 		btnrunTp.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnrunTp.setBackground(Color.LIGHT_GRAY);
-		btnrunTp.setBounds(509, 242, 117, 44);
 		btnrunTp.setVisible(false);
-		panel_test_generation.add(btnrunTp);
 
 		lblNumTC = new JLabel("#Extracted test cases: ");
 		lblNumTC.setForeground(SystemColor.windowBorder);
 		lblNumTC.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblNumTC.setBounds(10, 308, 287, 14);
 		lblNumTC.setVisible(false);
-		panel_test_generation.add(lblNumTC);
 
 		JLabel lblTestCases_1 = new JLabel("#  Test purposes");
 		lblTestCases_1.setForeground(SystemColor.windowBorder);
 		lblTestCases_1.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblTestCases_1.setBounds(166, 123, 117, 14);
-		panel_test_generation.add(lblTestCases_1);
 
 		tfNTestCases_gen = new JTextField();
 		tfNTestCases_gen.addKeyListener(new KeyAdapter() {
@@ -1826,25 +2058,17 @@ public class EverestView extends JFrame {
 		tfNTestCases_gen.setColumns(10);
 		tfNTestCases_gen.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfNTestCases_gen.setBackground(SystemColor.menu);
-		tfNTestCases_gen.setBounds(166, 141, 140, 26);
-		panel_test_generation.add(tfNTestCases_gen);
 
 		label_4 = new JLabel("Implementation");
 		label_4.setForeground(SystemColor.windowBorder);
 		label_4.setFont(new Font("Dialog", Font.BOLD, 13));
-		label_4.setBounds(425, 7, 133, 22);
-		panel_test_generation.add(label_4);
 
 		lbliut_gen = new JLabel("");
 		lbliut_gen.setForeground(SystemColor.controlShadow);
-		lbliut_gen.setBounds(425, 29, 367, 26);
-		panel_test_generation.add(lbliut_gen);
 
 		lblMultigraph = new JLabel("Multigraph");
 		lblMultigraph.setForeground(SystemColor.controlDkShadow);
 		lblMultigraph.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblMultigraph.setBounds(10, 178, 93, 14);
-		panel_test_generation.add(lblMultigraph);
 
 		tfMultigraph = new JTextField();
 		tfMultigraph.addKeyListener(new KeyAdapter() {
@@ -1865,8 +2089,6 @@ public class EverestView extends JFrame {
 		tfMultigraph.setColumns(10);
 		tfMultigraph.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfMultigraph.setBackground(SystemColor.menu);
-		tfMultigraph.setBounds(10, 195, 447, 26);
-		panel_test_generation.add(tfMultigraph);
 
 		btnRunMultigraph = new JButton("Run");
 		btnRunMultigraph.addMouseListener(new MouseAdapter() {
@@ -1941,9 +2163,7 @@ public class EverestView extends JFrame {
 		});
 		btnRunMultigraph.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnRunMultigraph.setBackground(Color.LIGHT_GRAY);
-		btnRunMultigraph.setBounds(509, 185, 106, 44);
 		btnRunMultigraph.setVisible(false);
-		panel_test_generation.add(btnRunMultigraph);
 
 		btnRunGenerate = new JButton("Test Generation  + Run");
 		btnRunGenerate.addMouseListener(new MouseAdapter() {
@@ -1954,15 +2174,11 @@ public class EverestView extends JFrame {
 		});
 		btnRunGenerate.setFont(new Font("Dialog", Font.BOLD, 13));
 		btnRunGenerate.setBackground(Color.LIGHT_GRAY);
-		btnRunGenerate.setBounds(432, 128, 183, 44);
 		btnRunGenerate.setVisible(false);
-		panel_test_generation.add(btnRunGenerate);
 
 		lblRunVerdict = new JLabel("");
 		lblRunVerdict.setForeground(SystemColor.windowBorder);
 		lblRunVerdict.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblRunVerdict.setBounds(62, 283, 178, 14);
-		panel_test_generation.add(lblRunVerdict);
 
 		button = new JButton("");
 		button.addMouseListener(new MouseAdapter() {
@@ -1974,14 +2190,10 @@ public class EverestView extends JFrame {
 		button.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
 		button.setOpaque(true);
 		button.setBackground(SystemColor.activeCaptionBorder);
-		button.setBounds(460, 201, 39, 28);
-		panel_test_generation.add(button);
 
 		JLabel lblTpFolder = new JLabel("Test purpose folder ");
 		lblTpFolder.setForeground(SystemColor.controlDkShadow);
 		lblTpFolder.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblTpFolder.setBounds(10, 235, 189, 14);
-		panel_test_generation.add(lblTpFolder);
 
 		tfTPFolder = new JTextField();
 		tfTPFolder.addMouseListener(new MouseAdapter() {
@@ -1996,8 +2208,6 @@ public class EverestView extends JFrame {
 		tfTPFolder.setColumns(10);
 		tfTPFolder.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfTPFolder.setBackground(SystemColor.menu);
-		tfTPFolder.setBounds(10, 252, 447, 26);
-		panel_test_generation.add(tfTPFolder);
 
 		JButton button_2 = new JButton("");
 		button_2.addMouseListener(new MouseAdapter() {
@@ -2009,14 +2219,206 @@ public class EverestView extends JFrame {
 		button_2.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
 		button_2.setOpaque(true);
 		button_2.setBackground(SystemColor.activeCaptionBorder);
-		button_2.setBounds(460, 254, 39, 28);
-		panel_test_generation.add(button_2);
 
 		lbl_result = new JLabel("Verdict:");
 		lbl_result.setForeground(SystemColor.controlDkShadow);
 		lbl_result.setFont(new Font("Dialog", Font.BOLD, 13));
-		lbl_result.setBounds(10, 283, 58, 14);
-		panel_test_generation.add(lbl_result);
+		GroupLayout gl_panel_test_generation = new GroupLayout(panel_test_generation);
+		gl_panel_test_generation.setHorizontalGroup(
+			gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_test_generation.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addComponent(lblModel_1, GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+							.addGap(300))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(76)
+							.addComponent(btnViewModel_gen, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+							.addGap(122))
+						.addComponent(lblmodel_gen, GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))
+					.addGap(36)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addComponent(label_4, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+							.addGap(234))
+						.addComponent(lbliut_gen, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(143)
+							.addComponent(btnViewImplementation_gen, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+							.addGap(70)))
+					.addGap(10))
+				.addGroup(gl_panel_test_generation.createSequentialGroup()
+					.addGap(37)
+					.addComponent(lblInputLabel_gen, GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+					.addGap(111)
+					.addComponent(lblLabelOutput, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+					.addGap(210))
+				.addGroup(gl_panel_test_generation.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(388)
+							.addComponent(lblOutput_gen, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addComponent(lblInput_gen, GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+							.addGap(377))
+						.addComponent(lblLabel_gen, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE))
+					.addGap(10))
+				.addGroup(gl_panel_test_generation.createSequentialGroup()
+					.addGap(10)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addComponent(tfM, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addComponent(lblM, GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+							.addGap(16)))
+					.addGap(23)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addComponent(lblTestCases_1, GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+							.addGap(23))
+						.addComponent(tfNTestCases_gen, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
+					.addGap(10)
+					.addComponent(btnGenerate, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+					.addGap(10)
+					.addComponent(btnRunGenerate, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+					.addGap(187))
+				.addGroup(gl_panel_test_generation.createSequentialGroup()
+					.addGap(10)
+					.addComponent(lblNumTC, GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+					.addGap(128)
+					.addComponent(lblWarning, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+					.addGap(284))
+				.addGroup(gl_panel_test_generation.createSequentialGroup()
+					.addGap(10)
+					.addComponent(scrolltxt3, GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
+					.addGap(11)
+					.addComponent(scrolltxt4, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+					.addGap(10))
+				.addGroup(Alignment.TRAILING, gl_panel_test_generation.createSequentialGroup()
+					.addGap(10)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+									.addComponent(lblTpFolder, GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+									.addGap(258))
+								.addComponent(tfTPFolder, GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+									.addComponent(lbl_result, GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+									.addGap(389))
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+									.addComponent(lblRunVerdict, GroupLayout.PREFERRED_SIZE, 376, GroupLayout.PREFERRED_SIZE)
+									.addGap(19)))
+							.addGap(3)
+							.addComponent(button_2, GroupLayout.PREFERRED_SIZE, 39, Short.MAX_VALUE)
+							.addGap(10)
+							.addComponent(btnrunTp, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+									.addComponent(lblMultigraph, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+									.addGap(354))
+								.addComponent(tfMultigraph, GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
+							.addGap(3)
+							.addComponent(button, GroupLayout.PREFERRED_SIZE, 39, Short.MAX_VALUE)
+							.addGap(10)
+							.addComponent(btnRunMultigraph, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)))
+					.addGap(45)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addComponent(imgImplementation_gen, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(18)
+							.addComponent(imgModel_gen, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+					.addGap(80))
+		);
+		gl_panel_test_generation.setVerticalGroup(
+			gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_test_generation.createSequentialGroup()
+					.addGap(5)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lblModel_1, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnViewModel_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(24)
+							.addComponent(lblmodel_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(2)
+							.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+							.addComponent(lbliut_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnViewImplementation_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addGap(16)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblInputLabel_gen, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblLabelOutput, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					.addGap(3)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblOutput_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(3)
+							.addComponent(lblInput_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblLabel_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addGap(6)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(12)
+							.addComponent(tfM, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblM, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addComponent(lblTestCases_1, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+							.addGap(4)
+							.addComponent(tfNTestCases_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(5)
+							.addComponent(btnGenerate, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(5)
+							.addComponent(btnRunGenerate, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+					.addGap(6)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addComponent(lblMultigraph, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+							.addGap(3)
+							.addComponent(tfMultigraph, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(23)
+							.addComponent(button, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(7)
+							.addComponent(btnRunMultigraph, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(6)
+							.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+									.addComponent(lblTpFolder, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+									.addGap(3)
+									.addComponent(tfTPFolder, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+									.addGap(5)
+									.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblRunVerdict, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+										.addComponent(lbl_result, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)))
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+									.addGap(19)
+									.addComponent(button_2, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+								.addComponent(imgImplementation_gen, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+								.addComponent(imgModel_gen, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+							.addGap(13)
+							.addComponent(btnrunTp, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+					.addGap(11)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNumTC, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblWarning, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					.addGap(11)
+					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrolltxt3, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+						.addComponent(scrolltxt4, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+					.addGap(11))
+		);
+		panel_test_generation.setLayout(gl_panel_test_generation);
 
 		// Panel run test
 		panel_test_execution = new JPanel();
@@ -2319,6 +2721,7 @@ public class EverestView extends JFrame {
 
 		clearRadioButtonIut();
 		clearRadioButtonTP();
+	
 	}
 
 	public void visibilityRunButtons() {
@@ -2860,7 +3263,8 @@ public class EverestView extends JFrame {
 		try {
 			JFrame frame = new JFrame(model);
 			frame.setVisible(true);
-			frame.setResizable(false);
+			//**aquii
+			frame.setResizable(true);
 
 			JPanel panel = new JPanel();
 
@@ -3158,6 +3562,7 @@ public class EverestView extends JFrame {
 	private JLabel lblRunVerdict;
 	private JButton button;
 	private JTextField tfTPFolder;
+	private JLabel lblModel_1;
 
 	public boolean isFormValid(boolean ioco) {
 		boolean defineInpOut = true;
