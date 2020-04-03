@@ -2907,6 +2907,8 @@ public class EverestView extends JFrame {
 				if (multigraph == null) {
 					multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
 					saveMultigraphFile(folder);
+				}else {
+					loadMultigraph(pathMultigraph);
 				}
 
 				File file = new File(folder, "TPs - " + fileNameMultigraph);
@@ -2996,6 +2998,8 @@ public class EverestView extends JFrame {
 			// S.getOutputs()));
 			fileNameMultigraph = "spec-multigraph_" + dateFormat.format(new Date());
 			File file = new File(folder, "spec-multigraph_" + dateFormat.format(new Date()) + ".aut");
+			
+			pathMultigraph = file.getAbsolutePath();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(fileContent);
 			writer.close();
@@ -3939,7 +3943,8 @@ public class EverestView extends JFrame {
 		visibilityRunButtons();
 	}
 
-	public void loadMultigraph(String folder) throws Exception {
+	public void loadMultigraph(String folder) {
+		try {
 		String contents = new String(Files.readAllBytes(Paths.get(pathMultigraph)));
 
 		// get and set param m
@@ -3989,6 +3994,9 @@ public class EverestView extends JFrame {
 		multigraph.addFinalStates(new State_("pass"));
 
 		visibilityRunButtons();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 
 	}
 }
