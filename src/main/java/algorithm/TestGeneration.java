@@ -548,6 +548,7 @@ public class TestGeneration {
 
 	static volatile int level;
 	static volatile Transition_ aa = null;
+	
 
 	public static javafx.util.Pair<List<String>, Boolean> getTcAndSaveTP(Automaton_ multigraph, Integer nTP,
 			String absolutePath, List<String> li, List<String> lu, String pathIUT, String multigraphName)

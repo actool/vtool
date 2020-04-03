@@ -17,8 +17,7 @@ public class ViewConstants {
 	public static final String titleFrameImgImplementation = "Implementation - ";
 	public static final String titleFrameImgSpecification = "Model - ";
 
-	public static final String genRun_noFault = "no fault was found";
-	public static final String genRun_fault =   "a fault was found";
+
 
 	// message
 	/*public static final String modelWithoutTransition = "Model without transition, if you selected the option "
@@ -38,16 +37,18 @@ public class ViewConstants {
 	public static final String selectIolts = "IOCO relation is defined over IOLTS models \n";//"The informed model must be IOLTS \n";
 	public static final String selectIolts_gen = "Test generation is defined over IOLTS models \n";//"The informed model must be IOLTS \n";
 	public static final String labelInpOut="There labels that were not set as input/output \n";
-	public static final String mInteger="The parameter max IUT states must be integer \n";
-	public static final String ntcInteger="The parameter # Test cases must be integer \n";
-	public static final String generation_mult = "* To generate the multigraph,  inform the 'Specification' and '# Max iut states' \n";
-	public static final String generation = "* To generate the multigraph and some TPs,  inform the 'Specification', '# Max iut states' and '# Teste purposes'  \n";
-	public static final String run_generation = "* To generate (multigraph and TPs) and run the test,  inform the 'Specification', 'Implementation', '# Max iut states' and '# Teste purposes' \n";
-	public static final String generation_tp_from_multi = "* To extract the TPs from the multigraph  inform the 'Multigraph' and '# Teste purposes' \n";
-	public static final String multigraph_generation = "* To extract the TPs from the multigraph and run,  inform the 'Implementation', 'Multigraph' and '# Teste purposes'\n";
-	public static final String run_tp= "* To run TPs,  inform the 'Implementation' and 'Test purpose folder'\n";
-	public static final String selectSpecification_iut = "Select the specification or/and implementation model \n";
 	
+	public static final String mInteger="Max IUT states must be an integer number \n";
+	public static final String ntcInteger="# Test purposes must be an integer number \n";
+	public static final String generation_mult = "* Provide the 'Specification' and '# Max iut states' to generate the multigraph \n";
+	public static final String generation = "* Provide the 'Specification', '# Max iut states' and '# Teste purposes'  to generate the multigraph and the respective TPs \n";
+	public static final String run_generation = "* Provide the 'Specification', 'Implementation', '# Max iut states' and '# Teste purposes’ to generate the multigraph, and to generate and run the respective TPs \n";
+	public static final String generation_tp_from_multi = "* Provide the 'Multigraph' and '# Teste purposes' to extract the respective TPs \n";
+	public static final String multigraph_generation = "* Provide the 'Implementation', 'Multigraph' and '# Teste purposes' to extract and run the respective TPs \n";
+	public static final String run_tp= "* Provide the 'Implementation' and 'Test purpose folder'  to run the selected TPs \n";
+	public static final String selectSpecification_iut = "Select the specification or/and implementation model \n";
+	public static final String genRun_noFault = "no fault was found according to the test run";
+	public static final String genRun_fault =   "a fault was found";
 	
 	
 	public static final String selectTpRunMode = "Select test purpose run mode \n";
