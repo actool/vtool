@@ -126,6 +126,7 @@ public class EverestView extends JFrame {
 	TextArea lblWarningIoco;
 	JButton btnRunMultigraph;
 	JLabel lbl_result;
+	JLabel lblRotulo2;
 
 	// TS Generation
 	JButton btnGenerate, btnViewModel_gen, btnViewImplementation_gen;
@@ -135,6 +136,7 @@ public class EverestView extends JFrame {
 	JLabel lblmodel_gen, lblLabel_gen;
 	JLabel lblIut, lblimplementation_gen, lblOutput_gen, lblLabelOutput, imgModel_gen, imgImplementation_gen;
 	JTextArea taTestCases_gen, taWarning_gen;
+	JComboBox cbLabel2;
 
 	// Run Test iut x tp
 	JLabel lblTestPurposes;
@@ -515,8 +517,7 @@ public class EverestView extends JFrame {
 
 	public boolean setModel(boolean lts, boolean implementation) {
 		boolean modelValid = true;
-		
-		
+
 		try {
 			// LTS S_ = new LTS(), I_ = new LTS();
 
@@ -540,8 +541,15 @@ public class EverestView extends JFrame {
 				// I_= null;
 
 			}
+			
+			int selectLabel=0;
+			if(implementation)
+				selectLabel=cbLabel2.getSelectedIndex();
+			else
+				selectLabel=cbLabel.getSelectedIndex();
+			
 
-			if (cbLabel.getSelectedIndex() == 2 || lts) {// manual input/output
+			if (selectLabel == 2 || lts) {// cbLabel.getSelectedIndex()// manual input/output
 				ArrayList<String> inp = new ArrayList<>(Arrays.asList(tfInput.getText().split(",")));
 				ArrayList<String> out = new ArrayList<>(Arrays.asList(tfOutput.getText().split(",")));
 
@@ -603,7 +611,7 @@ public class EverestView extends JFrame {
 						if (!lblWarningLang.getText().contains(ViewConstants.msgImp)) {
 							lblWarningLang.setText(lblWarningLang.getText() + ViewConstants.msgImp);
 						}
-						
+
 						if (!taWarning_gen.getText().contains(ViewConstants.msgImp)) {
 							taWarning_gen.setText(taWarning_gen.getText() + ViewConstants.msgImp);
 						}
@@ -663,7 +671,7 @@ public class EverestView extends JFrame {
 
 			return false;
 		}
-		
+
 		return modelValid;
 
 	}
@@ -985,7 +993,7 @@ public class EverestView extends JFrame {
 		cbModel.setBackground(backgroundColor);
 		cbModel.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				actionCbModel(arg0.getItem().toString());
+				actionCbModel(arg0.getItem().toString(), true);
 			}
 		});
 
@@ -1088,8 +1096,8 @@ public class EverestView extends JFrame {
 			public void keyTyped(KeyEvent arg0) {
 				failPath = "";
 				cleanVeredict();
-				isModelProcess = false;
-				isImplementationProcess = false;
+				// isModelProcess = false;
+				// isImplementationProcess = false;
 
 				if (!tfInput.getText().isEmpty()) {
 					removeMessage(true, ViewConstants.selectInpOut);
@@ -1112,8 +1120,8 @@ public class EverestView extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				failPath = "";
 				cleanVeredict();
-				isModelProcess = false;
-				isImplementationProcess = false;
+				// isModelProcess = false;
+				// isImplementationProcess = false;
 
 				if (!tfInput.getText().isEmpty()) {
 					removeMessage(true, ViewConstants.selectInpOut);
@@ -1151,7 +1159,7 @@ public class EverestView extends JFrame {
 		cbLabel.setBackground(backgroundColor);
 		cbLabel.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				actionCbLabel(arg0.getItem().toString());
+				actionCbLabel(arg0.getItem().toString(),true);
 			}
 		});
 		cbLabel.setModel(new DefaultComboBoxModel(
@@ -1163,117 +1171,118 @@ public class EverestView extends JFrame {
 		JLabel lblIolts = new JLabel("Model type");
 		lblIolts.setForeground(SystemColor.windowBorder);
 		lblIolts.setFont(new Font("Dialog", Font.BOLD, 13));
+
+		JLabel label_8 = new JLabel("Model type");
+		label_8.setForeground(SystemColor.windowBorder);
+		label_8.setFont(new Font("Dialog", Font.BOLD, 13));
+
+		lblRotulo2 = new JLabel("Label");
+		lblRotulo2.setForeground(SystemColor.windowBorder);
+		lblRotulo2.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblRotulo2.setVisible(false);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "", "IOLTS", "LTS" }));
+		comboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				actionCbModel(arg0.getItem().toString(), false);
+			}
+		});
+		comboBox.setForeground(SystemColor.controlShadow);
+		comboBox.setFont(new Font("Dialog", Font.BOLD, 13));
+		comboBox.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		comboBox.setBackground(SystemColor.menu);
+
+		cbLabel2 = new JComboBox();
+		cbLabel2.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				actionCbLabel(e.getItem().toString(),false);
+			}
+		});
+		cbLabel2.setVisible(false);
+		cbLabel2.setModel(new DefaultComboBoxModel(new String[] { "", "?in, !out", "define I/O manually" }));
+		cbLabel2.setForeground(SystemColor.controlShadow);
+		cbLabel2.setFont(new Font("Dialog", Font.BOLD, 13));
+		cbLabel2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		cbLabel2.setBackground(SystemColor.menu);
+
 		GroupLayout gl_panel_conf = new GroupLayout(panel_conf);
-		gl_panel_conf.setHorizontalGroup(
-			gl_panel_conf.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 223, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(542, Short.MAX_VALUE))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(371)
-					.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addComponent(tfSpecification, GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
-							.addGap(38))
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED, 699, Short.MAX_VALUE)
-							.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)))
-					.addGap(49))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addComponent(tfImplementation, GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
-							.addGap(38))
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addGap(699)
-							.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)))
-					.addGap(49))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addComponent(tfInput, GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
-						.addComponent(lblInput, GroupLayout.PREFERRED_SIZE, 223, GroupLayout.PREFERRED_SIZE))
-					.addGap(49))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addContainerGap(651, Short.MAX_VALUE)
-					.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 173, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addComponent(tfOutput, GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
-						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 274, GroupLayout.PREFERRED_SIZE))
-					.addGap(49))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addContainerGap(651, Short.MAX_VALUE)
-					.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
-					.addGap(9))
-				.addGroup(Alignment.TRAILING, gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addComponent(cbModel, 0, 324, Short.MAX_VALUE)
-							.addGap(90))
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addComponent(lblIolts, GroupLayout.PREFERRED_SIZE, 102, GroupLayout.PREFERRED_SIZE)
-							.addGap(312)))
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addComponent(lblRotulo, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap(313, Short.MAX_VALUE))
-						.addGroup(Alignment.TRAILING, gl_panel_conf.createSequentialGroup()
-							.addComponent(cbLabel, 0, 324, Short.MAX_VALUE)
-							.addGap(49))))
-		);
-		gl_panel_conf.setVerticalGroup(
-			gl_panel_conf.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(11)
-					.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
-					.addGap(3)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(tfSpecification, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+		gl_panel_conf.setHorizontalGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(lblSpecification, GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE).addGap(542))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(371).addComponent(list,
+						GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(tfSpecification, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE).addGap(2)
+						.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
+						.addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(lblIolts, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(286)
+						.addComponent(lblRotulo, GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE).addGap(317))
+				.addGroup(
+						gl_panel_conf.createSequentialGroup().addGap(37).addComponent(cbModel, 0, 319, Short.MAX_VALUE)
+								.addGap(69).addComponent(cbLabel, 0, 336, Short.MAX_VALUE).addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(lblImplementation, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE).addGap(608))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(tfImplementation, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE).addGap(2)
+						.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
+						.addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(label_8, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(286)
+						.addComponent(lblRotulo2, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(275))
+				.addGroup(
+						gl_panel_conf.createSequentialGroup().addGap(37).addComponent(comboBox, 0, 319, Short.MAX_VALUE)
+								.addGap(69).addComponent(cbLabel2, 0, 336, Short.MAX_VALUE).addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37).addComponent(lblInput,
+						GroupLayout.PREFERRED_SIZE, 223, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(tfInput, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE).addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(lblOutput, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE).addGap(313)
+						.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
+						.addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(tfOutput, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE).addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(624).addComponent(lblLabelOut,
+						GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)));
+		gl_panel_conf.setVerticalGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_conf
+				.createSequentialGroup().addGap(11)
+				.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+				.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE).addGap(8)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup().addGap(2).addComponent(tfSpecification,
+								GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 						.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-					.addGap(9)
-					.addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-					.addGap(5)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addComponent(tfImplementation, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-					.addGap(28)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblIolts, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+				.addGap(13)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup().addGap(4).addComponent(lblIolts,
+								GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 						.addComponent(lblRotulo, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+				.addGap(6)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
 						.addComponent(cbModel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
 						.addComponent(cbLabel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-					.addGap(34)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addGap(20)
-							.addComponent(tfInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-					.addGap(11)
-					.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					.addGap(13)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addGap(20)
-							.addComponent(tfOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-					.addGap(9)
-					.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					.addGap(87))
-		);
+				.addGap(11).addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				.addGap(9)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup().addGap(2).addComponent(tfImplementation,
+								GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+				.addGap(11)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(label_8, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblRotulo2, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+				.addGap(11)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbLabel2, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+				.addGap(11).addComponent(lblInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE).addGap(1)
+				.addComponent(tfInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE).addGap(11)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+				.addGap(3).addComponent(tfOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE).addGap(11)
+				.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)));
 		panel_conf.setLayout(gl_panel_conf);
 
 		panel_ioco = new JPanel();
@@ -1411,76 +1420,63 @@ public class EverestView extends JFrame {
 		label_6.setForeground(SystemColor.windowBorder);
 		label_6.setFont(new Font("Dialog", Font.BOLD, 13));
 		GroupLayout gl_panel_ioco = new GroupLayout(panel_ioco);
-		gl_panel_ioco.setHorizontalGroup(gl_panel_ioco.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_ioco
-						.createSequentialGroup().addGap(
-								37)
+		gl_panel_ioco.setHorizontalGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(37)
+						.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblModel, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblmodelIoco, GroupLayout.PREFERRED_SIZE, 265, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_ioco.createSequentialGroup().addGap(76).addComponent(
+										btnViewModelIoco, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)))
+						.addGap(123)
 						.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_panel_ioco.createSequentialGroup()
-										.addComponent(lblModel, GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-										.addGap(213))
-								.addComponent(lblmodelIoco, GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-								.addGroup(gl_panel_ioco.createSequentialGroup().addGap(76)
-										.addComponent(btnViewModelIoco, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-										.addGap(35)))
-						.addGap(123)
-						.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_ioco
-								.createSequentialGroup()
-								.addComponent(lblImplementation_1, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-								.addGap(10)
-								.addComponent(btnViewImplementationIoco, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-								.addGap(70))
-								.addComponent(lblImplementationIoco, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
-						.addGap(10))
-				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(37).addGroup(gl_panel_ioco
-						.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblnput, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-						.addGroup(gl_panel_ioco.createSequentialGroup()
-								.addComponent(lblLabel, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE).addGap(19)))
-						.addGap(248).addComponent(lblOutput_1, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
-						.addGap(228))
-				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(37).addGroup(gl_panel_ioco
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_ioco.createSequentialGroup()
-								.addComponent(lblInputIoco, GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE).addGap(10)
-								.addComponent(lblOutputIoco, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
-						.addComponent(lblLabelIoco, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE))
-						.addGap(10))
-				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(10).addGroup(gl_panel_ioco
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_ioco.createSequentialGroup()
-								.addComponent(lblTestCases, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE).addGap(22))
-						.addGroup(gl_panel_ioco.createSequentialGroup().addGap(10).addComponent(tfNTestCasesIOCO,
-								GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)))
-						.addGap(10).addComponent(btnVerifyConf_ioco, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+										.addComponent(lblImplementation_1, GroupLayout.PREFERRED_SIZE, 133,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(10).addComponent(btnViewImplementationIoco, GroupLayout.PREFERRED_SIZE,
+												154, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblImplementationIoco, GroupLayout.PREFERRED_SIZE, 367,
+										GroupLayout.PREFERRED_SIZE)))
+				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(37)
+						.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblnput, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblLabel, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE))
+						.addGap(248)
+						.addComponent(lblOutput_1, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(37)
+						.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblInputIoco, GroupLayout.PREFERRED_SIZE, 378, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_ioco.createSequentialGroup().addGap(388).addComponent(
+										lblOutputIoco, GroupLayout.PREFERRED_SIZE, 367, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblLabelIoco, GroupLayout.PREFERRED_SIZE, 755,
+										GroupLayout.PREFERRED_SIZE)))
+				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(10)
+						.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblTestCases, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_ioco.createSequentialGroup().addGap(10).addComponent(
+										tfNTestCasesIOCO, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)))
+						.addGap(10)
+						.addComponent(btnVerifyConf_ioco, GroupLayout.PREFERRED_SIZE, 167, GroupLayout.PREFERRED_SIZE)
 						.addGap(10)
 						.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_panel_ioco.createSequentialGroup().addGap(151).addComponent(imgModelIoco,
-										GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
-								.addComponent(lbl_veredict_ioco, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
 								.addGroup(gl_panel_ioco.createSequentialGroup().addGap(212).addComponent(
 										imgImplementationIoco, GroupLayout.PREFERRED_SIZE, 44,
-										GroupLayout.PREFERRED_SIZE)))
-						.addGap(10))
+										GroupLayout.PREFERRED_SIZE))
+								.addComponent(lbl_veredict_ioco, GroupLayout.PREFERRED_SIZE, 474,
+										GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_ioco.createSequentialGroup().addGap(151).addComponent(imgModelIoco,
+										GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))))
+				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(425).addComponent(label_6,
+						GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE))
 				.addGroup(gl_panel_ioco.createSequentialGroup().addGap(10)
-						.addComponent(scrolltxt, GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE).addGap(10)
-						.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_panel_ioco.createSequentialGroup()
-										.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 93,
-												GroupLayout.PREFERRED_SIZE)
-										.addContainerGap())
-								.addGroup(Alignment.TRAILING,
-										gl_panel_ioco
-												.createSequentialGroup().addComponent(lblWarningIoco,
-														GroupLayout.PREFERRED_SIZE, 367, Short.MAX_VALUE)
-												.addGap(10)))));
+						.addComponent(scrolltxt, GroupLayout.PREFERRED_SIZE, 405, GroupLayout.PREFERRED_SIZE).addGap(10)
+						.addComponent(lblWarningIoco, GroupLayout.PREFERRED_SIZE, 367, GroupLayout.PREFERRED_SIZE)));
 		gl_panel_ioco.setVerticalGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_ioco
 				.createSequentialGroup().addGap(5)
 				.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_ioco.createSequentialGroup().addGap(6)
-								.addComponent(lblModel, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-								.addGap(4)
-								.addComponent(lblmodelIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_ioco.createSequentialGroup().addGap(6).addComponent(lblModel,
+								GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_ioco.createSequentialGroup().addGap(24).addComponent(lblmodelIoco,
+								GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 						.addComponent(btnViewModelIoco, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panel_ioco.createSequentialGroup()
 								.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
@@ -1511,16 +1507,16 @@ public class EverestView extends JFrame {
 								GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_panel_ioco.createSequentialGroup().addGap(5).addGroup(gl_panel_ioco
 								.createParallelGroup(Alignment.LEADING)
-								.addComponent(imgModelIoco, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+								.addComponent(imgImplementationIoco, GroupLayout.PREFERRED_SIZE, 44,
+										GroupLayout.PREFERRED_SIZE)
 								.addGroup(gl_panel_ioco.createSequentialGroup().addGap(12).addComponent(
 										lbl_veredict_ioco, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-								.addComponent(imgImplementationIoco, GroupLayout.PREFERRED_SIZE, 44,
+								.addComponent(imgModelIoco, GroupLayout.PREFERRED_SIZE, 44,
 										GroupLayout.PREFERRED_SIZE))))
-				.addGap(7).addComponent(label_6).addPreferredGap(ComponentPlacement.RELATED)
+				.addGap(7).addComponent(label_6).addGap(10)
 				.addGroup(gl_panel_ioco.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrolltxt, GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
-						.addComponent(lblWarningIoco, GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE))
-				.addGap(11)));
+						.addComponent(scrolltxt, GroupLayout.PREFERRED_SIZE, 239, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblWarningIoco, GroupLayout.PREFERRED_SIZE, 239, GroupLayout.PREFERRED_SIZE))));
 		panel_ioco.setLayout(gl_panel_ioco);
 
 		/*
@@ -2057,7 +2053,7 @@ public class EverestView extends JFrame {
 		tfNTestCases_gen.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				//multigraph = null;
+				// multigraph = null;
 				visibilityRunButtons();
 			}
 		});
@@ -2128,7 +2124,7 @@ public class EverestView extends JFrame {
 
 					try {
 
-						//loadMultigraph(folder);
+						// loadMultigraph(folder);
 
 						javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 								(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
@@ -2237,209 +2233,211 @@ public class EverestView extends JFrame {
 		label_7.setForeground(SystemColor.windowBorder);
 		label_7.setFont(new Font("Dialog", Font.BOLD, 13));
 		GroupLayout gl_panel_test_generation = new GroupLayout(panel_test_generation);
-		gl_panel_test_generation.setHorizontalGroup(
-			gl_panel_test_generation.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_test_generation.createSequentialGroup()
-					.addGap(37)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+		gl_panel_test_generation.setHorizontalGroup(gl_panel_test_generation.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_test_generation
+						.createSequentialGroup().addGap(
+								37)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+										.addComponent(lblModel_1, GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+										.addGap(300))
+								.addGroup(
+										gl_panel_test_generation.createSequentialGroup().addGap(76)
+												.addComponent(btnViewModel_gen, GroupLayout.DEFAULT_SIZE, 154,
+														Short.MAX_VALUE)
+												.addGap(122))
+								.addComponent(lblmodel_gen, GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))
+						.addGap(36)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+										.addComponent(label_4, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+										.addGap(234))
+								.addComponent(lbliut_gen, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+								.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(143)
+										.addComponent(btnViewImplementation_gen, GroupLayout.DEFAULT_SIZE, 154,
+												Short.MAX_VALUE)
+										.addGap(70)))
+						.addGap(10))
+				.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(37)
+						.addComponent(lblInputLabel_gen, GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE).addGap(111)
+						.addComponent(lblLabelOutput, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE).addGap(210))
+				.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(37).addGroup(gl_panel_test_generation
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(388)
+								.addComponent(lblOutput_gen, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
 						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(lblModel_1, GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-							.addGap(300))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(76)
-							.addComponent(btnViewModel_gen, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-							.addGap(122))
-						.addComponent(lblmodel_gen, GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))
-					.addGap(36)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(label_4, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-							.addGap(234))
-						.addComponent(lbliut_gen, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(143)
-							.addComponent(btnViewImplementation_gen, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-							.addGap(70)))
-					.addGap(10))
-				.addGroup(gl_panel_test_generation.createSequentialGroup()
-					.addGap(37)
-					.addComponent(lblInputLabel_gen, GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
-					.addGap(111)
-					.addComponent(lblLabelOutput, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-					.addGap(210))
-				.addGroup(gl_panel_test_generation.createSequentialGroup()
-					.addGap(37)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(388)
-							.addComponent(lblOutput_gen, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(lblInput_gen, GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
-							.addGap(377))
+								.addComponent(lblInput_gen, GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE).addGap(377))
 						.addComponent(lblLabel_gen, GroupLayout.PREFERRED_SIZE, 755, GroupLayout.PREFERRED_SIZE))
-					.addGap(10))
-				.addGroup(gl_panel_test_generation.createSequentialGroup()
-					.addGap(10)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addComponent(tfM, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(lblM, GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
-							.addGap(16)))
-					.addGap(23)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(lblTestCases_1, GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
-							.addGap(23))
-						.addComponent(tfNTestCases_gen, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
-					.addGap(10)
-					.addComponent(btnGenerate, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
-					.addGap(10)
-					.addComponent(btnRunGenerate, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-					.addGap(187))
-				.addGroup(gl_panel_test_generation.createSequentialGroup()
-					.addGap(10)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+						.addGap(10))
+				.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(10)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addComponent(tfM, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+										.addComponent(lblM, GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE).addGap(16)))
+						.addGap(23)
+						.addGroup(
+								gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_panel_test_generation.createSequentialGroup()
+												.addComponent(lblTestCases_1, GroupLayout.DEFAULT_SIZE, 117,
+														Short.MAX_VALUE)
+												.addGap(23))
+										.addComponent(tfNTestCases_gen, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
+						.addGap(10).addComponent(btnGenerate, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE).addGap(10)
+						.addComponent(btnRunGenerate, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE).addGap(187))
+				.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(10).addGroup(gl_panel_test_generation
+						.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup().addGroup(gl_panel_test_generation
+								.createParallelGroup(Alignment.LEADING)
 								.addGroup(Alignment.TRAILING, gl_panel_test_generation.createSequentialGroup()
-									.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+												.addGroup(gl_panel_test_generation.createSequentialGroup()
+														.addComponent(lblTpFolder, GroupLayout.DEFAULT_SIZE, 189,
+																Short.MAX_VALUE)
+														.addGap(258))
+												.addComponent(tfTPFolder, GroupLayout.DEFAULT_SIZE, 447,
+														Short.MAX_VALUE)
+												.addGroup(gl_panel_test_generation.createSequentialGroup()
+														.addComponent(lbl_result, GroupLayout.DEFAULT_SIZE, 58,
+																Short.MAX_VALUE)
+														.addGap(389)))
+										.addGap(3)
+										.addComponent(button_2, GroupLayout.PREFERRED_SIZE, 39, Short.MAX_VALUE)
+										.addGap(10))
+								.addGroup(
+										gl_panel_test_generation.createSequentialGroup().addGap(52)
+												.addComponent(lblRunVerdict, GroupLayout.DEFAULT_SIZE, 437,
+														Short.MAX_VALUE)
+												.addPreferredGap(ComponentPlacement.UNRELATED)))
+								.addComponent(btnrunTp, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+								.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
 										.addGroup(gl_panel_test_generation.createSequentialGroup()
-											.addComponent(lblTpFolder, GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
-											.addGap(258))
-										.addComponent(tfTPFolder, GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
-										.addGroup(gl_panel_test_generation.createSequentialGroup()
-											.addComponent(lbl_result, GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
-											.addGap(389)))
-									.addGap(3)
-									.addComponent(button_2, GroupLayout.PREFERRED_SIZE, 39, Short.MAX_VALUE)
-									.addGap(10))
+												.addComponent(lblMultigraph, GroupLayout.DEFAULT_SIZE, 93,
+														Short.MAX_VALUE)
+												.addGap(354))
+										.addComponent(tfMultigraph, GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
+								.addGap(3).addComponent(button, GroupLayout.PREFERRED_SIZE, 39, Short.MAX_VALUE)
+								.addGap(10)
+								.addComponent(btnRunMultigraph, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)))
+						.addGap(45)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addComponent(imgImplementation_gen, GroupLayout.PREFERRED_SIZE, 44,
+										GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(18).addComponent(
+										imgModel_gen, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+						.addGap(80))
+				.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(10).addGroup(gl_panel_test_generation
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+								.addComponent(scrolltxt3, GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE).addGap(11))
+						.addGroup(gl_panel_test_generation.createSequentialGroup()
+								.addComponent(lblNumTC, GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE).addGap(129)))
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.TRAILING)
 								.addGroup(gl_panel_test_generation.createSequentialGroup()
-									.addGap(52)
-									.addComponent(lblRunVerdict, GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
-									.addPreferredGap(ComponentPlacement.UNRELATED)))
-							.addComponent(btnrunTp, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+										.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 93,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(283))
 								.addGroup(gl_panel_test_generation.createSequentialGroup()
-									.addComponent(lblMultigraph, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-									.addGap(354))
-								.addComponent(tfMultigraph, GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
-							.addGap(3)
-							.addComponent(button, GroupLayout.PREFERRED_SIZE, 39, Short.MAX_VALUE)
-							.addGap(10)
-							.addComponent(btnRunMultigraph, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)))
-					.addGap(45)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addComponent(imgImplementation_gen, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(18)
-							.addComponent(imgModel_gen, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
-					.addGap(80))
-				.addGroup(gl_panel_test_generation.createSequentialGroup()
-					.addGap(10)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(scrolltxt3, GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
-							.addGap(11))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(lblNumTC, GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-							.addGap(129)))
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-							.addGap(283))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(scrolltxt4, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
-							.addGap(10))))
-		);
-		gl_panel_test_generation.setVerticalGroup(
-			gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_test_generation.createSequentialGroup()
-					.addGap(5)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(6)
-							.addComponent(lblModel_1, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+										.addComponent(scrolltxt4, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+										.addGap(10)))));
+		gl_panel_test_generation.setVerticalGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(5).addGroup(gl_panel_test_generation
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(6).addComponent(lblModel_1,
+								GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 						.addComponent(btnViewModel_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(24)
-							.addComponent(lblmodel_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(2)
-							.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-							.addComponent(lbliut_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-						.addComponent(btnViewImplementation_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-					.addGap(16)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblInputLabel_gen, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblLabelOutput, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-					.addGap(3)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblOutput_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblInput_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblLabel_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-					.addGap(6)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(12)
-							.addComponent(tfM, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblM, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(lblTestCases_1, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-							.addGap(4)
-							.addComponent(tfNTestCases_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(5)
-							.addComponent(btnGenerate, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(5)
-							.addComponent(btnRunGenerate, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
-					.addGap(6)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addComponent(lblMultigraph, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-							.addGap(3)
-							.addComponent(tfMultigraph, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(23)
-							.addComponent(button, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(7)
-							.addComponent(btnRunMultigraph, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(6)
-							.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-								.addComponent(imgImplementation_gen, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-								.addComponent(imgModel_gen, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(24).addComponent(lblmodel_gen,
+								GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(2)
+								.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lbliut_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnViewImplementation_gen, GroupLayout.PREFERRED_SIZE, 26,
+								GroupLayout.PREFERRED_SIZE))
+						.addGap(16)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblInputLabel_gen, GroupLayout.PREFERRED_SIZE, 14,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblLabelOutput, GroupLayout.PREFERRED_SIZE, 14,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(3)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblOutput_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(3).addComponent(
+										lblInput_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblLabel_gen, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addGap(6)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(12).addComponent(tfM,
+										GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblM, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 								.addGroup(gl_panel_test_generation.createSequentialGroup()
-									.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-										.addGroup(gl_panel_test_generation.createSequentialGroup()
-											.addComponent(lblTpFolder, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-											.addGap(3)
-											.addComponent(tfTPFolder, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-										.addGroup(gl_panel_test_generation.createSequentialGroup()
-											.addGap(19)
-											.addComponent(button_2, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)))
-									.addGap(1)
-									.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-										.addComponent(lblRunVerdict, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-										.addComponent(lbl_result, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)))))
-						.addGroup(gl_panel_test_generation.createSequentialGroup()
-							.addGap(13)
-							.addComponent(btnrunTp, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
-					.addGap(11)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNumTC, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-						.addComponent(label_7))
-					.addGap(11)
-					.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrolltxt3, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
-						.addComponent(scrolltxt4, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE))
-					.addGap(11))
-		);
+										.addComponent(lblTestCases_1, GroupLayout.PREFERRED_SIZE, 14,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(4).addComponent(tfNTestCases_gen, GroupLayout.PREFERRED_SIZE, 26,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(5).addComponent(
+										btnGenerate, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(5).addComponent(
+										btnRunGenerate, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+						.addGap(6)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_test_generation.createSequentialGroup()
+										.addComponent(lblMultigraph, GroupLayout.PREFERRED_SIZE, 14,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(3).addComponent(tfMultigraph, GroupLayout.PREFERRED_SIZE, 26,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(23).addComponent(
+										button, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(7).addComponent(
+										btnRunMultigraph, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(
+								gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_panel_test_generation.createSequentialGroup().addGap(6)
+												.addGroup(gl_panel_test_generation
+														.createParallelGroup(Alignment.LEADING)
+														.addComponent(imgImplementation_gen, GroupLayout.PREFERRED_SIZE,
+																36, GroupLayout.PREFERRED_SIZE)
+														.addComponent(imgModel_gen, GroupLayout.PREFERRED_SIZE, 36,
+																GroupLayout.PREFERRED_SIZE)
+														.addGroup(gl_panel_test_generation.createSequentialGroup()
+																.addGroup(gl_panel_test_generation
+																		.createParallelGroup(Alignment.LEADING)
+																		.addGroup(gl_panel_test_generation
+																				.createSequentialGroup()
+																				.addComponent(lblTpFolder,
+																						GroupLayout.PREFERRED_SIZE, 14,
+																						GroupLayout.PREFERRED_SIZE)
+																				.addGap(3).addComponent(tfTPFolder,
+																						GroupLayout.PREFERRED_SIZE, 26,
+																						GroupLayout.PREFERRED_SIZE))
+																		.addGroup(gl_panel_test_generation
+																				.createSequentialGroup().addGap(19)
+																				.addComponent(button_2,
+																						GroupLayout.PREFERRED_SIZE, 28,
+																						GroupLayout.PREFERRED_SIZE)))
+																.addGap(1)
+																.addGroup(gl_panel_test_generation
+																		.createParallelGroup(Alignment.LEADING)
+																		.addComponent(lblRunVerdict,
+																				GroupLayout.PREFERRED_SIZE, 14,
+																				GroupLayout.PREFERRED_SIZE)
+																		.addComponent(lbl_result,
+																				GroupLayout.PREFERRED_SIZE, 14,
+																				GroupLayout.PREFERRED_SIZE)))))
+										.addGroup(gl_panel_test_generation
+												.createSequentialGroup().addGap(13).addComponent(btnrunTp,
+														GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)))
+						.addGap(11)
+						.addGroup(
+								gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblNumTC, GroupLayout.PREFERRED_SIZE, 14,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(label_7))
+						.addGap(11)
+						.addGroup(gl_panel_test_generation.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrolltxt3, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+								.addComponent(scrolltxt4, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE))
+						.addGap(11)));
 		panel_test_generation.setLayout(gl_panel_test_generation);
 
 		// Panel run test
@@ -2779,21 +2777,22 @@ public class EverestView extends JFrame {
 			// }
 		}
 
-		if (S != null && I != null && !tfM.getText().isEmpty() && !tfNTestCases_gen.getText().isEmpty()&& iutValid && specValid) {
+		if (S != null && I != null && !tfM.getText().isEmpty() && !tfNTestCases_gen.getText().isEmpty() && iutValid
+				&& specValid) {
 			btnRunGenerate.setVisible(true);
 			removeMessage = true;
 		} else {
 			btnRunGenerate.setVisible(false);
 		}
 
-		if (pathMultigraph != null && I != null && !tfNTestCases_gen.getText().isEmpty()&& iutValid && specValid) {
+		if (pathMultigraph != null && I != null && !tfNTestCases_gen.getText().isEmpty() && iutValid && specValid) {
 			btnRunMultigraph.setVisible(true);
 			removeMessage = true;
 		} else {
 			btnRunMultigraph.setVisible(false);
 		}
 
-		if (tpFolder != null && !tpFolder.isEmpty() && I != null&& iutValid && specValid) {
+		if (tpFolder != null && !tpFolder.isEmpty() && I != null && iutValid && specValid) {
 			btnrunTp.setVisible(true);
 		} else {
 			btnrunTp.setVisible(false);
@@ -2808,8 +2807,8 @@ public class EverestView extends JFrame {
 	}
 
 	String pathMultigraph;
-	boolean specOfMultigraph=false;
-	
+	boolean specOfMultigraph = false;
+
 	public void getMultigraphPaph() {
 		try {
 			configFilterFile();
@@ -2903,11 +2902,11 @@ public class EverestView extends JFrame {
 				loading.setVisible(true);
 				// System.out.println(S);
 				removeMessageGen(ViewConstants.mInteger);
-				
+
 				if (multigraph == null) {
 					multigraph = TestGeneration.multiGraphD(S, Integer.parseInt(tfM.getText()));
 					saveMultigraphFile(folder);
-				}else {
+				} else {
 					loadMultigraph(pathMultigraph);
 				}
 
@@ -2919,7 +2918,7 @@ public class EverestView extends JFrame {
 				// State_(multigraph.getInitialState().getName().replace(",", "_")));
 
 				try {
-				
+
 					javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 
 							(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
@@ -2998,7 +2997,7 @@ public class EverestView extends JFrame {
 			// S.getOutputs()));
 			fileNameMultigraph = "spec-multigraph_" + dateFormat.format(new Date());
 			File file = new File(folder, "spec-multigraph_" + dateFormat.format(new Date()) + ".aut");
-			
+
 			pathMultigraph = file.getAbsolutePath();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(fileContent);
@@ -3038,7 +3037,7 @@ public class EverestView extends JFrame {
 				// read multgraph from multigraph field
 				if ((pathMultigraph != null && !pathMultigraph.isEmpty() && !tfNTestCases_gen.getText().isEmpty())) {
 					try {
-						//loadMultigraph(folder);
+						// loadMultigraph(folder);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -3364,34 +3363,55 @@ public class EverestView extends JFrame {
 
 	String typeLabel;
 
-	public void actionCbLabel(String label) {
+	public void actionCbLabel(String label, boolean isModel) {
 		typeLabel = label;
 		if (label.equals(ViewConstants.typeManualLabel)) {
 			setInputOutputField(true);
 			removeMessage(true, ViewConstants.msgImp);
 			removeMessage(false, ViewConstants.msgImp);
 		} else {
+			if(cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() !=2 )
 			setInputOutputField(false);
 		}
-		isModelProcess = false;
-		isImplementationProcess = false;
+		if (isModel) {
+			isModelProcess = false;
+		} else {
+			isImplementationProcess = false;
+		}
 	}
 
-	public void actionCbModel(String model) {
+	public void actionCbModel(String model, boolean isModel) {
 		if (model.equals(ViewConstants.IOLTS_CONST)) {
-			cbLabel.setVisible(true);
-			lblRotulo.setVisible(true);
-			actionCbLabel(cbLabel.getSelectedItem().toString());
+			if (isModel) {
+				cbLabel.setVisible(true);
+				lblRotulo.setVisible(true);
+				actionCbLabel(cbLabel.getSelectedItem().toString(),isModel);
+				isModelProcess = false;
+			} else {
+				cbLabel2.setVisible(true);
+				lblRotulo2.setVisible(true);
+				actionCbLabel(cbLabel2.getSelectedItem().toString(),isModel);
+				isImplementationProcess = false;
+			}
+
 		} else {
-			cbLabel.setVisible(false);
-			lblRotulo.setVisible(false);
-			setInputOutputField(false);
+			if (isModel) {
+				cbLabel.setVisible(false);
+				lblRotulo.setVisible(false);
+				isModelProcess = false;
+			} else {
+				cbLabel2.setVisible(false);
+				lblRotulo2.setVisible(false);
+				isImplementationProcess = false;
+			}
+			if(cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() !=2 )
+				setInputOutputField(false);
+			
 		}
 
 		failPath = "";
 		cleanVeredict();
-		isModelProcess = false;
-		isImplementationProcess = false;
+
 	}
 
 	public void setFieldRegex(boolean visibility) {
@@ -3623,8 +3643,7 @@ public class EverestView extends JFrame {
 	}
 
 	public boolean isFormValidGeneration() {
-		
-		
+
 		boolean defineInpOut = true;
 		List<String> inpOut = new ArrayList<>();
 		List<String> alphabet = new ArrayList<>();
@@ -3671,7 +3690,6 @@ public class EverestView extends JFrame {
 
 	public void removeMessageGen(String msg) {
 		taWarning_gen.setText(taWarning_gen.getText().replace(msg, ""));
-		
 
 	}
 
@@ -3790,7 +3808,7 @@ public class EverestView extends JFrame {
 		if (!constainsMessage_gen(ViewConstants.run_tp))
 			msg += ViewConstants.run_tp;
 
-		taWarning_gen.setText(taWarning_gen.getText()+ msg);
+		taWarning_gen.setText(taWarning_gen.getText() + msg);
 
 	}
 
@@ -3945,56 +3963,56 @@ public class EverestView extends JFrame {
 
 	public void loadMultigraph(String folder) {
 		try {
-		String contents = new String(Files.readAllBytes(Paths.get(pathMultigraph)));
+			String contents = new String(Files.readAllBytes(Paths.get(pathMultigraph)));
 
-		// get and set param m
-		tfM.setText(
-				contents.substring(contents.lastIndexOf(Constants.MAX_IUT_STATES) + Constants.MAX_IUT_STATES.length(),
-						contents.indexOf("]")));
+			// get and set param m
+			tfM.setText(contents.substring(
+					contents.lastIndexOf(Constants.MAX_IUT_STATES) + Constants.MAX_IUT_STATES.length(),
+					contents.indexOf("]")));
 
-		// get and set specification
-		// File file = new File(new
-		// File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(),
-		// "spec.aut");
-		File file = new File(
-				new File(folder.substring(0, folder.lastIndexOf(System.getProperty("file.separator"))))
-						.getAbsolutePath(),
-				"specification-" + folder.substring(folder.lastIndexOf(System.getProperty("file.separator")) + 1,
-						folder.length()));
-		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-		writer.write(contents.substring(contents.indexOf("des("),
-				contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE)));
-		writer.close();
+			// get and set specification
+			// File file = new File(new
+			// File(folder.substring(0,folder.lastIndexOf(System.getProperty("file.separator")))).getAbsolutePath(),
+			// "spec.aut");
+			File file = new File(
+					new File(folder.substring(0, folder.lastIndexOf(System.getProperty("file.separator"))))
+							.getAbsolutePath(),
+					"specification-" + folder.substring(folder.lastIndexOf(System.getProperty("file.separator")) + 1,
+							folder.length()));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write(contents.substring(contents.indexOf("des("),
+					contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE)));
+			writer.close();
 
-		// set spec fields
-		tfSpecification.setText(file.getName());
-		pathSpecification = file.getAbsolutePath();
-		lblmodelIoco.setText(tfSpecification.getText());
-		lblmodelLang.setText(tfSpecification.getText());
-		lblmodel_gen.setText(tfSpecification.getText());
-		cbModel.setSelectedIndex(1);
-		cbLabel.setSelectedIndex(1);
-		setModel(false, false);
-		// file.delete();
+			// set spec fields
+			tfSpecification.setText(file.getName());
+			pathSpecification = file.getAbsolutePath();
+			lblmodelIoco.setText(tfSpecification.getText());
+			lblmodelLang.setText(tfSpecification.getText());
+			lblmodel_gen.setText(tfSpecification.getText());
+			cbModel.setSelectedIndex(1);
+			cbLabel.setSelectedIndex(1);
+			setModel(false, false);
+			// file.delete();
 
-		contents = contents.substring(contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE));
-		contents = contents.substring(contents.indexOf('\n') + 1);
-		String tempFileName = "multigraph_" + dateFormat.format(new Date()) + ".aut";
-		file = new File(new File(folder.substring(0, folder.lastIndexOf(System.getProperty("file.separator"))))
-				.getAbsolutePath(), tempFileName);
-		writer = new BufferedWriter(new FileWriter(file));
-		writer.write(contents);
-		writer.close();
+			contents = contents.substring(contents.lastIndexOf(Constants.SEPARATOR_MULTIGRAPH_FILE));
+			contents = contents.substring(contents.indexOf('\n') + 1);
+			String tempFileName = "multigraph_" + dateFormat.format(new Date()) + ".aut";
+			file = new File(new File(folder.substring(0, folder.lastIndexOf(System.getProperty("file.separator"))))
+					.getAbsolutePath(), tempFileName);
+			writer = new BufferedWriter(new FileWriter(file));
+			writer.write(contents);
+			writer.close();
 
-		multigraph = ImportAutFile.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>())
-				.ioltsToAutomaton();
-		file.delete();
-		multigraph.setFinalStates(new ArrayList<>());
-		multigraph.addFinalStates(new State_("fail"));
-		multigraph.addFinalStates(new State_("pass"));
+			multigraph = ImportAutFile.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>())
+					.ioltsToAutomaton();
+			file.delete();
+			multigraph.setFinalStates(new ArrayList<>());
+			multigraph.addFinalStates(new State_("fail"));
+			multigraph.addFinalStates(new State_("pass"));
 
-		visibilityRunButtons();
-		}catch(Exception e){
+			visibilityRunButtons();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
