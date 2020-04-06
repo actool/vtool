@@ -381,12 +381,12 @@ public class TestGeneration {
 		return a;
 	}
 
-	public static Boolean run(String pathTp, boolean oneIut, boolean oneTP, String pathIut, String pathCsv) {
+	public static Boolean run(String pathTp, boolean oneIut, boolean oneTP, String pathIut, String pathCsv, IOLTS iut) {
 		boolean fault = false;
 
 		if (oneTP) {
 			if (EverestView.isAutFile(new File(pathTp)))
-				return runAllIutTp(new File(pathTp), oneIut, pathIut, pathCsv);
+				return runAllIutTp(new File(pathTp), oneIut, pathIut, pathCsv, iut);
 			else {
 				return null;
 			}
@@ -401,7 +401,7 @@ public class TestGeneration {
 					// run( pathTp + "//" + fileTp.getName(), fileTp, oneIut, pathImplementation,
 					// pathCsv);
 					if (!fault)
-						fault = runAllIutTp(fileTp, oneIut, pathIut, pathCsv);
+						fault = runAllIutTp(fileTp, oneIut, pathIut, pathCsv, iut);
 				}
 			}
 			return fault;
@@ -411,7 +411,7 @@ public class TestGeneration {
 
 	}
 
-	public static boolean runAllIutTp(File fileTp, boolean oneIut, String pathIut, String pathCsv) {// String pathTp,
+	public static boolean runAllIutTp(File fileTp, boolean oneIut, String pathIut, String pathCsv, IOLTS iut) {// String pathTp,
 																									// File fileTp,
 																									// boolean oneIut,
 																									// String
@@ -457,7 +457,7 @@ public class TestGeneration {
 
 				// one iut
 				if (oneIut) {
-					result = runIutTp(pathIut, word, fileTp, tpAutomaton);// pathTp
+					result = runIutTp(pathIut, word, fileTp, tpAutomaton,iut);// pathTp
 					toSave = result.getKey();
 					if (!fault)
 						fault = result.getValue();
@@ -472,7 +472,7 @@ public class TestGeneration {
 						// for each iut
 						for (File fileIut : listOfIutFiles) {
 							if (EverestView.isAutFile(fileIut)) {
-								result = runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp, tpAutomaton);
+								result = runIutTp(pathIut + "//" + fileIut.getName(), word, fileTp, tpAutomaton,iut);
 								toSave = result.getKey();
 
 								if (!fault)
@@ -493,15 +493,15 @@ public class TestGeneration {
 	}
 
 	public static javafx.util.Pair<List<List<String>>, Boolean> runIutTp(String pathIut, String word, File fileTp,
-			Automaton_ tp) {
+			Automaton_ tp, IOLTS iut) {
 		List<List<String>> toSave = new ArrayList<>();
 		boolean nonconformance = false;
 		tp.addState(new State_("fail"));
 		Operations.addTransitionToStates(tp);
 		try {
-			IOLTS iut;
-			iut = ImportAutFile.autToIOLTS(pathIut, false, null, null);
-			iut.addQuiescentTransitions();
+			//IOLTS iut;
+//			iut = ImportAutFile.autToIOLTS(pathIut, false, null, null);
+//			iut.addQuiescentTransitions();
 
 			List<String> partialResult = new ArrayList<>();
 			List<List<State_>> statesPath, statesPath_tp;
@@ -551,7 +551,7 @@ public class TestGeneration {
 	
 
 	public static javafx.util.Pair<List<String>, Boolean> getTcAndSaveTP(Automaton_ multigraph, Integer nTP,
-			String absolutePath, List<String> li, List<String> lu, String pathIUT, String multigraphName)
+			String absolutePath, List<String> li, List<String> lu, String pathIUT, String multigraphName, IOLTS iolts)
 			throws IOException {
 
 		List<Transition_> toVisit = multigraph.transitionsByIniState(multigraph.getInitialState());
@@ -694,7 +694,7 @@ public class TestGeneration {
 								if (pathIUT != null) {
 									// result = TestGeneration.runIutTp(pathIUT, tc, tpFile, tp_automaton);--
 									result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT,
-											absolutePath+System.getProperty("file.separator")+"TPs - " + multigraphName+System.getProperty("file.separator"));
+											absolutePath+System.getProperty("file.separator")+"TPs - " + multigraphName+System.getProperty("file.separator"), iolts);
 									// TestGeneration.saveOnCSVFile(result.getKey(), absolutePath);//
 									// "\\runVerdicts.csv"
 
@@ -754,7 +754,7 @@ public class TestGeneration {
 								// "\\runVerdicts.csv"
 
 								result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT,
-										absolutePath+System.getProperty("file.separator")+"TPs - " +multigraphName+System.getProperty("file.separator"));
+										absolutePath+System.getProperty("file.separator")+"TPs - " +multigraphName+System.getProperty("file.separator"),iolts);
 								nonConf = result;
 								// no conformance
 								if (result) {

@@ -2020,7 +2020,7 @@ public class EverestView extends JFrame {
 				// fc.showOpenDialog(EverestView.this);
 				// String folder = fc.getSelectedFile().getAbsolutePath();
 
-				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, tpFolder);
+				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, tpFolder,I);
 
 				// nonconf verdict
 				if (fault) {
@@ -2129,7 +2129,7 @@ public class EverestView extends JFrame {
 						javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 								(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 										: null,
-								folder, I.getInputs(), I.getOutputs(), pathImplementation, fileNameMultigraph);
+								folder, I.getInputs(), I.getOutputs(), pathImplementation, fileNameMultigraph,I);
 
 						testSuite = result.getKey();
 
@@ -2832,7 +2832,7 @@ public class EverestView extends JFrame {
 			loading.setVisible(true);
 
 			TestGeneration.run(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
-					rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder, saveFolderRun);
+					rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder, saveFolderRun,I);
 
 			loading.dispose();
 		}
@@ -2923,7 +2923,7 @@ public class EverestView extends JFrame {
 
 							(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 									: null,
-							folder, S.getInputs(), S.getOutputs(), pathImplementation, fileNameMultigraph);
+							folder, S.getInputs(), S.getOutputs(), pathImplementation, fileNameMultigraph, I);
 
 					testSuite = result.getKey();
 					taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
@@ -3055,12 +3055,12 @@ public class EverestView extends JFrame {
 						if ((!tfM.getText().isEmpty() && S != null)) {
 							testSuite = TestGeneration
 									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-											S.getInputs(), S.getOutputs(), null, fileNameMultigraph)
+											S.getInputs(), S.getOutputs(), null, fileNameMultigraph,I)
 									.getKey();
 						} else {
 							testSuite = TestGeneration
 									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-											iolts_aux.getInputs(), iolts_aux.getOutputs(), null, fileNameMultigraph)
+											iolts_aux.getInputs(), iolts_aux.getOutputs(), null, fileNameMultigraph,I)
 									.getKey();
 						}
 					}
