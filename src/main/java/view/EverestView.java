@@ -2145,12 +2145,22 @@ public class EverestView extends JFrame {
 				// fc.showOpenDialog(EverestView.this);
 				// String folder = fc.getSelectedFile().getAbsolutePath();
 
-				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, tpFolder, I);
+				TestGeneration.setTcFault(new ArrayList<>());
+				javafx.util.Pair<List<String>, Boolean> fault = TestGeneration.run(tpFolder, true, false, pathImplementation, tpFolder, I);
 
+				
 				// nonconf verdict
-				if (fault) {
-					lblRunVerdict.setText(ViewConstants.genRun_fault);
+				if (fault.getValue()) {
+					
+					lblNumTC.setText("#Extracted test cases: " + fault.getKey().size());
+					//lblRunVerdict.setText(ViewConstants.genRun_fault);
+					lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: [" + StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
 					lblRunVerdict.setForeground(new Color(178, 34, 34));
+				
+					taTestCases_gen.setText(StringUtils.join(fault.getKey(), "\n"));
+					
+					lblNumTC.setVisible(true);
+					lblNumTC.setText("#Extracted test cases: " + fault.getKey().size());
 				} else {
 					lblRunVerdict.setText(ViewConstants.genRun_noFault);
 					lblRunVerdict.setForeground(new Color(0, 128, 0));
@@ -2260,7 +2270,7 @@ public class EverestView extends JFrame {
 					try {
 
 						// loadMultigraph(folder);
-
+						TestGeneration.setTcFault(new ArrayList<>());
 						javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 								(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 										: null,
@@ -2270,8 +2280,13 @@ public class EverestView extends JFrame {
 
 						// nonconf verdict
 						if (result.getValue()) {
-							lblRunVerdict.setText(ViewConstants.genRun_fault);
+							
+							lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: [" + StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
+							//lblRunVerdict.setText(ViewConstants.genRun_fault );
 							lblRunVerdict.setForeground(new Color(178, 34, 34));
+							lblNumTC.setVisible(true);
+							lblNumTC.setText("#Extracted test purposes: " + TestGeneration.getTcFault().size());
+							taTestCases_gen.setText(StringUtils.join(result.getKey(), "\n"));
 						} else {
 							lblRunVerdict.setText(ViewConstants.genRun_noFault);
 							lblRunVerdict.setForeground(new Color(0, 128, 0));
@@ -3073,7 +3088,7 @@ public class EverestView extends JFrame {
 				// State_(multigraph.getInitialState().getName().replace(",", "_")));
 
 				try {
-
+					TestGeneration.setTcFault(new ArrayList<>());
 					javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 
 							(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
@@ -3083,11 +3098,11 @@ public class EverestView extends JFrame {
 					testSuite = result.getKey();
 					taTestCases_gen.setText(StringUtils.join(testSuite, "\n"));
 					lblNumTC.setVisible(true);
-					lblNumTC.setText("#Extracted test cases: " + testSuite.size());
+					lblNumTC.setText("#Extracted test purposes: " + testSuite.size());
 
 					// nonconf verdict
 					if (result.getValue()) {
-						lblRunVerdict.setText(ViewConstants.genRun_fault);
+						lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: [" + StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
 						lblRunVerdict.setForeground(new Color(178, 34, 34));
 					} else {
 						lblRunVerdict.setText(ViewConstants.genRun_noFault);
@@ -3241,7 +3256,7 @@ public class EverestView extends JFrame {
 					// btnMultigraph.setVisible(true);
 
 					lblNumTC.setVisible(true);
-					lblNumTC.setText("#Extracted test cases: " + testSuite.size());
+					lblNumTC.setText("#Extracted test purposes: " + testSuite.size());
 				}
 
 			} catch (NumberFormatException e) {

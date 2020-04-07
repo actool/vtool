@@ -47,8 +47,8 @@ public class ViewConstants {
 	public static final String multigraph_generation = "* Provide the 'Implementation', 'Multigraph' and '# Teste purposes' to extract and run the respective TPs \n";
 	public static final String run_tp= "* Provide the 'Implementation' and 'Test purpose folder'  to run the selected TPs \n";
 	public static final String selectSpecification_iut = "Select the specification or/and implementation model \n";
-	public static final String genRun_noFault = "no fault was found according to the test run";
-	public static final String genRun_fault =   "a fault was found";
+	public static final String genRun_noFault = "no fault was found according to the test run.";
+	public static final String genRun_fault =   "a fault was found.";
 	
 	public static final String btnrunTpTip = "Run TPs over the selected IUT";
 	public static final String btnRunMultigraphTip = "Extract TPs from the selected multigraph and run over the selected IUT";

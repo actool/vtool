@@ -32,6 +32,7 @@ import view.EverestView;
 
 public class TestGeneration {
 
+	private static List<String> tcFault = new ArrayList<>();
 	// public static void main(String[] args) {
 	// String path = "C:\\Users\\camil\\Documents\\aut-separados\\iolts-spec.aut";
 	// try {
@@ -381,9 +382,12 @@ public class TestGeneration {
 		return a;
 	}
 
-	public static Boolean run(String pathTp, boolean oneIut, boolean oneTP, String pathIut, String pathCsv, IOLTS iut) {
+	public static javafx.util.Pair<List<String>, Boolean> run(String pathTp, boolean oneIut, boolean oneTP, String pathIut, String pathCsv, IOLTS iut) {
 		boolean fault = false;
 
+		javafx.util.Pair<List<String>, Boolean> result;
+		List<String> TCs = new ArrayList<>();
+		
 		if (oneTP) {
 			if (EverestView.isAutFile(new File(pathTp)))
 				return runAllIutTp(new File(pathTp), oneIut, pathIut, pathCsv, iut);
@@ -400,23 +404,27 @@ public class TestGeneration {
 				if (EverestView.isAutFile(fileTp)) {
 					// run( pathTp + "//" + fileTp.getName(), fileTp, oneIut, pathImplementation,
 					// pathCsv);
-					if (!fault)
-						fault = runAllIutTp(fileTp, oneIut, pathIut, pathCsv, iut);
+					if (!fault) {
+						result = runAllIutTp(fileTp, oneIut, pathIut, pathCsv, iut);
+						TCs.addAll(result.getKey());
+						fault = result.getValue();
+					}
 				}
 			}
-			return fault;
+			return new javafx.util.Pair<List<String>, Boolean>(TCs,fault);
 		}
 
 		
 
 	}
 
-	public static boolean runAllIutTp(File fileTp, boolean oneIut, String pathIut, String pathCsv, IOLTS iut) {// String pathTp,
+	public static javafx.util.Pair<List<String>, Boolean> runAllIutTp(File fileTp, boolean oneIut, String pathIut, String pathCsv, IOLTS iut) {// String pathTp,
 																									// File fileTp,
 																									// boolean oneIut,
 																									// String
 																									// pathImplementation,
 																									// String pathCsv
+		
 		File iutFolderF;
 		File[] listOfIutFiles;
 		IOLTS tp;
@@ -424,7 +432,7 @@ public class TestGeneration {
 
 		javafx.util.Pair<List<List<String>>, Boolean> result;
 		Automaton_ tpAutomaton;
-		List<String> wordsTp;
+		List<String> wordsTp=new ArrayList<>();
 
 		List<List<String>> toSave = new ArrayList<>();
 		List<String> wordsTp_aux = new ArrayList<>();
@@ -489,12 +497,14 @@ public class TestGeneration {
 			e.printStackTrace();
 		}
 
-		return fault;
+	
+		return new javafx.util.Pair<List<String>, Boolean> (wordsTp,fault);//fault
 	}
 
 	public static javafx.util.Pair<List<List<String>>, Boolean> runIutTp(String pathIut, String word, File fileTp,
 			Automaton_ tp, IOLTS iut) {
 		List<List<String>> toSave = new ArrayList<>();
+		
 		boolean nonconformance = false;
 		tp.addState(new State_("fail"));
 		Operations.addTransitionToStates(tp);
@@ -526,6 +536,7 @@ public class TestGeneration {
 					if (statesPath_tp.get(0).get(statesPath_tp.get(0).size() - 1).getName().contains("fail")) {
 						// not conform
 						partialResult.add(Constants.RUN_VERDICT_NON_CONFORM);
+						tcFault.add(word);
 						nonconformance = true;
 					} else {
 						if (statesPath_tp.get(0).get(statesPath_tp.get(0).size() - 1).getName().contains("pass")) {
@@ -580,8 +591,8 @@ public class TestGeneration {
 		File file;
 		BufferedWriter writer;
 		File tpFile;
-		// javafx.util.Pair<List<List<String>>, Boolean> result;
-		boolean result;
+		 javafx.util.Pair<List<String>, Boolean> result;
+		//boolean result;
 		int contSelfLoopFinalState = selfloopFailState.size() - 1;
 
 		end: while (!toVisit.isEmpty()) {
@@ -700,8 +711,8 @@ public class TestGeneration {
 
 									words.add(tc);
 									// no conformance
-									if (result) {
-										nonConf = result;
+									if (result.getValue()) {
+										nonConf = result.getValue();
 										break end;
 									}
 								} //else {
@@ -755,9 +766,9 @@ public class TestGeneration {
 
 								result = TestGeneration.run(tpFile.getAbsolutePath(), true, true, pathIUT,
 										absolutePath+System.getProperty("file.separator")+"TPs - " +multigraphName+System.getProperty("file.separator"),iolts);
-								nonConf = result;
+								nonConf = result.getValue();
 								// no conformance
-								if (result) {
+								if (result.getValue()) {
 									break end;
 								}
 							} //else {
@@ -923,5 +934,13 @@ public class TestGeneration {
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public static List<String> getTcFault() {
+		return tcFault;
+	}
+
+	public static void setTcFault(List<String> tcFault) {
+		TestGeneration.tcFault = tcFault;
 	}
 }
