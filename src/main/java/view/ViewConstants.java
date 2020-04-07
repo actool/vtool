@@ -50,12 +50,12 @@ public class ViewConstants {
 	public static final String genRun_noFault = "no fault was found according to the test run";
 	public static final String genRun_fault =   "a fault was found";
 	
-	public static final String btnrunTpTip = "run TPs over IUT";
-	public static final String btnRunMultigraphTip = "run TPs, extracted from multigraph, over IUT";
-	public static final String btnRunGenerateTip1 = "generate multigraph of S, TPs and execute TPs over the IUT";
-	public static final String btnRunGenerateTip2 = "generate TPs, from multigraph, and execute TPs over the IUT";
-	public static final String btnGenerateTip1 = "generate multigraph of S ";
-	public static final String btnGenerateTip2 = "generate TPs from multigraph";
+	public static final String btnrunTpTip = "Run TPs over the selected IUT";
+	public static final String btnRunMultigraphTip = "Extract TPs from the selected multigraph and run over the selected IUT";
+	public static final String btnRunGenerateTip1 = "Generate the multigraph of S, the corresponding TPs and run them over the selected IUT";
+	public static final String btnRunGenerateTip2 = "Extract TPs from the selected multigraph, and run them  over the selected IUT";
+	public static final String btnGenerateTip1 = "Generate the multigraph of S ";
+	public static final String btnGenerateTip2 = "Extract TPs from the selected multigraph ";
 	
 	
 	public static final String selectTpRunMode = "Select test purpose run mode \n";

@@ -129,6 +129,9 @@ public class EverestView extends JFrame {
 	JLabel lbl_result;
 	JLabel lblRotulo2;
 	JComboBox cbModel2;
+	JLabel lblIolts;
+	JLabel label_8;
+	JPanel panel_1;
 
 	// TS Generation
 	JButton btnGenerate, btnViewModel_gen, btnViewImplementation_gen;
@@ -238,6 +241,9 @@ public class EverestView extends JFrame {
 
 			lastModifiedImp = new File(pathImplementation).lastModified();
 
+			label_8.setEnabled(true);
+			cbModel2.setEnabled(true);
+			
 			closeFrame(true);
 
 		} catch (Exception e) {
@@ -281,16 +287,19 @@ public class EverestView extends JFrame {
 			lblmodel_gen.setText(tfSpecification.getText());
 
 			// clean multigraph fields
-			tfM.setText("");
-			tfMultigraph.setText("");
-			pathMultigraph = null;
-			multigraph = null;
+			//tfM.setText("");
+			//tfMultigraph.setText("");
+			//pathMultigraph = null;
+			//multigraph = null;
 
 			isModelProcess = false;
 
 			lastModifiedSpec = new File(pathSpecification).lastModified();
 			closeFrame(false);
 			specOfMultigraph = false;
+			
+			lblIolts.setEnabled(true);
+			cbModel.setEnabled(true);
 
 		} catch (Exception e) {
 		}
@@ -1001,7 +1010,9 @@ public class EverestView extends JFrame {
 		cbModel.setModel(new DefaultComboBoxModel(ViewConstants.models));
 		cbModel.setFont(new Font("Dialog", Font.BOLD, 13));
 		cbModel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-
+		cbModel.setEnabled(false);
+		//cbModel.setVisible(false);
+		
 		lblImplementation = new JLabel("Implementation");
 		lblImplementation.setBackground(backgroundColor);
 		lblImplementation.setForeground(labelColor);
@@ -1023,6 +1034,9 @@ public class EverestView extends JFrame {
 					lblImplementationIoco.setText(tfImplementation.getText());
 					lblimplementationLang.setText(tfImplementation.getText());
 					lblimplementation_gen.setText(tfImplementation.getText());
+					
+					label_8.setEnabled(false);
+					cbModel2.setEnabled(false);
 				}
 			}
 		});
@@ -1057,6 +1071,9 @@ public class EverestView extends JFrame {
 					lblmodelIoco.setText(tfSpecification.getText());
 					lblmodelLang.setText(tfSpecification.getText());
 					lblmodel_gen.setText(tfSpecification.getText());
+					
+					lblIolts.setEnabled(false);
+					cbModel.setEnabled(false);
 				}
 			}
 		});
@@ -1131,14 +1148,16 @@ public class EverestView extends JFrame {
 		// cbLabel.setVisible(false);
 		cbLabel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 
-		JLabel lblIolts = new JLabel("Model type");
+		lblIolts = new JLabel("Model type");
 		lblIolts.setForeground(SystemColor.windowBorder);
 		lblIolts.setFont(new Font("Dialog", Font.BOLD, 13));
-
-		JLabel label_8 = new JLabel("Model type");
+		//lblIolts.setVisible(false);
+		
+		label_8 = new JLabel("Model type");
 		label_8.setForeground(SystemColor.windowBorder);
 		label_8.setFont(new Font("Dialog", Font.BOLD, 13));
-
+		//label_8.setVisible(false);
+		
 		lblRotulo2 = new JLabel("Label");
 		lblRotulo2.setForeground(SystemColor.windowBorder);
 		lblRotulo2.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1154,6 +1173,8 @@ public class EverestView extends JFrame {
 		cbModel2.setFont(new Font("Dialog", Font.BOLD, 13));
 		cbModel2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		cbModel2.setBackground(SystemColor.menu);
+		cbModel2.setEnabled(false);
+		//cbModel2.setVisible(false);
 
 		cbLabel2 = new JComboBox();
 		cbLabel2.addItemListener(new ItemListener() {
@@ -1168,7 +1189,7 @@ public class EverestView extends JFrame {
 		cbLabel2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		cbLabel2.setBackground(SystemColor.menu);
 
-		JPanel panel_1 = new JPanel();
+		 panel_1 = new JPanel();
 		// panel_1.setForeground(Color.GRAY);
 		// //panel_1.setBorder(UIManager.getBorder("TitledBorder.border"));
 		// TitledBorder border = new TitledBorder(new TitledBorder("Models alphabet"));
@@ -1178,6 +1199,8 @@ public class EverestView extends JFrame {
 		panel_1.setBorder((BorderFactory.createTitledBorder(null, "Models alphabet - I/O manually", TitledBorder.CENTER,
 				TitledBorder.TOP, new Font("Dialog", Font.BOLD, 13), Color.GRAY)));
 
+		panel_1.setVisible(false);
+		
 		GroupLayout gl_panel_conf = new GroupLayout(panel_conf);
 		gl_panel_conf.setHorizontalGroup(
 			gl_panel_conf.createParallelGroup(Alignment.TRAILING)
@@ -1218,16 +1241,16 @@ public class EverestView extends JFrame {
 					.addGap(275))
 				.addGroup(gl_panel_conf.createSequentialGroup()
 					.addGap(37)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_panel_conf.createSequentialGroup()
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
+						.addGroup(gl_panel_conf.createSequentialGroup()
 							.addComponent(tfImplementation, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
 							.addGap(2)
 							.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
-						.addGroup(Alignment.LEADING, gl_panel_conf.createSequentialGroup()
+						.addGroup(gl_panel_conf.createSequentialGroup()
 							.addComponent(cbModel2, 0, 299, Short.MAX_VALUE)
-							.addGap(69)
-							.addComponent(cbLabel2, GroupLayout.PREFERRED_SIZE, 356, GroupLayout.PREFERRED_SIZE)))
+							.addGap(89)
+							.addComponent(cbLabel2, 0, 336, Short.MAX_VALUE)))
 					.addGap(41))
 		);
 		gl_panel_conf.setVerticalGroup(
@@ -3190,10 +3213,18 @@ public class EverestView extends JFrame {
 											S.getInputs(), S.getOutputs(), null, fileNameMultigraph, I)
 									.getKey();
 						} else {
+							if( S != null) {
 							testSuite = TestGeneration
 									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
 											iolts_aux.getInputs(), iolts_aux.getOutputs(), null, fileNameMultigraph, I)
 									.getKey();
+							}else {
+								testSuite = TestGeneration
+										.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
+												multigraph_iolts.getInputs(), multigraph_iolts.getOutputs(), null, fileNameMultigraph, I)
+										.getKey();
+							}
+							
 						}
 					}
 
@@ -3485,7 +3516,7 @@ public class EverestView extends JFrame {
 		tfOutput.setVisible(visibility);
 		tfInput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		tfOutput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-
+		panel_1.setVisible(visibility);
 		// tfInput.setText("");
 		// tfOutput.setText("");
 		failPath = "";
@@ -3501,9 +3532,12 @@ public class EverestView extends JFrame {
 			setInputOutputField(true);
 			removeMessage(true, ViewConstants.msgImp);
 			removeMessage(false, ViewConstants.msgImp);
+			
 		} else {
-			if (cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() != 2)
+			if (cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() != 2) {
 				setInputOutputField(false);
+				
+			}
 		}
 		if (isModel) {
 			isModelProcess = false;
@@ -4136,8 +4170,10 @@ public class EverestView extends JFrame {
 			writer.write(contents);
 			writer.close();
 
-			multigraph = ImportAutFile.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>())
-					.ioltsToAutomaton();
+			 
+			multigraph_iolts = ImportAutFile.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>());
+			multigraph = 
+					multigraph_iolts.ioltsToAutomaton();
 			file.delete();
 			multigraph.setFinalStates(new ArrayList<>());
 			multigraph.addFinalStates(new State_("fail"));
@@ -4149,4 +4185,5 @@ public class EverestView extends JFrame {
 		}
 
 	}
+	IOLTS multigraph_iolts;
 }
