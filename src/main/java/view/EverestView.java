@@ -72,6 +72,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.DefaultComboBoxModel;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -82,7 +83,7 @@ import java.awt.Dimension;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import javax.swing.border.MatteBorder;
-
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.JTextArea;
@@ -127,6 +128,7 @@ public class EverestView extends JFrame {
 	JButton btnRunMultigraph;
 	JLabel lbl_result;
 	JLabel lblRotulo2;
+	JComboBox cbModel2;
 
 	// TS Generation
 	JButton btnGenerate, btnViewModel_gen, btnViewImplementation_gen;
@@ -541,13 +543,12 @@ public class EverestView extends JFrame {
 				// I_= null;
 
 			}
-			
-			int selectLabel=0;
-			if(implementation)
-				selectLabel=cbLabel2.getSelectedIndex();
+
+			int selectLabel = 0;
+			if (implementation)
+				selectLabel = cbLabel2.getSelectedIndex();
 			else
-				selectLabel=cbLabel.getSelectedIndex();
-			
+				selectLabel = cbLabel.getSelectedIndex();
 
 			if (selectLabel == 2 || lts) {// cbLabel.getSelectedIndex()// manual input/output
 				ArrayList<String> inp = new ArrayList<>(Arrays.asList(tfInput.getText().split(",")));
@@ -885,7 +886,7 @@ public class EverestView extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/img/icon.PNG")));
 		setTitle(ViewConstants.toolName);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 833, 540);
+		setBounds(100, 100, 833, 556);
 		setMinimumSize(new Dimension(833, 540));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -1011,6 +1012,20 @@ public class EverestView extends JFrame {
 		lblSpecification.setFont(new Font("Dialog", Font.BOLD, 13));
 
 		tfImplementation = new JTextField();
+		tfImplementation.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (tfImplementation.getText().isEmpty()) {
+					pathImplementation = null;
+					I = null;
+					cbModel2.setSelectedIndex(0);
+					cbLabel2.setSelectedIndex(0);
+					lblImplementationIoco.setText(tfImplementation.getText());
+					lblimplementationLang.setText(tfImplementation.getText());
+					lblimplementation_gen.setText(tfImplementation.getText());
+				}
+			}
+		});
 		tfImplementation.setForeground(textColor);
 		tfImplementation.setBackground(backgroundColor);
 		tfImplementation.setToolTipText("accepts only .aut files");
@@ -1030,6 +1045,21 @@ public class EverestView extends JFrame {
 		tfImplementation.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 
 		tfSpecification = new JTextField();
+		tfSpecification.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if (tfSpecification.getText().isEmpty()) {
+					pathSpecification = null;
+					S = null;
+					cbModel.setSelectedIndex(0);
+					cbLabel.setSelectedIndex(0);
+
+					lblmodelIoco.setText(tfSpecification.getText());
+					lblmodelLang.setText(tfSpecification.getText());
+					lblmodel_gen.setText(tfSpecification.getText());
+				}
+			}
+		});
 		tfSpecification.setForeground(textColor);
 		tfSpecification.setBackground(backgroundColor);
 		tfSpecification.setToolTipText("accepts only .aut files");
@@ -1064,6 +1094,7 @@ public class EverestView extends JFrame {
 		btnFolderImp.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
 
 		JButton btnFolderSpec = new JButton("");
+		btnFolderSpec.setToolTipText("");
 		btnFolderSpec.setBackground(buttonColor);
 		btnFolderSpec.setOpaque(true);
 		btnFolderSpec.addMouseListener(new MouseAdapter() {
@@ -1078,15 +1109,173 @@ public class EverestView extends JFrame {
 		});
 		btnFolderSpec.setIcon(new ImageIcon(this.getClass().getResource(ViewConstants.folderIconPath)));
 
-		lblOutput = new JLabel("Output  labels");
-		lblOutput.setForeground(labelColor);
-		lblOutput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblOutput.setVisible(false);
+		JList list = new JList();
+
+		lblRotulo = new JLabel("Label");
+		lblRotulo.setForeground(labelColor);
+		lblRotulo.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblRotulo.setVisible(false);
+
+		cbLabel = new JComboBox();
+		cbLabel.setVisible(false);
+		cbLabel.setForeground(textColor);
+		cbLabel.setBackground(backgroundColor);
+		cbLabel.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				actionCbLabel(arg0.getItem().toString(), true);
+			}
+		});
+		cbLabel.setModel(new DefaultComboBoxModel(
+				new String[] { "", ViewConstants.typeAutomaticLabel, ViewConstants.typeManualLabel }));
+		cbLabel.setFont(new Font("Dialog", Font.BOLD, 13));
+		// cbLabel.setVisible(false);
+		cbLabel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+
+		JLabel lblIolts = new JLabel("Model type");
+		lblIolts.setForeground(SystemColor.windowBorder);
+		lblIolts.setFont(new Font("Dialog", Font.BOLD, 13));
+
+		JLabel label_8 = new JLabel("Model type");
+		label_8.setForeground(SystemColor.windowBorder);
+		label_8.setFont(new Font("Dialog", Font.BOLD, 13));
+
+		lblRotulo2 = new JLabel("Label");
+		lblRotulo2.setForeground(SystemColor.windowBorder);
+		lblRotulo2.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblRotulo2.setVisible(false);
+		cbModel2 = new JComboBox();
+		cbModel2.setModel(new DefaultComboBoxModel(new String[] { "", "IOLTS", "LTS" }));
+		cbModel2.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				actionCbModel(arg0.getItem().toString(), false);
+			}
+		});
+		cbModel2.setForeground(SystemColor.controlShadow);
+		cbModel2.setFont(new Font("Dialog", Font.BOLD, 13));
+		cbModel2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		cbModel2.setBackground(SystemColor.menu);
+
+		cbLabel2 = new JComboBox();
+		cbLabel2.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				actionCbLabel(e.getItem().toString(), false);
+			}
+		});
+		cbLabel2.setVisible(false);
+		cbLabel2.setModel(new DefaultComboBoxModel(new String[] { "", "?in, !out", "define I/O manually" }));
+		cbLabel2.setForeground(SystemColor.controlShadow);
+		cbLabel2.setFont(new Font("Dialog", Font.BOLD, 13));
+		cbLabel2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
+		cbLabel2.setBackground(SystemColor.menu);
+
+		JPanel panel_1 = new JPanel();
+		// panel_1.setForeground(Color.GRAY);
+		// //panel_1.setBorder(UIManager.getBorder("TitledBorder.border"));
+		// TitledBorder border = new TitledBorder(new TitledBorder("Models alphabet"));
+		// border.setTitleFont( new Font("Dialog", Font.BOLD, 13));
+		// border.setTitleFont( border.getTitleFont().deriveFont(Font.BOLD +
+		// Font.ITALIC) );
+		panel_1.setBorder((BorderFactory.createTitledBorder(null, "Models alphabet - I/O manually", TitledBorder.CENTER,
+				TitledBorder.TOP, new Font("Dialog", Font.BOLD, 13), Color.GRAY)));
+
+		GroupLayout gl_panel_conf = new GroupLayout(panel_conf);
+		gl_panel_conf.setHorizontalGroup(
+			gl_panel_conf.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(lblSpecification, GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+					.addGap(542))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(371)
+					.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(tfSpecification, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+					.addGap(2)
+					.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
+					.addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(lblIolts, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+					.addGap(286)
+					.addComponent(lblRotulo, GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+					.addGap(317))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(cbModel, 0, 319, Short.MAX_VALUE)
+					.addGap(69)
+					.addComponent(cbLabel, 0, 336, Short.MAX_VALUE)
+					.addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(lblImplementation, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
+					.addGap(608))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addComponent(label_8, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+					.addGap(286)
+					.addComponent(lblRotulo2, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+					.addGap(275))
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(37)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.TRAILING)
+						.addComponent(panel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, gl_panel_conf.createSequentialGroup()
+							.addComponent(tfImplementation, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+							.addGap(2)
+							.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
+						.addGroup(Alignment.LEADING, gl_panel_conf.createSequentialGroup()
+							.addComponent(cbModel2, 0, 299, Short.MAX_VALUE)
+							.addGap(69)
+							.addComponent(cbLabel2, GroupLayout.PREFERRED_SIZE, 356, GroupLayout.PREFERRED_SIZE)))
+					.addGap(41))
+		);
+		gl_panel_conf.setVerticalGroup(
+			gl_panel_conf.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_conf.createSequentialGroup()
+					.addGap(11)
+					.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
+					.addGap(8)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addGap(2)
+							.addComponent(tfSpecification, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+					.addGap(13)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addGap(4)
+							.addComponent(lblIolts, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblRotulo, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+					.addGap(6)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(cbModel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbLabel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addGap(11)
+					.addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+					.addGap(9)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup()
+							.addGap(2)
+							.addComponent(tfImplementation, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+					.addGap(11)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(label_8, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblRotulo2, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+					.addGap(11)
+					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addComponent(cbModel2, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbLabel2, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addGap(26)
+					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 177, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
 
 		lblInput = new JLabel("Input labels");
 		lblInput.setForeground(labelColor);
 		lblInput.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblInput.setVisible(false);
 
 		tfInput = new JTextField();
 		tfInput.setForeground(textColor);
@@ -1112,6 +1301,15 @@ public class EverestView extends JFrame {
 
 		tfInput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 
+		lblLabelInp = new JLabel("(separated by comma)");
+		lblLabelInp.setBackground(backgroundColor);
+		lblLabelInp.setForeground(tipColor);
+		lblLabelInp.setFont(new Font("Dialog", Font.BOLD, 12));
+
+		lblOutput = new JLabel("Output  labels");
+		lblOutput.setForeground(labelColor);
+		lblOutput.setFont(new Font("Dialog", Font.BOLD, 13));
+
 		tfOutput = new JTextField();
 		tfOutput.setForeground(textColor);
 		tfOutput.setBackground(backgroundColor);
@@ -1134,155 +1332,58 @@ public class EverestView extends JFrame {
 		tfOutput.setVisible(false);
 		tfOutput.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 
-		lblLabelInp = new JLabel("(separated by comma)");
-		lblLabelInp.setBackground(backgroundColor);
-		lblLabelInp.setForeground(tipColor);
-		lblLabelInp.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblLabelInp.setVisible(false);
-
 		lblLabelOut = new JLabel("(separated by comma)");
 		lblLabelOut.setBackground(backgroundColor);
 		lblLabelOut.setForeground(tipColor);
 		lblLabelOut.setFont(new Font("Dialog", Font.BOLD, 12));
+		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
+		gl_panel_1.setHorizontalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addGap(4)
+					.addComponent(lblInput))
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addGap(4)
+					.addComponent(tfInput, GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+					.addGap(10))
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addContainerGap(565, Short.MAX_VALUE)
+					.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
+					.addGap(10))
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addGap(4)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+						.addComponent(tfOutput, GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 698, GroupLayout.PREFERRED_SIZE))
+					.addGap(10))
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addContainerGap(565, Short.MAX_VALUE)
+					.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
+					.addGap(5))
+		);
+		gl_panel_1.setVerticalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addGap(1)
+					.addComponent(lblInput)
+					.addGap(7)
+					.addComponent(tfInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+					.addGap(11)
+					.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+					.addGap(14)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addGap(18)
+							.addComponent(tfOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+					.addGap(11)
+					.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+		);
+		panel_1.setLayout(gl_panel_1);
 		lblLabelOut.setVisible(false);
-
-		JList list = new JList();
-
-		lblRotulo = new JLabel("Label");
-		lblRotulo.setForeground(labelColor);
-		lblRotulo.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblRotulo.setVisible(false);
-
-		cbLabel = new JComboBox();
-		cbLabel.setVisible(false);
-		cbLabel.setForeground(textColor);
-		cbLabel.setBackground(backgroundColor);
-		cbLabel.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent arg0) {
-				actionCbLabel(arg0.getItem().toString(),true);
-			}
-		});
-		cbLabel.setModel(new DefaultComboBoxModel(
-				new String[] { "", ViewConstants.typeAutomaticLabel, ViewConstants.typeManualLabel }));
-		cbLabel.setFont(new Font("Dialog", Font.BOLD, 13));
-		// cbLabel.setVisible(false);
-		cbLabel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-
-		JLabel lblIolts = new JLabel("Model type");
-		lblIolts.setForeground(SystemColor.windowBorder);
-		lblIolts.setFont(new Font("Dialog", Font.BOLD, 13));
-
-		JLabel label_8 = new JLabel("Model type");
-		label_8.setForeground(SystemColor.windowBorder);
-		label_8.setFont(new Font("Dialog", Font.BOLD, 13));
-
-		lblRotulo2 = new JLabel("Label");
-		lblRotulo2.setForeground(SystemColor.windowBorder);
-		lblRotulo2.setFont(new Font("Dialog", Font.BOLD, 13));
-		lblRotulo2.setVisible(false);
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] { "", "IOLTS", "LTS" }));
-		comboBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent arg0) {
-				actionCbModel(arg0.getItem().toString(), false);
-			}
-		});
-		comboBox.setForeground(SystemColor.controlShadow);
-		comboBox.setFont(new Font("Dialog", Font.BOLD, 13));
-		comboBox.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-		comboBox.setBackground(SystemColor.menu);
-
-		cbLabel2 = new JComboBox();
-		cbLabel2.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				actionCbLabel(e.getItem().toString(),false);
-			}
-		});
-		cbLabel2.setVisible(false);
-		cbLabel2.setModel(new DefaultComboBoxModel(new String[] { "", "?in, !out", "define I/O manually" }));
-		cbLabel2.setForeground(SystemColor.controlShadow);
-		cbLabel2.setFont(new Font("Dialog", Font.BOLD, 13));
-		cbLabel2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
-		cbLabel2.setBackground(SystemColor.menu);
-
-		GroupLayout gl_panel_conf = new GroupLayout(panel_conf);
-		gl_panel_conf.setHorizontalGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(lblSpecification, GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE).addGap(542))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(371).addComponent(list,
-						GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(tfSpecification, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE).addGap(2)
-						.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
-						.addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(lblIolts, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(286)
-						.addComponent(lblRotulo, GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE).addGap(317))
-				.addGroup(
-						gl_panel_conf.createSequentialGroup().addGap(37).addComponent(cbModel, 0, 319, Short.MAX_VALUE)
-								.addGap(69).addComponent(cbLabel, 0, 336, Short.MAX_VALUE).addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(lblImplementation, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE).addGap(608))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(tfImplementation, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE).addGap(2)
-						.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
-						.addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(label_8, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(286)
-						.addComponent(lblRotulo2, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(275))
-				.addGroup(
-						gl_panel_conf.createSequentialGroup().addGap(37).addComponent(comboBox, 0, 319, Short.MAX_VALUE)
-								.addGap(69).addComponent(cbLabel2, 0, 336, Short.MAX_VALUE).addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37).addComponent(lblInput,
-						GroupLayout.PREFERRED_SIZE, 223, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(tfInput, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE).addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(lblOutput, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE).addGap(313)
-						.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
-						.addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
-						.addComponent(tfOutput, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE).addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup().addGap(624).addComponent(lblLabelOut,
-						GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)));
-		gl_panel_conf.setVerticalGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_conf
-				.createSequentialGroup().addGap(11)
-				.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-				.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE).addGap(8)
-				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup().addGap(2).addComponent(tfSpecification,
-								GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-						.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-				.addGap(13)
-				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup().addGap(4).addComponent(lblIolts,
-								GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblRotulo, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-				.addGap(6)
-				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addComponent(cbModel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-						.addComponent(cbLabel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-				.addGap(11).addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-				.addGap(9)
-				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup().addGap(2).addComponent(tfImplementation,
-								GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-						.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-				.addGap(11)
-				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addComponent(label_8, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblRotulo2, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-				.addGap(11)
-				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-						.addComponent(cbLabel2, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-				.addGap(11).addComponent(lblInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE).addGap(1)
-				.addComponent(tfInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE).addGap(11)
-				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-				.addGap(3).addComponent(tfOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE).addGap(11)
-				.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)));
+		lblOutput.setVisible(false);
+		lblLabelInp.setVisible(false);
+		lblInput.setVisible(false);
 		panel_conf.setLayout(gl_panel_conf);
 
 		panel_ioco = new JPanel();
@@ -1865,6 +1966,7 @@ public class EverestView extends JFrame {
 		tabbedPane.addTab(ViewConstants.tabTSGeneration, null, panel_test_generation, null);
 
 		btnGenerate = new JButton("Generate");
+		btnGenerate.setToolTipText("");
 		btnGenerate.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -2020,7 +2122,7 @@ public class EverestView extends JFrame {
 				// fc.showOpenDialog(EverestView.this);
 				// String folder = fc.getSelectedFile().getAbsolutePath();
 
-				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, tpFolder,I);
+				boolean fault = TestGeneration.run(tpFolder, true, false, pathImplementation, tpFolder, I);
 
 				// nonconf verdict
 				if (fault) {
@@ -2079,6 +2181,11 @@ public class EverestView extends JFrame {
 		tfMultigraph.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
+				if(tfMultigraph.getText().isEmpty()) {
+					pathMultigraph = "";
+					fileNameMultigraph = "";
+					multigraph = null;
+				}
 				visibilityRunButtons();
 			}
 		});
@@ -2086,6 +2193,11 @@ public class EverestView extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				getMultigraphPaph();
+				if(tfMultigraph.getText().isEmpty()) {
+					pathMultigraph = "";
+					fileNameMultigraph = "";
+					multigraph = null;
+				}
 			}
 		});
 		tfMultigraph.setToolTipText("accepts only .aut files");
@@ -2129,7 +2241,7 @@ public class EverestView extends JFrame {
 						javafx.util.Pair<List<String>, Boolean> result = TestGeneration.getTcAndSaveTP(multigraph,
 								(!tfNTestCases_gen.getText().isEmpty()) ? Integer.parseInt(tfNTestCases_gen.getText())
 										: null,
-								folder, I.getInputs(), I.getOutputs(), pathImplementation, fileNameMultigraph,I);
+								folder, I.getInputs(), I.getOutputs(), pathImplementation, fileNameMultigraph, I);
 
 						testSuite = result.getKey();
 
@@ -2764,16 +2876,27 @@ public class EverestView extends JFrame {
 
 		boolean removeMessage = false;
 
-		if ((S != null && !tfM.getText().isEmpty() && iutValid && specValid && !specOfMultigraph)
+		if ((S != null && !tfM.getText().isEmpty() && iutValid && specValid ) //&& !specOfMultigraph
 				|| (pathMultigraph != null && !pathMultigraph.isEmpty() && !tfNTestCases_gen.getText().isEmpty())) {// !tfNTestCases_gen.getText().isEmpty()
 			// &&
 			btnGenerate.setVisible(true);
 			removeMessage = true;
 			btnGenerate.setEnabled(true);
+			
+			if(!tfM.getText().isEmpty() && S != null && multigraph == null) {
+				btnGenerate.setToolTipText(ViewConstants.btnGenerateTip1);
+				if(!tfNTestCases_gen.getText().isEmpty()) {
+					btnGenerate.setToolTipText(btnGenerate.getToolTipText()+"and TPs");
+				}
+			}else {
+				btnGenerate.setToolTipText(ViewConstants.btnGenerateTip2);
+			}
+			
 		} else {
 			// if (S != null) {
 			btnGenerate.setVisible(true);
 			btnGenerate.setEnabled(false);
+			btnGenerate.setToolTipText("");
 			// }
 		}
 
@@ -2781,12 +2904,19 @@ public class EverestView extends JFrame {
 				&& specValid) {
 			btnRunGenerate.setVisible(true);
 			removeMessage = true;
+			if (multigraph == null) {
+				btnRunGenerate.setToolTipText(ViewConstants.btnRunGenerateTip1);
+			}else {
+				btnRunGenerate.setToolTipText(ViewConstants.btnRunGenerateTip2);
+			}
+			
 		} else {
 			btnRunGenerate.setVisible(false);
 		}
 
 		if (pathMultigraph != null && I != null && !tfNTestCases_gen.getText().isEmpty() && iutValid && specValid) {
 			btnRunMultigraph.setVisible(true);
+			btnRunMultigraph.setToolTipText(ViewConstants.btnRunMultigraphTip);
 			removeMessage = true;
 		} else {
 			btnRunMultigraph.setVisible(false);
@@ -2794,6 +2924,7 @@ public class EverestView extends JFrame {
 
 		if (tpFolder != null && !tpFolder.isEmpty() && I != null && iutValid && specValid) {
 			btnrunTp.setVisible(true);
+			btnrunTp.setToolTipText(ViewConstants.btnrunTpTip);
 		} else {
 			btnrunTp.setVisible(false);
 		}
@@ -2832,7 +2963,8 @@ public class EverestView extends JFrame {
 			loading.setVisible(true);
 
 			TestGeneration.run(rdbtnOneTP.isSelected() ? pathTP : tpFolder, rdbtnOneIut.isSelected(),
-					rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder, saveFolderRun,I);
+					rdbtnOneTP.isSelected(), rdbtnOneIut.isSelected() ? pathImplementation : iutFolder, saveFolderRun,
+					I);
 
 			loading.dispose();
 		}
@@ -3055,12 +3187,12 @@ public class EverestView extends JFrame {
 						if ((!tfM.getText().isEmpty() && S != null)) {
 							testSuite = TestGeneration
 									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-											S.getInputs(), S.getOutputs(), null, fileNameMultigraph,I)
+											S.getInputs(), S.getOutputs(), null, fileNameMultigraph, I)
 									.getKey();
 						} else {
 							testSuite = TestGeneration
 									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-											iolts_aux.getInputs(), iolts_aux.getOutputs(), null, fileNameMultigraph,I)
+											iolts_aux.getInputs(), iolts_aux.getOutputs(), null, fileNameMultigraph, I)
 									.getKey();
 						}
 					}
@@ -3370,8 +3502,8 @@ public class EverestView extends JFrame {
 			removeMessage(true, ViewConstants.msgImp);
 			removeMessage(false, ViewConstants.msgImp);
 		} else {
-			if(cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() !=2 )
-			setInputOutputField(false);
+			if (cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() != 2)
+				setInputOutputField(false);
 		}
 		if (isModel) {
 			isModelProcess = false;
@@ -3385,12 +3517,12 @@ public class EverestView extends JFrame {
 			if (isModel) {
 				cbLabel.setVisible(true);
 				lblRotulo.setVisible(true);
-				actionCbLabel(cbLabel.getSelectedItem().toString(),isModel);
+				actionCbLabel(cbLabel.getSelectedItem().toString(), isModel);
 				isModelProcess = false;
 			} else {
 				cbLabel2.setVisible(true);
 				lblRotulo2.setVisible(true);
-				actionCbLabel(cbLabel2.getSelectedItem().toString(),isModel);
+				actionCbLabel(cbLabel2.getSelectedItem().toString(), isModel);
 				isImplementationProcess = false;
 			}
 
@@ -3404,9 +3536,9 @@ public class EverestView extends JFrame {
 				lblRotulo2.setVisible(false);
 				isImplementationProcess = false;
 			}
-			if(cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() !=2 )
+			if (cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() != 2)
 				setInputOutputField(false);
-			
+
 		}
 
 		failPath = "";
