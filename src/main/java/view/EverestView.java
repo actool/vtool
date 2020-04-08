@@ -243,7 +243,7 @@ public class EverestView extends JFrame {
 
 			label_8.setEnabled(true);
 			cbModel2.setEnabled(true);
-			
+
 			closeFrame(true);
 
 		} catch (Exception e) {
@@ -287,17 +287,17 @@ public class EverestView extends JFrame {
 			lblmodel_gen.setText(tfSpecification.getText());
 
 			// clean multigraph fields
-			//tfM.setText("");
-			//tfMultigraph.setText("");
-			//pathMultigraph = null;
-			//multigraph = null;
+			// tfM.setText("");
+			// tfMultigraph.setText("");
+			// pathMultigraph = null;
+			// multigraph = null;
 
 			isModelProcess = false;
 
 			lastModifiedSpec = new File(pathSpecification).lastModified();
 			closeFrame(false);
 			specOfMultigraph = false;
-			
+
 			lblIolts.setEnabled(true);
 			cbModel.setEnabled(true);
 
@@ -1011,8 +1011,8 @@ public class EverestView extends JFrame {
 		cbModel.setFont(new Font("Dialog", Font.BOLD, 13));
 		cbModel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		cbModel.setEnabled(false);
-		//cbModel.setVisible(false);
-		
+		// cbModel.setVisible(false);
+
 		lblImplementation = new JLabel("Implementation");
 		lblImplementation.setBackground(backgroundColor);
 		lblImplementation.setForeground(labelColor);
@@ -1034,7 +1034,7 @@ public class EverestView extends JFrame {
 					lblImplementationIoco.setText(tfImplementation.getText());
 					lblimplementationLang.setText(tfImplementation.getText());
 					lblimplementation_gen.setText(tfImplementation.getText());
-					
+
 					label_8.setEnabled(false);
 					cbModel2.setEnabled(false);
 				}
@@ -1071,7 +1071,7 @@ public class EverestView extends JFrame {
 					lblmodelIoco.setText(tfSpecification.getText());
 					lblmodelLang.setText(tfSpecification.getText());
 					lblmodel_gen.setText(tfSpecification.getText());
-					
+
 					lblIolts.setEnabled(false);
 					cbModel.setEnabled(false);
 				}
@@ -1151,13 +1151,13 @@ public class EverestView extends JFrame {
 		lblIolts = new JLabel("Model type");
 		lblIolts.setForeground(SystemColor.windowBorder);
 		lblIolts.setFont(new Font("Dialog", Font.BOLD, 13));
-		//lblIolts.setVisible(false);
-		
+		// lblIolts.setVisible(false);
+
 		label_8 = new JLabel("Model type");
 		label_8.setForeground(SystemColor.windowBorder);
 		label_8.setFont(new Font("Dialog", Font.BOLD, 13));
-		//label_8.setVisible(false);
-		
+		// label_8.setVisible(false);
+
 		lblRotulo2 = new JLabel("Label");
 		lblRotulo2.setForeground(SystemColor.windowBorder);
 		lblRotulo2.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1174,7 +1174,7 @@ public class EverestView extends JFrame {
 		cbModel2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		cbModel2.setBackground(SystemColor.menu);
 		cbModel2.setEnabled(false);
-		//cbModel2.setVisible(false);
+		// cbModel2.setVisible(false);
 
 		cbLabel2 = new JComboBox();
 		cbLabel2.addItemListener(new ItemListener() {
@@ -1189,7 +1189,7 @@ public class EverestView extends JFrame {
 		cbLabel2.setBorder(new MatteBorder(0, 0, 1, 0, (Color) borderColor));
 		cbLabel2.setBackground(SystemColor.menu);
 
-		 panel_1 = new JPanel();
+		panel_1 = new JPanel();
 		// panel_1.setForeground(Color.GRAY);
 		// //panel_1.setBorder(UIManager.getBorder("TitledBorder.border"));
 		// TitledBorder border = new TitledBorder(new TitledBorder("Models alphabet"));
@@ -1200,101 +1200,72 @@ public class EverestView extends JFrame {
 				TitledBorder.TOP, new Font("Dialog", Font.BOLD, 13), Color.GRAY)));
 
 		panel_1.setVisible(false);
-		
+
 		GroupLayout gl_panel_conf = new GroupLayout(panel_conf);
-		gl_panel_conf.setHorizontalGroup(
-			gl_panel_conf.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addComponent(lblSpecification, GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-					.addGap(542))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(371)
-					.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addComponent(tfSpecification, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
-					.addGap(2)
-					.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
-					.addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addComponent(lblIolts, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-					.addGap(286)
-					.addComponent(lblRotulo, GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-					.addGap(317))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addComponent(cbModel, 0, 319, Short.MAX_VALUE)
-					.addGap(69)
-					.addComponent(cbLabel, 0, 336, Short.MAX_VALUE)
-					.addGap(41))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addComponent(lblImplementation, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
-					.addGap(608))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addComponent(label_8, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-					.addGap(286)
-					.addComponent(lblRotulo2, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-					.addGap(275))
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(37)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addComponent(tfImplementation, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
-							.addGap(2)
-							.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addComponent(cbModel2, 0, 299, Short.MAX_VALUE)
-							.addGap(89)
-							.addComponent(cbLabel2, 0, 336, Short.MAX_VALUE)))
-					.addGap(41))
-		);
-		gl_panel_conf.setVerticalGroup(
-			gl_panel_conf.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_conf.createSequentialGroup()
-					.addGap(11)
-					.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
-					.addGap(8)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addGap(2)
-							.addComponent(tfSpecification, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+		gl_panel_conf.setHorizontalGroup(gl_panel_conf.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(lblSpecification, GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE).addGap(542))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(371).addComponent(list,
+						GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(tfSpecification, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE).addGap(2)
+						.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
+						.addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(lblIolts, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(286)
+						.addComponent(lblRotulo, GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE).addGap(317))
+				.addGroup(
+						gl_panel_conf.createSequentialGroup().addGap(37).addComponent(cbModel, 0, 319, Short.MAX_VALUE)
+								.addGap(69).addComponent(cbLabel, 0, 336, Short.MAX_VALUE).addGap(41))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(lblImplementation, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE).addGap(608))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addComponent(label_8, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(286)
+						.addComponent(lblRotulo2, GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE).addGap(275))
+				.addGroup(gl_panel_conf.createSequentialGroup().addGap(37)
+						.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+								.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
+								.addGroup(gl_panel_conf.createSequentialGroup()
+										.addComponent(tfImplementation, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+										.addGap(2).addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 39,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_panel_conf.createSequentialGroup()
+										.addComponent(cbModel2, 0, 299, Short.MAX_VALUE).addGap(89)
+										.addComponent(cbLabel2, 0, 336, Short.MAX_VALUE)))
+						.addGap(41)));
+		gl_panel_conf.setVerticalGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_conf
+				.createSequentialGroup().addGap(11)
+				.addComponent(lblSpecification, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+				.addComponent(list, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE).addGap(8)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup().addGap(2).addComponent(tfSpecification,
+								GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 						.addComponent(btnFolderSpec, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-					.addGap(13)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addGap(4)
-							.addComponent(lblIolts, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
+				.addGap(13)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup().addGap(4).addComponent(lblIolts,
+								GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
 						.addComponent(lblRotulo, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-					.addGap(6)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+				.addGap(6)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
 						.addComponent(cbModel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
 						.addComponent(cbLabel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-					.addGap(11)
-					.addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-					.addGap(9)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_conf.createSequentialGroup()
-							.addGap(2)
-							.addComponent(tfImplementation, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+				.addGap(11).addComponent(lblImplementation, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+				.addGap(9)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_conf.createSequentialGroup().addGap(2).addComponent(tfImplementation,
+								GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 						.addComponent(btnFolderImp, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-					.addGap(11)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+				.addGap(11)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
 						.addComponent(label_8, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblRotulo2, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-					.addGap(11)
-					.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
+				.addGap(11)
+				.addGroup(gl_panel_conf.createParallelGroup(Alignment.LEADING)
 						.addComponent(cbModel2, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
 						.addComponent(cbLabel2, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-					.addGap(26)
-					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 177, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
+				.addGap(26).addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 177, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		lblInput = new JLabel("Input labels");
 		lblInput.setForeground(labelColor);
@@ -1360,48 +1331,32 @@ public class EverestView extends JFrame {
 		lblLabelOut.setForeground(tipColor);
 		lblLabelOut.setFont(new Font("Dialog", Font.BOLD, 12));
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(
-			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGap(4)
-					.addComponent(lblInput))
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGap(4)
-					.addComponent(tfInput, GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
-					.addGap(10))
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addContainerGap(565, Short.MAX_VALUE)
-					.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
-					.addGap(10))
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGap(4)
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addComponent(tfOutput, GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
-						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 698, GroupLayout.PREFERRED_SIZE))
-					.addGap(10))
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addContainerGap(565, Short.MAX_VALUE)
-					.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
-					.addGap(5))
-		);
-		gl_panel_1.setVerticalGroup(
-			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGap(1)
-					.addComponent(lblInput)
-					.addGap(7)
-					.addComponent(tfInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-					.addGap(11)
-					.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-					.addGap(14)
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGap(18)
-							.addComponent(tfOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
-					.addGap(11)
-					.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-		);
+		gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup().addGap(4).addComponent(lblInput))
+				.addGroup(gl_panel_1.createSequentialGroup().addGap(4)
+						.addComponent(tfInput, GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE).addGap(10))
+				.addGroup(gl_panel_1.createSequentialGroup().addContainerGap(565, Short.MAX_VALUE)
+						.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
+						.addGap(10))
+				.addGroup(gl_panel_1.createSequentialGroup().addGap(4)
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+								.addComponent(tfOutput, GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+								.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 698, GroupLayout.PREFERRED_SIZE))
+						.addGap(10))
+				.addGroup(gl_panel_1.createSequentialGroup().addContainerGap(565, Short.MAX_VALUE)
+						.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
+						.addGap(5)));
+		gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup().addGap(1).addComponent(lblInput).addGap(7)
+						.addComponent(tfInput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE).addGap(11)
+						.addComponent(lblLabelInp, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+						.addGap(14)
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_1.createSequentialGroup().addGap(18).addComponent(tfOutput,
+										GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblOutput, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+						.addGap(11)
+						.addComponent(lblLabelOut, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)));
 		panel_1.setLayout(gl_panel_1);
 		lblLabelOut.setVisible(false);
 		lblOutput.setVisible(false);
@@ -2146,19 +2101,20 @@ public class EverestView extends JFrame {
 				// String folder = fc.getSelectedFile().getAbsolutePath();
 
 				TestGeneration.setTcFault(new ArrayList<>());
-				javafx.util.Pair<List<String>, Boolean> fault = TestGeneration.run(tpFolder, true, false, pathImplementation, tpFolder, I);
+				javafx.util.Pair<List<String>, Boolean> fault = TestGeneration.run(tpFolder, true, false,
+						pathImplementation, tpFolder, I);
 
-				
 				// nonconf verdict
 				if (fault.getValue()) {
-					
+
 					lblNumTC.setText("#Extracted test cases: " + fault.getKey().size());
-					//lblRunVerdict.setText(ViewConstants.genRun_fault);
-					lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: [" + StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
+					// lblRunVerdict.setText(ViewConstants.genRun_fault);
+					lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: ["
+							+ StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
 					lblRunVerdict.setForeground(new Color(178, 34, 34));
-				
+
 					taTestCases_gen.setText(StringUtils.join(fault.getKey(), "\n"));
-					
+
 					lblNumTC.setVisible(true);
 					lblNumTC.setText("#Extracted test cases: " + fault.getKey().size());
 				} else {
@@ -2214,7 +2170,7 @@ public class EverestView extends JFrame {
 		tfMultigraph.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				if(tfMultigraph.getText().isEmpty()) {
+				if (tfMultigraph.getText().isEmpty()) {
 					pathMultigraph = "";
 					fileNameMultigraph = "";
 					multigraph = null;
@@ -2226,7 +2182,7 @@ public class EverestView extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				getMultigraphPaph();
-				if(tfMultigraph.getText().isEmpty()) {
+				if (tfMultigraph.getText().isEmpty()) {
 					pathMultigraph = "";
 					fileNameMultigraph = "";
 					multigraph = null;
@@ -2280,9 +2236,10 @@ public class EverestView extends JFrame {
 
 						// nonconf verdict
 						if (result.getValue()) {
-							
-							lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: [" + StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
-							//lblRunVerdict.setText(ViewConstants.genRun_fault );
+
+							lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: ["
+									+ StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
+							// lblRunVerdict.setText(ViewConstants.genRun_fault );
 							lblRunVerdict.setForeground(new Color(178, 34, 34));
 							lblNumTC.setVisible(true);
 							lblNumTC.setText("#Extracted test purposes: " + TestGeneration.getTcFault().size());
@@ -2354,7 +2311,7 @@ public class EverestView extends JFrame {
 		tfTPFolder.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				if(tfTPFolder.getText().isEmpty()) {
+				if (tfTPFolder.getText().isEmpty()) {
 					tpFolder = null;
 					visibilityRunButtons();
 				}
@@ -2923,22 +2880,26 @@ public class EverestView extends JFrame {
 
 		boolean removeMessage = false;
 
-		if ((S != null && !tfM.getText().isEmpty() && iutValid && specValid ) //&& !specOfMultigraph
+		if ((S != null && !tfM.getText().isEmpty() && iutValid && specValid) // && !specOfMultigraph
 				|| (pathMultigraph != null && !pathMultigraph.isEmpty() && !tfNTestCases_gen.getText().isEmpty())) {// !tfNTestCases_gen.getText().isEmpty()
 			// &&
 			btnGenerate.setVisible(true);
 			removeMessage = true;
 			btnGenerate.setEnabled(true);
-			
-			if(!tfM.getText().isEmpty() && S != null && multigraph == null) {
+
+			if (!tfM.getText().isEmpty() && S != null && multigraph == null) {
 				btnGenerate.setToolTipText(ViewConstants.btnGenerateTip1);
-				if(!tfNTestCases_gen.getText().isEmpty()) {
-					btnGenerate.setToolTipText(btnGenerate.getToolTipText()+"and TPs");
+				if (!tfNTestCases_gen.getText().isEmpty()) {
+					btnGenerate.setToolTipText(btnGenerate.getToolTipText() + "and TPs");
 				}
-			}else {
-				btnGenerate.setToolTipText(ViewConstants.btnGenerateTip2);
+			} else {
+				if (!tfNTestCases_gen.getText().isEmpty() && pathMultigraph != null && !pathMultigraph.isEmpty()) {
+					btnGenerate.setToolTipText(ViewConstants.btnGenerateTip2);
+				}else {
+					btnGenerate.setEnabled(false);
+				}
 			}
-			
+
 		} else {
 			// if (S != null) {
 			btnGenerate.setVisible(true);
@@ -2953,10 +2914,10 @@ public class EverestView extends JFrame {
 			removeMessage = true;
 			if (multigraph == null) {
 				btnRunGenerate.setToolTipText(ViewConstants.btnRunGenerateTip1);
-			}else {
+			} else {
 				btnRunGenerate.setToolTipText(ViewConstants.btnRunGenerateTip2);
 			}
-			
+
 		} else {
 			btnRunGenerate.setVisible(false);
 		}
@@ -3111,7 +3072,8 @@ public class EverestView extends JFrame {
 
 					// nonconf verdict
 					if (result.getValue()) {
-						lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: [" + StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
+						lblRunVerdict.setText(ViewConstants.genRun_fault + " Test cases: ["
+								+ StringUtils.join(TestGeneration.getTcFault(), ",") + "]");
 						lblRunVerdict.setForeground(new Color(178, 34, 34));
 					} else {
 						lblRunVerdict.setText(ViewConstants.genRun_noFault);
@@ -3237,18 +3199,18 @@ public class EverestView extends JFrame {
 											S.getInputs(), S.getOutputs(), null, fileNameMultigraph, I)
 									.getKey();
 						} else {
-							if( S != null) {
-							testSuite = TestGeneration
-									.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-											iolts_aux.getInputs(), iolts_aux.getOutputs(), null, fileNameMultigraph, I)
-									.getKey();
-							}else {
+							if (S != null) {
+								testSuite = TestGeneration.getTcAndSaveTP(multigraph,
+										Integer.parseInt(tfNTestCases_gen.getText()), folder, iolts_aux.getInputs(),
+										iolts_aux.getOutputs(), null, fileNameMultigraph, I).getKey();
+							} else {
 								testSuite = TestGeneration
-										.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()), folder,
-												multigraph_iolts.getInputs(), multigraph_iolts.getOutputs(), null, fileNameMultigraph, I)
+										.getTcAndSaveTP(multigraph, Integer.parseInt(tfNTestCases_gen.getText()),
+												folder, multigraph_iolts.getInputs(), multigraph_iolts.getOutputs(),
+												null, fileNameMultigraph, I)
 										.getKey();
 							}
-							
+
 						}
 					}
 
@@ -3556,11 +3518,11 @@ public class EverestView extends JFrame {
 			setInputOutputField(true);
 			removeMessage(true, ViewConstants.msgImp);
 			removeMessage(false, ViewConstants.msgImp);
-			
+
 		} else {
 			if (cbLabel.getSelectedIndex() != 2 && cbLabel2.getSelectedIndex() != 2) {
 				setInputOutputField(false);
-				
+
 			}
 		}
 		if (isModel) {
@@ -4194,10 +4156,9 @@ public class EverestView extends JFrame {
 			writer.write(contents);
 			writer.close();
 
-			 
-			multigraph_iolts = ImportAutFile.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(), new ArrayList<>());
-			multigraph = 
-					multigraph_iolts.ioltsToAutomaton();
+			multigraph_iolts = ImportAutFile.autToIOLTS(file.getAbsolutePath(), false, new ArrayList<>(),
+					new ArrayList<>());
+			multigraph = multigraph_iolts.ioltsToAutomaton();
 			file.delete();
 			multigraph.setFinalStates(new ArrayList<>());
 			multigraph.addFinalStates(new State_("fail"));
@@ -4209,5 +4170,6 @@ public class EverestView extends JFrame {
 		}
 
 	}
+
 	IOLTS multigraph_iolts;
 }
