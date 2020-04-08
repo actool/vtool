@@ -205,6 +205,10 @@ public class ImportAutFile {
 				sc = new Scanner(file);
 				// skip the first line of configuration
 				sc.nextLine();
+				
+//				String content = new Scanner(file).useDelimiter("\\Z").next();
+//				System.out.println(content);
+				
 				// if there is line of the file to be read
 				while (sc.hasNextLine()) {
 					inconsistentLine = false;

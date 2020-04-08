@@ -2351,6 +2351,15 @@ public class EverestView extends JFrame {
 		lblTpFolder.setFont(new Font("Dialog", Font.BOLD, 13));
 
 		tfTPFolder = new JTextField();
+		tfTPFolder.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if(tfTPFolder.getText().isEmpty()) {
+					tpFolder = null;
+					visibilityRunButtons();
+				}
+			}
+		});
 		tfTPFolder.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
