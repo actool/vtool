@@ -141,6 +141,23 @@ public class IOLTS extends LTS implements Cloneable {
 		}
 	}
 
+	/***
+	 * Add the quiescent transition
+	 * 
+	 * @param transition
+	 */
+	public void removeQuiescentTransitions() {// quiescent
+		this.addToAlphabet(Constants.DELTA);
+
+		List<Transition_> toRemove = new ArrayList<>();
+		
+		for (Transition_ t : this.transitions) {
+			if (t.getLabel().equals(Constants.DELTA))
+				toRemove.add(t);
+		}
+		this.transitions.removeAll(toRemove);
+	}
+
 	public List<State_> quiescentStates() { // quiescent
 		List<State_> notQuiescentStates = new ArrayList<>();
 		for (Transition_ t : transitions) {
@@ -239,7 +256,7 @@ public class IOLTS extends LTS implements Cloneable {
 		int this_n_transition = new Integer(getTransitions().size());
 		int param_n_transition = new Integer(param_iolts.getTransitions().size());
 		List<Transition_> transitions_max, transitions_min;
-		//int n_distinct_transitions = 0;
+		// int n_distinct_transitions = 0;
 		if (this_n_transition <= param_n_transition) {
 			transitions_max = new ArrayList<>(param_iolts.getTransitions());
 			transitions_min = new ArrayList<>(getTransitions());
@@ -250,7 +267,7 @@ public class IOLTS extends LTS implements Cloneable {
 
 		for (Transition_ t : transitions_max) {
 			if (!transitions_min.contains(t)) {
-			//	n_distinct_transitions++;
+				// n_distinct_transitions++;
 			} else {
 				transitions_.add(t);
 			}
@@ -260,19 +277,19 @@ public class IOLTS extends LTS implements Cloneable {
 		return transitions_;
 
 	}
-	
-//	public IOLTS removeDeltaTransitions() {
-//		List<Transition_> toRemove = new ArrayList<>();
-//		for (Transition_ t : this.transitions) {
-//			if(t.getLabel().equals(Constants.DELTA)) {
-//				toRemove.add(t);
-//			}
-//		}
-//		
-//		this.transitions.removeAll(toRemove);
-//		
-//		return this;
-//	}
+
+	// public IOLTS removeDeltaTransitions() {
+	// List<Transition_> toRemove = new ArrayList<>();
+	// for (Transition_ t : this.transitions) {
+	// if(t.getLabel().equals(Constants.DELTA)) {
+	// toRemove.add(t);
+	// }
+	// }
+	//
+	// this.transitions.removeAll(toRemove);
+	//
+	// return this;
+	// }
 
 	/***
 	 * Overwriting the toString method, with the separation between the input and

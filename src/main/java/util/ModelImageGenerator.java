@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -34,8 +35,11 @@ public class ModelImageGenerator {
 				// Future<String> control = Executors.newSingleThreadExecutor().submit(new
 				// TimeOut(graphAdapter));
 
+				IOLTS m = new IOLTS(model.getStates(),model.getInitialState(),model.getAlphabet(),model.getTransitions(),model.getInputs(), model.getOutputs());
+				//m.removeQuiescentTransitions();
+				
 				JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<String, DefaultEdge>(
-						ioltsToGraph(model));
+						ioltsToGraph(m));
 				Future<String> control = Executors.newSingleThreadExecutor().submit(new TimeOut(graphAdapter));
 
 				boolean imageGenerated = true;
